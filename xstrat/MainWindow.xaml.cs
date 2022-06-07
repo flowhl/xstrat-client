@@ -42,7 +42,7 @@ namespace xstrat
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat");
+            manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat-client");
             CheckForUpdate();
             Globals.Init();
         }

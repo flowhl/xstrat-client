@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="xstrat.Ui.Routine"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+          d:DesignHeight="100" d:DesignWidth="290">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Width="340" Height="100" HorizontalAlignment="Left">
+            <StackPanel Orientation="Vertical" Width="180" VerticalAlignment="Center">
+                <TextBox Foreground="White" Background="Transparent" FontSize="24" Text="Header" Height="40" BorderThickness="0" x:Name="Header_Textbox" VerticalContentAlignment="Center" TextChanged="Header_Textbox_TextChanged"></TextBox>
+                <Label Foreground="White" Name="CreatedOnLabel" FontSize="10">Created on: Date</Label>
+            </StackPanel>
+            <Button Background="#336cb5" Foreground="White" FontSize="13" FontWeight="SemiBold" Margin="10,5,10,0" BorderThickness="0" Content="Open" Height="30" Width="70" Name="OpenButton" Click="OpenButton_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Grid  Width="20" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Width="20" HorizontalAlignment="Left">
+                        <Button Height="20" Width="20" Background="Transparent" Foreground="White" BorderThickness="0" Name="DeleteButton" VerticalAlignment="Center" Margin="0,0,0,0" Click="DeleteButton_Click">
+                            <materialDesign:PackIcon Kind="Delete" Foreground="White" Width="20" Height="20" HorizontalAlignment="Center"></materialDesign:PackIcon>
+                        </Button>                
+                </StackPanel>
+                <Rectangle Height="100" Width="20" HorizontalAlignment="Left" Fill="#303030" Panel.ZIndex="-1"></Rectangle>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

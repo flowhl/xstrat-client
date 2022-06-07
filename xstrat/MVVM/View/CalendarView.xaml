@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="xstrat.MVVM.View.CalendarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:xstrat.MVVM.View"
+             xmlns:local1="clr-namespace:xstrat.Calendar"
+             mc:Ignorable="d" 
+             d:DesignHeight="775" d:DesignWidth="1150"
+             x:Name="CalendarUI">
+    <Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Border BorderThickness="0" Background="#202020" CornerRadius="10" Margin="10,10,10,10">
+                <StackPanel Orientation="Vertical">
+                    <Label Foreground="White" FontSize="30" HorizontalAlignment="Center">Team Calendar:</Label>
+                    <local1:CalendarMonth x:Name="CalendarMonthUI" Events="{Binding ElementName=CalendarUI, Path=Events}" Margin="10,10,10,0" GridBrush="#336cb5" GridBorderThickness="0.8" Height="700"/>
+                    <Border Background="#222222" Margin="0,-100,0,0" CornerRadius="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <StackPanel Name="Row1" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10">
+                                <CheckBox Foreground="White" Background="#b53333" FontSize="16" VerticalContentAlignment="Center" IsChecked="True" Name="OffDayChecks" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked">Off days</CheckBox>
+                                <CheckBox Foreground="White" Background="#336cb5" FontSize="16" VerticalContentAlignment="Center" IsChecked="True" Name="ScrimChecks" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked">Scrims</CheckBox>
+                            </StackPanel>
+                            <StackPanel Name="Row2" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10"></StackPanel>
+                            <StackPanel Name="Row3" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10"></StackPanel>
+                            <StackPanel Name="Row4" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10"></StackPanel>
+                            <StackPanel Name="Row5" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10"></StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>       
+       
+    </Grid>
+</UserControl>

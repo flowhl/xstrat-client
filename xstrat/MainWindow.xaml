@@ -1,0 +1,159 @@
+﻿<Window x:Class="xstrat.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:xstrat.MVVM.ViewModel"
+        xmlns:view="clr-namespace:xstrat.MVVM.View"        
+        xmlns:local="clr-namespace:xstrat"
+        mc:Ignorable="d"
+        Height="800" Width="1350"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        Background="Transparent"
+        AllowsTransparency="True"
+>
+
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+        
+    <Border Background="#131313" CornerRadius="20">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+
+                <Border Grid.ColumnSpan="2"
+                    Background="#303030"
+                    MouseDown="Border_MouseDown">
+
+
+                    <Grid HorizontalAlignment="Stretch">
+
+                        <Image Source="./Images/topbar.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0"/>
+
+                        <StackPanel HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+
+                            <Button Width="20" Height="20"
+                                Content="🗕"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="Gray"
+                                FontWeight="Bold"
+                                Margin="0,0,0,3"
+                                Click="ButtonMinimize_Click"></Button>
+
+                            <Button Width="20" Height="20"
+                                Content="🗙"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="Gray"
+                                FontWeight="Bold"
+                                Click="ButtonClose_Click"></Button>
+
+
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+
+                <Border Background="#101010" Grid.Row="2" CornerRadius="12">
+                    <StackPanel >
+                        <RadioButton Content="Home"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             IsChecked="True"
+                             Command="{Binding HomeViewCommand}"/>
+
+
+                        <RadioButton Content="Strats"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding StratMakerViewCommand}"/>
+
+                    <RadioButton Content="Team"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding TeamViewCommand}"/>
+
+                    <RadioButton Content="Calendar"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding CalendarViewCommand}"/>
+
+                    <RadioButton Content="Scrims"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding ScrimViewCommand}"/>
+
+
+                    <RadioButton Content="Stats"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding StatsViewCommand}"/>
+
+
+
+                    <RadioButton Content="Routines"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding RoutinesViewCommand}"/>
+
+                        <RadioButton Content="Skin Switcher"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding SkinSwitcherViewCommand}"/>
+
+                        <RadioButton Content="Settings"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding SettingsViewCommand}"/>
+
+                        <RadioButton Content="About"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding AboutViewCommand}"/>
+
+                    </StackPanel>
+                </Border>
+
+                <ContentControl Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,10,10"
+                            Name="contentControl"
+                            Content="{Binding CurrentView}"/>
+
+
+            </Grid>
+    </Border>
+</Window>

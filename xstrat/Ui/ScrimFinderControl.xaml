@@ -1,0 +1,182 @@
+﻿<UserControl x:Class="xstrat.Ui.ScrimFinderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="320">
+    <Grid>
+        <Border Width="300" HorizontalAlignment="Left" Background="#181818" CornerRadius="20" Height="700" Margin="10,10,10,10" Name="RoutinesOverview" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                    <materialDesign:PackIcon Height="30" Width="30" Foreground="White" VerticalAlignment="Center" Kind="Timetable"></materialDesign:PackIcon>
+                    <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold">Scrim time finder:</Label>
+                </StackPanel>
+
+                <!--DURATION-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="85" CornerRadius="5"></Border>
+                    <Label Foreground="#336cb5" Content="DURATION" Width="75" HorizontalContentAlignment="Center"></Label>
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="85" CornerRadius="5"></Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="DurHour" allowNegative="False" limit="23"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="DurMinute" allowNegative="False" limit="59"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
+                </StackPanel>
+                
+                <!--DAYS-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                    <Label Foreground="#336cb5" Content="DAYS" Width="45" HorizontalContentAlignment="Center"></Label>
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Height="30" Width="30" Name="MoBtn" Content="Mo" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="MoBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="TuBtn" Content="Tu" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="TuBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="WeBtn" Content="We" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="WeBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="ThBtn" Content="Th" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="ThBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="FrBtn" Content="Fr" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="FrBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="SaBtn" Content="Sa" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="SaBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button Height="30" Width="30" Name="SuBtn" Content="Su" BorderThickness="0" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="5" Click="SuBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+                <!--FROM-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                    <Label Foreground="#336cb5" Content="FROM" Width="45" HorizontalContentAlignment="Center"></Label>
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="FromHour" allowNegative="False" limit="23"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="FromMinute" allowNegative="False" limit="59"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
+                </StackPanel>
+                
+                <!--TO-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                    <Label Foreground="#336cb5" Content="TO" Width="45" HorizontalContentAlignment="Center"></Label>
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="100" CornerRadius="5"></Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="ToHour" allowNegative="False" limit="23"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
+                    <Viewbox Height="20">
+                        <local:NumberBox x:Name="ToMinute" allowNegative="False" limit="59"/>
+                    </Viewbox>
+                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
+                </StackPanel>
+                
+                <!--PLAYER-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="85" CornerRadius="5"></Border>
+                    <Label Foreground="#336cb5" Content="PLAYERS" Width="75" HorizontalContentAlignment="Center"></Label>
+                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="85" CornerRadius="5"></Border>
+                </StackPanel>
+                <local:DataSelector Width="150" type="4" x:Name="CalendarTypeSelector"></local:DataSelector>
+                <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical" Name="Playerlist">
+                    </StackPanel>
+                </ScrollViewer>
+                <Viewbox Height="30">
+                    <local:NumberBox x:Name="PlayerAmount" allowNegative="False" limit="100"></local:NumberBox>
+                </Viewbox>
+
+                <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                    
+                    <!--SEARCH BUTTON-->
+                    <Button Height="30" Width="120" Name="SearchBtn" Content="Search" BorderThickness="0" FontSize="15" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Click="SearchBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <!--NEW BUTTON-->
+                    <Button Height="30" Width="120" Name="NewBtn" Content="New Scrim" BorderThickness="0" FontSize="15" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="10" Click="NewBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+                <TextBlock Foreground="Black" Background="#D64251" Width="150" Padding="2" Margin="0,20,0,0">Offday</TextBlock>
+                <TextBlock Foreground="Black" Background="#2D9ED5" Width="150" Padding="2" Margin="3">Scrim</TextBlock>
+                <TextBlock Foreground="Black" Background="#4ab859" Width="150" Padding="2">Recommended Scrim</TextBlock>
+                <TextBlock  HorizontalAlignment="Center" Margin="10,20,10,0" Foreground="#888888" TextWrapping="Wrap">
+                    Create a new scrim using the button or use the search to find the perfect scrim times for your team.
+                    You can doubleclick a recommended time to create a new scrim from it or click existing scrims to edit details                    
+                </TextBlock>
+                
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

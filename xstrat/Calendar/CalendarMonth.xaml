@@ -1,0 +1,173 @@
+﻿<UserControl
+    x:Class="xstrat.Calendar.CalendarMonth"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:xstrat.Calendar" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d" >
+    <UserControl.Resources>
+        <local:MonthNumberToNameConverter x:Key="MonthNumberToNameConverter" />
+        <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" Background="#202020" BorderBrush="#161616" BorderThickness="1" />
+                                            <Border Grid.Column="0"  Margin="1"  Background="#181818"  BorderBrush="#161616" BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="#336cb5" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="#336cb5" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="#336cb5" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#161616" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel>
+        <Grid
+            Height="30"
+            HorizontalAlignment="Center"
+            DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--<Button
+                Grid.Column="0"
+                Width="50"
+                Click="PreviousMonthButton_OnClick"
+                Content="&lt;-" />-->
+
+            <Button Height="30" Grid.Column="0" Width="50" Name="PrevButton" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="PreviousMonthButton_OnClick">
+                <Button.Content>
+                    <MaterialDesign:PackIcon Kind="ArrowLeft" Height="30" Width="30"></MaterialDesign:PackIcon>
+                </Button.Content>
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+        <Grid Grid.Column="1" Margin="50,0,50,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox Style="{StaticResource ComboBoxTest2}"
+                    x:Name="MonthsComboBox"
+                    Width="100"
+                    BorderThickness="0"
+                    FontSize="16"
+                    FontWeight="DemiBold"
+                    SelectionChanged="MonthsComboBox_SelectionChanged"
+                    Foreground="#CCCCCC">
+                    
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource MonthNumberToNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox
+                    Style="{StaticResource ComboBoxTest2}"
+                    Width="60"
+                    x:Name="YearsComboBox"
+                    Grid.Column="1"
+                    BorderThickness="0"
+                    FontSize="16"
+                    FontWeight="DemiBold"
+                    SelectionChanged="YearsComboBox_SelectionChanged"
+                    Foreground="#CCCCCC"/>
+            </Grid>
+
+            <!--<Button
+                Grid.Column="2"
+                Width="50"
+                Click="NextMonthButton_OnClick"
+                Content="-&gt;" />-->
+
+            <Button Height="30" Grid.Column="2" Width="50" Name="NextButton" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="NextMonthButton_OnClick">
+                <Button.Content>
+                    <MaterialDesign:PackIcon Kind="ArrowRight" Height="30" Width="30"></MaterialDesign:PackIcon>
+                </Button.Content>
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+
+
+        <Grid
+            x:Name="DayLabelsGrid"
+            Margin="0,20,0,0"
+            DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+        <Grid Name="DaysGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+        </Grid>
+    </DockPanel>
+</UserControl>

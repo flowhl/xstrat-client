@@ -3,14 +3,81 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:xstrat.MVVM.View"
+             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:ui="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:vms="clr-namespace:xstrat.MVVM.View"
              mc:Ignorable="d"              
-             d:DesignHeight="775" d:DesignWidth="1150">
+             d:DesignHeight="775" d:DesignWidth="1150"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>  
         
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Background="#202020" CornerRadius="10" Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Margin="5" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="15">Show Team</Label>
+                        <ui:ToggleSwitch Height="26" HorizontalAlignment="Left" x:Name="TeamToggle" ></ui:ToggleSwitch>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="10" Click="ReloadBtn_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Content>
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="Reload"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+                <ScrollViewer MaxHeight="120">
+                    <StackPanel Orientation="Vertical" Name="PlayerList">
+                        
+                    </StackPanel>
+                </ScrollViewer>                    
+            </StackPanel>
+        </Border>
+        <ScrollViewer Height="700" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <Border Background="#202020" CornerRadius="10" Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <!--GENERAL Area-->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="400" CornerRadius="5"></Border>
+                        <Label Foreground="#336cb5" FontSize="25" Content="GENERAL" Margin="20,0,20,0"></Label>
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="400" CornerRadius="5"></Border>
+                    </StackPanel>
+                    <!--Charts-->
+                    <StackPanel Orientation="Horizontal" Width="1100">
+                        <lvc:PolarChart x:Name="RadialChart" Series="{Binding RadialSeries}" AutoUpdateEnabled="True" TooltipPosition="Top" AngleAxes="{Binding RadialAngleAxes}" InitialRotation="0" Height="500" Width="500"/>
+                    </StackPanel>
+
+                    <!--SCRIM Area-->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="415" CornerRadius="5"></Border>
+                        <Label Foreground="#336cb5" FontSize="25" Content="SCRIM" Margin="20,0,20,0"></Label>
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="415" CornerRadius="5"></Border>
+                    </StackPanel>
+                    <!--Charts-->
+                    <StackPanel Orientation="Horizontal" Width="1100">
+
+                    </StackPanel>
+
+                    <!--RANKED Area-->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="405" CornerRadius="5"></Border>
+                        <Label Foreground="#336cb5" FontSize="25" Content="RANKED" Margin="20,0,20,0"></Label>
+                        <Border Background="#336cb5" Height="8" BorderThickness="0" Width="405" CornerRadius="5"></Border>
+                    </StackPanel>
+                    <!--Charts-->
+                    <StackPanel Orientation="Horizontal" Width="1100">
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>

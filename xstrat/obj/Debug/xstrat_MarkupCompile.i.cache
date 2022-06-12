@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Github_repos\xstrat\Client\xstrat\obj\Debug\
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\
 xstrat
 none
 false
 DEBUG;TRACE
-D:\Github_repos\xstrat\Client\xstrat\App.xaml
-35-1996144937
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\App.xaml
+36370038308
+10-1971372992
+671051468432
+841752407613
+Calendar\CalendarDay.xaml;Calendar\CalendarEventView.xaml;Calendar\CalendarMonth.xaml;MainWindow.xaml;MVVM\View\AboutView.xaml;MVVM\View\CalendarView.xaml;MVVM\View\HomeView.xaml;MVVM\View\LoginView.xaml;MVVM\View\RegisterView.xaml;MVVM\View\RoutinesView.xaml;MVVM\View\ScrimView.xaml;MVVM\View\SettingsView.xaml;MVVM\View\SkinSwitcherView.xaml;MVVM\View\StatsView.xaml;MVVM\View\StratMakerView.xaml;MVVM\View\TeamView.xaml;Overlay\OverlayStep.xaml;Overlay\RoutineOverlay.xaml;Ui\CalendarEventInfo.xaml;Ui\ColorDisplay.xaml;Ui\MapFloor.xaml;Ui\MenuButtonTheme.xaml;Ui\NumberBox.xaml;Ui\OffdayControl.xaml;Ui\OffDaysList.xaml;Ui\Routine.xaml;Ui\RoutineStep.xaml;Ui\ScrimControl.xaml;Ui\ScrimFinderControl.xaml;Ui\ScrimWindow.xaml;Ui\TeamDashboard.xaml;Ui\Teammate.xaml;Ui\DataSelector.xaml;Ui\ToggleSwitch.xaml;Ui\UserCheckbox.xaml;Ui\WallControl.xaml;
 
-66-984493731
-74740923931
-Calendar\CalendarDay.xaml;Calendar\CalendarEventView.xaml;Calendar\CalendarMonth.xaml;MainWindow.xaml;MVVM\View\AboutView.xaml;MVVM\View\CalendarView.xaml;MVVM\View\HomeView.xaml;MVVM\View\LoginView.xaml;MVVM\View\RegisterView.xaml;MVVM\View\RoutinesView.xaml;MVVM\View\ScrimView.xaml;MVVM\View\SettingsView.xaml;MVVM\View\SkinSwitcherView.xaml;MVVM\View\StatsView.xaml;MVVM\View\StratMakerView.xaml;MVVM\View\TeamView.xaml;Overlay\OverlayStep.xaml;Overlay\RoutineOverlay.xaml;Ui\CalendarEventInfo.xaml;Ui\MapFloor.xaml;Ui\MenuButtonTheme.xaml;Ui\NumberBox.xaml;Ui\OffdayControl.xaml;Ui\OffDaysList.xaml;Ui\Routine.xaml;Ui\RoutineStep.xaml;Ui\ScrimControl.xaml;Ui\ScrimFinderControl.xaml;Ui\ScrimWindow.xaml;Ui\TeamDashboard.xaml;Ui\Teammate.xaml;Ui\DataSelector.xaml;Ui\ToggleSwitch.xaml;Ui\UserCheckbox.xaml;Ui\WallControl.xaml;
-
-False
+True
 

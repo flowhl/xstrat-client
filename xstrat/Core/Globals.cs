@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using xstrat.Json;
 
 namespace xstrat.Core
@@ -16,6 +17,21 @@ namespace xstrat.Core
     {
         public ICollection<Response> Responses { get; set; }
         public int ID { get; set; }
+    }
+
+    public static class Extensions
+    {
+        public static T[] Append<T>(this T[] array, T item)
+        {
+            if (array == null)
+            {
+                return new T[] { item };
+            }
+            T[] result = new T[array.Length + 1];
+            array.CopyTo(result, 0);
+            result[array.Length] = item;
+            return result;
+        }
     }
 
     public class Response
@@ -30,6 +46,203 @@ namespace xstrat.Core
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public IEnumerable<Player> AvailablePlayers { get; set; }
+
+    }
+    public static class StatsDataSource
+    {
+        public delegate void StatsUpdateHandler(object sender, EventArgs e);
+        public static event StatsUpdateHandler OnUpdateStats;
+
+        public static List<StatsResponse> PlayerStats = new List<StatsResponse>();
+        public static List<List<StatsBySeasonDetail>> PlayerAllSeasonStats = new List<List<StatsBySeasonDetail>>();
+        public static List<List<ScrimParticipationResult>> PlayerScrimParticipation = new List<List<ScrimParticipationResult>>();
+        public static List<PlayerScrimParticipationPercentage> PlayerScrimParticipationPercentages = new List<PlayerScrimParticipationPercentage>();
+
+        public static void Init()
+        {
+            RetrieveData();
+        }
+
+
+        public static void RetrieveData()
+        {
+            RetrieveStatsDataAsync();
+            RetrieveStatsAllSeasons();
+        }
+
+        public static void DataRetrieved()
+        {
+            CalculatePlayerScrimPercentage();
+        }
+        private static void CalculatePlayerScrimPercentage()
+        {
+            foreach (var player in PlayerScrimParticipation)
+            {
+                if (player.Count > 0)
+                {
+                    int? user_id = player.FirstOrDefault().user_id;
+                    int type0 = 0;
+                    int type1 = 0;
+                    int type2 = 0;
+                    int count = 0;
+
+                    foreach (var scrim in player)
+                    {
+                        count++;
+                        if (scrim.response_typ == 0)
+                        {
+                            type0++;
+                        }
+                        if (scrim.response_typ == 1)
+                        {
+                            type1++;
+                        }
+                        if (scrim.response_typ == 2)
+                        {
+                            type2++;
+                        }
+                    }
+                    if (user_id != null)
+                    {
+                        PlayerScrimParticipationPercentages.Add(new PlayerScrimParticipationPercentage
+                        (
+                            user_id.GetValueOrDefault(0),
+                            count,
+                            (double)type0 / count,
+                            (double)type1 / count,
+                            (double)type2 / count
+                        ));
+                    }
+                }
+
+            }
+        }
+
+        public static async Task RetrieveStatsDataAsync()
+        {
+            PlayerStats.Clear();
+            PlayerScrimParticipation.Clear();
+            foreach (var user in Globals.teammates)
+            {
+                //playerstats
+                if (user.ubisoft_id != null && user.ubisoft_id != "")
+                {
+                    try
+                    {
+                        (bool, string) result = await ApiHandler.GetStats(user.ubisoft_id);
+                        if (result.Item1)
+                        {
+                            string response = result.Item2;
+                            //convert to json instance
+                            JObject json = JObject.Parse(response);
+                            var data = json.SelectToken("data").ToString();
+                            if (data != null && data != "")
+                            {
+                                StatsResponse sr = JsonConvert.DeserializeObject<StatsResponse>(data);
+                                sr.StatsResponseDetails.Values.First().xstrat_user_id = user.id;
+                                if (sr != null)
+                                {
+                                    PlayerStats.Add(sr);
+                                }
+                            }
+                            else
+                            {
+                                Notify.sendError("Playerstats could not be loaded");
+                                throw new Exception("Playerstats could not be loaded");
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Notify.sendError(ex.Message);
+                    }
+                }
+
+                //scrim stats
+                try
+                {
+                    (bool, string) result = await ApiHandler.GetScrimParticipation(user.id);
+                    if (result.Item1)
+                    {
+                        string response = result.Item2;
+                        //convert to json instance
+                        JObject json = JObject.Parse(response);
+                        var data = json.SelectToken("data").ToString();
+                        if (data != null && data != "")
+                        {
+                            List<ScrimParticipationResult> sr = JsonConvert.DeserializeObject<List<ScrimParticipationResult>>(data);
+                            if (sr != null)
+                            {
+                                PlayerScrimParticipation.Add(sr);
+                            }
+                        }
+                        else
+                        {
+                            Notify.sendError("Playerstats could not be loaded");
+                            throw new Exception("Playerstats could not be loaded");
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Notify.sendError(ex.Message);
+                }
+            }
+            DataRetrieved();
+        }
+        public static async Task RetrieveStatsAllSeasons()
+        {
+            PlayerAllSeasonStats.Clear();
+            foreach (var user in Globals.teammates)
+            {
+                if (user.ubisoft_id != null && user.ubisoft_id != "")
+                {
+                    try
+                    {
+                        (bool, string) result = await ApiHandler.GetStatsByAllSeason(user.ubisoft_id);
+                        if (result.Item1)
+                        {
+                            string response = result.Item2;
+                            //convert to json instance
+                            JObject json = JObject.Parse(response);
+                            var data = "[ \n\r " + json.SelectToken("data").ToString().Replace("[", "").Replace("]", "") + "\n\r ]";
+                            if (data != null && data != "")
+                            {
+                                var sr = JsonConvert.DeserializeObject<List<StatsBySeasonDetail>>(data);
+
+                                sr.ForEach(x => x.xstrat_user_id = user.id);
+
+                                if (sr.Count > 0)
+                                {
+                                    PlayerAllSeasonStats.Add(sr);
+                                }
+                            }
+                            else
+                            {
+                                Notify.sendError("Playerstats could not be loaded");
+                                throw new Exception("Playerstats could not be loaded");
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Notify.sendError(ex.Message);
+                    }
+                }
+            }
+        }
 
     }
     public static class Globals
@@ -93,6 +306,7 @@ namespace xstrat.Core
                     Notify.sendError("Teammates could not be loaded");
                     throw new Exception("Teammates could not be loaded");
                 }
+                StatsDataSource.Init();
             }
             else
             {
@@ -186,6 +400,10 @@ namespace xstrat.Core
         public static int getUserIdFromName(string name)
         {
             return teammates.Where(x => x.name.ToUpper().StartsWith(name.ToUpper())).First().id;
+        }
+        public static SolidColorBrush ToSolidColorBrush(this string hex_code)
+        {
+            return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
         }
     }
 }

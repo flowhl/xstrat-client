@@ -45,6 +45,9 @@
             <DataTemplate DataType="{x:Type viewModel:ScrimViewModel}">
                 <view:ScrimView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:StatsViewModel}">
+                <view:StatsView/>
+            </DataTemplate>
 
     <!--**************************
     * STYLE: MenuItem

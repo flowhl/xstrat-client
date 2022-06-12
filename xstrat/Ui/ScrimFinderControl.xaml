@@ -167,10 +167,9 @@
                         </Button.Resources>
                     </Button>
                 </StackPanel>
-
-                <TextBlock Foreground="Black" Background="#D64251" Width="150" Padding="2" Margin="0,20,0,0">Offday</TextBlock>
-                <TextBlock Foreground="Black" Background="#2D9ED5" Width="150" Padding="2" Margin="3">Scrim</TextBlock>
-                <TextBlock Foreground="Black" Background="#4ab859" Width="150" Padding="2">Recommended Scrim</TextBlock>
+                <local:ColorDisplay Color="#D64251" Margin="10,0,10,0" NameInput="Offday"></local:ColorDisplay>
+                <local:ColorDisplay Color="#2D9ED5" Margin="10,0,10,0" NameInput="Scrim"></local:ColorDisplay>
+                <local:ColorDisplay Color="#4ab859" Margin="10,0,10,0" NameInput="Recommended Scrim"></local:ColorDisplay>
                 <TextBlock  HorizontalAlignment="Center" Margin="10,20,10,0" Foreground="#888888" TextWrapping="Wrap">
                     Create a new scrim using the button or use the search to find the perfect scrim times for your team.
                     You can doubleclick a recommended time to create a new scrim from it or click existing scrims to edit details                    

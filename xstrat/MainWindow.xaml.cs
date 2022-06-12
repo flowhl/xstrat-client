@@ -5,6 +5,8 @@ using xstrat.MVVM.View;
 using xstrat.Core;
 using xstrat.MVVM.ViewModel;
 using Squirrel;
+using System;
+
 namespace xstrat
 {
     /// <summary>
@@ -42,9 +44,19 @@ namespace xstrat
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat-client");
-            CheckForUpdate();
-            Globals.Init();
+            try
+            {
+                manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat-client");
+                CheckForUpdate();
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+            finally
+            {
+                Globals.Init();
+            }
         }
 
         /// <summary>

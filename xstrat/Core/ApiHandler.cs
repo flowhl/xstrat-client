@@ -902,6 +902,96 @@ namespace xstrat
 
         #endregion
 
+        #region tracker
+
+        /// <summary>
+        /// gets the stats response:
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> GetStats(string username, string region = "emea")
+        {
+            Waiting();
+            var request = new RestRequest("tracker/stats", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { username = username, region = region });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        public static async Task<(bool, string)> GetScrimParticipation(int user_id)
+        {
+            Waiting();
+            var request = new RestRequest("user/scrimresponsestats", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { user_id = user_id});
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        /// <summary>
+        /// gets the stats by season response:
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="season"></param>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> GetStatsByAllSeason(string username , string region = "emea")
+        {
+            Waiting();
+            var request = new RestRequest("tracker/statsbyallseasons", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { username = username, region = region });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        /// <summary>
+        /// gets the stats by operator response:
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> GetStatsByOperator(string username)
+        {
+            Waiting();
+            var request = new RestRequest("tracker/statsbyoperator", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { username = username, team = "attacker,defender" });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+        
+        #endregion
+
         #region helper methodes
 
         /// <summary>

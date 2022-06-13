@@ -22,6 +22,7 @@ using xstrat.Json;
 using xstrat.Ui;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using System.Collections.ObjectModel;
 
 namespace xstrat.MVVM.View
 {
@@ -30,6 +31,7 @@ namespace xstrat.MVVM.View
     /// </summary>
     /// 
 
+    [ObservableObject]
     public partial class StatsView : UserControl
     {
         #region Graph stuff
@@ -37,7 +39,8 @@ namespace xstrat.MVVM.View
         #region General
 
         //Radial 
-        public ISeries[] RadialSeries { get; set; } = new ISeries[] { };
+
+        public ObservableCollection<ISeries> RadialSeries { get; set; } = new ObservableCollection<ISeries> { };
 
         public PolarAxis[] RadialAngleAxes { get; set; } =
         {
@@ -75,6 +78,8 @@ namespace xstrat.MVVM.View
             Loaded += StatsView_Loaded;
             StatsDataSource.OnUpdateStats += StatsDataSource_OnUpdateStats;
         }
+
+        public bool team { get; set; }
 
         private void StatsDataSource_OnUpdateStats(object sender, EventArgs e)
         {
@@ -116,7 +121,21 @@ namespace xstrat.MVVM.View
             int max_mmrchange = 0;
             int max_winrate = 0;
 
-            foreach (var user in Globals.teammates)
+            List<User> users = new List<User>();
+
+            if (team)
+            {
+                users.Clear();
+                Globals.teammates.ForEach(x => users.Add(x));
+                users = Globals.teammates;
+            }
+            else
+            {
+                users.Clear();
+                users.Add(Globals.currentUser);
+            }
+
+            foreach (var user in users)
             {
                 int userscrimpercentage = 0;
                 int maxmmr = 0;
@@ -215,11 +234,18 @@ namespace xstrat.MVVM.View
 
                 entry.Values = new[] { (int)userscrimpercentage, (int)maxmmr, (int)currmmr, (int)kd, (int)mmrchange, (int)winrate };
             }
-            
 
-            RadialSeries = radiallines.ToArray();
+            RadialSeries.Clear();
+            radiallines.ForEach( x => RadialSeries.Add(x));
+            //RadialSeries = radiallines;
+
         }
 
+        private void TeamToggle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            team = !TeamToggle.getStatus();
+            BuildGraphs();
+        }
     }
 }
        

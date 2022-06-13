@@ -255,6 +255,8 @@ namespace xstrat.Core
         public static List<Map> Maps = new List<Map>();
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
         public static bool AdminUser = false;
+        public static User currentUser { get; set; }
+
 
         public static string UserIdToName(int id)
         {
@@ -284,6 +286,10 @@ namespace xstrat.Core
         {
 
         }
+        private static async void RetrieveCurrentUser()
+        {
+            currentUser = getUserFromId(SettingsHandler.current_user_id);
+        }
 
         private static async void RetrieveTeamMates()
         {
@@ -307,6 +313,7 @@ namespace xstrat.Core
                     throw new Exception("Teammates could not be loaded");
                 }
                 StatsDataSource.Init();
+                RetrieveCurrentUser();
             }
             else
             {
@@ -395,7 +402,9 @@ namespace xstrat.Core
 
         public static User getUserFromId(int id)
         {
-            return teammates.Where(x => x.id == id).First();
+            var rows = teammates.Where(x => x.id == id);
+            if (rows.Any()) return rows.First();
+            return null;
         }
         public static int getUserIdFromName(string name)
         {

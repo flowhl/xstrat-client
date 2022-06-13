@@ -29,6 +29,7 @@ namespace xstrat.Core
         public static bool SkinSwitcherStatus { get; set; }
         public static string APIURL { get; set; }
         public static string LastLoginMail { get; set; }
+        public static int current_user_id { get; set; }
 
         public static void Initialize()
         {
@@ -55,6 +56,7 @@ namespace xstrat.Core
                 SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
                 APIURL = lines[4];
                 LastLoginMail = lines[5];
+                current_user_id = Convert.ToInt32(lines[6]);
             }
             catch (Exception ex)
             {
@@ -71,7 +73,8 @@ namespace xstrat.Core
             SkinSwitcherPath,
             SkinSwitcherStatus.ToString(),
             APIURL,
-            LastLoginMail
+            LastLoginMail,
+            current_user_id.ToString()
             };
 
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))
@@ -88,7 +91,8 @@ namespace xstrat.Core
             "",
             false.ToString(),
             "",
-            ""
+            "",
+            "-1",            
             };
 
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))

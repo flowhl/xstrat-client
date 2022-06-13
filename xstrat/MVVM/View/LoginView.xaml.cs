@@ -66,8 +66,16 @@ namespace xstrat.MVVM.View
                     //convert to json instance
                     JObject json = JObject.Parse(response);
                     string baerer = json.SelectToken("token").ToString();
+                    int user_id = -1;
+                    int.TryParse(json.SelectToken("user_id").ToString(), out user_id);
+                    if(user_id != -1)
+                    {
+                        SettingsHandler.current_user_id = user_id;
+                        Globals.currentUser = Globals.getUserFromId(user_id);
+                    }
                     SettingsHandler.StayLoggedin = RememberMe.getStatus();
                     SettingsHandler.LastLoginMail = email.Text.Trim();
+                    SettingsHandler.Save();
                     wnd.LoginComplete(baerer);
                 }
                 else

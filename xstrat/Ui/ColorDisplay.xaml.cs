@@ -22,23 +22,55 @@ namespace xstrat.Ui
     {
         public Brush Color { get; set; }
         public string NameInput { get; set; }
+        public bool Status { get; set; }
+        public bool HasCheckbox { get; set; }
+
+        public event EventHandler<EventArgs> ColorDisplayCheckstatusChanged;
+        public delegate void ColorDisplayEventHandler(object sender, EventArgs e);
+
         public ColorDisplay()
         {
             InitializeComponent();
+            CBox.IsChecked = Status;
             Loaded += ColorDisplay_Loaded;
         }
 
-        private void ColorDisplay_Loaded(object sender, RoutedEventArgs e)
+        public void CBox_Checked(object sender, RoutedEventArgs e)
         {
-            ColorCircle.Fill = Color;
-            LabelText.Content = NameInput;
+            Status = CBox.IsChecked.GetValueOrDefault();
+            ColorDisplayCheckstatusChanged.Invoke(this, EventArgs.Empty);
         }
 
-        public ColorDisplay(Brush color, string name)
+        public void ColorDisplay_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= ColorDisplay_Loaded;
+            ColorCircle.Fill = Color;
+            LabelText.Content = NameInput;
+            CBox.Checked += CBox_Checked;
+            CBox.Unchecked += CBox_Checked;
+        }
+
+        public void SetStatus(bool status = false)
+        {
+            Status=status;
+            CBox.IsChecked=Status;
+        }
+
+        public ColorDisplay(Brush color, string name, bool hasCheckBox = false)
         {
             InitializeComponent();
+            Loaded += ColorDisplay_Loaded;
             Color = color;
             NameInput = name;
+            HasCheckbox = hasCheckBox;
+            if (HasCheckbox)
+            {
+                CBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CBox.Visibility = Visibility.Collapsed;
+            }
 
             ColorCircle.Fill = Color;
             LabelText.Content = NameInput;

@@ -23,27 +23,40 @@
                         <Label Margin="5" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="15">Show Team</Label>
                         <ui:ToggleSwitch Height="26" PreviewMouseLeftButtonDown="TeamToggle_PreviewMouseLeftButtonDown" HorizontalAlignment="Left" x:Name="TeamToggle" ></ui:ToggleSwitch>
                     </StackPanel>
-                    <Button HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="10" Click="ReloadBtn_Click">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                        <Button.Content>
-                            <materialDesign:PackIcon Height="30" Width="30" Kind="Reload"/>
-                        </Button.Content>
-                    </Button>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="5" Click="ReloadBtn_Click">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Content>
+                                <materialDesign:PackIcon Height="30" Width="30" Kind="Reload"/>
+                            </Button.Content>
+                        </Button>
+                        <Button HorizontalAlignment="Right" Height="30" Width="30" Name="AddBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="5" Click="AddBtn_Click">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Content>
+                                <materialDesign:PackIcon Height="30" Width="30" Kind="Add"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                    
                 </Grid>
-                <ScrollViewer MaxHeight="120">
-                    <StackPanel Orientation="Vertical" Name="PlayerList">
+                <ScrollViewer MaxHeight="120" Margin="10">
+                    <StackPanel Orientation="Vertical" Name="PlayerList" Margin="10,0,0,0">
                         
                     </StackPanel>
                 </ScrollViewer>                    
             </StackPanel>
         </Border>
-        <ScrollViewer Height="700" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ScrollViewer Height="550" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <Border Background="#202020" CornerRadius="10" Margin="5">
-                <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical" Height="Auto">
                     <!--GENERAL Area-->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                         <Border Background="#336cb5" Height="8" BorderThickness="0" Width="400" CornerRadius="5"></Border>
@@ -51,8 +64,18 @@
                         <Border Background="#336cb5" Height="8" BorderThickness="0" Width="400" CornerRadius="5"></Border>
                     </StackPanel>
                     <!--Charts-->
-                    <StackPanel Orientation="Horizontal" Width="1100">
-                        <lvc:PolarChart x:Name="RadialChart" Series="{Binding RadialSeries}" AutoUpdateEnabled="True" TooltipPosition="Top" AngleAxes="{Binding RadialAngleAxes}" InitialRotation="0" Height="500" Width="500"/>
+                    <StackPanel Orientation="Horizontal" Width="1100" Height="400">
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Player Overview</Label>
+                            <lvc:PolarChart x:Name="RadialChart" Series="{Binding RadialSeries}" AutoUpdateEnabled="True" Margin="0,-40,0,0" TooltipPosition="Top" AngleAxes="{Binding RadialAngleAxes}" InitialRotation="0" Height="350" Width="350"/>
+                            <TextBlock Margin="0,-30,0,0" Foreground="#909090" HorizontalAlignment="Center" FontSize="10" TextWrapping="Wrap" Width="350">The values shown in this graph show the relative relations between each player. The highest value in each category gets assigned the global max value and every other datapoint decreases in relative relation</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical"  Margin="10">
+                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Current Season MMR</Label>
+                            <ScrollViewer Height="320" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <lvc:CartesianChart x:Name="GenaralBarChart" Series="{Binding GeneralBarSeries}" AutoUpdateEnabled="True" XAxes="{Binding GeneralBarXAxes}" Height="300"></lvc:CartesianChart>
+                            </ScrollViewer>
+                        </StackPanel>
                     </StackPanel>
 
                     <!--SCRIM Area-->
@@ -62,8 +85,19 @@
                         <Border Background="#336cb5" Height="8" BorderThickness="0" Width="415" CornerRadius="5"></Border>
                     </StackPanel>
                     <!--Charts-->
-                    <StackPanel Orientation="Horizontal" Width="1100">
-
+                    <StackPanel Orientation="Vertical" Width="1100" Height="Auto">
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Scrim Responses</Label>
+                            <ScrollViewer Height="320" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <lvc:CartesianChart Series="{Binding ScrimBarSeries}" XAxes="{Binding GeneralBarXAxes}" Height="300"></lvc:CartesianChart>
+                            </ScrollViewer>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Scrim Participation</Label>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <lvc:CartesianChart Series="{Binding ScrimHistorySeries}" XAxes="{Binding ScrimHistoryXAxes}" Height="300" ZoomMode="X" Width="1200" TooltipPosition="Top"/>
+                            </ScrollViewer>
+                        </StackPanel>
                     </StackPanel>
 
                     <!--RANKED Area-->

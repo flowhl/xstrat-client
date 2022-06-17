@@ -633,14 +633,20 @@ namespace xstrat.Json
         public double type0ratio { get; set; }
         public double type1ratio { get; set; }
         public double type2ratio { get; set; }
+        public int type0count{ get; set; }
+        public int type1count{ get; set; }
+        public int type2count{ get; set; }
 
-        public PlayerScrimParticipationPercentage(int user_id, int total_scrims, double type0ratio, double type1ratio, double type2ratio)
+        public PlayerScrimParticipationPercentage(int user_id, int total_scrims, double type0ratio, double type1ratio, double type2ratio, int type0count, int type1count, int type2count)
         {
             this.user_id = user_id;
             this.total_scrims = total_scrims;
             this.type0ratio = type0ratio;
             this.type1ratio = type1ratio;
             this.type2ratio = type2ratio;
+            this.type0count = type0count;
+            this.type1count = type1count;
+            this.type2count = type2count;
         }
     }
 

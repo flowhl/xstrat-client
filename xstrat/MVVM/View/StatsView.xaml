@@ -54,7 +54,7 @@
                 </ScrollViewer>                    
             </StackPanel>
         </Border>
-        <ScrollViewer Height="550" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="5">
             <Border Background="#202020" CornerRadius="10" Margin="5">
                 <StackPanel Orientation="Vertical" Height="Auto">
                     <!--GENERAL Area-->
@@ -92,7 +92,7 @@
                                 <lvc:CartesianChart Series="{Binding ScrimBarSeries}" XAxes="{Binding GeneralBarXAxes}" Height="300"></lvc:CartesianChart>
                             </ScrollViewer>
                         </StackPanel>
-                        <StackPanel Orientation="Vertical" Margin="10">
+                        <StackPanel Orientation="Vertical" Margin="0,50,0,0">
                             <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Scrim Participation</Label>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                                 <lvc:CartesianChart Series="{Binding ScrimHistorySeries}" XAxes="{Binding ScrimHistoryXAxes}" Height="300" ZoomMode="X" Width="1200" TooltipPosition="Top"/>
@@ -107,8 +107,15 @@
                         <Border Background="#336cb5" Height="8" BorderThickness="0" Width="405" CornerRadius="5"></Border>
                     </StackPanel>
                     <!--Charts-->
-                    <StackPanel Orientation="Horizontal" Width="1100">
-
+                    <StackPanel Orientation="Vertical" Width="1100">
+                        <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Ranked KD by Seasons</Label>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <lvc:CartesianChart Series="{Binding RankedKDSeries}" XAxes="{Binding RankedKDXAxes}" Height="300" Width="1000" TooltipPosition="Top"/>
+                        </ScrollViewer>
+                        <Label Foreground="White" HorizontalAlignment="Center" FontSize="18" Margin="0,50,0,0">Current season</Label>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <lvc:CartesianChart Series="{Binding RankedBalkenSeries}" XAxes="{Binding RankedBalkenXAxes}" Height="300" Width="1000" TooltipPosition="Top"/>
+                        </ScrollViewer>
                     </StackPanel>
                 </StackPanel>
             </Border>

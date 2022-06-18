@@ -79,6 +79,25 @@ namespace xstrat.MVVM.View
 
         #region Ranked
 
+        //KD
+
+        public ObservableCollection<Axis> RankedKDXAxes { get; set; } = new ObservableCollection<Axis>();
+
+        public ObservableCollection<ISeries> RankedKDSeries { get; set; } = new ObservableCollection<ISeries> { };
+
+        //Balken
+
+        public ObservableCollection<Axis> RankedBalkenXAxes { get; set; } = new ObservableCollection<Axis>()
+        {
+            new Axis
+            {
+                Labels = new[] { "KD", "Winrate", "Abandonrate" , "Kills per match"}
+            }
+        };
+    
+
+        public ObservableCollection<ISeries> RankedBalkenSeries { get; set; } = new ObservableCollection<ISeries> { };
+
         #endregion
 
         #endregion
@@ -394,6 +413,8 @@ namespace xstrat.MVVM.View
 
             #endregion
 
+            //Scrim
+            
             #region ScrimLayeredBar
 
             ScrimBarSeries.Clear();
@@ -498,6 +519,131 @@ namespace xstrat.MVVM.View
             });
 
             #endregion
+
+            //Ranked
+
+            #region RankedKdNachSeason
+            RankedKDSeries.Clear();
+            RankedKDXAxes.Clear();
+
+            List<string> RankedKDlabels = new List<string>();
+            List<Tuple<int, List<double>>> RankedKDData = new List<Tuple<int, List<double>>>();
+
+            bool first = true;
+
+            foreach (var user in users)
+            {
+                RankedKDData.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+            }
+
+            foreach (var user in allSeasons)
+            {
+                var RankedKDDatarow = RankedKDData.Where(x => x.Item1 == user.First().xstrat_user_id).FirstOrDefault();
+                if(RankedKDDatarow != null)
+                {
+                    user.Reverse();
+                    foreach (var season in user)
+                    {
+                        double k = season.kills.GetValueOrDefault(0);
+                        double d = season.deaths.GetValueOrDefault(0);  
+                        RankedKDDatarow.Item2.Add((d > 0) ? Math.Round((k / d),2) : 0);
+
+                        if (first)
+                        {
+                            int season_id = season.season.GetValueOrDefault(-1);
+                            if(season_id <= Globals.SeasonNames.Length - 1)
+                            {
+                                RankedKDlabels.Add(Globals.SeasonNames[season_id]);
+                            }
+                            else
+                            {
+                                RankedKDlabels.Add(season.season.ToString());
+                            }
+                        }
+
+
+                    }
+                    first = false;
+                }
+            }
+
+            foreach (var data in RankedKDData)
+            {
+                RankedKDSeries.Add(new LineSeries<double>
+                {
+                    Name = Globals.UserIdToName(data.Item1),
+                    Values = data.Item2,
+                    Fill = null,
+                    Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),
+                    GeometrySize = 0,
+                });
+            }
+            
+            RankedKDXAxes.Add(new Axis
+            {
+                Labels = RankedKDlabels
+            });
+
+
+            #endregion
+
+            #region RankedBalken
+            RankedBalkenSeries.Clear();
+
+            List<Tuple<int, List<double>>> RankedBarsKD = new List<Tuple<int, List<double>>>();
+            List<Tuple<int, List<double>>> RankedBarsWinrate = new List<Tuple<int, List<double>>>();
+            List<Tuple<int, List<double>>> RankedBarsAbandonrate = new List<Tuple<int, List<double>>>();
+            List<Tuple<int, List<double>>> RankedBarsKillsPerMatch = new List<Tuple<int, List<double>>>();
+
+            List<string> Names = new List<string>();
+            List<string> UColors = new List<string>();
+
+            foreach (var user in users)
+            {
+                RankedBarsKD.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+                RankedBarsWinrate.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+                RankedBarsAbandonrate.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+                RankedBarsKillsPerMatch.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+                Names.Add(user.name);
+                UColors.Add(user.color);
+            }
+
+            foreach (var player in allSeasons)
+            {
+                int uid = player.First().xstrat_user_id.GetValueOrDefault(-1);
+                if(users.Where(x => x.id == uid).Any()){
+                    if (uid >= 0)
+                    {
+                        var season = player.First();
+                        double k = season.kills.GetValueOrDefault(0);
+                        double d = season.deaths.GetValueOrDefault(0);
+                        RankedBarsKD.Where(x => x.Item1 == uid).FirstOrDefault().Item2.Add((d > 0) ? Math.Round((k / d), 2) : 0);
+                        double w = season.wins.GetValueOrDefault(0);
+                        double l = season.losses.GetValueOrDefault(0);
+                        double a = season.abandons.GetValueOrDefault(0);
+                        double total_matches = w + l + a;
+                        RankedBarsWinrate.Where(x => x.Item1 == uid).FirstOrDefault().Item2.Add(total_matches > 0 ? Math.Round((w / total_matches), 2) : 0);
+                        RankedBarsAbandonrate.Where(x => x.Item1 == uid).FirstOrDefault().Item2.Add(total_matches > 0 ? Math.Round((a / total_matches), 2) : 0);
+                        double kpm = (total_matches > 0) ? Math.Round(season.kills.GetValueOrDefault(0) / total_matches,2) : 0;
+                        RankedBarsKillsPerMatch.Where(x => x.Item1 == uid).FirstOrDefault().Item2.Add(kpm);
+                    }
+                }                
+            }
+
+            //bug which makes it appear only on second reload
+            for (int i = 0; i < users.Count; i++)
+            {
+                RankedBalkenSeries.Add(new ColumnSeries<double>
+                {
+                    Name = Names[i],
+                    Values = new double[] { RankedBarsKD[i].Item2.FirstOrDefault(), RankedBarsWinrate[i].Item2.FirstOrDefault(), RankedBarsAbandonrate[i].Item2.FirstOrDefault(), RankedBarsKillsPerMatch[i].Item2.FirstOrDefault() },
+                    Fill = new SolidColorPaint(SKColor.Parse(UColors[i])),
+                });
+            }
+
+            #endregion
+
+
         }
 
         private void TeamToggle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -283,6 +283,36 @@ namespace xstrat.Core
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
 
+        public static string[] SeasonNames = new string[]{
+            "Current Season", // API ID = 0
+            "Black Ice", //  Feburary 2, 2016
+            "Dust Line", // May 10, 2016
+            "Skull Rain", // August 2, 2016
+            "Red Crow", // November 17, 2016
+            "Velvet Shell", // February 7, 2017
+            "Health", // June 7, 2017
+            "Blood Orchid", // September 5, 2017
+            "White Noise", // December 5, 2017
+            "Chimera", // March 6, 2018
+            "Para Bellum", // June 7, 2018
+            "Grim Sky", // September 4, 2018
+            "Wind Bastion", // December 4, 2018
+            "Burnt Horizon", // March 6, 2019
+            "Phantom Sight", // June 11, 2019
+            "Ember Rise", // September 11, 2019
+            "Shifting Tides", // December 3, 2019
+            "Void Edge", // March 20, 2020
+            "Steel Wave", // June 16, 2020
+            "Shadow Legacy", // September 10, 2020
+            "Neon Dawn", // December 1, 2020
+            "Crimson Heist", // March 16, 2021
+            "North Star", // June 14, 2021
+            "Crystal Guard", // September 7, 2021
+            "High Calibre", // November 30, 2021
+            "Demon Veil", // March 15, 2022
+            "Vector Glare" // June 14, 2022
+            };
+
         private static int lastcustomuserid; 
 
         public static int LastCustomUserId   

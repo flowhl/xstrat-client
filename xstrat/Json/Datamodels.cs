@@ -8,8 +8,6 @@ using xstrat.Calendar;
 
 namespace xstrat.Json
 {
-
-
     public class CalendarEntry : ICalendarEvent
     {
         public DateTime? DateFrom { get; set; }
@@ -649,5 +647,6 @@ namespace xstrat.Json
             this.type2count = type2count;
         }
     }
+
 
 }

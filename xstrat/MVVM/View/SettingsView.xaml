@@ -22,16 +22,9 @@
                             <TextBox Name="APIText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="Transparent" Height="25" BorderThickness="0">https://api.xstrat.app</TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Foreground="White" VerticalAlignment="Bottom">Ubisoft-Id:</Label>
-                            <TextBox Name="UbiIDText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="Transparent" Height="25" BorderThickness="0">XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</TextBox>
+                            <Label Foreground="White" VerticalAlignment="Bottom">Account Name:</Label>
+                            <TextBox Name="UbiIDText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="Transparent" Height="25" BorderThickness="0">Your_Name</TextBox>
                         </StackPanel>
-                        <Button Content="Find your ID:" Name="FindIDBtn" Foreground="White" Background="#252525" BorderThickness="0" Margin="0,0,0,0" Height="20" Width="90" Click="FindIDBtn_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -66,7 +59,7 @@
                                 <local1:ToggleSwitch Height="20" x:Name="SwWeeklySummary"></local1:ToggleSwitch>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify5">
-                                <Label Foreground="White" VerticalAlignment="Bottom">Starting soon notification delay (in minutes):</Label>
+                                <Label Foreground="White" VerticalAlignment="Bottom">Starting soon time (in minutes):</Label>
                                 <Viewbox Height="20" Width="30">
                                 <local1:NumberBox x:Name="ScrimTimeDelay" allowNegative="False" Value="60" limit="300"></local1:NumberBox>                                    
                                 </Viewbox>

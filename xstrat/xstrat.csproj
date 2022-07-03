@@ -56,21 +56,6 @@
     <Reference Include="DeltaCompressionDotNet.PatchApi, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e8888ee913ed789, processorArchitecture=MSIL">
       <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
     </Reference>
-    <Reference Include="DragonFruit.Data, Version=2022.324.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DragonFruit.Data.2022.324.0\lib\netstandard2.0\DragonFruit.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="DragonFruit.Data.Serializers.Newtonsoft, Version=2022.324.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DragonFruit.Data.Serializers.Newtonsoft.2022.324.0\lib\netstandard2.0\DragonFruit.Data.Serializers.Newtonsoft.dll</HintPath>
-    </Reference>
-    <Reference Include="DragonFruit.Six.Api, Version=2022.521.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DragonFruit.Six.Api.2022.521.0\lib\netstandard2.0\DragonFruit.Six.Api.dll</HintPath>
-    </Reference>
-    <Reference Include="DragonFruit.Six.Api.Modern, Version=2021.827.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dragon6.API.Modern.2021.827.3\lib\netstandard2.0\DragonFruit.Six.Api.Modern.dll</HintPath>
-    </Reference>
-    <Reference Include="DragonFruit.Six.Locale, Version=2021.1105.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DragonFruit.Six.Locale.2021.1105.32\lib\netstandard2.0\DragonFruit.Six.Locale.dll</HintPath>
-    </Reference>
     <Reference Include="HarfBuzzSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\HarfBuzzSharp.2.8.2-preview.254\lib\net462\HarfBuzzSharp.dll</HintPath>
     </Reference>
@@ -270,7 +255,6 @@
     <Compile Include="Core\Notify.cs" />
     <Compile Include="Core\RoutineButtonClicked.cs" />
     <Compile Include="Core\RoutineStepButtonClicked.cs" />
-    <Compile Include="Core\StatsHandler.cs" />
     <Compile Include="Core\Wallstates.cs" />
     <Compile Include="Json\Datamodels.cs" />
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
@@ -589,6 +573,115 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Windows Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Icons\g_Alibi.png" />
+    <Resource Include="Images\Icons\g_AruniGate.png" />
+    <Resource Include="Images\Icons\g_Bandit.png" />
+    <Resource Include="Images\Icons\g_Barb.png" />
+    <Resource Include="Images\Icons\g_Barricade.png" />
+    <Resource Include="Images\Icons\g_BulletProofCam.png" />
+    <Resource Include="Images\Icons\g_BulletProofCamArrow.png" />
+    <Resource Include="Images\Icons\g_Castle.png" />
+    <Resource Include="Images\Icons\g_Claymore.png" />
+    <Resource Include="Images\Icons\g_Drone.png" />
+    <Resource Include="Images\Icons\g_Echo.png" />
+    <Resource Include="Images\Icons\g_Ela.png" />
+    <Resource Include="Images\Icons\g_Frost.png" />
+    <Resource Include="Images\Icons\g_Goyo.png" />
+    <Resource Include="Images\Icons\g_GoyoShieldTopDown.png" />
+    <Resource Include="Images\Icons\g_ImpactGrenade.png" />
+    <Resource Include="Images\Icons\g_Jager.png" />
+    <Resource Include="Images\Icons\g_Kaid.png" />
+    <Resource Include="Images\Icons\g_Kapkan.png" />
+    <Resource Include="Images\Icons\g_Lesion.png" />
+    <Resource Include="Images\Icons\g_Maestro.png" />
+    <Resource Include="Images\Icons\g_MelusiBanshee.png" />
+    <Resource Include="Images\Icons\g_Mira.png" />
+    <Resource Include="Images\Icons\g_Mozzie.png" />
+    <Resource Include="Images\Icons\g_Mute.png" />
+    <Resource Include="Images\Icons\g_NitroCell.png" />
+    <Resource Include="Images\Icons\g_Nomad.png" />
+    <Resource Include="Images\Icons\g_Osa.png" />
+    <Resource Include="Images\Icons\g_ProximityMine.png" />
+    <Resource Include="Images\Icons\g_Shield.png" />
+    <Resource Include="Images\Icons\g_ShieldTopDown.png" />
+    <Resource Include="Images\Icons\g_Smoke.png" />
+    <Resource Include="Images\Icons\g_Thunderbird.png" />
+    <Resource Include="Images\Icons\g_ToxicBabe.png" />
+    <Resource Include="Images\Icons\g_ToxicBabeSmoke.png" />
+    <Resource Include="Images\Icons\g_TraxStingers.png" />
+    <Resource Include="Images\Icons\g_Valkyrie.png" />
+    <Resource Include="Images\Icons\g_Wamai.png" />
+    <Resource Include="Images\Icons\g_Zero.png" />
+    <Resource Include="Images\Icons\op_ace.png" />
+    <Resource Include="Images\Icons\op_alibi.png" />
+    <Resource Include="Images\Icons\op_amaru.png" />
+    <Resource Include="Images\Icons\op_aruni.png" />
+    <Resource Include="Images\Icons\op_ash.png" />
+    <Resource Include="Images\Icons\op_azami.png" />
+    <Resource Include="Images\Icons\op_bandit.png" />
+    <Resource Include="Images\Icons\op_blackbeard.png" />
+    <Resource Include="Images\Icons\op_blitz.png" />
+    <Resource Include="Images\Icons\op_buck.png" />
+    <Resource Include="Images\Icons\op_capitao.png" />
+    <Resource Include="Images\Icons\op_castle.png" />
+    <Resource Include="Images\Icons\op_caveira.png" />
+    <Resource Include="Images\Icons\op_clash.png" />
+    <Resource Include="Images\Icons\op_doc.png" />
+    <Resource Include="Images\Icons\op_dokkaebi.png" />
+    <Resource Include="Images\Icons\op_echo.png" />
+    <Resource Include="Images\Icons\op_ela.png" />
+    <Resource Include="Images\Icons\op_finka.png" />
+    <Resource Include="Images\Icons\op_flores.png" />
+    <Resource Include="Images\Icons\op_frost.png" />
+    <Resource Include="Images\Icons\op_fuze.png" />
+    <Resource Include="Images\Icons\op_glaz.png" />
+    <Resource Include="Images\Icons\op_goyo.png" />
+    <Resource Include="Images\Icons\op_gridlock.png" />
+    <Resource Include="Images\Icons\op_hibana.png" />
+    <Resource Include="Images\Icons\op_iana.png" />
+    <Resource Include="Images\Icons\op_iq.png" />
+    <Resource Include="Images\Icons\op_jackal.png" />
+    <Resource Include="Images\Icons\op_jager.png" />
+    <Resource Include="Images\Icons\op_kaid.png" />
+    <Resource Include="Images\Icons\op_kali.png" />
+    <Resource Include="Images\Icons\op_kapkan.png" />
+    <Resource Include="Images\Icons\op_lesion.png" />
+    <Resource Include="Images\Icons\op_lion.png" />
+    <Resource Include="Images\Icons\op_maestro.png" />
+    <Resource Include="Images\Icons\op_maverick.png" />
+    <Resource Include="Images\Icons\op_melusi.png" />
+    <Resource Include="Images\Icons\op_mira.png" />
+    <Resource Include="Images\Icons\op_montagne.png" />
+    <Resource Include="Images\Icons\op_mozzie.png" />
+    <Resource Include="Images\Icons\op_mute.png" />
+    <Resource Include="Images\Icons\op_nokk.png" />
+    <Resource Include="Images\Icons\op_nomad.png" />
+    <Resource Include="Images\Icons\op_oryx.png" />
+    <Resource Include="Images\Icons\op_osa.png" />
+    <Resource Include="Images\Icons\op_pulse.png" />
+    <Resource Include="Images\Icons\op_recruit_blue.png" />
+    <Resource Include="Images\Icons\op_recruit_green.png" />
+    <Resource Include="Images\Icons\op_recruit_orange.png" />
+    <Resource Include="Images\Icons\op_recruit_red.png" />
+    <Resource Include="Images\Icons\op_recruit_yellow.png" />
+    <Resource Include="Images\Icons\op_rook.png" />
+    <Resource Include="Images\Icons\op_sledge.png" />
+    <Resource Include="Images\Icons\op_smoke.png" />
+    <Resource Include="Images\Icons\op_tachanka.png" />
+    <Resource Include="Images\Icons\op_thatcher.png" />
+    <Resource Include="Images\Icons\op_thermite.png" />
+    <Resource Include="Images\Icons\op_thorn.png" />
+    <Resource Include="Images\Icons\op_thunderbird.png" />
+    <Resource Include="Images\Icons\op_twitch.png" />
+    <Resource Include="Images\Icons\op_valkyrie.png" />
+    <Resource Include="Images\Icons\op_vigil.png" />
+    <Resource Include="Images\Icons\op_wamai.png" />
+    <Resource Include="Images\Icons\op_warden.png" />
+    <Resource Include="Images\Icons\op_ying.png" />
+    <Resource Include="Images\Icons\op_zero.png" />
+    <Resource Include="Images\Icons\op_zofia.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

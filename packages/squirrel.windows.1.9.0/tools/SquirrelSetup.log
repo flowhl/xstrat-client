@@ -317,3 +317,219 @@
 2022-04-23 23:36:53> DeltaPackageBuilder: \lib\net45\sv\Xceed.Wpf.AvalonDock.resources.dll not found in base package, marking as new
 2022-04-23 23:36:53> DeltaPackageBuilder: \lib\net45\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll not found in base package, marking as new
 2022-04-23 23:36:53> Program: Building embedded zip file for Setup.exe
+2022-07-03 14:18:26> Program: Starting Squirrel Updater: --releasify D:\Github_repos\xstrat\Client\xstrat-client\Deployment\GeneratedNugets\XStrat.1.1.4.nupkg --releaseDir=D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases
+2022-07-03 14:18:26> Program: Bootstrapper EXE found at:D:\Github_repos\xstrat\Client\xstrat-client\packages\squirrel.windows.1.9.0\tools\Setup.exe
+2022-07-03 14:18:26> Program: Creating release package: D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat.1.1.4.nupkg
+2022-07-03 14:18:26> ReleasePackage: Creating release package: D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat.1.1.4.nupkg => D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.4-full.nupkg
+2022-07-03 14:18:27> ReleasePackage: Extracting dependent packages: []
+2022-07-03 14:18:27> ReleasePackage: Removing unnecessary data
+2022-07-03 14:18:30> DeltaPackageBuilder: Extracting D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.3-full.nupkg and D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.4-full.nupkg into C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\ColorPicker.dll hasn't changed, writing dummy file
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\CommunityToolkit.Mvvm.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\CommunityToolkit.Mvvm.pdb not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.dll hasn't changed, writing dummy file
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.MsDelta.dll hasn't changed, writing dummy file
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.PatchApi.dll hasn't changed, writing dummy file
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\HarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\HarfBuzzSharp.pdb not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\JetBrains.Annotations.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\libHarfBuzzSharp.dylib not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\libSkiaSharp.dylib not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\LiveChartsCore.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\LiveChartsCore.SkiaSharpView.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\LiveChartsCore.SkiaSharpView.WPF.dll not found in base package, marking as new
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\MaterialDesignColors.dll hasn't changed, writing dummy file
+2022-07-03 14:18:31> DeltaPackageBuilder: \lib\net45\MaterialDesignColors.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\MaterialDesignThemes.Wpf.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\MaterialDesignThemes.Wpf.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.Bcl.AsyncInterfaces.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.Sensors.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.Shell.dll hasn't changed, writing dummy file
+2022-07-03 14:18:32> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.ShellExtensions.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Microsoft.Xaml.Behaviors.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Microsoft.Xaml.Behaviors.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Mdb.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Mdb.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Pdb.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Pdb.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Rocks.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Rocks.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Newtonsoft.Json.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Nito.AsyncEx.Coordination.dll not found in base package, marking as new
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Nito.AsyncEx.Tasks.dll not found in base package, marking as new
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Nito.Collections.Deque.dll not found in base package, marking as new
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Nito.Disposables.dll not found in base package, marking as new
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\Notifications.Wpf.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\NuGet.Squirrel.dll hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\NuGet.Squirrel.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:33> DeltaPackageBuilder: \lib\net45\RestSharp.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SharpCompress.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.HarfBuzz.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.HarfBuzz.pdb not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.pdb not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.Desktop.Common.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.Desktop.Common.pdb not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.WPF.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.WPF.pdb not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\Splat.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\Splat.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\Squirrel.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\Squirrel.pdb hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Buffers.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Collections.Immutable.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.ComponentModel.Annotations.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Drawing.Common.dll not found in base package, marking as new
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Memory.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Numerics.Vectors.dll hasn't changed, writing dummy file
+2022-07-03 14:18:34> DeltaPackageBuilder: \lib\net45\System.Runtime.CompilerServices.Unsafe.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\System.Text.Encodings.Web.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\System.Text.Json.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\System.Threading.Tasks.Extensions.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\System.ValueTuple.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\WPFExtensions.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.Aero.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.Metro.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.VS2010.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.Toolkit.dll hasn't changed, writing dummy file
+2022-07-03 14:18:35> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.exe => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.exe
+2022-07-03 14:18:41> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.exe.config => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.exe.config
+2022-07-03 14:18:41> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.pdb => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.pdb
+2022-07-03 14:18:42> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat_ExecutionStub.exe => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat_ExecutionStub.exe
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\arm64\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\arm64\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\de\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\es\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\fr\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\hu\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\Images\close.png hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\Images\dock-window.png hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\it\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\ja-JP\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\pt-BR\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\ro\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\ru\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\sv\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\x64\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\x64\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\x86\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\x86\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:18:42> DeltaPackageBuilder: \lib\net45\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:18:46> Unhandled exception: System.IO.IOException: The process cannot access the file 'D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat.1.1.4.nupkg' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.File.InternalDelete(String path, Boolean checkHost)
+   at System.IO.File.Delete(String path)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+2022-07-03 14:19:38> Program: Starting Squirrel Updater: --releasify D:\Github_repos\xstrat\Client\xstrat-client\Deployment\GeneratedNugets\XStrat.1.1.4.nupkg --releaseDir=D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases
+2022-07-03 14:19:38> Program: Bootstrapper EXE found at:D:\Github_repos\xstrat\Client\xstrat-client\packages\squirrel.windows.1.9.0\tools\Setup.exe
+2022-07-03 14:19:38> Program: Creating release package: D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat.1.1.4.nupkg
+2022-07-03 14:19:38> ReleasePackage: Creating release package: D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat.1.1.4.nupkg => D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.4-full.nupkg
+2022-07-03 14:19:39> ReleasePackage: Extracting dependent packages: []
+2022-07-03 14:19:39> ReleasePackage: Removing unnecessary data
+2022-07-03 14:19:41> DeltaPackageBuilder: Extracting D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.3-full.nupkg and D:\Github_repos\xstrat\Client\xstrat-client\Deployment\Releases\XStrat-1.1.4-full.nupkg into C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\ColorPicker.dll hasn't changed, writing dummy file
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\CommunityToolkit.Mvvm.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\CommunityToolkit.Mvvm.pdb not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.dll hasn't changed, writing dummy file
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.MsDelta.dll hasn't changed, writing dummy file
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\DeltaCompressionDotNet.PatchApi.dll hasn't changed, writing dummy file
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\HarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\HarfBuzzSharp.pdb not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\JetBrains.Annotations.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\libHarfBuzzSharp.dylib not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\libSkiaSharp.dylib not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\LiveChartsCore.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\LiveChartsCore.SkiaSharpView.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\LiveChartsCore.SkiaSharpView.WPF.dll not found in base package, marking as new
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\MaterialDesignColors.dll hasn't changed, writing dummy file
+2022-07-03 14:19:42> DeltaPackageBuilder: \lib\net45\MaterialDesignColors.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\MaterialDesignThemes.Wpf.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\MaterialDesignThemes.Wpf.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.Bcl.AsyncInterfaces.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.Sensors.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.Shell.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.WindowsAPICodePack.ShellExtensions.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.Xaml.Behaviors.dll hasn't changed, writing dummy file
+2022-07-03 14:19:43> DeltaPackageBuilder: \lib\net45\Microsoft.Xaml.Behaviors.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Mdb.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Mdb.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Pdb.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Pdb.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Rocks.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Mono.Cecil.Rocks.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Newtonsoft.Json.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Nito.AsyncEx.Coordination.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Nito.AsyncEx.Tasks.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Nito.Collections.Deque.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Nito.Disposables.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\Notifications.Wpf.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\NuGet.Squirrel.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\NuGet.Squirrel.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\RestSharp.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SharpCompress.dll hasn't changed, writing dummy file
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.HarfBuzz.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.HarfBuzz.pdb not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.pdb not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.Desktop.Common.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.Desktop.Common.pdb not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.WPF.dll not found in base package, marking as new
+2022-07-03 14:19:44> DeltaPackageBuilder: \lib\net45\SkiaSharp.Views.WPF.pdb not found in base package, marking as new
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\Splat.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\Splat.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\Squirrel.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\Squirrel.pdb hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Buffers.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Collections.Immutable.dll not found in base package, marking as new
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.ComponentModel.Annotations.dll not found in base package, marking as new
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Drawing.Common.dll not found in base package, marking as new
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Memory.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Numerics.Vectors.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Runtime.CompilerServices.Unsafe.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Text.Encodings.Web.dll hasn't changed, writing dummy file
+2022-07-03 14:19:45> DeltaPackageBuilder: \lib\net45\System.Text.Json.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\System.Threading.Tasks.Extensions.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\System.ValueTuple.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\WPFExtensions.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.Aero.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.Metro.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.AvalonDock.Themes.VS2010.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: \lib\net45\Xceed.Wpf.Toolkit.dll hasn't changed, writing dummy file
+2022-07-03 14:19:46> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.exe => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.exe
+2022-07-03 14:19:52> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.exe.config => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.exe.config
+2022-07-03 14:19:52> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat.pdb => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat.pdb
+2022-07-03 14:19:53> DeltaPackageBuilder: Delta patching C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempi\lib\net45\xstrat_ExecutionStub.exe => C:\Users\Florian Wahl\AppData\Local\SquirrelTemp\tempj\lib\net45\xstrat_ExecutionStub.exe
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\arm64\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\arm64\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\de\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\es\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\fr\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\hu\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\Images\close.png hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\Images\dock-window.png hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\it\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\ja-JP\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\pt-BR\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\ro\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\ru\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\sv\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\x64\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\x64\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\x86\libHarfBuzzSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\x86\libSkiaSharp.dll not found in base package, marking as new
+2022-07-03 14:19:53> DeltaPackageBuilder: \lib\net45\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll hasn't changed, writing dummy file
+2022-07-03 14:19:56> Program: Building embedded zip file for Setup.exe

@@ -38,7 +38,8 @@ namespace xstrat.Ui
         public void CBox_Checked(object sender, RoutedEventArgs e)
         {
             Status = CBox.IsChecked.GetValueOrDefault();
-            ColorDisplayCheckstatusChanged.Invoke(this, EventArgs.Empty);
+
+            ColorDisplayCheckstatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void ColorDisplay_Loaded(object sender, RoutedEventArgs e)
@@ -48,6 +49,7 @@ namespace xstrat.Ui
             LabelText.Content = NameInput;
             CBox.Checked += CBox_Checked;
             CBox.Unchecked += CBox_Checked;
+            if(!HasCheckbox) CBox.Visibility = Visibility.Collapsed;
         }
 
         public void SetStatus(bool status = false)

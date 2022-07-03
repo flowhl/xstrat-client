@@ -1,6 +1,4 @@
-﻿using DragonFruit.Six.Api.Accounts;
-using DragonFruit.Six.Api.Accounts.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -63,13 +61,13 @@ namespace xstrat.Core
             RetrieveData();
         }
 
-
         public static void RetrieveData()
         {
             StartRetrieveStatsData();
             StartRetrieveStatsAllSeasons();
         }
 
+        #region stats
         public static void DataRetrieved()
         {
             CalculatePlayerScrimPercentage();
@@ -121,7 +119,6 @@ namespace xstrat.Core
 
             }
         }
-
         public static async Task RetrieveStatsDataAsync(string ubisoft_id, int user_id = -1)
         {
             if(!string.IsNullOrEmpty(ubisoft_id) && user_id >= 0)
@@ -243,7 +240,6 @@ namespace xstrat.Core
             }
             return;
         }
-
         public static async Task StartRetrieveStatsData()
         {
             PlayerStats.Clear();
@@ -269,7 +265,7 @@ namespace xstrat.Core
                 }
             }
         }
-
+        #endregion
     }
     public static class Globals
     {
@@ -312,6 +308,227 @@ namespace xstrat.Core
             "Demon Veil", // March 15, 2022
             "Vector Glare" // June 14, 2022
             };
+
+        public static string[] IconPaths = new string[]{
+            "g_Alibi.png"
+            ,"g_AruniGate.png"
+            ,"g_Bandit.png"
+            ,"g_Barb.png"
+            ,"g_Barricade.png"
+            ,"g_BulletProofCam.png"
+            ,"g_BulletProofCamArrow.png"
+            ,"g_Castle.png"
+            ,"g_Claymore.png"
+            ,"g_Drone.png"
+            ,"g_Echo.png"
+            ,"g_Ela.png"
+            ,"g_Frost.png"
+            ,"g_Goyo.png"
+            ,"g_GoyoShieldTopDown.png"
+            ,"g_ImpactGrenade.png"
+            ,"g_Jager.png"
+            ,"g_Kaid.png"
+            ,"g_Kapkan.png"
+            ,"g_Lesion.png"
+            ,"g_Maestro.png"
+            ,"g_MelusiBanshee.png"
+            ,"g_Mira.png"
+            ,"g_Mozzie.png"
+            ,"g_Mute.png"
+            ,"g_NitroCell.png"
+            ,"g_Nomad.png"
+            ,"g_Osa.png"
+            ,"g_ProximityMine.png"
+            ,"g_Shield.png"
+            ,"g_ShieldTopDown.png"
+            ,"g_Smoke.png"
+            ,"g_Thunderbird.png"
+            ,"g_ToxicBabe.png"
+            ,"g_ToxicBabeSmoke.png"
+            ,"g_TraxStingers.png"
+            ,"g_Valkyrie.png"
+            ,"g_Wamai.png"
+            ,"g_Zero.png"
+            ,"op_ace.png"
+            ,"op_alibi.png"
+            ,"op_amaru.png"
+            ,"op_aruni.png"
+            ,"op_ash.png"
+            ,"op_azami.png"
+            ,"op_bandit.png"
+            ,"op_blackbeard.png"
+            ,"op_blitz.png"
+            ,"op_buck.png"
+            ,"op_capitao.png"
+            ,"op_castle.png"
+            ,"op_caveira.png"
+            ,"op_clash.png"
+            ,"op_doc.png"
+            ,"op_dokkaebi.png"
+            ,"op_echo.png"
+            ,"op_ela.png"
+            ,"op_finka.png"
+            ,"op_flores.png"
+            ,"op_frost.png"
+            ,"op_fuze.png"
+            ,"op_glaz.png"
+            ,"op_goyo.png"
+            ,"op_gridlock.png"
+            ,"op_hibana.png"
+            ,"op_iana.png"
+            ,"op_iq.png"
+            ,"op_jackal.png"
+            ,"op_jager.png"
+            ,"op_kaid.png"
+            ,"op_kali.png"
+            ,"op_kapkan.png"
+            ,"op_lesion.png"
+            ,"op_lion.png"
+            ,"op_maestro.png"
+            ,"op_maverick.png"
+            ,"op_melusi.png"
+            ,"op_mira.png"
+            ,"op_montagne.png"
+            ,"op_mozzie.png"
+            ,"op_mute.png"
+            ,"op_nokk.png"
+            ,"op_nomad.png"
+            ,"op_oryx.png"
+            ,"op_osa.png"
+            ,"op_pulse.png"
+            ,"op_recruit_blue.png"
+            ,"op_recruit_green.png"
+            ,"op_recruit_orange.png"
+            ,"op_recruit_red.png"
+            ,"op_recruit_yellow.png"
+            ,"op_rook.png"
+            ,"op_sledge.png"
+            ,"op_smoke.png"
+            ,"op_tachanka.png"
+            ,"op_thatcher.png"
+            ,"op_thermite.png"
+            ,"op_thorn.png"
+            ,"op_thunderbird.png"
+            ,"op_twitch.png"
+            ,"op_valkyrie.png"
+            ,"op_vigil.png"
+            ,"op_wamai.png"
+            ,"op_warden.png"
+            ,"op_ying.png"
+            ,"op_zero.png"
+            ,"op_zofia.png"
+        };
+
+        public enum Icons
+        {
+            g_Alibi
+            , g_AruniGate
+            , g_Bandit
+            , g_Barb
+            , g_Barricade
+            , g_BulletProofCam
+            , g_BulletProofCamArrow
+            , g_Castle
+            , g_Claymore
+            , g_Drone
+            , g_Echo
+            , g_Ela
+            , g_Frost
+            , g_Goyo
+            , g_GoyoShieldTopDown
+            , g_ImpactGrenade
+            , g_Jager
+            , g_Kaid
+            , g_Kapkan
+            , g_Lesion
+            , g_Maestro
+            , g_MelusiBanshee
+            , g_Mira
+            , g_Mozzie
+            , g_Mute
+            , g_NitroCell
+            , g_Nomad
+            , g_Osa
+            , g_ProximityMine
+            , g_Shield
+            , g_ShieldTopDown
+            , g_Smoke
+            , g_Thunderbird
+            , g_ToxicBabe
+            , g_ToxicBabeSmoke
+            , g_TraxStingers
+            , g_Valkyrie
+            , g_Wamai
+            , g_Zero
+            , op_ace
+            , op_alibi
+            , op_amaru
+            , op_aruni
+            , op_ash
+            , op_azami
+            , op_bandit
+            , op_blackbeard
+            , op_blitz
+            , op_buck
+            , op_capitao
+            , op_castle
+            , op_caveira
+            , op_clash
+            , op_doc
+            , op_dokkaebi
+            , op_echo
+            , op_ela
+            , op_finka
+            , op_flores
+            , op_frost
+            , op_fuze
+            , op_glaz
+            , op_goyo
+            , op_gridlock
+            , op_hibana
+            , op_iana
+            , op_iq
+            , op_jackal
+            , op_jager
+            , op_kaid
+            , op_kali
+            , op_kapkan
+            , op_lesion
+            , op_lion
+            , op_maestro
+            , op_maverick
+            , op_melusi
+            , op_mira
+            , op_montagne
+            , op_mozzie
+            , op_mute
+            , op_nokk
+            , op_nomad
+            , op_oryx
+            , op_osa
+            , op_pulse
+            , op_recruit_blue
+            , op_recruit_green
+            , op_recruit_orange
+            , op_recruit_red
+            , op_recruit_yellow
+            , op_rook
+            , op_sledge
+            , op_smoke
+            , op_tachanka
+            , op_thatcher
+            , op_thermite
+            , op_thorn
+            , op_thunderbird
+            , op_twitch
+            , op_valkyrie
+            , op_vigil
+            , op_wamai
+            , op_warden
+            , op_ying
+            , op_zero
+            , op_zofia
+        }
 
         private static int lastcustomuserid; 
 

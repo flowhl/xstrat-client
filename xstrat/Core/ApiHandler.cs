@@ -206,8 +206,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/join", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { join_password = pw });
-            request.AddJsonBody(new { team_id = id});
+            request.AddJsonBody(new { join_password = pw, team_id = id});
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success

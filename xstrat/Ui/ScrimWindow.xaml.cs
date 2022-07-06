@@ -2,8 +2,10 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +43,11 @@ namespace xstrat.Ui
 
         public ScrimWindow(xstrat.Core.Window window)
         {
+            //fix datetime
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = "yyyy/MM/dd";
+            Thread.CurrentThread.CurrentCulture = ci;
+
             this.window = window;
             if (window.StartDateTime.Date != window.EndDateTime.Date)
             {

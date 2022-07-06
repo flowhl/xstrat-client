@@ -489,6 +489,7 @@ namespace xstrat.MVVM.View
             {
                 foreach (var userentry in ScrimParticipation)
                 {
+                    if (userentry.Count <= 0) continue;
                     var resultrows = userentry.Where(x => x.response_typ == 1 && x.time_start != null && x.time_start.StartsWith(time.Year+"/"+time.Month.ToString().PadLeft(2,'0')+"/"+time.Day.ToString().PadLeft(2, '0')));
                     var historyrows = ScrimHistoryData.Where(x => x.Item1 == userentry.FirstOrDefault().user_id);
                     if (historyrows.Any())

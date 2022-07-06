@@ -287,6 +287,21 @@
     <Compile Include="Overlay\RoutineOverlay.xaml.cs">
       <DependentUpon>RoutineOverlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StratHelper\Adorners\ResizeRotateAdorner.cs" />
+    <Compile Include="StratHelper\Adorners\ResizeRotateChrome.cs" />
+    <Compile Include="StratHelper\Adorners\SizeAdorner.cs" />
+    <Compile Include="StratHelper\Adorners\SizeChrome.cs" />
+    <Compile Include="StratHelper\DesignerItemDecorator.cs" />
+    <Compile Include="StratHelper\MoveThumb.cs" />
+    <Compile Include="StratHelper\ResizeThumb.cs" />
+    <Compile Include="StratHelper\RotateThumb.cs" />
+    <Compile Include="StratHelper\StratContentControl.xaml.cs">
+      <DependentUpon>StratContentControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StratHelper\StratHelper.cs" />
+    <Compile Include="StratHelper\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\CalendarEventInfo.xaml.cs">
       <DependentUpon>CalendarEventInfo.xaml</DependentUpon>
     </Compile>
@@ -421,6 +436,26 @@
     <Page Include="Overlay\RoutineOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StratHelper\Resources\DesignerItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StratHelper\Resources\ResizeRotateChrome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StratHelper\Resources\SizeChrome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StratHelper\StratContentControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StratHelper\Window1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Ui\CalendarEventInfo.xaml">
       <SubType>Designer</SubType>

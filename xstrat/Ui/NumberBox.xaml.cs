@@ -24,7 +24,17 @@ namespace xstrat.Ui
         public int Value { 
             get { return _value; } 
             set {
+                if(!allowNegative && value < 0 && _value == 0)
+                {
+                    _value = limit;
+                    return;
+                }
                 if (!allowNegative && value < 0)
+                {
+                    _value = 0;
+                    return;
+                }
+                if(_value == limit && value > limit)
                 {
                     _value = 0;
                     return;

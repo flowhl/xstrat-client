@@ -27,6 +27,9 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Column="0">
                     <ComboBox Width="150" Margin="10,10,10,10" Name="MapSelector" SelectionChanged="MapSelector_SelectionChanged"></ComboBox>
+                    <StackPanel Orientation="Horizontal" Height="50">
+                        <Image x:Name="Alibi" Source="/Images/Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
@@ -36,9 +39,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <wpfext:ZoomControl Background="Transparent">
+                <wpfext:ZoomControl Background="Transparent" >
                     <Grid Name="MapContent">
-                        <Canvas Name="WallsLayer" Panel.ZIndex="1">
+                        <Canvas Name="WallsLayer" Panel.ZIndex="1" Drop="WallsLayer_Drop" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
                             <local1:WallControl x:Name="WallControl1" Height="9" Width="60" Panel.ZIndex="2" Canvas.Left="300" Canvas.Top="200"></local1:WallControl>
                         </Canvas>
                         <StackPanel Orientation="Horizontal" Name="MapStack"></StackPanel>

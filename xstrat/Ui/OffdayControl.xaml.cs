@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +28,11 @@ namespace xstrat.Ui
         public int? user_id { get; set; }
         public OffdayControl()
         {
+            //fix datetime
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = "yyyy/MM/dd";
+            Thread.CurrentThread.CurrentCulture = ci;
+
             InitializeComponent();
             TypeSelector.CBox.SelectionChanged += CBox_SelectionChanged;
         }

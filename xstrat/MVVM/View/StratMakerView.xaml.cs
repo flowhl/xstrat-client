@@ -92,5 +92,28 @@ namespace xstrat.MVVM.View
                 ImageStack.Children.Add(img);
             */
         }
+
+        private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void WallsLayer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void Image_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(Alibi, Alibi, DragDropEffects.Move);
+            }
+        }
+
+        private void WallsLayer_Drop(object sender, DragEventArgs e)
+        {
+
+        }
     }
 }

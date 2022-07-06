@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveResizeRotateWithAdorners", "MoveResizeRotateWithAdorners\MoveResizeRotateWithAdorners.csproj", "{7B1D1E85-7F7B-47A8-8D5D-47BA75B29A97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveResizeRotate", "MoveResizeRotate\MoveResizeRotate.csproj", "{EF0B4258-89E8-423F-A38D-C1E8AF9FD5C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveResize", "MoveResize\MoveResize.csproj", "{95CDC6DB-FF23-4262-8447-3CFE6B4C7188}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B1D1E85-7F7B-47A8-8D5D-47BA75B29A97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B1D1E85-7F7B-47A8-8D5D-47BA75B29A97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B1D1E85-7F7B-47A8-8D5D-47BA75B29A97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B1D1E85-7F7B-47A8-8D5D-47BA75B29A97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF0B4258-89E8-423F-A38D-C1E8AF9FD5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF0B4258-89E8-423F-A38D-C1E8AF9FD5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF0B4258-89E8-423F-A38D-C1E8AF9FD5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF0B4258-89E8-423F-A38D-C1E8AF9FD5C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95CDC6DB-FF23-4262-8447-3CFE6B4C7188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95CDC6DB-FF23-4262-8447-3CFE6B4C7188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95CDC6DB-FF23-4262-8447-3CFE6B4C7188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95CDC6DB-FF23-4262-8447-3CFE6B4C7188}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

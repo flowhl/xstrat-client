@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:xstrat.MVVM.ViewModel"
         xmlns:view="clr-namespace:xstrat.MVVM.View"        
-        xmlns:local="clr-namespace:xstrat"
+        xmlns:local="clr-namespace:xstrat" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Height="800" Width="1350"
         WindowStyle="None"
@@ -44,22 +44,47 @@
                         <StackPanel HorizontalAlignment="Right"
                                 Orientation="Horizontal">
 
-                            <Button Width="20" Height="20"
-                                Content="🗕"
+                        <Button 
+                                Name="ButtonMinimize"
+                                Width="20" Height="20"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="Gray"
+                                FontWeight="Bold"
+                                Margin="0,0,0,1"
+                                Click="ButtonMinimize_Click"
+                            VerticalAlignment="Bottom">
+                            <Button.Content>
+                                <MaterialDesign:PackIcon VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="WindowMinimize"></MaterialDesign:PackIcon>
+                            </Button.Content>
+                        </Button>
+                        <Button 
+                                Name="ButtonFullscreen"
+                                Width="20" Height="20"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Foreground="Gray"
                                 FontWeight="Bold"
                                 Margin="0,0,0,3"
-                                Click="ButtonMinimize_Click"></Button>
+                                Click="ButtonFullscreen_Click">
+                            <Button.Content>
+                                <MaterialDesign:PackIcon Name="ButtonFullscreenIcon" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="Fullscreen"></MaterialDesign:PackIcon>
+                            </Button.Content>
+                        </Button>
 
-                            <Button Width="20" Height="20"
-                                Content="🗙"
+                        <Button 
+                            Name="ButtonClose"
+                                Width="20" Height="20"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Foreground="Gray"
                                 FontWeight="Bold"
-                                Click="ButtonClose_Click"></Button>
+                                Margin="0,0,0,3"
+                                Click="ButtonClose_Click">
+                            <Button.Content>
+                                <MaterialDesign:PackIcon VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="WindowClose"></MaterialDesign:PackIcon>
+                            </Button.Content>
+                        </Button>
 
 
                         </StackPanel>

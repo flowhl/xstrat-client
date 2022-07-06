@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -248,9 +249,9 @@ namespace xstrat.MVVM.View
             return (input.Trim() == "1");
         }
 
-        private void FindIDBtn_Click(object sender, RoutedEventArgs e)
+        private void DcHelp_Click(object sender, RoutedEventArgs e)
         {
-
+            Process.Start("https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-");
         }
     }
 }

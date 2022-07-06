@@ -6,6 +6,8 @@ using xstrat.Core;
 using xstrat.MVVM.ViewModel;
 using Squirrel;
 using System;
+using System.Threading;
+using System.Globalization;
 
 namespace xstrat
 {
@@ -26,6 +28,19 @@ namespace xstrat
             mv = (MainViewModel)DataContext;
             Task loginTask = LoginWindowAsync();
             Loaded += MainWindow_Loaded;
+            StateChanged += MainWindow_StateChanged;
+        }
+
+        private void MainWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                ButtonFullscreenIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Fullscreen;
+            }
+            else
+            {
+                ButtonFullscreenIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.FullscreenExit;
+            }
         }
 
         private async void CheckForUpdate()
@@ -57,6 +72,9 @@ namespace xstrat
             {
                 Globals.Init();
             }
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy";
+            Thread.CurrentThread.CurrentCulture = ci;
         }
 
         /// <summary>
@@ -136,6 +154,17 @@ namespace xstrat
             NewlyRegistered = true;
             mv.CurrentView = new LoginView();
         }
-        
+
+        private void ButtonFullscreen_Click(object sender, RoutedEventArgs e)
+        {
+            if(WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
     }
 }

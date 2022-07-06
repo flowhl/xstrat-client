@@ -401,3 +401,10 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.csproj.CoreC
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.csproj.CopyComplete
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.exe
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.pdb
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\StratContentControl.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Window1.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\DesignerItem.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\ResizeRotateChrome.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\SizeChrome.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\StratContentControl.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Window1.baml

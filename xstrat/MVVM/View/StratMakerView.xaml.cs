@@ -115,5 +115,10 @@ namespace xstrat.MVVM.View
         {
 
         }
+
+        private void ZoomControl_Drop(object sender, DragEventArgs e)
+        {
+
+        }
     }
 }

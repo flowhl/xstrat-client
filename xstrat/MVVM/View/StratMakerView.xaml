@@ -39,7 +39,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <wpfext:ZoomControl Background="Transparent" >
+                <wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" >
                     <Grid Name="MapContent">
                         <Canvas Name="WallsLayer" Panel.ZIndex="1" Drop="WallsLayer_Drop" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
                             <local1:WallControl x:Name="WallControl1" Height="9" Width="60" Panel.ZIndex="2" Canvas.Left="300" Canvas.Top="200"></local1:WallControl>

@@ -148,28 +148,34 @@
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding RoutinesViewCommand}"/>
 
-                        <RadioButton Content="Skin Switcher"
+                    <RadioButton Content="Skin Switcher"
                              Height="50"
                              Foreground="White"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding SkinSwitcherViewCommand}"/>
 
-                        <RadioButton Content="Settings"
+                    <RadioButton Content="Settings"
                              Height="50"
                              Foreground="White"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding SettingsViewCommand}"/>
 
-                        <RadioButton Content="About"
+                    <RadioButton Content="License"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding LicenseViewCommand}"/>
+                    <RadioButton Content="About"
                              Height="50"
                              Foreground="White"
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding AboutViewCommand}"/>
 
-                    </StackPanel>
+                </StackPanel>
                 </Border>
 
                 <ContentControl Grid.Row="1"

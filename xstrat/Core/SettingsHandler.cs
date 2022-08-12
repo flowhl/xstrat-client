@@ -90,7 +90,7 @@ namespace xstrat.Core
             "",
             "",
             false.ToString(),
-            "",
+            "https://api.xstrat.app/api",
             "",
             "-1",            
             };

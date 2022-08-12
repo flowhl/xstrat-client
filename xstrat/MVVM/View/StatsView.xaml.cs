@@ -279,7 +279,7 @@ namespace xstrat.MVVM.View
                 }
 
                 SKColor ucolor = SKColors.DarkGray;
-                SKColor.TryParse(user.color.Replace("#", "#4A"), out ucolor);
+                if(user.color != null && user.color != string.Empty) SKColor.TryParse(user.color.Replace("#", "#4A"), out ucolor);
 
                 PolarLineSeries<int> entry = new PolarLineSeries<int>
                 {

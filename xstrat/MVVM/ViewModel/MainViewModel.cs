@@ -24,6 +24,7 @@ namespace xstrat.MVVM.ViewModel
         public RelayCommand CalendarViewCommand { get; set; }
         public RelayCommand ScrimViewCommand { get; set; }
         public RelayCommand StatsViewCommand { get; set; }
+        public RelayCommand LicenseViewCommand { get; set; }
 
 
         public HomeViewModel HomeVM { get; set; }
@@ -38,6 +39,7 @@ namespace xstrat.MVVM.ViewModel
         public CalendarViewModel CalendarVM { get; set; }
         public ScrimViewModel ScrimVM { get; set; }
         public StatsViewModel StatsVM { get; set; }
+        public LicenseViewModel LicenseVM { get; set; }
         public object _currentView;
 
         public object CurrentView
@@ -63,7 +65,8 @@ namespace xstrat.MVVM.ViewModel
             CalendarVM = new CalendarViewModel();
             ScrimVM = new ScrimViewModel();
             StatsVM = new StatsViewModel();
-            
+            LicenseVM = new LicenseViewModel();
+
             CurrentView = HomeVM;
 
             HomeViewCommand = new RelayCommand(o => { if(wnd.IsLoaded) CurrentView = HomeVM;});
@@ -78,6 +81,7 @@ namespace xstrat.MVVM.ViewModel
             CalendarViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = CalendarVM; });
             ScrimViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = ScrimVM; });
             StatsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = StatsVM; });
+            LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = LicenseVM; });
         }
     }
 }

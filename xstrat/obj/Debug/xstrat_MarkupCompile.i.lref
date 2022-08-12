@@ -5,6 +5,7 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MainWindow.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\AboutView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\CalendarView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\HomeView.xaml;;
+FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\LicenseView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\LoginView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\RegisterView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\RoutinesView.xaml;;
@@ -23,6 +24,7 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\StratContentCont
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\Window1.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\CalendarEventInfo.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ColorDisplay.xaml;;
+FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\LicenseInfo.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\MapFloor.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\MenuButtonTheme.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\NumberBox.xaml;;

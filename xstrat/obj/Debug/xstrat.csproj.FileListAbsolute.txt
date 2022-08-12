@@ -408,3 +408,7 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resourc
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\SizeChrome.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\StratContentControl.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Window1.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\MVVM\View\LicenseView.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\MVVM\View\LicenseView.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\LicenseInfo.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\LicenseInfo.baml

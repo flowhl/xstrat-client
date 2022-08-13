@@ -988,7 +988,57 @@ namespace xstrat
             EndWaiting();
             return (false, "db error");
         }
-        
+
+        #endregion
+
+        #region license
+        /// <summary>
+        /// gets the stats by operator response:
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> GetLicenseStatus()
+        {
+            Waiting();
+            var request = new RestRequest("/license/status", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        /// <summary>
+        /// gets the stats by operator response:
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> ActivateLicense(string key)
+        {
+            Waiting();
+            var request = new RestRequest("/license/activate", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { key = key});
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //success
+            {
+                EndWaiting();
+                return (false, "License could not be activated. Please contact support");
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
         #endregion
 
         #region helper methodes

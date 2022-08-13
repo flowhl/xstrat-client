@@ -257,6 +257,7 @@
     <Compile Include="Core\RoutineStepButtonClicked.cs" />
     <Compile Include="Core\Wallstates.cs" />
     <Compile Include="Json\Datamodels.cs" />
+    <Compile Include="Json\LicenseStatus.cs" />
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModel\RoutinesViewModel.cs" />

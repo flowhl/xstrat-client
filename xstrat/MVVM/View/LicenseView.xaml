@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
-        <StackPanel Margin="0,40,0,0">
+        <StackPanel Margin="0,100,0,0">
             <ui:LicenseInfo x:Name="LicenseInfo"></ui:LicenseInfo>
         </StackPanel>
     </Grid>

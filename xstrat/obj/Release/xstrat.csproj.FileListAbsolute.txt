@@ -355,3 +355,14 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.csproj.Cor
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.csproj.CopyComplete
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.exe
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.pdb
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\LicenseView.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\StratContentControl.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\Window1.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\LicenseInfo.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\LicenseView.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\Resources\DesignerItem.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\Resources\ResizeRotateChrome.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\Resources\SizeChrome.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\StratContentControl.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\StratHelper\Window1.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\LicenseInfo.baml

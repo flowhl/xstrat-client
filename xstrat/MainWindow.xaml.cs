@@ -105,7 +105,7 @@ namespace xstrat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonClose_Click(object sender, RoutedEventArgs e)
+        private async void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }

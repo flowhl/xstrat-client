@@ -120,5 +120,100 @@ namespace xstrat.MVVM.View
         {
 
         }
+
+        private void BtnUndo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnRedo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnColor1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnCursor_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnBrush_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnCircle_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnColor2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnText_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnNodes_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnColor3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnEraser_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnColor4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnArrow_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnColor5_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnRectangle_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnFloor0_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnFloor1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnFloor2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnFloor3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

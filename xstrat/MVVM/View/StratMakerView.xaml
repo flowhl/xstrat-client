@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wpfext="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
-             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui"
+             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
@@ -13,26 +13,143 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DockPanel>
             <Menu DockPanel.Dock="Top" Background="#202020" Name="Menu" Width="Auto"/>
         </DockPanel>
-        <Border Background="#202020" BorderThickness="0" CornerRadius="0,0,20,0" Grid.Row="2">
+        <Expander Grid.Row="2" IsExpanded="True" Background="Transparent" VerticalAlignment="Top" >
+            <Border Background="#202020" BorderThickness="0" Height="185"  CornerRadius="0,0,20,0" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Column="0">
-                    <ComboBox Width="150" Margin="10,10,10,10" Name="MapSelector" SelectionChanged="MapSelector_SelectionChanged"></ComboBox>
-                    <StackPanel Orientation="Horizontal" Height="50">
-                        <Image x:Name="Alibi" Source="/Images/Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                    </StackPanel>
+                        <Border Background="#181818" BorderThickness="0" Height="Auto"  CornerRadius="10" Margin="10,5,0,10" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Label Foreground="White" VerticalAlignment="Center" FontSize="13">Map:</Label>
+                                <local1:DataSelector type="5" Width="170" Margin="5"></local1:DataSelector>
+                                <Button Foreground="#336CB5" Background="Transparent" BorderThickness="0" Name="BtnUndo" Click="BtnUndo_Click">
+                                    <MaterialDesign:PackIcon Kind="Undo" Height="25" Width="25"/>
+                                </Button>
+                                <Button Foreground="#336CB5" Background="Transparent" BorderThickness="0" Name="BtnRedo" Click="BtnRedo_Click" Margin="0,0,7,0">
+                                    <MaterialDesign:PackIcon Kind="Redo" Height="25" Width="25"/>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal">
+                        <!--Floors-->
+                            <Border Background="#181818" BorderThickness="0" Height="Auto"  CornerRadius="10" Margin="10,0,0,0">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10">
+                                    <Label Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Width="70" HorizontalAlignment="Left" Margin="0,-5,0,0">Floors:</Label>
+                                    <Button Height="20" Width="75" Name="BtnFloor0" Foreground="White" Content="0" FontSize="13" Background="#202020" BorderThickness="0" Click="BtnFloor0_Click">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="10"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Height="20" Width="75" Name="BtnFloor1" Foreground="White" Content="1" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor1_Click">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="10"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Height="20" Width="75" Name="BtnFloor2" Foreground="White" Content="2" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor2_Click">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="10"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button Height="20" Width="75" Name="BtnFloor3" Foreground="White" Content="3" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor3_Click">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="10"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#181818" BorderThickness="0" Height="Auto"  CornerRadius="10" Margin="10,0,0,0" >
+                                <StackPanel Orientation="Horizontal" Margin="10">
+
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="Aqua" Height="25" Width="25" Margin="3" Name="BtnColor1" Click="BtnColor1_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="#202020"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCursor" Click="BtnCursor_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="CursorDefaultOutline" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCircle" Click="BtnCircle_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="CircleOutline" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="DarkSeaGreen" Height="25" Width="25" Margin="3" Name="BtnColor2" Click="BtnColor2_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="#202020"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnText" Click="BtnText_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Text" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnNodes" Click="BtnNodes_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Graph" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="Purple" Height="25" Width="25" Margin="3" Name="BtnColor3" Click="BtnColor3_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="#202020"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnEraser" Click="BtnEraser_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Eraser" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="Cyan" Height="25" Width="25" Margin="3" Name="BtnColor4" Click="BtnColor4_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="#202020"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnArrow" Click="BtnArrow_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="ArrowTopLeft" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="OrangeRed" Height="25" Width="25" Margin="3" Name="BtnColor5" Click="BtnColor5_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="#202020"></MaterialDesign:PackIcon>
+                                        </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnRectangle" Click="BtnRectangle_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="RectangleOutline" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    
                 </StackPanel>
+                    <Border Background="#181818" Grid.Column="1" Height="100" Width="500" CornerRadius="10" HorizontalAlignment="Left">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                        <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1">
+                            <Image x:Name="Alibi" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi1" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi2" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi3" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi4" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi5" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi6" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi7" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi8" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi9" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi10" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                            <Image x:Name="Alibi11" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
             </Grid>
         </Border>
+        </Expander>
         <Border Background="#161616" BorderThickness="0"  Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -48,7 +165,9 @@
                     </Grid>
                 </wpfext:ZoomControl>
                 <Expander ExpandDirection="Left" Grid.Column="1" HorizontalAlignment="Right" IsEnabled="True" Background="#171717">
-                    <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="#171717" AcceptsReturn="True"></TextBox>
+                    <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                        <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
+                    </Border>
                 </Expander>
             </Grid>
         </Border>

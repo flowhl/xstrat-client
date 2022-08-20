@@ -45,44 +45,95 @@
 
                         <Button 
                                 Name="ButtonMinimize"
-                                Width="20" Height="20"
-                                Background="Transparent"
+                                Width="30" Height="25"
                                 BorderThickness="0"
                                 Foreground="Gray"
                                 FontWeight="Bold"
-                                Margin="0,0,0,1"
                                 Click="ButtonMinimize_Click"
-                            VerticalAlignment="Bottom">
+                                VerticalAlignment="Bottom">
                             <Button.Content>
                                 <MaterialDesign:PackIcon VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="WindowMinimize"></MaterialDesign:PackIcon>
                             </Button.Content>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#202020" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
                         </Button>
                         <Button 
                                 Name="ButtonFullscreen"
-                                Width="20" Height="20"
-                                Background="Transparent"
+                                Width="30" Height="25"
                                 BorderThickness="0"
                                 Foreground="Gray"
                                 FontWeight="Bold"
-                                Margin="0,0,0,3"
                                 Click="ButtonFullscreen_Click">
                             <Button.Content>
                                 <MaterialDesign:PackIcon Name="ButtonFullscreenIcon" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="Fullscreen"></MaterialDesign:PackIcon>
                             </Button.Content>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#202020" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
                         </Button>
 
                         <Button 
                             Name="ButtonClose"
-                                Width="20" Height="20"
-                                Background="Transparent"
+                                Width="30" Height="25"
                                 BorderThickness="0"
                                 Foreground="Gray"
                                 FontWeight="Bold"
-                                Margin="0,0,0,3"
                                 Click="ButtonClose_Click">
                             <Button.Content>
                                 <MaterialDesign:PackIcon VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"  Kind="WindowClose"></MaterialDesign:PackIcon>
                             </Button.Content>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#661616" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
                         </Button>
 
 

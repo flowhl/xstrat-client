@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,11 +25,183 @@ namespace xstrat.MVVM.View
     public partial class StratMakerView : UserControl
     {
         private List<XMap> maps = new List<XMap>();
+
+        public ToolTip CurrentToolTip;
+        public Brush CurrentBrush = null;
+        public bool isMouseDown = false;
+        public int BrushSize { get; set; } = 15;
+
+        public bool Floor0 { get; set; }
+        public bool Floor1 { get; set; }
+        public bool Floor2 { get; set; }
+        public bool Floor3 { get; set; }
+
         public StratMakerView()
         {
             InitializeComponent();
-            _loadMaps();
+            Opened();
         }
+
+        private void Opened()
+        {
+            _loadMaps();
+            ToolTipChanged(View.ToolTip.Cursor);
+            LoadColorButtons();
+            UpdateFloorButtons();
+        }
+
+        private void UpdateFloorButtons()
+        {
+            if (Floor0)
+            {
+                BtnFloor0.Background = "#336CB5".ToSolidColorBrush();
+            }
+            if (Floor1)
+            {
+                BtnFloor1.Background = "#336CB5".ToSolidColorBrush();
+            }
+            if (Floor2)
+            {
+                BtnFloor2.Background = "#336CB5".ToSolidColorBrush();
+            }
+            if (Floor3)
+            {
+                BtnFloor3.Background = "#336CB5".ToSolidColorBrush();
+            }
+            if (!Floor0)
+            {
+                BtnFloor0.Background = "#202020".ToSolidColorBrush();
+            }
+            if (!Floor1)
+            {
+                BtnFloor1.Background = "#202020".ToSolidColorBrush();
+            }
+            if (!Floor2)
+            {
+                BtnFloor2.Background = "#202020".ToSolidColorBrush();
+            }
+            if (!Floor3)
+            {
+                BtnFloor3.Background = "#202020".ToSolidColorBrush();
+            }
+        }
+
+        private void LoadColorButtons()
+        {
+            foreach (var user in Globals.teammates)
+            {
+                Button newBtn = new Button();
+                newBtn.Name = "Color_" + user.name;
+                newBtn.Tag = user;
+                newBtn.Background = user.color.ToSolidColorBrush();
+                newBtn.BorderThickness = new Thickness(0);
+                newBtn.BorderBrush = "#336CB5".ToSolidColorBrush();
+                newBtn.Height = 25;
+                newBtn.Width = 25;
+                newBtn.Margin = new Thickness(3);
+                newBtn.Click += ColorBtnClicked;
+
+                var icon = new PackIcon();
+                icon.Kind = PackIconKind.Brush;
+                icon.Foreground = "#202020".ToSolidColorBrush();
+
+                newBtn.Content = icon;
+
+                SPColors.Children.Add(newBtn);
+            }
+
+        }
+
+        private void ColorBtnClicked(object sender, RoutedEventArgs e)
+        {
+            string user = (sender as Button).Name.Replace("Color_", "");
+            User teammate = Globals.getUserFromId(Globals.getUserIdFromName(user));
+            CurrentBrush = teammate.color.ToSolidColorBrush();
+            DeselectAllColors();
+            (sender as Button).BorderThickness = new Thickness(1);
+            ToolTipChanged(View.ToolTip.Brush);
+        }
+
+        private void DeselectAllColors()
+        {
+            foreach (var item in SPColors.Children)
+            {
+                (item as Button).BorderThickness = new Thickness(0);
+            }
+        }
+
+        #region ToolTips
+
+        private void ToolTipChanged(ToolTip tip)
+        {
+            switch (tip)
+            {
+                case View.ToolTip.Cursor:
+                    CurrentToolTip = View.ToolTip.Cursor;
+                    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+                    DeselectAllToolTips();
+                    BtnCursor.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Eraser:
+                    CurrentToolTip = View.ToolTip.Eraser;
+                    DeselectAllToolTips();
+                    BtnEraser.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Text:
+                    CurrentToolTip = View.ToolTip.Text;
+                    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.IBeam;
+                    DeselectAllToolTips();
+                    BtnText.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Node:
+                    CurrentToolTip = View.ToolTip.Node;
+                    DeselectAllToolTips();
+                    BtnNodes.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Arrow:
+                    CurrentToolTip = View.ToolTip.Arrow;
+                    DeselectAllToolTips();
+                    BtnArrow.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Circle:
+                    CurrentToolTip = View.ToolTip.Circle;
+                    DeselectAllToolTips();
+                    BtnCircle.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Rectangle:
+                    CurrentToolTip = View.ToolTip.Rectangle;
+                    DeselectAllToolTips();
+                    BtnRectangle.BorderThickness = new Thickness(1);
+                    break;
+                case View.ToolTip.Brush:
+                    CurrentToolTip = View.ToolTip.Brush;
+                    DeselectAllToolTips();
+                    break;
+                default:
+                    CurrentToolTip = View.ToolTip.Cursor;
+                    DeselectAllToolTips();
+                    break;  
+            }
+            if(tip != View.ToolTip.Brush)
+            {
+                DeselectAllColors();
+            }
+
+        }
+
+        private void DeselectAllToolTips()
+        {
+            BtnCursor.BorderThickness = new Thickness(0);
+            BtnEraser.BorderThickness = new Thickness(0);
+            BtnText.BorderThickness = new Thickness(0);
+            BtnNodes.BorderThickness = new Thickness(0);
+            BtnArrow.BorderThickness = new Thickness(0);
+            BtnCircle.BorderThickness = new Thickness(0);
+            BtnRectangle.BorderThickness = new Thickness(0);
+
+        }
+
+        #endregion
 
         private void _loadMaps()
         {
@@ -111,11 +284,6 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private void WallsLayer_Drop(object sender, DragEventArgs e)
-        {
-
-        }
-
         private void ZoomControl_Drop(object sender, DragEventArgs e)
         {
 
@@ -131,89 +299,109 @@ namespace xstrat.MVVM.View
 
         }
 
-        private void BtnColor1_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void BtnCursor_Click(object sender, RoutedEventArgs e)
         {
-
+            ToolTipChanged(View.ToolTip.Cursor);
         }
 
         private void BtnBrush_Click(object sender, RoutedEventArgs e)
         {
-
+            ToolTipChanged(View.ToolTip.Brush);
         }
 
         private void BtnCircle_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void BtnColor2_Click(object sender, RoutedEventArgs e)
-        {
-
+            ToolTipChanged(View.ToolTip.Circle);
         }
 
         private void BtnText_Click(object sender, RoutedEventArgs e)
         {
-
+            ToolTipChanged(View.ToolTip.Text);
         }
 
         private void BtnNodes_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void BtnColor3_Click(object sender, RoutedEventArgs e)
-        {
-
+            ToolTipChanged(View.ToolTip.Node);
         }
 
         private void BtnEraser_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void BtnColor4_Click(object sender, RoutedEventArgs e)
-        {
-
+            ToolTipChanged(View.ToolTip.Eraser);
         }
 
         private void BtnArrow_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void BtnColor5_Click(object sender, RoutedEventArgs e)
-        {
-
+            ToolTipChanged(View.ToolTip.Arrow);
         }
 
         private void BtnRectangle_Click(object sender, RoutedEventArgs e)
         {
-
+            ToolTipChanged(View.ToolTip.Rectangle);
         }
 
         private void BtnFloor0_Click(object sender, RoutedEventArgs e)
         {
-
+            Floor0 = !Floor0;
+            UpdateFloorButtons();
+            ZoomControl.Focus();
         }
 
         private void BtnFloor1_Click(object sender, RoutedEventArgs e)
         {
-
+            Floor1 = !Floor1;
+            UpdateFloorButtons();
+            ZoomControl.Focus();
         }
 
         private void BtnFloor2_Click(object sender, RoutedEventArgs e)
         {
-
+            Floor2 = !Floor2;
+            UpdateFloorButtons();
+            ZoomControl.Focus();
         }
 
         private void BtnFloor3_Click(object sender, RoutedEventArgs e)
         {
-
+            Floor3 = !Floor3;
+            UpdateFloorButtons();
+            ZoomControl.Focus();
         }
+
+        #region drawing
+
+        private void DrawingLayer_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(CurrentToolTip == View.ToolTip.Brush && Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                Point mousepoint = e.GetPosition(DrawingLayer);
+                paintCircle(CurrentBrush, mousepoint);
+            }
+        }
+
+        private void paintCircle(Brush circleColor, Point position)
+        {
+            Ellipse ellipse = new Ellipse();
+            ellipse.Fill = circleColor;
+            ellipse.Width = BrushSize / ZoomControl.Zoom;
+            ellipse.Height = BrushSize / ZoomControl.Zoom;
+            Canvas.SetTop(ellipse, position.Y);
+            Canvas.SetLeft(ellipse, position.X);
+            DrawingLayer.Children.Add(ellipse);
+        }
+
+        #endregion
+
+        private void BrushSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            BrushSize = (int)BrushSlider.Value;
+        }
+    }
+    public enum ToolTip
+    {
+        Cursor, Eraser, Text, Node, Arrow, Circle, Rectangle, Brush
+    }
+    public class StratContent
+    {
+
     }
 }

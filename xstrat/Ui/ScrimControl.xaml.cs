@@ -71,6 +71,40 @@ namespace xstrat.Ui
                 }
                 TxtEnemyName.Content = Scrim.opponent_name;
                 TxtDescription.Text = Scrim.comment;
+
+                ParticipantsSP.Children.Clear();
+
+                string users = Scrim.user_list;
+                if(users != null && users != "")
+                {
+                    var ulist = users.Split(';');
+                    foreach (var item in ulist)
+                    {
+                        int uid = -1;
+                        try
+                        {
+                            uid = int.Parse(item);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (uid == -1) continue;
+
+                        Label participantLabel = new Label();
+                        participantLabel.Background = Brushes.Transparent;
+                        participantLabel.Foreground = Brushes.White;
+                        participantLabel.FontSize = 10;
+                        participantLabel.FontWeight = FontWeights.SemiBold;
+                        participantLabel.Margin = new Thickness(0, 0, 0, -10);
+                        User user = Globals.getUserFromId(uid);
+                        if(user == null) continue;
+                        participantLabel.Content = user.name;
+
+                        ParticipantsSP.Children.Add(participantLabel);
+                    }
+                }
+
             }
             Status = scrim.response_typ.GetValueOrDefault(0);
             StatusChanged();

@@ -44,6 +44,12 @@
                     <Label Name="TxtMap3" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Width="290" Margin="5,0,0,0">
+                    <Label Foreground="#336cb5" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Participants:</Label>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="45" Margin="0,5,0,0">
+                        <StackPanel Name="ParticipantsSP">
+                            
+                        </StackPanel>                        
+                    </ScrollViewer>
                 </StackPanel>
                 <!--Accept BUTTON-->
                 <Button Height="30" Width="30" Margin="3" Name="AcceptBtn" BorderThickness="0" FontSize="15" Background="#42a550" Foreground="White" VerticalContentAlignment="Center" Click="AcceptBtn_Click">

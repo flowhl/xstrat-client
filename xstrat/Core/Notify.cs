@@ -9,10 +9,11 @@ namespace xstrat.Core
 {
     public static class Notify
     {
+        private static bool endLogging = false;
         static NotificationManager notificationManager = new NotificationManager();
         public static void sendInfo(string message)
         {
-
+            if (endLogging) return;
             notificationManager.Show(new NotificationContent
             {
                 Title = "Info",
@@ -22,7 +23,7 @@ namespace xstrat.Core
         }
         public static void sendWarn(string message)
         {
-
+            if (endLogging) return;
             notificationManager.Show(new NotificationContent
             {
                 Title = "Warning!",
@@ -32,7 +33,7 @@ namespace xstrat.Core
         }
         public static void sendSuccess(string message)
         {
-
+            if (endLogging) return;
             notificationManager.Show(new NotificationContent
             {
                 Title = "Success!",
@@ -42,13 +43,21 @@ namespace xstrat.Core
         }
         public static void sendError(string message)
         {
-
+            if (endLogging) return;
             notificationManager.Show(new NotificationContent
             {
                 Title = "Error!",
                 Message = message,
                 Type = NotificationType.Error
             });
+        }
+        public static void EndLogging()
+        {
+            endLogging = true;
+        }
+        public static void ResumeLogging()
+        {
+            endLogging = false;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace xstrat
             try
             {
                 System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
-                message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
+                message = string.Format("Unhandled exception in {0} v{1} Stacktrace: {2}", assemblyName.Name, assemblyName.Version, exception.StackTrace);
             }
             catch (Exception ex)
             {

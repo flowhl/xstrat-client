@@ -61,6 +61,8 @@ namespace xstrat.Core
             catch (Exception ex)
             {
                 Logger.Log("Error when loading settings:" + ex.Message);
+                Notify.sendError("Error when loading settings:" + ex.Message);
+                Notify.EndLogging();
             }
 
         }

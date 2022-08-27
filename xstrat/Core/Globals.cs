@@ -269,6 +269,7 @@ namespace xstrat.Core
     }
     public static class Globals
     {
+        public static MainWindow wnd = (MainWindow)Application.Current.MainWindow;
         public static string TeamName { get; set; }
         public static List<User> teammates { get; set; } = new List<User>();
         public static List<Game> games { get; set; } = new List<Game>();
@@ -552,15 +553,18 @@ namespace xstrat.Core
 
         public static void Init()
         {
-            RetrieveTeamMates();
-            RetrieveGames();
-            RetrieveOffDayTypes();
-            RetrieveCalendarFilterTypes();
-            RetrieveMaps();
-            RetrieveScrimModes();
-            RetrieveEventTypes();
-            RetrieveTeamName();
-            RetrieveAdminStatusAsync();
+            if (wnd.IsLoggedIn)
+            {
+                RetrieveTeamMates();
+                RetrieveGames();
+                RetrieveOffDayTypes();
+                RetrieveCalendarFilterTypes();
+                RetrieveMaps();
+                RetrieveScrimModes();
+                RetrieveEventTypes();
+                RetrieveTeamName();
+                RetrieveAdminStatusAsync();
+            }
         }
 
 

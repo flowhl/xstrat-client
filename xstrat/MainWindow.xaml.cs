@@ -122,6 +122,7 @@ namespace xstrat
                 if(verified)
                 {
                     IsLoggedIn = true;
+                    Notify.ResumeLogging();
                     return;
                 }
             }
@@ -146,6 +147,7 @@ namespace xstrat
             ApiHandler.AddBearer(token);
             NewlyRegistered = false;
             IsLoggedIn = true;
+            Notify.ResumeLogging();
             Globals.Init();
             mv.CurrentView = new HomeView();
         }

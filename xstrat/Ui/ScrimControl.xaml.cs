@@ -26,6 +26,9 @@ namespace xstrat.Ui
         private SolidColorBrush _normalBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#303030");
         private SolidColorBrush _acceptedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#3b9347");
         private SolidColorBrush _deniedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#ab3440");
+        private SolidColorBrush _normalBorderBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#262626");
+        private SolidColorBrush _acceptedBorderBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#2F7538");
+        private SolidColorBrush _deniedBorderBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#882933");
 
         public Scrim Scrim { get; set; }
 
@@ -52,6 +55,7 @@ namespace xstrat.Ui
             this.Scrim = scrim;
             if(Scrim != null)
             {
+                EventTypeLabel.Content = Globals.EventTypes[scrim.event_type].name + ":";
                 TxtTitle.Content = Scrim.title;
                 TxtStart.Content = Scrim.time_start.Split(' ')[1];
                 TxtEnd.Content = Scrim.time_end.Split(' ')[1];
@@ -69,7 +73,7 @@ namespace xstrat.Ui
                 {
                     TxtMap1.Content = Globals.Maps.Where(x => x.id == Scrim.map_1_id).FirstOrDefault().name;
                 }
-                TxtEnemyName.Content = Scrim.opponent_name;
+                TxtEnemyName.Content = "Against: " + Scrim.opponent_name;
                 TxtDescription.Text = Scrim.comment;
 
                 ParticipantsSP.Children.Clear();
@@ -164,12 +168,27 @@ namespace xstrat.Ui
             {
                 case 0:
                     MainBorder.Background = _normalBrush;
+                    ContentBorder1.Background = _normalBorderBrush;
+                    ContentBorder2.Background = _normalBorderBrush;
+                    ContentBorder3.Background = _normalBorderBrush;
+                    ContentBorder4.Background = _normalBorderBrush;
+                    ContentBorder5.Background = _normalBorderBrush;
                     break;
                 case 1:
                     MainBorder.Background = _acceptedBrush;
+                    ContentBorder1.Background = _acceptedBorderBrush;
+                    ContentBorder2.Background = _acceptedBorderBrush;
+                    ContentBorder3.Background = _acceptedBorderBrush;
+                    ContentBorder4.Background = _acceptedBorderBrush;
+                    ContentBorder5.Background = _acceptedBorderBrush;
                     break;
                 case 2:
                     MainBorder.Background = _deniedBrush;
+                    ContentBorder1.Background = _deniedBorderBrush;
+                    ContentBorder2.Background = _deniedBorderBrush;
+                    ContentBorder3.Background = _deniedBorderBrush;
+                    ContentBorder4.Background = _deniedBorderBrush;
+                    ContentBorder5.Background = _deniedBorderBrush;
                     break;
                 default:
                     break;

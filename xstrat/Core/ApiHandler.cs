@@ -941,12 +941,12 @@ namespace xstrat
         /// <param name="ncontent"></param>
         /// <param name="n_id"></param>
         /// <returns></returns>
-        public static async Task<(bool, string)> SaveScrim(int id,string title, string comment, string time_start, string time_end, string opponent_name, int? map_1_id, int? map_2_id, int? map_3_id, int typ)
+        public static async Task<(bool, string)> SaveScrim(int id,string title, string comment, string time_start, string time_end, string opponent_name, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int event_type)
         {
             Waiting();
             var request = new RestRequest("scrim/save", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { scrim_id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ });
+            request.AddJsonBody(new { scrim_id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success

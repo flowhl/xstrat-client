@@ -22,7 +22,7 @@
                             <TextBox Name="APIText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="#252525" Width="250" Height="25" BorderThickness="0">https://api.xstrat.app</TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Foreground="White" VerticalAlignment="Bottom">Account Name:</Label>
+                            <Label Foreground="White" VerticalAlignment="Bottom">R6 Account Name:</Label>
                             <TextBox Name="UbiIDText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="#252525" Width="250" Height="25" BorderThickness="0">Your_Name</TextBox>
                         </StackPanel>
                     </StackPanel>

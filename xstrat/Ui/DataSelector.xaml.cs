@@ -32,9 +32,8 @@ namespace xstrat.Ui
         public CalendarFilterType selectedCalendarFilterType { get; set; } = null;
         public Map selectedMap { get; set; } = null;
         public ScrimMode selectedScrimMode { get; set; } = null;
+        public EventType selectedEventType { get; set; } = null;
         public int type { get; set; } = 0;
-
-
 
         /// <summary>
         /// type:
@@ -44,6 +43,7 @@ namespace xstrat.Ui
         /// 4 - calendar filter
         /// 5 - Map
         /// 6 - ScrimMode
+        /// 7 - EventType
         /// </summary>
         /// <param name="type"></param>
         public DataSelector()
@@ -53,7 +53,6 @@ namespace xstrat.Ui
             {
                 UpdateUI();
             };
-
         }
 
 
@@ -65,6 +64,7 @@ namespace xstrat.Ui
         /// 4 - calendar filter
         /// 5 - Map
         /// 6 - ScrimMode
+        /// 7 - EventType
         /// </summary>
         /// <param name="type"></param>
         public DataSelector(int type_id)
@@ -78,10 +78,11 @@ namespace xstrat.Ui
 
         public void SelectIndex(int index)
         {
+            if(index < 0) return;
             CBox.SelectedIndex = index;
         }
 
-        private void UpdateUI()
+        public void UpdateUI()
         {
             if(type == 1)
             {
@@ -137,11 +138,21 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = 0;
             }
+            else if (type == 7)
+            {
+                CBox.Items.Clear();
+                foreach (var item in Globals.EventTypes)
+                {
+                    CBox.Items.Add(item.name);
+                }
+                CBox.SelectedIndex = 0;
+            }
         }
 
 
         private void CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (CBox.SelectedIndex < 0) return;
             if(type == 1)
             {
                 selectedUser = Globals.teammates[CBox.SelectedIndex];
@@ -165,6 +176,10 @@ namespace xstrat.Ui
             else if (type == 6)
             {
                 selectedScrimMode = Globals.ScrimModes[CBox.SelectedIndex];
+            }
+            else if (type == 7)
+            {
+                selectedEventType = Globals.EventTypes[CBox.SelectedIndex];
             }
         }
     }

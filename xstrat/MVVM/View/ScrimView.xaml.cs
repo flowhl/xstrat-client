@@ -373,7 +373,7 @@ namespace xstrat.MVVM.View
                 Notify.sendError(ex.Message);
             }
             //return "Scrim: " + sc.opponent_name + " | " + stitle + ": " + sstart + "-" + send;
-            return "Scrim: " + sc.opponent_name + " | " + sstart + "-" + send;
+            return Globals.EventTypes[sc.event_type].name + ": " + sc.opponent_name + " | " + sstart + "-" + send;
 
         }
 

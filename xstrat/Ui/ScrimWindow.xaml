@@ -9,13 +9,17 @@
         Deactivated="Window_Deactivated">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Label Name="TypeLabel" Foreground="#336cb5" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold">Create Scrim</Label>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Name="TypeLabel" Foreground="#336cb5" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold">Create new event</Label>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <Label Width="250" HorizontalContentAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="28" FontWeight="Bold">Your Team</Label>
                 <Label VerticalAlignment="Center" Foreground="#336cb5" FontSize="38" FontWeight="Bold">VS</Label>
                 <TextBox Name="OpponentNameBox" Width="250" HorizontalContentAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="28" FontWeight="SemiBold" Background="Transparent" BorderThickness="0">Name</TextBox>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Label Foreground="White" HorizontalAlignment="Center" FontSize="16" FontWeight="SemiBold">Type:</Label>
+                <local:DataSelector x:Name="EventTypeSelector" type="7" Height="25" Width="200" Margin="10,0,0,0"></local:DataSelector>
+            </StackPanel>
+
             
             <TextBox Name="TitleBox" Foreground="White" Background="#202020" BorderThickness="0" FontSize="24" AcceptsReturn="False" HorizontalContentAlignment="Center" Margin="0,5,0,0" Width="500">Title</TextBox>
             <TextBox Name="CommentBox" Foreground="White" Background="#202020" BorderThickness="0" FontSize="15" TextWrapping="Wrap" HorizontalContentAlignment="Center" Margin="0,5,0,0" Width="500">Descr</TextBox>

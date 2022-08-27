@@ -104,9 +104,16 @@ namespace xstrat.MVVM.View
 
         private void ResponseWindow_Closing(object sender, CancelEventArgs e)
         {
-            RetrieveScrims();
-            CalendarMonthUI.DrawDays();
+            OnClose();
         }
+
+        private async void OnClose()
+        {
+            Events.Clear();
+            RetrieveScrims();
+            RetrieveOffDays();
+        }
+
 
         public void OnPropertyChanged<T>(Expression<Func<T>> exp)
         {
@@ -425,7 +432,7 @@ namespace xstrat.MVVM.View
                 Notify.sendError(ex.Message);
             }
             //return "Scrim: " + sc.opponent_name + " | " + stitle + ": " + sstart + "-" + send;
-            return "Scrim: " + sc.opponent_name + " | " + sstart + "-" + send;
+            return Globals.EventTypes[sc.event_type].name + ": " + sc.opponent_name + " | " + sstart + "-" + send;
 
         }
         #endregion

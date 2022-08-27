@@ -213,6 +213,7 @@ namespace xstrat.Json
     public class Scrim
     {
         public int id { get; set; }
+        public int event_type { get; set; }
         public string title { get; set; }
         public string comment { get; set; }
         public string time_start { get; set; }
@@ -232,9 +233,10 @@ namespace xstrat.Json
         public int? response_typ { get; set; }
         public string user_list { get; set; }
 
-        public Scrim(int id, string title, string comment, string time_start, string time_end, string opponent_name, int team_id, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int creator_id, string creation_date, string user_list)
+        public Scrim(int id, int event_type ,string title, string comment, string time_start, string time_end, string opponent_name, int team_id, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int creator_id, string creation_date, string user_list)
         {
             this.id = id;
+            this.event_type = event_type;
             this.title = title;
             this.comment = comment;
             this.time_start = time_start;
@@ -248,6 +250,18 @@ namespace xstrat.Json
             this.creator_id = creator_id;
             this.creation_date = creation_date;
             this.user_list = user_list;
+        }
+    }
+
+    public class EventType
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+
+        public EventType(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
         }
     }
 

@@ -276,6 +276,7 @@ namespace xstrat.Core
         public static List<CalendarFilterType> CalendarFilterTypes = new List<CalendarFilterType>();
         public static List<Map> Maps = new List<Map>();
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
+        public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
 
@@ -557,6 +558,7 @@ namespace xstrat.Core
             RetrieveCalendarFilterTypes();
             RetrieveMaps();
             RetrieveScrimModes();
+            RetrieveEventTypes();
             RetrieveTeamName();
             RetrieveAdminStatusAsync();
         }
@@ -686,10 +688,21 @@ namespace xstrat.Core
         private static void RetrieveScrimModes()
         {
             ScrimModes.Clear();
-            ScrimModes.Add(new ScrimMode(0, "normal"));
+            ScrimModes.Add(new ScrimMode(0, "Normal"));
             ScrimModes.Add(new ScrimMode(1, "6+6"));
             ScrimModes.Add(new ScrimMode(2, "2-2-2"));
             ScrimModes.Add(new ScrimMode(3, "4+4"));
+        }
+        private static void RetrieveEventTypes()
+        {
+            EventTypes.Clear();
+            EventTypes.Add(new EventType(0, "Scrim"));
+            EventTypes.Add(new EventType(1, "Strats"));
+            EventTypes.Add(new EventType(2, "Training"));
+            EventTypes.Add(new EventType(3, "Dryrun"));
+            EventTypes.Add(new EventType(4, "Warmup"));
+            EventTypes.Add(new EventType(5, "Match"));
+            EventTypes.Add(new EventType(6, "Cup"));
         }
 
         public static User getUserFromId(int id)

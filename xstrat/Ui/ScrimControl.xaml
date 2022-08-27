@@ -5,53 +5,64 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="70" d:DesignWidth="1000" Background="Transparent">
+             d:DesignHeight="100" d:DesignWidth="1000" Background="Transparent">
     <Grid>
         <Border Margin="2" Background="#303030" Name="MainBorder" CornerRadius="10">
             <StackPanel Orientation="Horizontal">
-                <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0">
-                    <Label Name="TxtTitle" Foreground="White" FontSize="20" FontWeight="SemiBold"></Label>
-                    <Label Name="TxtEnemyName" Foreground="White" FontSize="14" FontWeight="SemiBold"></Label>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Name="TxtDescription" Background="Transparent" Foreground="White" TextWrapping="Wrap" FontSize="10" Height="50" VerticalAlignment="Center">
-                        
-                    </TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Width="100" Margin="10,0,0,0" VerticalAlignment="Top">
+                <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder1">
+                    <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0">
+                        <Label Name="EventTypeLabel" Foreground="#336cb5" FontSize="17" FontWeight="SemiBold">asdasd</Label>
+                        <Label Name="TxtTitle" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,-10,0,0">asd</Label>
+                        <Label Name="TxtEnemyName" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,-5,0,0">asd</Label>
+                    </StackPanel>
+                </Border>
+                <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder5">
+                    <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Name="TxtDescription" Background="Transparent" Foreground="White" TextWrapping="Wrap" FontSize="12" Height="70" VerticalAlignment="Center" Margin="5">
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
 
-                    <StackPanel Orientation="Horizontal">
-                        <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">Mode:</Label>
-                        <Label Name="TxtMode" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder2">
+                    <StackPanel Orientation="Vertical" Width="100" Margin="5" VerticalAlignment="Top">
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Foreground="#336cb5" FontSize="12" FontWeight="SemiBold" Margin="0,0,-5,0">Mode:</Label>
+                            <Label Name="TxtMode" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,-5,0,-10" VerticalAlignment="Center">
+                            <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">On:</Label>
+                            <Label Name="TxtDate" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,-10">
+                            <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">From:</Label>
+                            <Label Name="TxtStart" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,-5">
+                            <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">To:</Label>
+                            <Label Name="TxtEnd" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,-5,0,-10" VerticalAlignment="Center">
-                        <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">On:</Label>
-                        <Label Name="TxtDate" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
+                </Border>
+
+                <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder3">
+                    <StackPanel Orientation="Vertical" Width="100" Margin="5">
+                        <Label Foreground="#336cb5" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Maps:</Label>
+                        <Label Name="TxtMap1" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
+                        <Label Name="TxtMap2" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
+                        <Label Name="TxtMap3" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,-10">
-                        <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">From:</Label>
-                        <Label Name="TxtStart" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,-5">
-                        <Label Foreground="#336cb5" FontSize="10" FontWeight="SemiBold" Margin="0,0,-5,0">To:</Label>
-                        <Label Name="TxtEnd" Foreground="White" FontSize="10" FontWeight="SemiBold"></Label>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0">
-                    <Label Foreground="#336cb5" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Maps:</Label>
-                    <Label Name="TxtMap1" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
-                    <Label Name="TxtMap2" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
-                    <Label Name="TxtMap3" Foreground="White" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,-10"></Label>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Width="290" Margin="5,0,0,0">
+                </Border>
+                <Border Background="#262626" Margin="5" CornerRadius="10" Name="ContentBorder4">
+                <StackPanel Orientation="Vertical" Width="280" Margin="5">
                     <Label Foreground="#336cb5" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Participants:</Label>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="45" Margin="0,5,0,0">
-                        <StackPanel Name="ParticipantsSP">
-                            
-                        </StackPanel>                        
-                    </ScrollViewer>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="40" Margin="0,5,0,0">
+                            <StackPanel Name="ParticipantsSP">
+                            </StackPanel>
+                        </ScrollViewer>
                 </StackPanel>
-                <!--Accept BUTTON-->
+        </Border>
+        <!--Accept BUTTON-->
                 <Button Height="30" Width="30" Margin="3" Name="AcceptBtn" BorderThickness="0" FontSize="15" Background="#42a550" Foreground="White" VerticalContentAlignment="Center" Click="AcceptBtn_Click">
                     <Button.Resources>
                         <Style TargetType="Border">

@@ -55,7 +55,6 @@ namespace xstrat.Ui
             }
             type = 0;
             InitializeComponent();
-            UpdateUI();
             Loaded += ScrimWindow_Loaded;
             GotFocus += ScrimWindow_GotFocus;
         }
@@ -67,7 +66,7 @@ namespace xstrat.Ui
 
         private void ScrimWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
+            UpdateUI();
         }
 
         public ScrimWindow(Scrim scrim)
@@ -75,7 +74,6 @@ namespace xstrat.Ui
             this.scrim = scrim;
             type = 1;
             InitializeComponent();
-            UpdateUI();
             Loaded += ScrimWindow_Loaded;
             GotFocus += ScrimWindow_GotFocus;
         }
@@ -106,6 +104,7 @@ namespace xstrat.Ui
                     PlayerStack.Children.Add(label);
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
+                EventTypeSelector.SelectIndex(0);
             }
             else if(type == 1)
             {
@@ -130,11 +129,18 @@ namespace xstrat.Ui
                 {
                     DeleteBtn.Visibility = Visibility.Collapsed;
                 }
+                EventTypeSelector.Loaded += EventTypeSelector_Loaded;
             }
             if(PlayerStack.Children.Count < 1)
             {
                 UserViewer.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void EventTypeSelector_Loaded(object sender, RoutedEventArgs e)
+        {
+            EventTypeSelector.Loaded -= EventTypeSelector_Loaded;
+            EventTypeSelector.SelectIndex(scrim.event_type);
         }
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -159,7 +165,8 @@ namespace xstrat.Ui
                 {
                     map3 = MapSelector3.selectedMap.id;
                 }
-                var result = await ApiHandler.SaveScrim(scrim.id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id);
+                int event_type = EventTypeSelector.selectedEventType.id;
+                var result = await ApiHandler.SaveScrim(scrim.id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
                 if (result.Item1)
                 {
                     Notify.sendSuccess("Saved successfully");
@@ -210,7 +217,8 @@ namespace xstrat.Ui
                         {
                             map3 = MapSelector3.selectedMap.id;
                         }
-                        var result2 = await ApiHandler.SaveScrim(scrim_id.GetValueOrDefault(), TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id);
+                        int event_type = EventTypeSelector.selectedEventType.id;
+                        var result2 = await ApiHandler.SaveScrim(scrim_id.GetValueOrDefault(), TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
                         if (result2.Item1)
                         {
                             Notify.sendSuccess("Saved successfully");

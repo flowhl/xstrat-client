@@ -69,19 +69,19 @@ namespace xstrat.MVVM.ViewModel
 
             CurrentView = HomeVM;
 
-            HomeViewCommand = new RelayCommand(o => { if(wnd.IsLoaded) CurrentView = HomeVM;});
+            HomeViewCommand = new RelayCommand(o => { if(wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = HomeVM;});
             SettingsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = SettingsVM; });
-            AboutViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = AboutVM; });
+            AboutViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = AboutVM; });
             RegisterViewCommand = new RelayCommand(o => { CurrentView = RegisterVM; });
             LoginViewCommand = new RelayCommand(o => { CurrentView = LoginVM; });
-            SkinSwitcherViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = SkinSwitcherVM; });
-            RoutinesViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = RoutinesVM; });
-            StratMakerViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = StratMakerVM; });
-            TeamViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = TeamVM; });
-            CalendarViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = CalendarVM; });
-            ScrimViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = ScrimVM; });
-            StatsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = StatsVM; });
-            LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = LicenseVM; });
+            SkinSwitcherViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = SkinSwitcherVM; });
+            RoutinesViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = RoutinesVM; });
+            StratMakerViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = StratMakerVM; });
+            TeamViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = TeamVM; });
+            CalendarViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = CalendarVM; });
+            ScrimViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = ScrimVM; });
+            StatsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = StatsVM; });
+            LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn) CurrentView = LicenseVM; });
         }
     }
 }

@@ -173,14 +173,17 @@ namespace xstrat.MVVM.View
                         }
                         else
                         {
-                            var crows = customUsers.Where(x => x.name == cd.NameInput);
-                            if (!crows.Any())
+                            if (customUsers.Any())
                             {
-                                users.Add(new User { id = -1, name = cd.NameInput, color = "#336cb5" });
-                            }
-                            else
-                            {
-                                users.Add(crows.FirstOrDefault());
+                                var crows = customUsers.Where(x => x.name == cd.NameInput);
+                                if (!crows.Any())
+                                {
+                                    users.Add(new User { id = -1, name = cd.NameInput, color = "#336cb5" });
+                                }
+                                else
+                                {
+                                    users.Add(crows.FirstOrDefault());
+                                }
                             }
                         }
                     }
@@ -504,14 +507,23 @@ namespace xstrat.MVVM.View
 
             foreach (var data in ScrimHistoryData)
             {
-                ScrimHistorySeries.Add(new LineSeries<int>
+                string name = Globals.UserIdToName(data.Item1);
+                if (name == null || name == "") continue;
+                try
                 {
-                    Name = Globals.UserIdToName(data.Item1),
-                    Values = data.Item2,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),
-                    GeometrySize = 0,
-                });
+                    ScrimHistorySeries.Add(new LineSeries<int>
+                    {
+                        Name = name,
+                        Values = data.Item2,
+                        Fill = null,
+                        Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),
+                        GeometrySize = 0,
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Error building Graphs: " + ex.Message);
+                }
             }
             ScrimHistoryXAxes.Clear();
             ScrimHistoryXAxes.Add(new Axis
@@ -567,12 +579,13 @@ namespace xstrat.MVVM.View
                     first = false;
                 }
             }
-
             foreach (var data in RankedKDData)
             {
+                string name = Globals.UserIdToName(data.Item1);
+                if (name == null || name == "") continue;
                 RankedKDSeries.Add(new LineSeries<double>
                 {
-                    Name = Globals.UserIdToName(data.Item1),
+                    Name = name,
                     Values = data.Item2,
                     Fill = null,
                     Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),

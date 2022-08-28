@@ -19,7 +19,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Foreground="White" VerticalAlignment="Bottom">Api-Url:</Label>
-                            <TextBox Name="APIText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="#252525" Width="250" Height="25" BorderThickness="0">https://api.xstrat.app</TextBox>
+                            <TextBox Name="APIText" Foreground="#336cb5" VerticalContentAlignment="Center" Background="#252525" Width="250" Height="25" BorderThickness="0">https://api.xstrat.app/api</TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Foreground="White" VerticalAlignment="Bottom">R6 Account Name:</Label>

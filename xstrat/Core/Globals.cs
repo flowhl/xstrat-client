@@ -548,7 +548,9 @@ namespace xstrat.Core
 
         public static string UserIdToName(int id)
         {
-            return teammates.Where(x => x.id == id).First().name;
+            var teammate = teammates.Where(x => x.id == id).FirstOrDefault();
+            if(teammate == null) return null;
+            return teammate.name;
         }
 
         public static void Init()
@@ -712,7 +714,7 @@ namespace xstrat.Core
         public static User getUserFromId(int id)
         {
             var rows = teammates.Where(x => x.id == id);
-            if (rows.Any()) return rows.First();
+            if (rows.Any()) return rows.FirstOrDefault();
             return null;
         }
         public static int getUserIdFromName(string name)

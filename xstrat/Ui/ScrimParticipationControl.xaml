@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="xstrat.Ui.ScrimParticipationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="170">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Margin="1" VerticalAlignment="Center">
+            <MaterialDesign:PackIcon Name="IIcon" Foreground="White"/>
+            <Label Name="TxtName" Foreground="White" FontSize="10" Margin="0,-4,0,-10"></Label>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -231,9 +231,12 @@ namespace xstrat.Json
         public int creator_id { get; set; }
         public string creation_date { get; set; }
         public int? response_typ { get; set; }
-        public string user_list { get; set; }
+        public string acc_user_list { get; set; }
+        public string deny_user_list { get; set; }
+        public string ign_user_list { get; set; }
 
-        public Scrim(int id, int event_type ,string title, string comment, string time_start, string time_end, string opponent_name, int team_id, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int creator_id, string creation_date, string user_list)
+
+        public Scrim(int id, int event_type ,string title, string comment, string time_start, string time_end, string opponent_name, int team_id, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int creator_id, string creation_date, string acc_user_list, string deny_user_list, string ign_user_list)
         {
             this.id = id;
             this.event_type = event_type;
@@ -249,7 +252,9 @@ namespace xstrat.Json
             this.typ = typ;
             this.creator_id = creator_id;
             this.creation_date = creation_date;
-            this.user_list = user_list;
+            this.acc_user_list = acc_user_list;
+            this.deny_user_list = deny_user_list;
+            this.ign_user_list = ign_user_list;
         }
     }
 
@@ -403,11 +408,11 @@ namespace xstrat.Json
     public class StatsResponseDetail
     {
         public int xstrat_user_id { get; set; }
-        public int? max_mmr { get; set; }
+        public double? max_mmr { get; set; }
         public double? skill_mean { get; set; }
         public int? deaths { get; set; }
         public string profile_id { get; set; }
-        public int? next_rank_mmr { get; set; }
+        public double? next_rank_mmr { get; set; }
         public int? rank { get; set; }
         public int? max_rank { get; set; }
         public string board_id { get; set; }
@@ -416,14 +421,14 @@ namespace xstrat.Json
         public double? last_match_skill_stdev_change { get; set; }
         public int? past_seasons_wins { get; set; }
         public string update_time { get; set; }
-        public int? last_match_mmr_change { get; set; }
+        public double? last_match_mmr_change { get; set; }
         public int? abandons { get; set; }
         public int? season { get; set; }
         public int? past_seasons_losses { get; set; }
         public int? top_rank_position { get; set; }
         public double? last_match_skill_mean_change { get; set; }
-        public int? mmr { get; set; }
-        public int? previous_rank_mmr { get; set; }
+        public double? mmr { get; set; }
+        public double? previous_rank_mmr { get; set; }
         public int? last_match_result { get; set; }
         public int? past_seasons_abandons { get; set; }
         public int? wins { get; set; }
@@ -470,11 +475,11 @@ namespace xstrat.Json
     public class StatsBySeasonDetail
     {
         public int? xstrat_user_id { get; set; }
-        public int? max_mmr { get; set; }
+        public double? max_mmr { get; set; }
         public double? skill_mean { get; set; }
         public int? deaths { get; set; }
         public string profile_id { get; set; }
-        public int? next_rank_mmr { get; set; }
+        public double? next_rank_mmr { get; set; }
         public int? rank { get; set; }
         public int? max_rank { get; set; }
         public string board_id { get; set; }
@@ -483,14 +488,14 @@ namespace xstrat.Json
         public double? last_match_skill_stdev_change { get; set; }
         public int? past_seasons_wins { get; set; }
         public string update_time { get; set; }
-        public int? last_match_mmr_change { get; set; }
+        public double? last_match_mmr_change { get; set; }
         public int? abandons { get; set; }
         public int? season { get; set; }
         public int? past_seasons_losses { get; set; }
         public int? top_rank_position { get; set; }
         public double? last_match_skill_mean_change { get; set; }
-        public int? mmr { get; set; }
-        public int? previous_rank_mmr { get; set; }
+        public double? mmr { get; set; }
+        public double? previous_rank_mmr { get; set; }
         public int? last_match_result { get; set; }
         public int? past_seasons_abandons { get; set; }
         public int? wins { get; set; }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:xstrat.Ui" xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
+             xmlns:local="clr-namespace:xstrat.Ui" xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
@@ -35,6 +35,16 @@
             <StackPanel Orientation="Vertical">
                 <Border BorderThickness="0" Background="#161616" CornerRadius="10" Width="350" Height="480" Margin="10,10,10,10" HorizontalAlignment="Left" Name="ControlPanel">
                     <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+                        <Button HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="5" Click="ReloadBtn_Click">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Content>
+                                <materialDesign:PackIcon Height="30" Width="30" Kind="Reload"/>
+                            </Button.Content>
+                        </Button>
                         <Label Foreground="White" FontSize="23" FontWeight="SemiBold" Margin="0,5,0,0" HorizontalAlignment="Center">Your Color:</Label>
 
                         <colorpicker:SquarePicker x:Name="ColorPickerUI" />

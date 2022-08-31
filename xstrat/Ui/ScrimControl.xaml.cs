@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,7 @@ namespace xstrat.Ui
                 TxtStart.Content = Scrim.time_start.Split(' ')[1];
                 TxtEnd.Content = Scrim.time_end.Split(' ')[1];
                 TxtDate.Content = Scrim.time_start.Split(' ')[0]; ;
+                TxtTimeLeft.Content = TimeLeft();
                 TxtMode.Content = Globals.ScrimModes.Where(x => x.id == Scrim.typ).FirstOrDefault().name;
                 if(Scrim.map_3_id >= 0)
                 {
@@ -78,10 +80,10 @@ namespace xstrat.Ui
 
                 ParticipantsSP.Children.Clear();
 
-                string users = Scrim.user_list;
-                if(users != null && users != "")
+                string acc_users = Scrim.acc_user_list;
+                if(acc_users != null && acc_users != "")
                 {
-                    var ulist = users.Split(';');
+                    var ulist = acc_users.Split(';');
                     foreach (var item in ulist)
                     {
                         int uid = -1;
@@ -95,17 +97,64 @@ namespace xstrat.Ui
                         }
                         if (uid == -1) continue;
 
-                        Label participantLabel = new Label();
-                        participantLabel.Background = Brushes.Transparent;
-                        participantLabel.Foreground = Brushes.White;
-                        participantLabel.FontSize = 10;
-                        participantLabel.FontWeight = FontWeights.SemiBold;
-                        participantLabel.Margin = new Thickness(0, 0, 0, -10);
                         User user = Globals.getUserFromId(uid);
-                        if(user == null) continue;
-                        participantLabel.Content = user.name;
+                        if (user == null) continue;
+                        var control = new ScrimParticipationControl(1, user.name);
+                        control.Margin = new Thickness(5, 0, 0, 0);
+                        ParticipantsSP.Children.Add(control);
+                    }
+                }
 
-                        ParticipantsSP.Children.Add(participantLabel);
+
+                string deny_users = Scrim.deny_user_list;
+                if (deny_users != null && deny_users != "")
+                {
+                    var ulist = deny_users.Split(';');
+                    foreach (var item in ulist)
+                    {
+                        int uid = -1;
+                        try
+                        {
+                            uid = int.Parse(item);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (uid == -1) continue;
+
+                        User user = Globals.getUserFromId(uid);
+                        if (user == null) continue;
+                        var control = new ScrimParticipationControl(2, user.name);
+                        control.Margin = new Thickness(5, 0, 0, 0);
+                        ParticipantsSP.Children.Add(control);
+                    }
+                }
+
+
+                string ign_users = Scrim.ign_user_list;
+                if (ign_users != null && ign_users != "")
+                {
+                    var ulist = ign_users.Split(';');
+                    foreach (var item in ulist)
+                    {
+                        int uid = -1;
+                        try
+                        {
+                            uid = int.Parse(item);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        if (uid == -1) continue;
+
+
+                        User user = Globals.getUserFromId(uid);
+                        if (user == null) continue;
+                        var control = new ScrimParticipationControl(0, user.name);
+                        control.Margin = new Thickness(5, 0, 0, 0);
+                        ParticipantsSP.Children.Add(control);
                     }
                 }
 
@@ -173,6 +222,7 @@ namespace xstrat.Ui
                     ContentBorder3.Background = _normalBorderBrush;
                     ContentBorder4.Background = _normalBorderBrush;
                     ContentBorder5.Background = _normalBorderBrush;
+                    ContentBorder6.Background = _normalBorderBrush;
                     break;
                 case 1:
                     MainBorder.Background = _acceptedBrush;
@@ -181,6 +231,7 @@ namespace xstrat.Ui
                     ContentBorder3.Background = _acceptedBorderBrush;
                     ContentBorder4.Background = _acceptedBorderBrush;
                     ContentBorder5.Background = _acceptedBorderBrush;
+                    ContentBorder6.Background = _acceptedBorderBrush;
                     break;
                 case 2:
                     MainBorder.Background = _deniedBrush;
@@ -189,6 +240,7 @@ namespace xstrat.Ui
                     ContentBorder3.Background = _deniedBorderBrush;
                     ContentBorder4.Background = _deniedBorderBrush;
                     ContentBorder5.Background = _deniedBorderBrush;
+                    ContentBorder6.Background = _deniedBorderBrush;
                     break;
                 default:
                     break;
@@ -204,6 +256,19 @@ namespace xstrat.Ui
                 throw new Exception("Scrim status could not be loaded: " + result.Item2);
             }
 
+        }
+        private string TimeLeft()
+        {
+            string result = string.Empty;
+            DateTime start = DateTime.ParseExact((Scrim.time_start), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            var left = start - DateTime.Now;
+            if (left.Days > 0) result += left.Days + "D ";
+            if (left.Hours > 0) result += left.Hours + "H ";
+            if (left.Minutes > 0) result += left.Minutes + "M";
+
+
+
+            return result;
         }
     }
 }

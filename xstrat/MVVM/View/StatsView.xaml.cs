@@ -225,6 +225,7 @@ namespace xstrat.MVVM.View
         public void RetrieveData()
         {            
             StatsDataSource.RetrieveData();
+            BuildGraphs();
         }
 
         public void BuildGraphs()
@@ -266,15 +267,15 @@ namespace xstrat.MVVM.View
                 if (seasonsrow.Any())
                 {
                     var currentseason = seasonsrow.First().First();
-                    maxmmr = currentseason.max_mmr.GetValueOrDefault(0);
-                    currmmr = currentseason.mmr.GetValueOrDefault(0);
+                    maxmmr = (int)currentseason.max_mmr.GetValueOrDefault(0);
+                    currmmr = (int)currentseason.mmr.GetValueOrDefault(0);
                     if (currentseason.deaths != null)
                     {
                         double kills = (double)currentseason.kills.GetValueOrDefault(0);
                         double deaths = (double)currentseason.deaths.GetValueOrDefault(0);
                         kd = (deaths == 0) ? 0 : (int)((kills / deaths) * 100);
                     }
-                    mmrchange = Math.Abs(currentseason.last_match_mmr_change.GetValueOrDefault(0));
+                    mmrchange = Math.Abs((int)currentseason.last_match_mmr_change.GetValueOrDefault(0));
 
                     double wins = currentseason.wins.GetValueOrDefault(0);
                     double total = (currentseason.wins.GetValueOrDefault(0) + currentseason.losses.GetValueOrDefault(0) + currentseason.abandons.GetValueOrDefault(0));
@@ -332,7 +333,7 @@ namespace xstrat.MVVM.View
             {
                 List<int> linevalues = entry.Values.ToList();
                 double userscrimpercentage = linevalues[0];
-                double maxmmr = linevalues[1];
+                double maxmmr = (int)linevalues[1];
                 double currmmr = linevalues[2];
                 double kd = linevalues[3];
                 double mmrchange = linevalues[4];
@@ -669,6 +670,21 @@ namespace xstrat.MVVM.View
                 {
                     ColorDisplay cd = plc as ColorDisplay;
                     cd.SetStatus(true);
+                }
+            }
+            else
+            {
+                foreach (var plc in PlayerList.Children)
+                {
+                    ColorDisplay cd = plc as ColorDisplay;
+                    if (cd.NameInput == Globals.currentUser.name)
+                    {
+                        cd.SetStatus(true);
+                    }
+                    else
+                    {
+                        cd.SetStatus(false);
+                    }
                 }
             }
             UpdateUsers();

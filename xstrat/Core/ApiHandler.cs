@@ -1290,7 +1290,7 @@ namespace xstrat
             return (false, null);
         }
 
-        private static void RemoveFromCache(string method)
+        public static void RemoveFromCache(string method)
         {
             Cache = Cache.Where(x => x.Method != method).ToList();
         }

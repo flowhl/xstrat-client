@@ -48,6 +48,7 @@ namespace xstrat.Core
     }
     public static class StatsDataSource
     {
+        public static DateTime LastRetrieve;
         public delegate void StatsUpdateHandler(object sender, EventArgs e);
         public static event StatsUpdateHandler OnUpdateStats;
 
@@ -63,8 +64,10 @@ namespace xstrat.Core
 
         public static void RetrieveData()
         {
+            if ((DateTime.Now - LastRetrieve).TotalMinutes <= 5) return;
             StartRetrieveStatsData();
             StartRetrieveStatsAllSeasons();
+            LastRetrieve = DateTime.Now;
         }
 
         #region stats
@@ -280,6 +283,8 @@ namespace xstrat.Core
         public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
+        public static teamInfo TeamInfo { get; set; }
+
 
         public static string[] SeasonNames = new string[]{
             "Current Season", // API ID = 0
@@ -566,26 +571,66 @@ namespace xstrat.Core
                 RetrieveEventTypes();
                 RetrieveTeamName();
                 RetrieveAdminStatusAsync();
+                RetrieveTeamInfoAsync();
             }
         }
 
 
-        private static async Task RetrieveAdminStatusAsync()
+        public static async Task RetrieveAdminStatusAsync()
         {
             var result = await ApiHandler.GetAdminStatus();
             AdminUser = result.Item1;
         }
 
-        private static async void RetrieveTeamName()
+        public static async void RetrieveTeamName()
         {
 
         }
-        private static async void RetrieveCurrentUser()
+        public static async void RetrieveCurrentUser()
         {
             currentUser = getUserFromId(SettingsHandler.current_user_id);
         }
 
-        private static async void RetrieveTeamMates()
+
+        public static async Task RetrieveTeamInfoAsync()
+        {
+            var result = await ApiHandler.TeamInfo();
+            if (TeamInfo != null)
+            {
+                TeamInfo.admin_name = null;
+                TeamInfo.game_name = null;
+                TeamInfo.team_name = "Create or join a team";
+            }
+            if (result.Item1)
+            {
+                string response = result.Item2;
+                //convert to json instance
+                JObject json = JObject.Parse(response);
+                var data = json.SelectToken("data").ToString();
+                if (data != null && data != "")
+                {
+                    try
+                    {
+                        TeamInfo = JsonConvert.DeserializeObject<List<teamInfo>>(data).First();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log("No Teaminfo found! " + ex.Message);
+                    }
+                }
+                else
+                {
+                    Notify.sendError("Team info could not be loaded");
+                    throw new Exception("Team info could not be loaded");
+                }
+            }
+            else
+            {
+                Notify.sendError("Team info could not be loaded");
+            }
+        }
+
+        public static async void RetrieveTeamMates()
         {
             var result = await ApiHandler.TeamMembers();
             if (result.Item1)
@@ -621,7 +666,7 @@ namespace xstrat.Core
             }
         }
 
-        private static async void RetrieveGames()
+        public static async void RetrieveGames()
         {
             var result = await ApiHandler.Games();
             if (result.Item1)

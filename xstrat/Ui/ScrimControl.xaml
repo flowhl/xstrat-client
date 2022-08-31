@@ -11,9 +11,9 @@
             <StackPanel Orientation="Horizontal">
                 <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder1">
                     <StackPanel Orientation="Vertical" Width="150" Margin="5,0,0,0">
-                        <Label Name="EventTypeLabel" Foreground="White" FontSize="17" FontWeight="SemiBold">asdasd</Label>
-                        <Label Name="TxtTitle" Foreground="#cccccc" FontSize="15" FontWeight="SemiBold" Margin="0,-10,0,0">asd</Label>
-                        <Label Name="TxtEnemyName" Foreground="#cccccc" FontSize="15" FontWeight="SemiBold" Margin="0,-5,0,0">asd</Label>
+                        <Label Name="EventTypeLabel" Foreground="White" FontSize="17" FontWeight="SemiBold">Type</Label>
+                        <Label Name="TxtTitle" Foreground="#cccccc" FontSize="15" FontWeight="SemiBold" Margin="0,-10,0,0">Title</Label>
+                        <Label Name="TxtEnemyName" Foreground="#cccccc" FontSize="15" FontWeight="SemiBold" Margin="0,-5,0,0">Enemy</Label>
                     </StackPanel>
                 </Border>
                 <Border Background="#262626" CornerRadius="10" Margin="5" Name="ContentBorder5">
@@ -54,14 +54,20 @@
                     </StackPanel>
                 </Border>
                 <Border Background="#262626" Margin="5" CornerRadius="10" Name="ContentBorder4">
-                <StackPanel Orientation="Vertical" Width="280" Margin="5">
-                    <Label Foreground="White" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Participants:</Label>
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="40" Margin="0,5,0,0">
+                    <StackPanel Orientation="Vertical" Width="180" Margin="5">
+                        <Label Foreground="White" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Participants:</Label>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="55" Margin="0,5,0,0">
                             <StackPanel Name="ParticipantsSP">
                             </StackPanel>
                         </ScrollViewer>
-                </StackPanel>
-        </Border>
+                    </StackPanel>
+                </Border>
+                <Border Background="#262626" Margin="5" CornerRadius="10" Name="ContentBorder6">
+                    <StackPanel Orientation="Vertical" Width="100" Margin="5">
+                        <Label Foreground="White" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-10">Time Left:</Label>
+                        <Label Foreground="#cccccc" FontSize="12" FontWeight="SemiBold" Name="TxtTimeLeft" Margin="0,0,0,-10">00:00:00</Label>                   
+                    </StackPanel>
+                </Border>
         <!--Accept BUTTON-->
                 <Button Height="30" Width="30" Margin="3" Name="AcceptBtn" BorderThickness="0" FontSize="15" Background="#42a550" Foreground="#cccccc" VerticalContentAlignment="Center" Click="AcceptBtn_Click">
                     <Button.Resources>

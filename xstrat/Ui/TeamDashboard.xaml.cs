@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.MVVM.View;
+using Globals = xstrat.Core.Globals;
 
 namespace xstrat.Ui
 {
@@ -27,7 +28,7 @@ namespace xstrat.Ui
     public partial class TeamDashboard : UserControl
     {
         public List<User> teammates { get; set; } = new List<User>();
-        public teamInfo TeamInfo { get; set; }
+        public teamInfo TeamInfo;
         public TeamDashboard()
         {
             InitializeComponent();
@@ -35,8 +36,11 @@ namespace xstrat.Ui
         }
         public async void Retrieve()
         {
+            TeamName.Content = "Create or join a team";
+            AdminName.Content = "Admin: ";
+            GameName.Content = "Game: ";
+            TeamInfo = Globals.TeamInfo;
             await RetrieveTeamMatesAsync();
-            await RetrieveTeamInfoAsync();
             await CheckAdmin();
             await RetrieveColorAsync();
             DependencyObject ucParent = this.Parent;
@@ -49,6 +53,12 @@ namespace xstrat.Ui
             {
                 var uc = (TeamView)ucParent;
                 await uc.WaitForAPIAsync();
+            }
+            if (TeamInfo != null)
+            {
+                TeamName.Content = TeamInfo.team_name;
+                AdminName.Content = "Admin: " + TeamInfo.admin_name;
+                GameName.Content = "Game: " + TeamInfo.game_name;
             }
 
         }
@@ -72,6 +82,11 @@ namespace xstrat.Ui
             if (result.Item1)
             {
                 Notify.sendSuccess("Left successfully");
+                ApiHandler.RemoveFromCache("TeamInfo");
+                ApiHandler.RemoveFromCache("TeamMembers");
+                Globals.RetrieveTeamInfoAsync();
+                Globals.RetrieveTeamMates();
+                Globals.RetrieveTeamName();
                 Retrieve();
             }
             else
@@ -97,26 +112,10 @@ namespace xstrat.Ui
         
         private async Task RetrieveTeamMatesAsync()
         {
-            var result = await ApiHandler.TeamMembers();
-            if (result.Item1)
-            {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    teammates.Clear();
-                    List<xstrat.Json.User> rList = JsonConvert.DeserializeObject<List<Json.User>>(data);
-                    teammates = rList;
-                }
-                else
-                {
-                    Notify.sendError("Teammates could not be loaded");
-                    throw new Exception("Teammates could not be loaded");
-                }
+            if(Globals.teammates != null) { 
+
                 MemberSP.Children.Clear();
-                foreach (var user in teammates)
+                foreach (var user in Globals.teammates)
                 {
                     var newItem = new Teammate(user.name, user.id, user.color);
                     newItem.Height = 30;
@@ -127,52 +126,6 @@ namespace xstrat.Ui
             else
             {
                 Notify.sendError("Teammates could not be loaded");
-            }
-        }
-        private async Task RetrieveTeamInfoAsync()
-        {
-            var result = await ApiHandler.TeamInfo();
-            TeamName.Content = "Create or join a team";
-            AdminName.Content = "Admin: ";
-            GameName.Content = "Game: ";
-            if(TeamInfo != null)
-            {
-                TeamInfo.admin_name = null;
-                TeamInfo.game_name = null;
-                TeamInfo.team_name = "Create or join a team";
-            }            
-            if (result.Item1)
-            {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        TeamInfo = JsonConvert.DeserializeObject<List<teamInfo>>(data).First();
-                    }
-                    catch(Exception ex)
-                    {
-                        Logger.Log("No Teaminfo found! " + ex.Message);
-                    }
-                }
-                else
-                {
-                    Notify.sendError("Team info could not be loaded");
-                    throw new Exception("Team info could not be loaded");
-                }
-                if (TeamInfo != null)
-                {
-                    TeamName.Content = TeamInfo.team_name;
-                    AdminName.Content = "Admin: " +TeamInfo.admin_name;
-                    GameName.Content = "Game: "+ TeamInfo.game_name;
-                }
-            }
-            else
-            {
-                Notify.sendError("Team info could not be loaded");
             }
         }
 
@@ -208,7 +161,10 @@ namespace xstrat.Ui
             if (result.Item1)
             {
                 Notify.sendSuccess("Changed color successfully");
-                Retrieve();
+                ApiHandler.RemoveFromCache("TeamMembers");
+                Globals.RetrieveTeamMates();
+                await Task.Delay(1000);
+                RetrieveTeamMatesAsync();
             }
             else
             {
@@ -278,6 +234,19 @@ namespace xstrat.Ui
         private String HexConverter(System.Windows.Media.Color c)
         {
             return new ColorConverter().ConvertToString(c);
+        }
+
+        private void ReloadBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Reload();
+        }
+        public void Reload()
+        {
+            ApiHandler.RemoveFromCache("TeamInfo");
+            ApiHandler.RemoveFromCache("TeamMembers");
+            Globals.RetrieveTeamInfoAsync();
+            Globals.RetrieveTeamMates();
+            Globals.RetrieveTeamName();
         }
     }
 }

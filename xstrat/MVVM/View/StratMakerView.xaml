@@ -121,20 +121,8 @@
                 </StackPanel>
                     <Border Background="#181818" Grid.Column="1" Height="100" Width="500" CornerRadius="10" HorizontalAlignment="Left">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
-                        <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1">
-                            <Image x:Name="Alibi" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi1" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi2" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi3" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi4" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi5" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi6" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi7" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi8" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi9" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi10" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                            <Image x:Name="Alibi11" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
-                        </StackPanel>
+                            <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1" Name="IconsSP">
+                            </StackPanel>
                     </ScrollViewer>
                 </Border>
             </Grid>

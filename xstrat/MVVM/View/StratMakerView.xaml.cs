@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,10 +45,32 @@ namespace xstrat.MVVM.View
 
         private void Opened()
         {
-            _loadMaps();
+            //_loadMaps();
             ToolTipChanged(View.ToolTip.Cursor);
             LoadColorButtons();
             UpdateFloorButtons();
+            LoadDragItems();
+        }
+
+        private void LoadDragItems()
+        {
+            if(Globals.TeamInfo.game_name == "R6 Siege")
+            {
+                IconsSP.Children.Clear();
+                string folder = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"/Images/R6_Icons/";
+                var allItems = Directory.GetFiles(folder, "*.png").ToList();
+                foreach(var item in allItems)
+                {
+                    if (item == null || item == "") continue;
+                    //<Image x:Name="Alibi" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
+                    Image newImg = new Image();
+                    newImg.Source = new BitmapImage(new Uri(item, UriKind.Absolute));
+                    newImg.MouseMove += Image_MouseMove;
+                    newImg.Name = System.IO.Path.GetFileName(item.ToString()).Replace(".png", "");
+                    newImg.Margin = new Thickness(10);
+                    IconsSP.Children.Add(newImg);
+                }
+            }
         }
 
         private void UpdateFloorButtons()
@@ -203,68 +226,68 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        private void _loadMaps()
-        {
-            maps.Add(new XMap());
-            UpdateTopBar();
-        }
+        //private void _loadMaps()
+        //{
+        //    maps.Add(new XMap());
+        //    UpdateTopBar();
+        //}
 
-        private void UpdateTopBar()
-        {
-            var thickness = new Thickness(0,0,0,0);
-            foreach (var map in maps)
-            {
-                var mapItem = new MenuItem();
-                //mapItem.Name = map.Name + "MapItem";
-                mapItem.BorderThickness = thickness;
-                mapItem.Header = map.Name;
-                mapItem.Height = 30;
-                mapItem.Width = 200;
+        //private void UpdateTopBar()
+        //{
+        //    var thickness = new Thickness(0,0,0,0);
+        //    foreach (var map in maps)
+        //    {
+        //        var mapItem = new MenuItem();
+        //        //mapItem.Name = map.Name + "MapItem";
+        //        mapItem.BorderThickness = thickness;
+        //        mapItem.Header = map.Name;
+        //        mapItem.Height = 30;
+        //        mapItem.Width = 200;
                 
-                List<MenuItem> subitems = new List<MenuItem>();
-                foreach (var pos in map.positions)
-                {
-                    var posItem = new MenuItem();
-                    //posItem.Name = pos.name + "PositionItem";
-                    posItem.Header = pos.name;
-                    posItem.BorderThickness = thickness;
-                    posItem.Height = 30;
-                    posItem.Width = 200;
-                    foreach (var strat in pos.strats)
-                    {
-                        var stratItem = new MenuItem();
-                        //stratItem.Name = strat.name + "StratItem";
-                        stratItem.BorderThickness = thickness;
-                        stratItem.Header = strat.name;
-                        stratItem.Height = 30;
-                        stratItem.Width = 200;
-                        posItem.Items.Add(stratItem);
-                    }
-                    mapItem.Items.Add(posItem);
-                }
-                Menu.Items.Add(mapItem);
-            }
-        }
-        private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {/*
-            ImageStack.Children.Clear();
-            var index = MapSelector.SelectedIndex;
-            var images = StratHandler.getFloorsByListPos(index);
-            foreach (var image in images)
-            {
+        //        List<MenuItem> subitems = new List<MenuItem>();
+        //        foreach (var pos in map.positions)
+        //        {
+        //            var posItem = new MenuItem();
+        //            //posItem.Name = pos.name + "PositionItem";
+        //            posItem.Header = pos.name;
+        //            posItem.BorderThickness = thickness;
+        //            posItem.Height = 30;
+        //            posItem.Width = 200;
+        //            foreach (var strat in pos.strats)
+        //            {
+        //                var stratItem = new MenuItem();
+        //                //stratItem.Name = strat.name + "StratItem";
+        //                stratItem.BorderThickness = thickness;
+        //                stratItem.Header = strat.name;
+        //                stratItem.Height = 30;
+        //                stratItem.Width = 200;
+        //                posItem.Items.Add(stratItem);
+        //            }
+        //            mapItem.Items.Add(posItem);
+        //        }
+        //        Menu.Items.Add(mapItem);
+        //    }
+        //}
+        //private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{/*
+        //    ImageStack.Children.Clear();
+        //    var index = MapSelector.SelectedIndex;
+        //    var images = StratHandler.getFloorsByListPos(index);
+        //    foreach (var image in images)
+        //    {
 
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
-                bi.EndInit();
+        //        BitmapImage bi = new BitmapImage();
+        //        bi.BeginInit();
+        //        bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
+        //        bi.EndInit();
 
-                Image img = new Image();
-                img.Source = bi;
-                img.Height = 1080;
-                img.Width = 1920;
-                ImageStack.Children.Add(img);
-            */
-        }
+        //        Image img = new Image();
+        //        img.Source = bi;
+        //        img.Height = 1080;
+        //        img.Width = 1920;
+        //        ImageStack.Children.Add(img);
+        //    */
+        //}
 
         private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -280,7 +303,7 @@ namespace xstrat.MVVM.View
         {
             if(e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(Alibi, Alibi, DragDropEffects.Move);
+                DragDrop.DoDragDrop(sender as Image, sender as Image, DragDropEffects.Move);
             }
         }
 

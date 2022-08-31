@@ -61,7 +61,14 @@ namespace xstrat.MVVM.View
             if (result.Item1)
             {
                 Notify.sendSuccess("Joint successfully");
-                TDashboard.Retrieve();
+                ApiHandler.RemoveFromCache("TeamInfo");
+                ApiHandler.RemoveFromCache("TeamMembers");
+                Globals.RetrieveTeamInfoAsync();
+                Globals.RetrieveTeamMates();
+                Globals.RetrieveTeamName();
+                TDashboard.Reload();
+                TDashboard.Retrieve(); // fix stuff not loading here
+                await Task.Delay(500);
                 WaitForAPIAsync();
             }
             else

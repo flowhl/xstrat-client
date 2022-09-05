@@ -113,9 +113,9 @@ namespace xstrat.MVVM.View
         public static void CopyFiles(DirectoryInfo source, DirectoryInfo target)
         {
             foreach (DirectoryInfo dir in source.GetDirectories())
-                CopyFiles(dir, target.CreateSubdirectory(dir.Name));
+            CopyFiles(dir, target.CreateSubdirectory(dir.Name));
             foreach (FileInfo file in source.GetFiles())
-                file.CopyTo(System.IO.Path.Combine(target.FullName, file.Name), true);
+            file.CopyTo(System.IO.Path.Combine(target.FullName, file.Name), true);
         }
     }
 }

@@ -26,15 +26,15 @@ namespace xstrat.MVVM.View
         SolidColorBrush Off = new SolidColorBrush(Color.FromRgb(0, 0, 0));
         SolidColorBrush On = new SolidColorBrush(Color.FromRgb(240, 222, 45));
 
-        string docPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "xstrat/skinswitcher");
+        string docPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"xstrat\skinswitcher");
         string normalPath;
         string noSkinPath;
 
         public SkinSwitcherView()
         {
             InitializeComponent();
-            normalPath = System.IO.Path.Combine(docPath, @"\normal");
-            noSkinPath = docPath + @"\noSkins";
+            normalPath = System.IO.Path.Combine(docPath, @"normal");
+            noSkinPath = System.IO.Path.Combine(docPath, @"noSkins");
             Directory.CreateDirectory(docPath);
             Directory.CreateDirectory(normalPath);
             Directory.CreateDirectory(noSkinPath);

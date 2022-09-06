@@ -364,6 +364,7 @@
     <Compile Include="Ui\WallControl.xaml.cs">
       <DependentUpon>WallControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\ZoomBorder.cs" />
     <Page Include="Calendar\CalendarDay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

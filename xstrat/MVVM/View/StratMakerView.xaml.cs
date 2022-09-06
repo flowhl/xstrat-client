@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ namespace xstrat.MVVM.View
         public ToolTip CurrentToolTip;
         public Brush CurrentBrush = null;
         public bool isMouseDown = false;
-        public int BrushSize { get; set; } = 15;
+        public int BrushSize { get; set; } = 10;
 
         public bool Floor0 { get; set; }
         public bool Floor1 { get; set; }
@@ -50,6 +51,44 @@ namespace xstrat.MVVM.View
             LoadColorButtons();
             UpdateFloorButtons();
             LoadDragItems();
+            ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
+            MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
+            MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
+            
+        }
+
+        private void StratMakerView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            deleteFromCanvasLoop = false;
+        }
+
+        private bool deleteFromCanvasLoop = false;
+
+        private async void DeleteFromCanvas()
+        {
+            while (deleteFromCanvasLoop)
+            {
+                var dList = DrawingLayer.Children.OfType<UIElement>().Where(x => Math.Abs(Mouse.GetPosition(x).X) < BrushSize && Math.Abs(Mouse.GetPosition(x).Y) < BrushSize).ToList();
+                dList.ForEach(x => DrawingLayer.Children.Remove(x));
+                await Task.Delay(5);
+            }
+        }
+
+        private void StratMakerView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            deleteFromCanvasLoop = true;
+            if(CurrentToolTip == View.ToolTip.Eraser)
+            {
+                DeleteFromCanvas();
+            }
+        }
+
+        private void ZoomControl_ZoomChanged(object sender, EventArgs e)
+        {
+            if(ZoomSlider != null)
+            {
+                ZoomSlider.Value = ZoomControl.ZoomValue * 100;
+            }
         }
 
         private void LoadDragItems()
@@ -405,8 +444,8 @@ namespace xstrat.MVVM.View
         {
             Ellipse ellipse = new Ellipse();
             ellipse.Fill = circleColor;
-            ellipse.Width = BrushSize / ZoomControl.Zoom;
-            ellipse.Height = BrushSize / ZoomControl.Zoom;
+            ellipse.Width = BrushSize;
+            ellipse.Height = BrushSize;
             Canvas.SetTop(ellipse, position.Y);
             Canvas.SetLeft(ellipse, position.X);
             DrawingLayer.Children.Add(ellipse);
@@ -417,6 +456,14 @@ namespace xstrat.MVVM.View
         private void BrushSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             BrushSize = (int)BrushSlider.Value;
+        }
+
+        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if(ZoomControl != null && ZoomSlider.Value != ZoomControl.ZoomValue * 100)
+            {
+                ZoomControl.Zoom(ZoomSlider.Value);
+            }
         }
     }
     public enum ToolTip

@@ -61,10 +61,11 @@ namespace xstrat.MVVM.View
                     UbiClear();
                     CopyFiles(dir1, ubidir); //enable skins
                 }
+                Notify.sendSuccess("You can restart your game now");
             }
             else
             {
-                Error.Content = "Please set the correct folder in the settings!";
+                Notify.sendError("Please set the correct folder in the settings!");
             }
            
         }
@@ -84,38 +85,66 @@ namespace xstrat.MVVM.View
 
         private void CurrentToNoSkin_Click(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo dir1 = new DirectoryInfo(noSkinPath);
-            DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
-            CopyFiles(ubidir, dir1);
+            var result = MessageBox.Show("Override current noskin-config?","Override?",MessageBoxButton.OKCancel);
+            if(result == MessageBoxResult.OK)
+            {
+                DirectoryInfo dir1 = new DirectoryInfo(noSkinPath);
+                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+                CopyFiles(ubidir, dir1);
+                Notify.sendSuccess("Copied files");
+            }
         }
 
         private void CurrentToSkin_Click(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo dir2 = new DirectoryInfo(normalPath);
-            DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
-            CopyFiles(ubidir, dir2);
+            var result = MessageBox.Show("Override current skin-config?", "Override?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                DirectoryInfo dir2 = new DirectoryInfo(normalPath);
+                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+                CopyFiles(ubidir, dir2);
+                Notify.sendSuccess("Copied files");
+            }
         }
 
         private void UbiClear()
         {
-            DirectoryInfo directory = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
-
-            foreach (FileInfo file in directory.GetFiles())
+            try
             {
-                file.Delete();
+                DirectoryInfo directory = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+
+                foreach (FileInfo file in directory.GetFiles())
+                {
+                    file.Delete();
+                }
+
+                foreach (DirectoryInfo dir in directory.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+
+            }
+            catch(Exception ex)
+            {
+                Logger.Log("error while deleting files: " + ex.Message);
+                Notify.sendError("error while deleting files: " + ex.Message);
             }
 
-            foreach (DirectoryInfo dir in directory.GetDirectories())
-            {
-                dir.Delete(true);
-            }
         }
         public static void CopyFiles(DirectoryInfo source, DirectoryInfo target)
         {
-            foreach (DirectoryInfo dir in source.GetDirectories())
-            CopyFiles(dir, target.CreateSubdirectory(dir.Name));
-            foreach (FileInfo file in source.GetFiles())
-            file.CopyTo(System.IO.Path.Combine(target.FullName, file.Name), true);
+            try
+            {
+                foreach (DirectoryInfo dir in source.GetDirectories())
+                CopyFiles(dir, target.CreateSubdirectory(dir.Name));
+                foreach (FileInfo file in source.GetFiles())
+                file.CopyTo(System.IO.Path.Combine(target.FullName, file.Name), true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("error while copying files: " + ex.Message);
+                Notify.sendError("error while copying files: " + ex.Message);
+            }
         }
     }
 }

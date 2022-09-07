@@ -52,10 +52,12 @@ namespace xstrat
         private void LogUnhandledException(Exception exception, string source)
         {
             string message = $"Unhandled exception ({source})";
+            string messageNoStack = $"Unhandled exception ({source})";
             try
             {
                 System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
                 message = string.Format("Unhandled exception in {0} v{1} Stacktrace: {2}", assemblyName.Name, assemblyName.Version, exception.StackTrace);
+                messageNoStack = string.Format("Unhandled exception in {0} v{1} ", assemblyName.Name, assemblyName.Version);
             }
             catch (Exception ex)
             {
@@ -63,7 +65,7 @@ namespace xstrat
             }
             finally
             {
-                Notify.sendError(exception.Message + " | " + message);
+                Notify.sendError(exception.Message + " | " + messageNoStack);
                 Logger.Log(exception.Message + " | " + message);
             }
         }

@@ -31,7 +31,7 @@ namespace xstrat.Core
         public static string LastLoginMail { get; set; }
         public static int current_user_id { get; set; }
 
-        public static void Initialize()
+        public static async void Initialize()
         {
             if (!Directory.Exists(SettingsFolder))
             {
@@ -39,7 +39,6 @@ namespace xstrat.Core
             }
             if (!File.Exists(SettingsFile))
             {
-                File.Create(SettingsFile);
                 Create();
             }
             Load();

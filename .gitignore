@@ -4,3 +4,4 @@ node_modules
 .pdb
 *.dll
 *.pdb
+xstrat/bin/

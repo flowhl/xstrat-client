@@ -115,10 +115,17 @@ namespace xstrat.MVVM.View
                 ScrimListPanel.Children.Clear();
                 foreach (var scrim in scrims)
                 {
-                    DateTime enddate = DateTime.ParseExact(scrim.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    if (enddate >= DateTime.Now)
+                    try
                     {
-                        ScrimListPanel.Children.Add(new ScrimControl(scrim));
+                        DateTime enddate = DateTime.ParseExact(scrim.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                        if (enddate >= DateTime.Now)
+                        {
+                            ScrimListPanel.Children.Add(new ScrimControl(scrim));
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Notify.sendWarn("Could not parse datetime for: " + scrim.time_end);
                     }
                 }
             }
@@ -572,6 +579,7 @@ namespace xstrat.MVVM.View
             List<DateTime> times = new List<DateTime>();
 
             var sDate = date.ToString("yyyy/MM/dd");
+            sDate = sDate.Replace(".", "/").Replace("-", "/");
 
             var ScrimStartTime = DateTime.ParseExact((sDate + " " + ScrimStartHour.ToString().PadLeft(2, '0') + ":" + ScrimStartMin.ToString().PadLeft(2, '0') + ":00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
             var ScrimEndTime = DateTime.ParseExact((sDate + " " + ScrimEndHour.ToString().PadLeft(2, '0') + ":" + ScrimEndMin.ToString().PadLeft(2, '0') + ":00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);

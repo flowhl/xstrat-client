@@ -147,8 +147,17 @@ namespace xstrat.Ui
         {
             if(type == 1)
             {
-                string start = CalendarDatePicker.SelectedDate.ToString().Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                string end = CalendarDatePicker.SelectedDate.ToString().Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                DateTime tempdate = CalendarDatePicker.SelectedDate.GetValueOrDefault();
+                if(tempdate == null)
+                {
+                    Notify.sendError("No date selected or wrong format");
+                    return;
+                }
+
+                string start = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                string end = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                start = start.Replace(".", "/").Replace("-", "/");
+                end = end.Replace(".", "/").Replace("-", "/");
 
                 int map1 = -1;
                 if (MapSelector1.selectedMap != null)
@@ -180,8 +189,19 @@ namespace xstrat.Ui
             }
             else if(type == 0)
             {
-                string start = CalendarDatePicker.SelectedDate.ToString().Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                string end = CalendarDatePicker.SelectedDate.ToString().Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                DateTime tempdate = CalendarDatePicker.SelectedDate.GetValueOrDefault();
+                if (tempdate == null)
+                {
+                    Notify.sendError("No date selected or wrong format");
+                    return;
+                }
+
+                string start = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                string end = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+                start = start.Replace(".", "/").Replace("-", "/");
+                end = end.Replace(".", "/").Replace("-", "/");
+
+
                 int? scrim_id = null;
                 var result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end);
                 if (result.Item1)

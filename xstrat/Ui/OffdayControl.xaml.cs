@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using xstrat.Core;
 using xstrat.Json;
 using xstrat.MVVM.View;
 
@@ -75,8 +76,17 @@ namespace xstrat.Ui
         }
         public OffDay GetOffDay()
         {
-            string start = FromDatePicker.Text + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-            string end = FromDatePicker.Text + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+            DateTime tempdate = FromDatePicker.SelectedDate.GetValueOrDefault();
+            if (tempdate == null)
+            {
+                Notify.sendError("No date selected or wrong format");
+                return null;
+            }
+
+            string datestring = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
+
+            string start = datestring.Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
+            string end = datestring.Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
             OffDay offDay = new OffDay(id.GetValueOrDefault(), user_id.GetValueOrDefault(), null, TypeSelector.selectedOffDayType.id, TitleText.Text, start, end);
             return offDay;
         }

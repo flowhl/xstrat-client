@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Scrim" Height="Auto" Width="700" Background="#161616" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Title="Scrim" Height="830" Width="700" Background="#161616" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
         Deactivated="Window_Deactivated">
     <Grid>
         <StackPanel Orientation="Vertical">

@@ -76,7 +76,7 @@
                         </Style>
                     </Button.Resources>
                     <Button.Content>
-                        <MaterialDesign:PackIcon Kind="Check"></MaterialDesign:PackIcon>
+                        <MaterialDesign:PackIcon Kind="ThumbsUp"></MaterialDesign:PackIcon>
                     </Button.Content>
                 </Button>
                 <!--Deny BUTTON-->
@@ -87,7 +87,7 @@
                         </Style>
                     </Button.Resources>
                     <Button.Content>
-                        <MaterialDesign:PackIcon Kind="Close"></MaterialDesign:PackIcon>
+                        <MaterialDesign:PackIcon Kind="ThumbsDown"></MaterialDesign:PackIcon>
                     </Button.Content>
                 </Button>
                 <!--Edit BUTTON-->

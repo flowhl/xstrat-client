@@ -854,6 +854,12 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("event/save", Method.Post);
             request.RequestFormat = DataFormat.Json;
+            if(typ == 1)
+            {
+                start = start.Split(' ')[0] + " 00:00:00";
+                end = start.Split(' ')[0] + " 23:59:59";
+            }
+
             request.AddJsonBody(new {id = id, typ = typ, title = title, start = start, end = end });
 
             var response = await client.ExecuteAsync<RestResponse>(request);

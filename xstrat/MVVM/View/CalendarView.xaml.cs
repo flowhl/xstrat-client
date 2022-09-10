@@ -392,6 +392,11 @@ namespace xstrat.MVVM.View
                 stitle = od.title;
             }
 
+            if(od.typ == 1)
+            {
+                return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | entire day";
+            }
+
             string sstart = "";
             string send = "";
             try

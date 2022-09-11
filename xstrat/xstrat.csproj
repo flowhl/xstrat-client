@@ -303,10 +303,7 @@
     <Compile Include="StratHelper\StratContentControl.xaml.cs">
       <DependentUpon>StratContentControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StratHelper\StratHelper.cs" />
-    <Compile Include="StratHelper\Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="StratHelper\xStratHelper.cs" />
     <Compile Include="Ui\CalendarEventInfo.xaml.cs">
       <DependentUpon>CalendarEventInfo.xaml</DependentUpon>
     </Compile>
@@ -453,23 +450,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StratHelper\Resources\DesignerItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="StratHelper\Resources\ResizeRotateChrome.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="StratHelper\Resources\SizeChrome.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="StratHelper\StratContentControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="StratHelper\Window1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

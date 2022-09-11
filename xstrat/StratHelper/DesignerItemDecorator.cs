@@ -7,7 +7,7 @@ using System.Windows.Documents;
 using System.Windows;
 using System.Windows.Media;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     public class DesignerItemDecorator : Control
     {

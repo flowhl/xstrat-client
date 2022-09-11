@@ -3,8 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using xstrat.StratHelper;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     public class MoveThumb : Thumb
     {
@@ -39,7 +40,7 @@ namespace DiagramDesigner
                     dragDelta = this.rotateTransform.Transform(dragDelta);
                 }
 
-                StratHelper.window.DragMove(dragDelta);
+                xStratHelper.stratView.PointDragMove(dragDelta);
             }
         }
     }

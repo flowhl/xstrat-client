@@ -46,7 +46,9 @@ namespace DiagramDesigner
                 {
                     ContentControl designerItem = this.DataContext as ContentControl;
                     Canvas canvas = VisualTreeHelper.GetParent(designerItem) as Canvas;
-                    this.adorner = new ResizeRotateAdorner(designerItem);
+                    this.adorner = new Resize
+                        
+                        Adorner(designerItem);
                     adornerLayer.Add(this.adorner);
 
                     if (this.ShowDecorator)

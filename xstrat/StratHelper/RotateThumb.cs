@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     public class RotateThumb : Thumb
     {
@@ -62,9 +62,17 @@ namespace DiagramDesigner
                 Vector deltaVector = Point.Subtract(currentPoint, this.centerPoint);
 
                 double angle = Vector.AngleBetween(this.startVector, deltaVector);
-
                 RotateTransform rotateTransform = this.designerItem.RenderTransform as RotateTransform;
-                rotateTransform.Angle = this.initialAngle + Math.Round(angle, 0);
+                if (!Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    angle = Math.Round(angle / 45.0) *45;
+                    rotateTransform.Angle = this.initialAngle + Math.Round(angle, 0);
+                }
+                else
+                {
+                    rotateTransform.Angle = Math.Round(angle, 0);
+                }
+
                 this.designerItem.InvalidateMeasure();
             }
         }

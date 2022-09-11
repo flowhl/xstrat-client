@@ -446,7 +446,6 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\MVVM\View\TeamView.
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Overlay\OverlayStep.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Overlay\RoutineOverlay.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\StratContentControl.g.cs
-D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Window1.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\CalendarEventInfo.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\ColorDisplay.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\LicenseInfo.g.cs
@@ -488,11 +487,7 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\MVVM\View\StratMake
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\MVVM\View\TeamView.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Overlay\OverlayStep.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Overlay\RoutineOverlay.baml
-D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\DesignerItem.baml
-D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\ResizeRotateChrome.baml
-D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Resources\SizeChrome.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\StratContentControl.baml
-D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\StratHelper\Window1.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\CalendarEventInfo.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\ColorDisplay.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\Ui\LicenseInfo.baml

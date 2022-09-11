@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -18,6 +19,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.StratHelper;
+using XStrat;
 
 namespace xstrat.MVVM.View
 {
@@ -27,6 +30,8 @@ namespace xstrat.MVVM.View
     public partial class StratMakerView : UserControl
     {
         private List<XMap> maps = new List<XMap>();
+
+        Image draggedItem;
 
         public ToolTip CurrentToolTip;
         public Brush CurrentBrush = null;
@@ -40,6 +45,7 @@ namespace xstrat.MVVM.View
 
         public StratMakerView()
         {
+            xStratHelper.stratView = this;
             InitializeComponent();
             Opened();
         }
@@ -77,10 +83,15 @@ namespace xstrat.MVVM.View
         private void StratMakerView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             deleteFromCanvasLoop = true;
+            if(!DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.IsMouseOver).Any())
+            {
+                DeselectAll();
+            }
             if(CurrentToolTip == View.ToolTip.Eraser)
             {
                 DeleteFromCanvas();
             }
+
         }
 
         private void ZoomControl_ZoomChanged(object sender, EventArgs e)
@@ -105,11 +116,17 @@ namespace xstrat.MVVM.View
                     Image newImg = new Image();
                     newImg.Source = new BitmapImage(new Uri(item, UriKind.Absolute));
                     newImg.MouseMove += Image_MouseMove;
+                    newImg.MouseLeftButtonDown += NewImg_MouseLeftButtonDown;
                     newImg.Name = System.IO.Path.GetFileName(item.ToString()).Replace(".png", "");
                     newImg.Margin = new Thickness(10);
                     IconsSP.Children.Add(newImg);
                 }
             }
+        }
+
+        private void NewImg_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            draggedItem = sender as Image;
         }
 
         private void UpdateFloorButtons()
@@ -348,7 +365,37 @@ namespace xstrat.MVVM.View
 
         private void ZoomControl_Drop(object sender, DragEventArgs e)
         {
+            if (draggedItem == null) return;
+            try
+            {
 
+                var newpos = e.GetPosition(DrawingLayer);
+
+                newpos.X -= 25;
+                newpos.Y -= 25;
+
+                Image newimg = new Image();
+                newimg.IsHitTestVisible = false;
+                newimg.Source = draggedItem.Source;
+
+                StratContentControl newcc = new StratContentControl();
+                newcc.Content = newimg;
+                newcc.Height = 50;
+                newcc.Width = 50;
+                newcc.Padding = new Thickness(1);
+                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+
+                DrawingLayer.Children.Add(newcc);
+
+                Canvas.SetLeft(newcc, newpos.X);
+                Canvas.SetTop(newcc, newpos.Y);
+
+            }
+            catch(Exception ex)
+            {
+                Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+            }
+            draggedItem = null;
         }
 
         private void BtnUndo_Click(object sender, RoutedEventArgs e)
@@ -465,6 +512,30 @@ namespace xstrat.MVVM.View
                 ZoomControl.Zoom(ZoomSlider.Value);
             }
         }
+
+        #region Helpers for XStrathelper
+
+        public void PointDragMove(Point p)
+        {
+            foreach (Control child in DrawingLayer.Children.OfType<Control>())
+            {
+                if (Selector.GetIsSelected(child))
+                {
+                    Canvas.SetLeft(child, Canvas.GetLeft(child) + p.X);
+                    Canvas.SetTop(child, Canvas.GetTop(child) + p.Y);
+                }
+            }
+
+        }
+
+        public void DeselectAll()
+        {
+            foreach (Control child in DrawingLayer.Children.OfType<Control>())
+            {
+                Selector.SetIsSelected(child, false);
+            }
+        }
+        #endregion
     }
     public enum ToolTip
     {

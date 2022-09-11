@@ -154,7 +154,7 @@ namespace xstrat.Ui
                 case Wallstates.solid: //blue -> default
                     return new SolidColorBrush(Colors.CornflowerBlue);
                 case Wallstates.removed: //transparent
-                    return new SolidColorBrush(Colors.Transparent);
+                    return "#303030".ToSolidColorBrush();
                 case Wallstates.rotation: //
                     return new SolidColorBrush(Colors.DeepPink);
                 case Wallstates.mira: // mira purple

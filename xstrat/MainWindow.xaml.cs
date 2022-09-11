@@ -8,6 +8,7 @@ using Squirrel;
 using System;
 using System.Threading;
 using System.Globalization;
+using XStrat;
 
 namespace xstrat
 {

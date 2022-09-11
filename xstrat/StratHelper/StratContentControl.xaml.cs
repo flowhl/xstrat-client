@@ -13,8 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using xstrat.StratHelper;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     /// <summary>
     /// Interaction logic for StratContentControl.xaml
@@ -32,8 +33,7 @@ namespace DiagramDesigner
             Selection = !Selection;
             if (!Keyboard.IsKeyDown(Key.LeftShift))
             {
-
-                StratHelper.window.DeselectAll();
+                xStratHelper.stratView.DeselectAll();
                 Selector.SetIsSelected(this, Selection);
             }
             Selector.SetIsSelected(this, Selection);           

@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     public class ResizeThumb : Thumb
     {
@@ -67,15 +67,43 @@ namespace DiagramDesigner
                 {
                     case System.Windows.VerticalAlignment.Bottom:
                         deltaVertical = Math.Min(-e.VerticalChange, this.designerItem.ActualHeight - this.designerItem.MinHeight);
-                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + (this.transformOrigin.Y * deltaVertical * (1 - Math.Cos(-this.angle))));
-                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) - deltaVertical * this.transformOrigin.Y * Math.Sin(-this.angle));
-                        this.designerItem.Height -= deltaVertical;
                         break;
                     case System.Windows.VerticalAlignment.Top:
                         deltaVertical = Math.Min(e.VerticalChange, this.designerItem.ActualHeight - this.designerItem.MinHeight);
-                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaVertical * Math.Cos(-this.angle) + (this.transformOrigin.Y * deltaVertical * (1 - Math.Cos(-this.angle))));
-                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaVertical * Math.Sin(-this.angle) - (this.transformOrigin.Y * deltaVertical * Math.Sin(-this.angle)));
-                        this.designerItem.Height -= deltaVertical;
+                        break;
+                    default:
+                        deltaVertical = 0;
+                        break;
+                }
+                switch (HorizontalAlignment)
+                {
+                    case System.Windows.HorizontalAlignment.Left:
+                        deltaHorizontal = Math.Min(e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
+                        break;
+                    case System.Windows.HorizontalAlignment.Right:
+                        deltaHorizontal = Math.Min(-e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
+                        break;
+                    default:
+                        deltaHorizontal = 0;
+                        break;
+                }
+
+                double deltaAll = deltaVertical;
+
+                if(deltaVertical < deltaHorizontal) 
+                    deltaAll = deltaHorizontal;
+
+                switch (VerticalAlignment)
+                {
+                    case System.Windows.VerticalAlignment.Bottom:
+                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + (this.transformOrigin.Y * deltaAll * (1 - Math.Cos(-this.angle))));
+                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) - deltaAll * this.transformOrigin.Y * Math.Sin(-this.angle));
+                        this.designerItem.Height -= deltaAll;
+                        break;
+                    case System.Windows.VerticalAlignment.Top:
+                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaAll * Math.Cos(-this.angle) + (this.transformOrigin.Y * deltaAll * (1 - Math.Cos(-this.angle))));
+                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaAll * Math.Sin(-this.angle) - (this.transformOrigin.Y * deltaAll * Math.Sin(-this.angle)));
+                        this.designerItem.Height -= deltaAll;
                         break;
                     default:
                         break;
@@ -84,20 +112,55 @@ namespace DiagramDesigner
                 switch (HorizontalAlignment)
                 {
                     case System.Windows.HorizontalAlignment.Left:
-                        deltaHorizontal = Math.Min(e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
-                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaHorizontal * Math.Sin(this.angle) - this.transformOrigin.X * deltaHorizontal * Math.Sin(this.angle));
-                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaHorizontal * Math.Cos(this.angle) + (this.transformOrigin.X * deltaHorizontal * (1 - Math.Cos(this.angle))));
-                        this.designerItem.Width -= deltaHorizontal;
+                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaAll * Math.Sin(this.angle) - this.transformOrigin.X * deltaAll * Math.Sin(this.angle));
+                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaAll * Math.Cos(this.angle) + (this.transformOrigin.X * deltaAll * (1 - Math.Cos(this.angle))));
+                        this.designerItem.Width -= deltaAll;
                         break;
                     case System.Windows.HorizontalAlignment.Right:
-                        deltaHorizontal = Math.Min(-e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
-                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) - this.transformOrigin.X * deltaHorizontal * Math.Sin(this.angle));
-                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + (deltaHorizontal * this.transformOrigin.X * (1 - Math.Cos(this.angle))));
-                        this.designerItem.Width -= deltaHorizontal;
+                        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) - this.transformOrigin.X * deltaAll * Math.Sin(this.angle));
+                        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + (deltaAll * this.transformOrigin.X * (1 - Math.Cos(this.angle))));
+                        this.designerItem.Width -= deltaAll;
                         break;
                     default:
                         break;
                 }
+
+
+                //switch (VerticalAlignment)
+                //{
+                //    case System.Windows.VerticalAlignment.Bottom:
+                //        deltaVertical = Math.Min(-e.VerticalChange, this.designerItem.ActualHeight - this.designerItem.MinHeight);
+                //        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + (this.transformOrigin.Y * deltaVertical * (1 - Math.Cos(-this.angle))));
+                //        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) - deltaVertical * this.transformOrigin.Y * Math.Sin(-this.angle));
+                //        this.designerItem.Height -= deltaVertical;
+                //        break;
+                //    case System.Windows.VerticalAlignment.Top:
+                //        deltaVertical = Math.Min(e.VerticalChange, this.designerItem.ActualHeight - this.designerItem.MinHeight);
+                //        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaVertical * Math.Cos(-this.angle) + (this.transformOrigin.Y * deltaVertical * (1 - Math.Cos(-this.angle))));
+                //        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaVertical * Math.Sin(-this.angle) - (this.transformOrigin.Y * deltaVertical * Math.Sin(-this.angle)));
+                //        this.designerItem.Height -= deltaVertical;
+                //        break;
+                //    default:
+                //        break;
+                //}
+
+                //switch (HorizontalAlignment)
+                //{
+                //    case System.Windows.HorizontalAlignment.Left:
+                //        deltaHorizontal = Math.Min(e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
+                //        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaHorizontal * Math.Sin(this.angle) - this.transformOrigin.X * deltaHorizontal * Math.Sin(this.angle));
+                //        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaHorizontal * Math.Cos(this.angle) + (this.transformOrigin.X * deltaHorizontal * (1 - Math.Cos(this.angle))));
+                //        this.designerItem.Width -= deltaHorizontal;
+                //        break;
+                //    case System.Windows.HorizontalAlignment.Right:
+                //        deltaHorizontal = Math.Min(-e.HorizontalChange, this.designerItem.ActualWidth - this.designerItem.MinWidth);
+                //        Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) - this.transformOrigin.X * deltaHorizontal * Math.Sin(this.angle));
+                //        Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + (deltaHorizontal * this.transformOrigin.X * (1 - Math.Cos(this.angle))));
+                //        this.designerItem.Width -= deltaHorizontal;
+                //        break;
+                //    default:
+                //        break;
+                //}
             }
 
             e.Handled = true;

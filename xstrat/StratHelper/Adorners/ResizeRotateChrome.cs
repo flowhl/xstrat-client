@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace DiagramDesigner
+namespace XStrat
 {
     public class ResizeRotateChrome : Control
     {

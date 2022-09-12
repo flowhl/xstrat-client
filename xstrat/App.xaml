@@ -375,6 +375,16 @@
                 </Setter>
             </Style>
             
+            <!--Button-->
+            
+            <!--<Style TargetType="{x:Type Button}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>-->
+            
             <!--Adoner stuff-->
 
             <ControlTemplate x:Key="MoveThumbTemplate"  TargetType="{x:Type s:MoveThumb}">

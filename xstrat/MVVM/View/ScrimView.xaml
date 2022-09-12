@@ -15,7 +15,7 @@
                     <Grid Height="Auto" Margin="10">
                         <StackPanel Orientation="Vertical">
                             <Grid>
-                                <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold">Your Scrims:</Label>
+                                <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold">Your Events:</Label>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button HorizontalAlignment="Right" Height="40" Width="40" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="10" Click="ReloadBtn_Click">

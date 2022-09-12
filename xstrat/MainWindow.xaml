@@ -174,7 +174,7 @@
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding CalendarViewCommand}"/>
 
-                    <RadioButton Content="Scrims"
+                    <RadioButton Content="Events"
                              Height="50"
                              Foreground="White"
                              FontSize="14"

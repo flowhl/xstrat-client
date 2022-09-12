@@ -73,6 +73,9 @@
                                         <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCursor" Click="BtnCursor_Click" BorderBrush="#336CB5">
                                             <MaterialDesign:PackIcon Kind="CursorDefaultOutline" Foreground="White"></MaterialDesign:PackIcon>
                                         </Button>
+                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnBrush" Click="BtnBrush_Click" BorderBrush="#336CB5">
+                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="White"></MaterialDesign:PackIcon>
+                                        </Button>
                                         <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnEraser" Click="BtnEraser_Click" BorderBrush="#336CB5">
                                             <MaterialDesign:PackIcon Kind="Trash" Foreground="White"></MaterialDesign:PackIcon>
                                         </Button>

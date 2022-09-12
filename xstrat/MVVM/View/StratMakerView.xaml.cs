@@ -94,6 +94,7 @@ namespace xstrat.MVVM.View
 
         }
 
+
         private void ZoomControl_ZoomChanged(object sender, EventArgs e)
         {
             if(ZoomSlider != null)
@@ -101,6 +102,8 @@ namespace xstrat.MVVM.View
                 ZoomSlider.Value = ZoomControl.ZoomValue * 100;
             }
         }
+
+        #region Drag Items
 
         private void LoadDragItems()
         {
@@ -123,11 +126,64 @@ namespace xstrat.MVVM.View
                 }
             }
         }
-
+        
         private void NewImg_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             draggedItem = sender as Image;
         }
+
+        private void ZoomControl_Drop(object sender, DragEventArgs e)
+        {
+            if (draggedItem == null) return;
+            try
+            {
+
+                var newpos = e.GetPosition(DrawingLayer);
+
+                newpos.X -= 25;
+                newpos.Y -= 25;
+
+                Image newimg = new Image();
+                newimg.IsHitTestVisible = false;
+                newimg.Source = draggedItem.Source;
+
+                StratContentControl newcc = new StratContentControl();
+                newcc.Content = newimg;
+                newcc.Height = 50;
+                newcc.Width = 50;
+                newcc.Padding = new Thickness(1);
+                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                newcc.BorderBrush = Brushes.Transparent;
+                newcc.BorderThickness = new Thickness(2);
+
+                DrawingLayer.Children.Add(newcc);
+
+                Canvas.SetLeft(newcc, newpos.X);
+                Canvas.SetTop(newcc, newpos.Y);
+
+                DeselectAll();
+                Selector.SetIsSelected(newcc, true);
+                SetBrushToItem();
+            }
+            catch (Exception ex)
+            {
+                Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+            }
+            draggedItem = null;
+        }
+
+        private void SetBrushToItem()
+        {
+            var items = DrawingLayer.Children.OfType<StratContentControl>().Where(x => Selector.GetIsSelected(x));
+            foreach (var item in items)
+            {
+                item.BorderBrush = CurrentBrush;
+            }
+        }
+
+        #endregion
+
+        #region Colors
 
         private void UpdateFloorButtons()
         {
@@ -188,6 +244,8 @@ namespace xstrat.MVVM.View
 
                 SPColors.Children.Add(newBtn);
             }
+            var firstButton = SPColors.Children.OfType<Button>().FirstOrDefault();
+            if (firstButton != null) ColorBtnClicked(firstButton, RoutedEventArgs.Empty as RoutedEventArgs);
 
         }
 
@@ -197,11 +255,11 @@ namespace xstrat.MVVM.View
             User teammate = Globals.getUserFromId(Globals.getUserIdFromName(user));
             CurrentBrush = teammate.color.ToSolidColorBrush();
             DeselectAllColors();
-            (sender as Button).BorderThickness = new Thickness(1);
-            ToolTipChanged(View.ToolTip.Brush);
+            (sender as Button).BorderThickness = new Thickness(2);
+            SetBrushToItem();
         }
 
-        private void DeselectAllColors()
+        public void DeselectAllColors()
         {
             foreach (var item in SPColors.Children)
             {
@@ -209,9 +267,11 @@ namespace xstrat.MVVM.View
             }
         }
 
+        #endregion
+
         #region ToolTips
 
-        private void ToolTipChanged(ToolTip tip)
+        public void ToolTipChanged(ToolTip tip)
         {
             switch (tip)
             {
@@ -261,16 +321,12 @@ namespace xstrat.MVVM.View
                     DeselectAllToolTips();
                     break;  
             }
-            if(tip != View.ToolTip.Brush)
-            {
-                DeselectAllColors();
-            }
-
         }
 
         private void DeselectAllToolTips()
         {
             BtnCursor.BorderThickness = new Thickness(0);
+            BtnBrush.BorderThickness = new Thickness(0);
             BtnEraser.BorderThickness = new Thickness(0);
             BtnText.BorderThickness = new Thickness(0);
             BtnNodes.BorderThickness = new Thickness(0);
@@ -363,40 +419,6 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private void ZoomControl_Drop(object sender, DragEventArgs e)
-        {
-            if (draggedItem == null) return;
-            try
-            {
-
-                var newpos = e.GetPosition(DrawingLayer);
-
-                newpos.X -= 25;
-                newpos.Y -= 25;
-
-                Image newimg = new Image();
-                newimg.IsHitTestVisible = false;
-                newimg.Source = draggedItem.Source;
-
-                StratContentControl newcc = new StratContentControl();
-                newcc.Content = newimg;
-                newcc.Height = 50;
-                newcc.Width = 50;
-                newcc.Padding = new Thickness(1);
-                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-
-                DrawingLayer.Children.Add(newcc);
-
-                Canvas.SetLeft(newcc, newpos.X);
-                Canvas.SetTop(newcc, newpos.Y);
-
-            }
-            catch(Exception ex)
-            {
-                Notify.sendError("Error creating ContentControl for image: " + ex.Message);
-            }
-            draggedItem = null;
-        }
 
         private void BtnUndo_Click(object sender, RoutedEventArgs e)
         {
@@ -534,6 +556,11 @@ namespace xstrat.MVVM.View
             {
                 Selector.SetIsSelected(child, false);
             }
+        }
+        
+        public void RequestRemove(StratContentControl item)
+        {
+            DrawingLayer.Children.Remove(item);
         }
         #endregion
     }

@@ -22,6 +22,7 @@ namespace XStrat
     /// </summary>
     public partial class StratContentControl : UserControl
     {
+        DateTime LastDown;
         public bool Selection { get; set; }
         public StratContentControl()
         {
@@ -30,22 +31,45 @@ namespace XStrat
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
             Selection = !Selection;
             if (!Keyboard.IsKeyDown(Key.LeftShift))
             {
                 xStratHelper.stratView.DeselectAll();
                 Selector.SetIsSelected(this, Selection);
             }
-            Selector.SetIsSelected(this, Selection);           
-
+            Selector.SetIsSelected(this, Selection);
+            LastDown = DateTime.Now;
         }
 
         private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if(xStratHelper.stratView.CurrentToolTip == xstrat.MVVM.View.ToolTip.Eraser)
+            {
+                xStratHelper.stratView.RequestRemove(this);
+                return;
+            }
+            if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
             if (!Selection)
             {
                 Selector.SetIsSelected(this, true);
+                LastDown = DateTime.Now;
             }
+        }
+
+        private void UserControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
+            if (!Selection)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && (DateTime.Now - LastDown).TotalMilliseconds < 100)
+                {
+                    xStratHelper.stratView.DeselectAll();
+                    Selector.SetIsSelected(this, true);
+                }
+                Selector.SetIsSelected(this, true);
+            }
+
         }
     }
 }

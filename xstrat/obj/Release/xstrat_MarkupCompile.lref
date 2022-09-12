@@ -17,11 +17,7 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\StratMakerView.xam
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\TeamView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Overlay\OverlayStep.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Overlay\RoutineOverlay.xaml;;
-FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\Resources\DesignerItem.xaml;;
-FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\Resources\ResizeRotateChrome.xaml;;
-FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\Resources\SizeChrome.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\StratContentControl.xaml;;
-FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\Window1.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\CalendarEventInfo.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ColorDisplay.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\LicenseInfo.xaml;;
@@ -34,6 +30,7 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\Routine.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\RoutineStep.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ScrimControl.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ScrimFinderControl.xaml;;
+FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ScrimParticipationControl.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ScrimWindow.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\TeamDashboard.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\Teammate.xaml;;
@@ -41,5 +38,4 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\DataSelector.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ToggleSwitch.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\UserCheckbox.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\WallControl.xaml;;
-FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ScrimParticipationControl.xaml;;
 

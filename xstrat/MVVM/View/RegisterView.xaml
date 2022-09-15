@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="775" d:DesignWidth="1150">
+             d:DesignHeight="775" d:DesignWidth="1150"
+             KeyDown="UserControl_KeyDown">
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,-65,0,0" CanVerticallyScroll="False" VerticalAlignment="Center">
             <Image Source="/Images/slogan.png" Width="250" Height="65"/>
@@ -26,9 +27,10 @@
             <Border Background="#202020" CornerRadius="10" Margin="0,20,0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon x:Name="PwIcon" HorizontalAlignment="Center" Kind="Password" VerticalAlignment="Center" Foreground="white" Margin="10,0,0,0"/>
-                    <PasswordBox x:Name="password" Height="30" Width="200" CaretBrush="White" Background="Transparent" BorderThickness="0" Password="" Margin="5,5,5,5" VerticalContentAlignment="Center"  Foreground="White"></PasswordBox>
+                    <PasswordBox x:Name="password" Height="30" Width="200" CaretBrush="White" Background="Transparent" BorderThickness="0" Password="" Margin="5,5,5,5" VerticalContentAlignment="Center"  Foreground="White" PasswordChanged="password_PasswordChanged"></PasswordBox>
                 </StackPanel>
             </Border>
+            <Border HorizontalAlignment="Left" Height="8" Margin="5" Width="0" CornerRadius="3" Background="#336cb5" Name="StrengthSlider"></Border>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0"/>
             <Button Height="40" Width="250" Name="RegisterBtn" Foreground="White" Content="Register" FontSize="17" Background="#202020" BorderThickness="0" Margin="0,10,0,0" Click="RegisterBtn_Click">
                 <Button.Resources>

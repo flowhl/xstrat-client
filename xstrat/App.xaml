@@ -50,8 +50,11 @@
             <DataTemplate DataType="{x:Type viewModel:LicenseViewModel}">
                 <view:LicenseView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:LoadingViewModel}">
+                <view:LoadingView/>
+            </DataTemplate>
 
-    <!--**************************
+            <!--**************************
     * STYLE: MenuItem
     ************************** -->
             <SolidColorBrush x:Key="HighlightedBackgroundBrush" Color="#336cb5" />

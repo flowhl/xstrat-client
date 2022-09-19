@@ -31,6 +31,15 @@ namespace xstrat.Ui
             InitializeComponent();
             Loaded += LicenseInfo_Loaded;
         }
+        public LicenseInfo(bool hideEnterOption)
+        {
+            InitializeComponent();
+            Loaded += LicenseInfo_Loaded;
+            if (hideEnterOption)
+            {
+                EnterPanel.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void LicenseInfo_Loaded(object sender, RoutedEventArgs e)
         {

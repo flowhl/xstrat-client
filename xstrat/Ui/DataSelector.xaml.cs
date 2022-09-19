@@ -24,8 +24,7 @@ namespace xstrat.Ui
     /// Interaction logic for TeammateSelector.xaml
     /// </summary>
     public partial class DataSelector : UserControl
-    {  
-       
+    {
         public User selectedUser { get; set; } = null;
         public Game selectedGame { get; set; } = null;
         public OffDayType selectedOffDayType = null;

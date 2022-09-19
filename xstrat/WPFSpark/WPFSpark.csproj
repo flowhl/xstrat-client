@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\Images\wpfspark.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageVersion>1.5.0</PackageVersion>
+    <Authors>Ratish Philip</Authors>
+    <RepositoryUrl>https://github.com/ratishphilip/wpfspark</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIcon>wpfspark.png</PackageIcon>
+    <Copyright>Copyright Ratish Philip</Copyright>
+    <Description>WPFSpark is a library of rich user controls which can be used to enrich your application's UI. The library contains the following controls - SprocketControl, ToggleSwitch, FluidWrapPanel, SparkWindow, FluidPivotPanel, FluidProgressBar and FluidStatusBar.</Description>
+    <PackageReleaseNotes>This package contains the WPFSpark library for dotnet Core 3.1 and dotnet 5.0 apps.</PackageReleaseNotes>
+    <PackageTags>WPFSpark</PackageTags>
+  </PropertyGroup>
+
+
+</Project>

@@ -57,17 +57,20 @@ namespace xstrat.Core
         public static List<List<ScrimParticipationResult>> PlayerScrimParticipation = new List<List<ScrimParticipationResult>>();
         public static List<PlayerScrimParticipationPercentage> PlayerScrimParticipationPercentages = new List<PlayerScrimParticipationPercentage>();
 
-        public static void Init()
+        public async static Task Init()
         {
-            RetrieveData();
+            await RetrieveData();
         }
 
-        public static void RetrieveData()
+        public static async Task RetrieveData()
         {
             if ((DateTime.Now - LastRetrieve).TotalMinutes <= 5) return;
-            StartRetrieveStatsData();
-            StartRetrieveStatsAllSeasons();
+            Globals.wnd.SetLoadingStatus("Loading Stats Data");
+            await StartRetrieveStatsData();
+            Globals.wnd.SetLoadingStatus("Loading Stats Data for season");
+            await StartRetrieveStatsAllSeasons();
             LastRetrieve = DateTime.Now;
+            Globals.wnd.SetLoadingStatus("");
         }
 
         #region stats
@@ -313,7 +316,8 @@ namespace xstrat.Core
             "Crystal Guard", // September 7, 2021
             "High Calibre", // November 30, 2021
             "Demon Veil", // March 15, 2022
-            "Vector Glare" // June 14, 2022
+            "Vector Glare", // June 14, 2022
+            "Brutal Swarm" // September 6, 2022
             };
 
         public static string[] IconPaths = new string[]{
@@ -558,20 +562,28 @@ namespace xstrat.Core
             return teammate.name;
         }
 
-        public static void Init()
+        public async static void Init()
         {
             if (wnd.IsLoggedIn)
             {
+                wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveTeamMates();
                 RetrieveGames();
+                wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveOffDayTypes();
+                wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveCalendarFilterTypes();
+                wnd.SetLoadingStatus("Retrieving maps");
                 RetrieveMaps();
                 RetrieveScrimModes();
                 RetrieveEventTypes();
+                wnd.SetLoadingStatus("Retrieving team");
                 RetrieveTeamName();
+                wnd.SetLoadingStatus("Retrieving admin status");
                 RetrieveAdminStatusAsync();
+                wnd.SetLoadingStatus("Retrieving team info");
                 RetrieveTeamInfoAsync();
+                wnd.SetLoadingStatus("");
             }
         }
 
@@ -582,7 +594,7 @@ namespace xstrat.Core
             AdminUser = result.Item1;
         }
 
-        public static async void RetrieveTeamName()
+        public static async Task RetrieveTeamName()
         {
 
         }
@@ -630,12 +642,11 @@ namespace xstrat.Core
             }
         }
 
-        public static async void RetrieveTeamMates()
+        public static async Task RetrieveTeamMates()
         {
             var result = await ApiHandler.TeamMembers();
             if (result.Item1)
             {
-                string resultJson = result.Item2;
                 string response = result.Item2;
                 //convert to json instance
                 JObject json = JObject.Parse(response);
@@ -651,8 +662,8 @@ namespace xstrat.Core
                     Notify.sendError("Teammates could not be loaded");
                     throw new Exception("Teammates could not be loaded");
                 }
-                StatsDataSource.Init();
                 RetrieveCurrentUser();
+                await StatsDataSource.Init();
                 int max_id = 0;
                 foreach (var mate in teammates)
                 {
@@ -666,7 +677,7 @@ namespace xstrat.Core
             }
         }
 
-        public static async void RetrieveGames()
+        public static async Task RetrieveGames()
         {
             var result = await ApiHandler.Games();
             if (result.Item1)
@@ -710,7 +721,7 @@ namespace xstrat.Core
             CalendarFilterTypes.Add(new CalendarFilterType(2, "min specific players"));
             CalendarFilterTypes.Add(new CalendarFilterType(3, "everyone"));
         }
-        private static async void RetrieveMaps()
+        private static async Task RetrieveMaps()
         {
             var result = await ApiHandler.GetMaps();
             if (result.Item1)

@@ -8,39 +8,8 @@
              d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <Border Width="280" Height="280" Background="#202020" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,5,5,5">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label Foreground="White" FontSize="28" FontWeight="SemiBold" VerticalContentAlignment="Center">Skins:</Label>
-                        <local1:ToggleSwitch x:Name="TS" MouseLeftButtonDown="TS_MouseLeftButtonDown" Height="40" Margin="10,0,0,0" VerticalContentAlignment="Center"></local1:ToggleSwitch>
-                    </StackPanel>
-                    <Button Content="Apply" Name="ApplyBtn" Foreground="White" Background="#252525" BorderThickness="0" Margin="0,10,0,0" Height="40" Width="200" Click="ApplyBtn_Click" FontSize="20">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Label Name="Error" Foreground="Red"></Label>
-                    <Border Background="#336cb5" Height="8" BorderThickness="0" Width="200" CornerRadius="5" Margin="0,30,0,0"></Border>
-                    <Button Content="Save current as no-skin config" Name="CurrentToNoSkin" Foreground="White" Background="#252525" BorderThickness="0" Margin="0,30,0,0" Height="30" Width="200" Click="CurrentToNoSkin_Click" FontSize="14">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button Content="Save current as skin config" Name="CurrentToSkin" Foreground="White" Background="#252525" BorderThickness="0" Margin="0,5,0,0" Height="30" Width="200" Click="CurrentToSkin_Click" FontSize="14">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-
-                </StackPanel>
-            </Border>
-
+            <local1:SkinSwitcherControl></local1:SkinSwitcherControl>
+            
             <Border Width="280" Height="280" Background="#202020" Margin="10,10,10,10" CornerRadius="10" HorizontalAlignment="Right" VerticalAlignment="Top">
                 <StackPanel Orientation="Vertical">
                     <Label Foreground="White" Content="Info:" HorizontalAlignment="Center" BorderThickness="0" FontSize="18" FontWeight="SemiBold"></Label>

@@ -40,7 +40,6 @@ namespace xstrat.Ui
             AdminName.Content = "Admin: ";
             GameName.Content = "Game: ";
             TeamInfo = Globals.TeamInfo;
-            await RetrieveTeamMatesAsync();
             await CheckAdmin();
             await RetrieveColorAsync();
             DependencyObject ucParent = this.Parent;
@@ -85,7 +84,6 @@ namespace xstrat.Ui
                 ApiHandler.RemoveFromCache("TeamInfo");
                 ApiHandler.RemoveFromCache("TeamMembers");
                 Globals.RetrieveTeamInfoAsync();
-                Globals.RetrieveTeamMates();
                 Globals.RetrieveTeamName();
                 Retrieve();
             }
@@ -110,25 +108,6 @@ namespace xstrat.Ui
             DeleteAdminBtn_ClickAsync();
         }
         
-        private async Task RetrieveTeamMatesAsync()
-        {
-            if(Globals.teammates != null) { 
-
-                MemberSP.Children.Clear();
-                foreach (var user in Globals.teammates)
-                {
-                    var newItem = new Teammate(user.name, user.id, user.color);
-                    newItem.Height = 30;
-                    newItem.Width = 250;
-                    MemberSP.Children.Add(newItem);
-                }
-            }
-            else
-            {
-                Notify.sendError("Teammates could not be loaded");
-            }
-        }
-
         private async Task RetrieveColorAsync()
         {
             var result = await ApiHandler.GetColor();
@@ -164,7 +143,7 @@ namespace xstrat.Ui
                 ApiHandler.RemoveFromCache("TeamMembers");
                 Globals.RetrieveTeamMates();
                 await Task.Delay(1000);
-                RetrieveTeamMatesAsync();
+                TMControl.RetrieveTeamMatesAsync();
             }
             else
             {

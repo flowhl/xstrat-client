@@ -115,6 +115,9 @@
       <HintPath>..\packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MrMitch.Loaders, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MrMitch.Loaders.1.2.0.0\lib\net46\MrMitch.Loaders.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -260,6 +263,7 @@
     <Compile Include="Json\LicenseStatus.cs" />
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\LoadingViewModel.cs" />
     <Compile Include="MVVM\ViewModel\RoutinesViewModel.cs" />
     <Compile Include="MVVM\ViewModel\ScrimViewModel.cs" />
     <Compile Include="MVVM\ViewModel\StatsViewModel.cs" />
@@ -270,6 +274,9 @@
     </Compile>
     <Compile Include="MVVM\View\LicenseView.xaml.cs">
       <DependentUpon>LicenseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\LoadingView.xaml.cs">
+      <DependentUpon>LoadingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\RoutinesView.xaml.cs">
       <DependentUpon>RoutinesView.xaml</DependentUpon>
@@ -303,6 +310,7 @@
     <Compile Include="StratHelper\StratContentControl.xaml.cs">
       <DependentUpon>StratContentControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StratHelper\StratEnums.cs" />
     <Compile Include="StratHelper\xStratHelper.cs" />
     <Compile Include="Ui\CalendarEventInfo.xaml.cs">
       <DependentUpon>CalendarEventInfo.xaml</DependentUpon>
@@ -343,6 +351,9 @@
     <Compile Include="Ui\ScrimWindow.xaml.cs">
       <DependentUpon>ScrimWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\SkinSwitcherControl.xaml.cs">
+      <DependentUpon>SkinSwitcherControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\TeamDashboard.xaml.cs">
       <DependentUpon>TeamDashboard.xaml</DependentUpon>
     </Compile>
@@ -351,6 +362,9 @@
     </Compile>
     <Compile Include="Ui\DataSelector.xaml.cs">
       <DependentUpon>DataSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\TeamMatesControl.xaml.cs">
+      <DependentUpon>TeamMatesControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\ToggleSwitch.xaml.cs">
       <DependentUpon>ToggleSwitch.xaml</DependentUpon>
@@ -362,6 +376,39 @@
       <DependentUpon>WallControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\ZoomBorder.cs" />
+    <Compile Include="WPFSpark\Common\ClipBorder.cs" />
+    <Compile Include="WPFSpark\Common\INotifiableParent.cs" />
+    <Compile Include="WPFSpark\Common\NotifiableUIElementCollection.cs" />
+    <Compile Include="WPFSpark\Common\Utils.cs" />
+    <Compile Include="WPFSpark\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="WPFSpark\Converters\ContentVisibilityConverter.cs" />
+    <Compile Include="WPFSpark\Converters\GeometryPathConverter.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\IPivotContent.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\IPivotHeader.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\PivotContentControl.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\PivotHeaderControl.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\PivotHeaderPanel.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\PivotItem.cs" />
+    <Compile Include="WPFSpark\FluidPivotPanel\PivotPanel.cs" />
+    <Compile Include="WPFSpark\FluidProgressBar\FluidProgressBar.xaml.cs">
+      <DependentUpon>FluidProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPFSpark\FluidStatusBar\FluidStatusBar.xaml.cs">
+      <DependentUpon>FluidStatusBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPFSpark\FluidStatusBar\StatusDirection.cs" />
+    <Compile Include="WPFSpark\FluidStatusBar\StatusMessage.cs" />
+    <Compile Include="WPFSpark\FluidWrapPanel\FluidBitMatrix.cs" />
+    <Compile Include="WPFSpark\FluidWrapPanel\FluidMouseDragBehavior.cs" />
+    <Compile Include="WPFSpark\FluidWrapPanel\FluidWrapPanel.cs" />
+    <Compile Include="WPFSpark\Properties\Resources.Designer.cs" />
+    <Compile Include="WPFSpark\Properties\Settings.Designer.cs" />
+    <Compile Include="WPFSpark\SparkWindow\BlurWindowExtensions.cs" />
+    <Compile Include="WPFSpark\SparkWindow\MonitorHelper.cs" />
+    <Compile Include="WPFSpark\SparkWindow\SparkWindow.cs" />
+    <Compile Include="WPFSpark\SparkWindow\WindowMode.cs" />
+    <Compile Include="WPFSpark\SprocketControl\SprocketControl.cs" />
+    <Compile Include="WPFSpark\ToggleSwitch\ToggleSwitch.cs" />
     <Page Include="Calendar\CalendarDay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -403,6 +450,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\LicenseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\LoadingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -510,6 +561,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Ui\SkinSwitcherControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\TeamDashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -519,6 +574,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\DataSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\TeamMatesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -533,6 +592,26 @@
     <Page Include="Ui\WallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPFSpark\FluidProgressBar\FluidProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPFSpark\FluidStatusBar\FluidStatusBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPFSpark\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPFSpark\Themes\SparkWindow.Generic.Glass.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPFSpark\Themes\ToggleSwitch.Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -578,17 +657,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="WPFSpark\Properties\Resources.resx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="WPFSpark\Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Fonts\" />
+    <Folder Include="Images\R6_Maps\" />
     <Folder Include="MVVM\Model\" />
   </ItemGroup>
   <ItemGroup>
@@ -936,6 +1018,7 @@
     <Content Include="Images\R6_Icons\op_zofia.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="WPFSpark\Resources\Images\wpfspark.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

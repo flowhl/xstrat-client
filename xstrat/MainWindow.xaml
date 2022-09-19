@@ -143,22 +143,22 @@
                 </Border>
 
                 <Border Background="#101010" Grid.Row="2" CornerRadius="12">
-                    <StackPanel >
-                        <RadioButton Content="Home"
-                             Height="50"
-                             Foreground="White"
-                             FontSize="14"
-                             Style="{StaticResource MenuButtonTheme}"
-                             IsChecked="True"
-                             Command="{Binding HomeViewCommand}"/>
+                    <StackPanel Name="SPRadioButtons">
+                    <RadioButton Content="Home"
+                            Height="50"
+                            Foreground="White"
+                            FontSize="14"
+                            Style="{StaticResource MenuButtonTheme}"
+                            IsChecked="True"
+                            Command="{Binding HomeViewCommand}"/>
 
 
-                        <RadioButton Content="Strats"
-                             Height="50"
-                             Foreground="White"
-                             FontSize="14"
-                             Style="{StaticResource MenuButtonTheme}"
-                             Command="{Binding StratMakerViewCommand}"/>
+                    <RadioButton Content="Strats"
+                            Height="50"
+                            Foreground="White"
+                            FontSize="14"
+                            Style="{StaticResource MenuButtonTheme}"
+                            Command="{Binding StratMakerViewCommand}"/>
 
                     <RadioButton Content="Team"
                              Height="50"

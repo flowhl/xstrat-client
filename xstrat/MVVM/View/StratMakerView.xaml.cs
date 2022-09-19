@@ -60,8 +60,22 @@ namespace xstrat.MVVM.View
             ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
-            
+            MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
         }
+
+        private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectMap();
+        }
+
+        #region loading ui
+
+        private void SelectMap()
+        {
+            string name = StratFileHelper.GetImagePathForSpot(MapSelector.selectedMap.id, 1);
+        }
+
+        #endregion
 
         private void StratMakerView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {

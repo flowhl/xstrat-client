@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Yajm1XywOMEczkjsBuCxcwx765dQuxU4AhcEXaiohM1QowXQFkkjv9GGNig7fiqqkdAkxcboHWEl/B67uRlz3A==",
+  "success": true,
+  "projectFilePath": "D:\\Github_repos\\xstrat\\Client\\xstrat-client\\xstrat\\WPFSpark\\WPFSpark.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Florian Wahl\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.19\\microsoft.xaml.behaviors.wpf.1.1.19.nupkg.sha512",
+    "C:\\Users\\Florian Wahl\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
+  ],
+  "logs": []
+}

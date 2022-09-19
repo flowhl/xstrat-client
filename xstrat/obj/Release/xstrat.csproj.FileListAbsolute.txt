@@ -470,3 +470,17 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\bin\Release\Images\R6_Icons\o
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\bin\Release\Images\R6_Icons\op_zofia.png
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\ScrimParticipationControl.g.cs
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\ScrimParticipationControl.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\Themes\Generic.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\LoadingView.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\SkinSwitcherControl.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\TeamMatesControl.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\FluidProgressBar\FluidProgressBar.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\FluidStatusBar\FluidStatusBar.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\LoadingView.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\SkinSwitcherControl.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\TeamMatesControl.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\FluidProgressBar\FluidProgressBar.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\FluidStatusBar\FluidStatusBar.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\Themes\SparkWindow.Generic.Glass.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\Themes\ToggleSwitch.Generic.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.WPFSpark.Properties.Resources.resources

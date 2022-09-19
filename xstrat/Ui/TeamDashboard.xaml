@@ -17,19 +17,8 @@
                         <Label Name="GameName" Foreground="White" FontSize="16" FontWeight="Normal" Margin="0,-5,0,0" HorizontalAlignment="Center"></Label>
                     </StackPanel>
                 </Border>
-                <Border BorderThickness="0" Background="#161616" CornerRadius="10" Width="350" Height="330" Margin="10,10,10,10" HorizontalAlignment="Left" Name="MatesPanel">
-                    <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                        <Label Foreground="White" FontSize="24" FontWeight="SemiBold" Margin="0,5,0,0" HorizontalAlignment="Center">Member:</Label>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                            <Label Margin="94,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="15" FontWeight="SemiBold">Name</Label>
-                            <Label Margin="48,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="15" FontWeight="SemiBold">Color</Label>
-                            <Label Margin="20,0,0,0" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold">ID</Label>
-                        </StackPanel>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="240" Margin="0,0,0,0">
-                            <StackPanel Orientation="Vertical" Name="MemberSP"></StackPanel>
-                        </ScrollViewer>
-                    </StackPanel>
-                </Border>
+
+                <local:TeamMatesControl x:Name="TMControl"></local:TeamMatesControl>
             </StackPanel>
 
             <StackPanel Orientation="Vertical">

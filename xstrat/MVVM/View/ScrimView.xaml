@@ -45,7 +45,6 @@
                             </Grid>
                             <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel Name="ScrimListPanel" Margin="10" Orientation="Vertical" >
-
                                 </StackPanel>
                             </ScrollViewer>
 

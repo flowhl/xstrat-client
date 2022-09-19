@@ -22,7 +22,7 @@
                         <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,5,0,10" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Label Foreground="White" VerticalAlignment="Center" FontSize="13">Map:</Label>
-                                <local1:DataSelector type="5" Width="200" Margin="5,5,25,5"></local1:DataSelector>
+                                <local1:DataSelector type="5" Width="200" Margin="5,5,25,5" x:Name="MapSelector"></local1:DataSelector>
                                 <Button Foreground="#336CB5" Background="Transparent" BorderThickness="0" Name="BtnUndo" Click="BtnUndo_Click">
                                     <MaterialDesign:PackIcon Kind="Undo" Height="25" Width="25" />
                                 </Button>

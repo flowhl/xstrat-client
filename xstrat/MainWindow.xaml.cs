@@ -9,6 +9,8 @@ using System;
 using System.Threading;
 using System.Globalization;
 using XStrat;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace xstrat
 {
@@ -18,15 +20,23 @@ namespace xstrat
     public partial class MainWindow : System.Windows.Window
     {
         MainViewModel mv;
+
+        public LoadingView lv;
+
         public bool NewlyRegistered = false;
         public bool IsLoggedIn = false;
+        public bool FinishedLoading = false;
         UpdateManager manager;
+
+        DateTime startTime = DateTime.Now;
+
         public MainWindow()
         {
             InitializeComponent();
+            mv = (MainViewModel)DataContext;
+            mv.CurrentView = mv.LoadingVM;
             SettingsHandler.Initialize();
             ApiHandler.Initialize();
-            mv = (MainViewModel)DataContext;
             Task loginTask = LoginWindowAsync();
             Loaded += MainWindow_Loaded;
             StateChanged += MainWindow_StateChanged;
@@ -122,8 +132,9 @@ namespace xstrat
                 bool verified = await ApiHandler.VerifyToken(SettingsHandler.token);
                 if(verified)
                 {
-                    IsLoggedIn = true;
                     Notify.ResumeLogging();
+                    EndLoading();
+                    IsLoggedIn = true;
                     return;
                 }
             }
@@ -147,15 +158,36 @@ namespace xstrat
             }
             ApiHandler.AddBearer(token);
             NewlyRegistered = false;
+            EndLoading();
             IsLoggedIn = true;
             Notify.ResumeLogging();
             Globals.Init();
-            mv.CurrentView = new HomeView();
         }
         public void RegisterComplete()
         {
             NewlyRegistered = true;
             mv.CurrentView = new LoginView();
+        }
+
+
+        public async void EndLoading()
+        {
+            int secondsToLoad = (int)(DateTime.Now - startTime).TotalSeconds;
+
+            var rnd = new Random();
+            int val = rnd.Next(2, 4);
+
+            if (secondsToLoad < val)
+            {
+                secondsToLoad = val - secondsToLoad;
+                await Task.Delay(secondsToLoad * 1000);
+            }
+            FinishedLoading = true;
+
+            SPRadioButtons.Children.OfType<RadioButton>().ToList().ForEach(x => x.IsChecked = false);
+
+            mv.CurrentView = mv.HomeVM;
+            //mv.CurrentView = mv.LoadingVM;
         }
 
         private void ButtonFullscreen_Click(object sender, RoutedEventArgs e)
@@ -167,6 +199,13 @@ namespace xstrat
             else
             {
                 WindowState = WindowState.Maximized;
+            }
+        }
+        public void SetLoadingStatus(string message)
+        {
+            if(lv != null)
+            {
+                lv.SetStatusMessage(message);
             }
         }
     }

@@ -880,12 +880,12 @@ namespace xstrat
         /// time = timestringfrom + | + timestringto
         /// </summary>
         /// <returns></returns>
-        public static async Task<(bool, string)> NewScrim(int typ, string title,string opponent_name, string time_start, string time_end)
+        public static async Task<(bool, string)> NewScrim(int typ, string title,string opponent_name, string time_start, string time_end, int event_type)
         {
             Waiting();
             var request = new RestRequest("scrim/new", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = time_start, time_end = time_end });
+            request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = time_start, time_end = time_end, event_type = event_type });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success

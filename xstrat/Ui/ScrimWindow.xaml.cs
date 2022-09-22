@@ -203,7 +203,7 @@ namespace xstrat.Ui
 
 
                 int? scrim_id = null;
-                var result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end);
+                var result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end, EventTypeSelector.selectedEventType.id);
                 if (result.Item1)
                 {
                     string response = result.Item2;

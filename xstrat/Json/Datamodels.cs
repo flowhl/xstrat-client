@@ -292,18 +292,24 @@ namespace xstrat.Json
         public int position_id { get; set; }
         public int version { get; set; }
         public string content { get; set; }
+        public string created_date { get; set; }
+        public int created_by { get; set; }
+        public string last_edit_time { get; set; }
 
-        public Strat(int strat_id, string name, int team_id, int game_id, int map_id, int position_id, int version, string walls, string items)
+        public Strat(string name, int team_id, int game_id, int map_id, int position_id, int version, string content, string created_date, int created_by, string last_edit_time)
         {
-            this.strat_id = strat_id;
             this.name = name;
             this.team_id = team_id;
             this.game_id = game_id;
             this.map_id = map_id;
             this.position_id = position_id;
             this.version = version;
-            this.content = walls;
+            this.content = content;
+            this.created_date = created_date;
+            this.created_by = created_by;
+            this.last_edit_time = last_edit_time;
         }
+
         public Strat()
         {
             this.strat_id = 0;

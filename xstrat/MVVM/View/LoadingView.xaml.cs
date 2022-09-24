@@ -63,6 +63,7 @@ namespace xstrat.MVVM.View
             "What's in the canister?",
             "LMG MOUNTED AND LOADED",
             "Fucking laser sights",
+            "◁◁ ▐ ▌ ▷▷",
         };
         private Random rnd = new Random();
         public LoadingView()

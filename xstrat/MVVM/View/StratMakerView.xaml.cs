@@ -582,8 +582,25 @@ namespace xstrat.MVVM.View
     {
         Cursor, Eraser, Text, Node, Arrow, Circle, Rectangle, Brush
     }
+
     public class StratContent
     {
+        public List<WallObj> wallstatus { get; set; }
+    }
+
+    public class WallObj
+    {
+        public int wallID { get; set; }
+        public int user_id { get; set; }
+        public Wallstates[] states { get; set; }
+    }
+
+    public class DragNDropObj
+    {
+        public Position pos { get; set; }
+        public int user_id { get; set; }
+        public string type { get; set; }
+        public string image { get; set; }
 
     }
 }

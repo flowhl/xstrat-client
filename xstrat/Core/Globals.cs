@@ -287,7 +287,7 @@ namespace xstrat.Core
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
         public static teamInfo TeamInfo { get; set; }
-
+        public static List<Strat> strats { get; set; } = new List<Strat>();
 
         public static string[] SeasonNames = new string[]{
             "Current Season", // API ID = 0
@@ -432,46 +432,46 @@ namespace xstrat.Core
 
         public enum Icons
         {
-            g_Alibi
-            , g_AruniGate
-            , g_Bandit
-            , g_Barb
-            , g_Barricade
-            , g_BulletProofCam
-            , g_BulletProofCamArrow
-            , g_Castle
-            , g_Claymore
-            , g_Drone
-            , g_Echo
-            , g_Ela
-            , g_Frost
-            , g_Goyo
-            , g_GoyoShieldTopDown
-            , g_ImpactGrenade
-            , g_Jager
-            , g_Kaid
-            , g_Kapkan
-            , g_Lesion
-            , g_Maestro
-            , g_MelusiBanshee
-            , g_Mira
-            , g_Mozzie
-            , g_Mute
-            , g_NitroCell
-            , g_Nomad
-            , g_Osa
-            , g_ProximityMine
-            , g_Shield
-            , g_ShieldTopDown
-            , g_Smoke
-            , g_Thunderbird
-            , g_ToxicBabe
-            , g_ToxicBabeSmoke
-            , g_TraxStingers
-            , g_Valkyrie
-            , g_Wamai
-            , g_Zero
-            , op_ace
+            //g_Alibi
+            //, g_AruniGate
+            //, g_Bandit
+            //, g_Barb
+            //, g_Barricade
+            //, g_BulletProofCam
+            //, g_BulletProofCamArrow
+            //, g_Castle
+            //, g_Claymore
+            //, g_Drone
+            //, g_Echo
+            //, g_Ela
+            //, g_Frost
+            //, g_Goyo
+            //, g_GoyoShieldTopDown
+            //, g_ImpactGrenade
+            //, g_Jager
+            //, g_Kaid
+            //, g_Kapkan
+            //, g_Lesion
+            //, g_Maestro
+            //, g_MelusiBanshee
+            //, g_Mira
+            //, g_Mozzie
+            //, g_Mute
+            //, g_NitroCell
+            //, g_Nomad
+            //, g_Osa
+            //, g_ProximityMine
+            //, g_Shield
+            //, g_ShieldTopDown
+            //, g_Smoke
+            //, g_Thunderbird
+            //, g_ToxicBabe
+            //, g_ToxicBabeSmoke
+            //, g_TraxStingers
+            //, g_Valkyrie
+            //, g_Wamai
+            //, g_Zero
+             op_ace
             , op_alibi
             , op_amaru
             , op_aruni
@@ -593,7 +593,6 @@ namespace xstrat.Core
             var result = await ApiHandler.GetAdminStatus();
             AdminUser = result.Item1;
         }
-
         public static async Task RetrieveTeamName()
         {
 
@@ -602,8 +601,6 @@ namespace xstrat.Core
         {
             currentUser = getUserFromId(SettingsHandler.current_user_id);
         }
-
-
         public static async Task RetrieveTeamInfoAsync()
         {
             var result = await ApiHandler.TeamInfo();
@@ -641,7 +638,6 @@ namespace xstrat.Core
                 Notify.sendError("Team info could not be loaded");
             }
         }
-
         public static async Task RetrieveTeamMates()
         {
             var result = await ApiHandler.TeamMembers();
@@ -676,7 +672,6 @@ namespace xstrat.Core
                 Notify.sendError("Teammates could not be loaded");
             }
         }
-
         public static async Task RetrieveGames()
         {
             var result = await ApiHandler.Games();
@@ -703,7 +698,6 @@ namespace xstrat.Core
                 Notify.sendError("Games could not be loaded");
             }
         }
-
         private static void RetrieveOffDayTypes()
         {
             OffDayTypes.Clear();
@@ -765,6 +759,32 @@ namespace xstrat.Core
             EventTypes.Add(new EventType(4, "Warmup"));
             EventTypes.Add(new EventType(5, "Match"));
             EventTypes.Add(new EventType(6, "Cup"));
+        }
+        private static async Task RetrieveStrats()
+        {
+            var result = await ApiHandler.Games();
+            if (result.Item1)
+            {
+                string resultJson = result.Item2;
+                string response = result.Item2;
+                //convert to json instance
+                JObject json = JObject.Parse(response);
+                var data = json.SelectToken("data").ToString();
+                if (data != null && data != "")
+                {
+                    List<xstrat.Json.Game> rList = JsonConvert.DeserializeObject<List<Json.Game>>(data);
+                    strats.Clear();
+                    games = rList;
+                }
+                else
+                {
+                    Notify.sendError("Games could not be loaded");
+                }
+            }
+            else
+            {
+                Notify.sendError("Games could not be loaded");
+            }
         }
 
         public static User getUserFromId(int id)

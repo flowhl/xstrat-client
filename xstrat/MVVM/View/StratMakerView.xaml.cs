@@ -352,68 +352,68 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        //private void _loadMaps()
-        //{
-        //    maps.Add(new XMap());
-        //    UpdateTopBar();
-        //}
+        private void _loadMaps()
+        {
+            maps.Add(new XMap());
+            UpdateTopBar();
+        }
 
-        //private void UpdateTopBar()
-        //{
-        //    var thickness = new Thickness(0,0,0,0);
-        //    foreach (var map in maps)
-        //    {
-        //        var mapItem = new MenuItem();
-        //        //mapItem.Name = map.Name + "MapItem";
-        //        mapItem.BorderThickness = thickness;
-        //        mapItem.Header = map.Name;
-        //        mapItem.Height = 30;
-        //        mapItem.Width = 200;
-                
-        //        List<MenuItem> subitems = new List<MenuItem>();
-        //        foreach (var pos in map.positions)
-        //        {
-        //            var posItem = new MenuItem();
-        //            //posItem.Name = pos.name + "PositionItem";
-        //            posItem.Header = pos.name;
-        //            posItem.BorderThickness = thickness;
-        //            posItem.Height = 30;
-        //            posItem.Width = 200;
-        //            foreach (var strat in pos.strats)
-        //            {
-        //                var stratItem = new MenuItem();
-        //                //stratItem.Name = strat.name + "StratItem";
-        //                stratItem.BorderThickness = thickness;
-        //                stratItem.Header = strat.name;
-        //                stratItem.Height = 30;
-        //                stratItem.Width = 200;
-        //                posItem.Items.Add(stratItem);
-        //            }
-        //            mapItem.Items.Add(posItem);
-        //        }
-        //        Menu.Items.Add(mapItem);
-        //    }
-        //}
-        //private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{/*
-        //    ImageStack.Children.Clear();
-        //    var index = MapSelector.SelectedIndex;
-        //    var images = StratHandler.getFloorsByListPos(index);
-        //    foreach (var image in images)
-        //    {
+        private void UpdateTopBar()
+        {
+            var thickness = new Thickness(0, 0, 0, 0);
+            foreach (var map in maps)
+            {
+                var mapItem = new MenuItem();
+                //mapItem.Name = map.Name + "MapItem";
+                mapItem.BorderThickness = thickness;
+                mapItem.Header = map.Name;
+                mapItem.Height = 30;
+                mapItem.Width = 200;
 
-        //        BitmapImage bi = new BitmapImage();
-        //        bi.BeginInit();
-        //        bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
-        //        bi.EndInit();
+                List<MenuItem> subitems = new List<MenuItem>();
+                foreach (var pos in map.positions)
+                {
+                    var posItem = new MenuItem();
+                    //posItem.Name = pos.name + "PositionItem";
+                    posItem.Header = pos.name;
+                    posItem.BorderThickness = thickness;
+                    posItem.Height = 30;
+                    posItem.Width = 200;
+                    foreach (var strat in pos.strats)
+                    {
+                        var stratItem = new MenuItem();
+                        //stratItem.Name = strat.name + "StratItem";
+                        stratItem.BorderThickness = thickness;
+                        stratItem.Header = strat.name;
+                        stratItem.Height = 30;
+                        stratItem.Width = 200;
+                        posItem.Items.Add(stratItem);
+                    }
+                    mapItem.Items.Add(posItem);
+                }
+                Menu.Items.Add(mapItem);
+            }
+        }
+        private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {/*
+            ImageStack.Children.Clear();
+            var index = MapSelector.SelectedIndex;
+            var images = StratHandler.getFloorsByListPos(index);
+            foreach (var image in images)
+            {
 
-        //        Image img = new Image();
-        //        img.Source = bi;
-        //        img.Height = 1080;
-        //        img.Width = 1920;
-        //        ImageStack.Children.Add(img);
-        //    */
-        //}
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
+                bi.EndInit();
+
+                Image img = new Image();
+                img.Source = bi;
+                img.Height = 1080;
+                img.Width = 1920;
+                ImageStack.Children.Add(img);
+            */
+        }
 
         private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -586,6 +586,19 @@ namespace xstrat.MVVM.View
     public class StratContent
     {
         public List<WallObj> wallstatus { get; set; }
+        public List<DragNDropObj> dragNDropObjs { get; set; }
+        public string comment { get; set; }
+        public List<int> floors { get; set; }
+
+        public static StratContent Empyt = new StratContent();
+        
+        public StratContent()
+        {
+            wallstatus = new List<WallObj>();
+            dragNDropObjs = new List<DragNDropObj>();
+            comment = "";
+            floors = new List<int>();
+        }
     }
 
     public class WallObj
@@ -601,6 +614,8 @@ namespace xstrat.MVVM.View
         public int user_id { get; set; }
         public string type { get; set; }
         public string image { get; set; }
-
+        public double diameter { get; set; }
     }
+    
+
 }

@@ -127,11 +127,12 @@
         <Border Background="#161616" BorderThickness="0" Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="234*" />
+                    <ColumnDefinition Width="893*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!--<wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" x:Name="ZoomControl" MouseMove="DrawingLayer_MouseMove" ModifierMode="None">-->
-                <local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" MouseMove="DrawingLayer_MouseMove">
+                <local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" MouseMove="DrawingLayer_MouseMove" Grid.ColumnSpan="2">
                     <Grid Name="MapContent">
                         <Canvas Name="DrawingLayer">
                         </Canvas>
@@ -142,7 +143,7 @@
                     </Grid>
                 </local1:ZoomBorder>
                 <!--</wpfext:ZoomControl>-->
-                <Expander ExpandDirection="Left" Grid.Column="1" HorizontalAlignment="Right" IsEnabled="True" Background="#171717">
+                <Expander ExpandDirection="Left" Grid.Column="2" HorizontalAlignment="Center" IsEnabled="True" Background="#171717">
                     <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
                         <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
                     </Border>

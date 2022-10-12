@@ -64,6 +64,11 @@ namespace xstrat.MVVM.View
             Events = new List<ICalendarEvent>();
             //Events.Add(new CalendarEntry() { DateFrom = DateTime.Now.AddDays(6), DateTo = DateTime.Now.AddDays(6).AddHours(1), Label = "Scrim", typ = 0 });
 
+            Loaded += CalendarView_Loaded;
+        }
+
+        private void CalendarView_Loaded(object sender, RoutedEventArgs e)
+        {
             RetrieveScrims();
             RetrieveOffDays();
             // draw days with events calendar
@@ -72,8 +77,20 @@ namespace xstrat.MVVM.View
 
             // subscribe to double cliked event
             CalendarMonthUI.CalendarEventDoubleClickedEvent += Calendar_CalendarEventDoubleClickedEvent;
+            Globals.CalendarEventCreated += Globals_CalendarEventCreated;
         }
 
+        private void Globals_CalendarEventCreated(object sender, Globals.CalendarEventCreatedArgs e)
+        {
+            if(this.IsLoaded)
+            {
+                DateTime start = new DateTime(e.Date.Year, e.Date.Month, e.Date.Day, 0, 0, 0);
+                DateTime end = new DateTime(e.Date.Year, e.Date.Month, e.Date.Day, 23, 59, 59);
+                var responseWindow = new ScrimWindow(new Core.Window { StartDateTime = start, EndDateTime = end, AvailablePlayers = new List<Player>()});
+                responseWindow.Show();
+                responseWindow.Closing += ResponseWindow_Closing;
+            }
+        }
 
         private void Calendar_CalendarEventDoubleClickedEvent(object sender, CalendarEventView e)
         {

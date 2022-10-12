@@ -12,8 +12,6 @@ namespace xstrat.Ui
 {
     public class ZoomBorder : Border
     {
-        
-
         private UIElement child = null;
         private Point origin;
         private Point start;
@@ -104,6 +102,7 @@ namespace xstrat.Ui
             tt.Y = absoluteY - st.ScaleY;
             ZoomValue = st.ScaleX;
             ZoomChanged.Invoke(this, EventArgs.Empty);
+            this.child.InvalidateVisual();
         }
 
         #region Child Events
@@ -134,6 +133,7 @@ namespace xstrat.Ui
 
                 tt.X = absoluteX - relative.X * st.ScaleX;
                 tt.Y = absoluteY - relative.Y * st.ScaleY;
+
             }
         }
 

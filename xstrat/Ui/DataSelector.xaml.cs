@@ -33,7 +33,7 @@ namespace xstrat.Ui
         public ScrimMode selectedScrimMode { get; set; } = null;
         public EventType selectedEventType { get; set; } = null;
         public int type { get; set; } = 0;
-
+        public int indexToSelect = 0;
         /// <summary>
         /// type:
         /// 1 - teammates
@@ -78,7 +78,7 @@ namespace xstrat.Ui
         public void SelectIndex(int index)
         {
             if(index < 0) return;
-            CBox.SelectedIndex = index;
+            indexToSelect = index;
         }
 
         public void UpdateUI()
@@ -90,7 +90,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
+                CBox.SelectedIndex = indexToSelect;
             }
             else if (type == 2)
             {
@@ -99,7 +99,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
+                CBox.SelectedIndex = indexToSelect;
             }
             else if(type == 3)
             {
@@ -108,8 +108,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
-
+                CBox.SelectedIndex = indexToSelect;
             }
             else if (type == 4)
             {
@@ -118,7 +117,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
+                CBox.SelectedIndex = indexToSelect;
             }
             else if (type == 5)
             {
@@ -127,6 +126,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
+                CBox.SelectedIndex = indexToSelect;
             }
             else if (type == 6)
             {
@@ -135,7 +135,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
+                CBox.SelectedIndex = indexToSelect;
             }
             else if (type == 7)
             {
@@ -144,7 +144,7 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = 0;
+                CBox.SelectedIndex = indexToSelect;
             }
         }
 

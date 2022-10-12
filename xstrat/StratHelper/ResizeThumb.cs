@@ -98,12 +98,14 @@ namespace XStrat
                     case System.Windows.VerticalAlignment.Bottom:
                         Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + (this.transformOrigin.Y * deltaAll * (1 - Math.Cos(-this.angle))));
                         Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) - deltaAll * this.transformOrigin.Y * Math.Sin(-this.angle));
-                        this.designerItem.Height -= deltaAll;
+                        double newheight = this.designerItem.Height - deltaAll;
+                        if(newheight > 0) this.designerItem.Height -= deltaAll; 
                         break;
                     case System.Windows.VerticalAlignment.Top:
                         Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaAll * Math.Cos(-this.angle) + (this.transformOrigin.Y * deltaAll * (1 - Math.Cos(-this.angle))));
                         Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaAll * Math.Sin(-this.angle) - (this.transformOrigin.Y * deltaAll * Math.Sin(-this.angle)));
-                        this.designerItem.Height -= deltaAll;
+                        double newheight2 = this.designerItem.Height - deltaAll;
+                        if (newheight2 > 0) this.designerItem.Height -= deltaAll;
                         break;
                     default:
                         break;
@@ -114,12 +116,14 @@ namespace XStrat
                     case System.Windows.HorizontalAlignment.Left:
                         Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) + deltaAll * Math.Sin(this.angle) - this.transformOrigin.X * deltaAll * Math.Sin(this.angle));
                         Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + deltaAll * Math.Cos(this.angle) + (this.transformOrigin.X * deltaAll * (1 - Math.Cos(this.angle))));
-                        this.designerItem.Width -= deltaAll;
+                        double newwidth = this.designerItem.Width - deltaAll;
+                        if(newwidth > 0) this.designerItem.Width -= deltaAll;
                         break;
                     case System.Windows.HorizontalAlignment.Right:
                         Canvas.SetTop(this.designerItem, Canvas.GetTop(this.designerItem) - this.transformOrigin.X * deltaAll * Math.Sin(this.angle));
                         Canvas.SetLeft(this.designerItem, Canvas.GetLeft(this.designerItem) + (deltaAll * this.transformOrigin.X * (1 - Math.Cos(this.angle))));
-                        this.designerItem.Width -= deltaAll;
+                        double newwidth2 = this.designerItem.Width - deltaAll;
+                        if(newwidth2 > 0) this.designerItem.Width -= deltaAll;
                         break;
                     default:
                         break;

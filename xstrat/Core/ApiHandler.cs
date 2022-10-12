@@ -152,7 +152,7 @@ namespace xstrat
 
         public static async Task<(bool, string)> GetMaps()
         {
-            var CacheResponse = GetCachedResponse("");
+            var CacheResponse = GetCachedResponse("GetMaps");
             if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
             {
                 return CacheResponse;
@@ -166,7 +166,31 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache("", (true, response.Content), 120);
+                    AddToCache("GetMaps", (true, response.Content), 120);
+                    return (true, response.Content);
+                }
+                EndWaiting();
+                return (false, "db error");
+            }
+        }
+
+        public static async Task<(bool, string)> GetxPositions()
+        {
+            var CacheResponse = GetCachedResponse("GetxPositions");
+            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            {
+                return CacheResponse;
+            }
+            else
+            {
+                Waiting();
+                var request = new RestRequest("positions", Method.Get);
+                request.RequestFormat = DataFormat.Json;
+                var response = await client.ExecuteAsync<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    AddToCache("GetxPositions", (true, response.Content), 120);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -787,7 +811,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> GetUserOffDays()
         {
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("GetUserOffDays");
             if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
             {
                 return CacheResponse;
@@ -802,7 +826,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( "", (true, response.Content), 1);
+                    AddToCache("GetUserOffDays", (true, response.Content), 1);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -817,7 +841,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetTeamOffDays()
         {
 
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("GetTeamOffDays");
             if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
             {
                 return CacheResponse;
@@ -832,7 +856,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( "", (true, response.Content), 5);
+                    AddToCache("GetTeamOffDays", (true, response.Content), 5);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1267,6 +1291,111 @@ namespace xstrat
             return (false, "db error");
         }
         #endregion
+
+        #region strats
+        /// <summary>
+        /// adds new scrim to db by api call
+        /// time = timestringfrom + | + timestringto
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<(bool, string)> NewStrat(string name, int game_id, int map_id, int position_id, int version, string content)
+        {
+            RemoveFromCache("GetStrats");
+            Waiting();
+            var request = new RestRequest("strat/new", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { name = name, game_id = game_id, map_id = map_id, position_id = position_id, version = version, content = content });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        /// <summary>
+        /// deletes routine by api call
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> DeleteStrat(int strat_id)
+        {
+            RemoveFromCache("GetStrats");
+            Waiting();
+            var request = new RestRequest("strat/delete", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { strat_id = strat_id });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+
+        /// <summary>
+        /// Loads all routines by api call
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<(bool, string)> GetStrats()
+        {
+            var CacheResponse = GetCachedResponse("GetStrats");
+            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            {
+                return CacheResponse;
+            }
+            else
+            {
+                Waiting();
+                var request = new RestRequest("strat/all", Method.Post);
+                request.RequestFormat = DataFormat.Json;
+
+                var response = await client.ExecuteAsync<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    AddToCache("GetStrats", (true, response.Content), 3);
+                    return (true, response.Content);
+                }
+                EndWaiting();
+                return (false, "db error");
+            }
+        }
+
+        /// <summary>
+        /// Saves routine by api call
+        /// </summary>
+        /// <param name="ntitle"></param>
+        /// <param name="ncontent"></param>
+        /// <param name="n_id"></param>
+        /// <returns></returns>
+        public static async Task<(bool, string)> SaveStrat(int strat_id, string name, int map_id, int position_id, int version, string content)
+        {
+            RemoveFromCache("GetStrats");
+            Waiting();
+            var request = new RestRequest("strat/save", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new { strat_id = strat_id, name = name, map_id = map_id, position_id = position_id, version = version, content = content });
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                EndWaiting();
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, "db error");
+        }
+
+        #endregion
+
 
         #region helper methodes
 

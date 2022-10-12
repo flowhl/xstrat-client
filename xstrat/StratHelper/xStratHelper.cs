@@ -10,5 +10,7 @@ namespace xstrat.StratHelper
     public static class xStratHelper
     {
         public static StratMakerView stratView { get; set; }
+        public static WallEditorView editorView { get; set; }
+        public static bool WEMode = false;
     }
 }

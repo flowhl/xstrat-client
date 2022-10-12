@@ -40,7 +40,14 @@ namespace XStrat
                     dragDelta = this.rotateTransform.Transform(dragDelta);
                 }
 
-                xStratHelper.stratView.PointDragMove(dragDelta);
+                if (xStratHelper.WEMode)
+                {
+                    xStratHelper.editorView.PointDragMove(dragDelta);
+                }
+                else
+                {
+                    xStratHelper.stratView.PointDragMove(dragDelta);
+                }
             }
         }
     }

@@ -53,11 +53,287 @@
             <DataTemplate DataType="{x:Type viewModel:LoadingViewModel}">
                 <view:LoadingView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:WallEditorViewModel}">
+                <view:WallEditorView />
+            </DataTemplate>
+
+
 
             <!--**************************
     * STYLE: MenuItem
     ************************** -->
-            <SolidColorBrush x:Key="HighlightedBackgroundBrush" Color="#336cb5" />
+
+            <!--// Menu with SubMenu Template //-->
+
+            <ControlTemplate x:Key="Menu_SubMenu_Template" TargetType="{x:Type MenuItem}">
+
+                <Border x:Name="border" Background="#303030" BorderBrush="#202020" BorderThickness="0" CornerRadius="5" Margin="1" Height="30" Width="150">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="0" Width="0" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--// Icon //-->
+
+                        <ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Left" Height="12" Width="12" Margin="10,0,0,0" VerticalAlignment="Center" />
+
+                        <!--// Menu Text //-->
+
+                        <ContentPresenter ContentSource="Header" Grid.Column="2" TextBlock.Foreground="White"  TextBlock.FontSize="16" HorizontalAlignment="Left" RecognizesAccessKey="True" Margin="3,0,0,0" VerticalAlignment="Center" />
+
+                        <!--// Right Arrow Icon //-->
+
+                        <Image Source="Assets/img_arrow.png" Stretch="None" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                        <!--// Popup //-->
+
+                        <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="-2" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" VerticalOffset="0">
+
+                            <Border x:Name="SubMenuBorder" Background="#303030" BorderBrush="#303030">
+
+                                <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+
+                                        <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                                        <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" KeyboardNavigation.TabNavigation="Cycle" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+
+                    </Grid>
+                </Border>
+
+
+                <ControlTemplate.Triggers>
+
+                    <Trigger Property="IsSuspendingPopupAnimation" Value="true">
+                        <Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None" />
+                    </Trigger>
+
+                    <Trigger Property="Icon" Value="{x:Null}">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsHighlighted" Value="True">
+                        <Setter Property="Background" TargetName="border" Value="#404D5B" />
+                        <Setter Property="BorderBrush" TargetName="border" Value="#404D5B" />
+                    </Trigger>
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <!--// Main Menu Template //-->
+
+            <ControlTemplate x:Key="Menu_Template" TargetType="{x:Type MenuItem}">
+
+                <Border x:Name="border" Background="#303030" BorderBrush="#202020" BorderThickness="0" Height="30" Width="150">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="0" Width="0" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--// Icon //-->
+
+                        <ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Left" Height="12" Width="12" Margin="10,0,0,0" VerticalAlignment="Center" />
+
+                        <!--// Menu Text //-->
+
+                        <ContentPresenter ContentSource="Header" Grid.Column="2" TextBlock.Foreground="#FFFFFF" TextBlock.FontSize="14" HorizontalAlignment="Left" RecognizesAccessKey="True" Margin="3,0,0,0" VerticalAlignment="Center" />
+
+                    </Grid>
+                </Border>
+
+
+                <ControlTemplate.Triggers>
+
+                    <Trigger Property="Icon" Value="{x:Null}">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsHighlighted" Value="True">
+                        <Setter Property="Background" TargetName="border" Value="#404D5B" />
+                        <Setter Property="BorderBrush" TargetName="border" Value="#404D5B" />
+                    </Trigger>
+
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <!--// Menu Item Template //-->
+
+            <ControlTemplate x:Key="Item_Template" TargetType="{x:Type MenuItem}">
+
+                <Border x:Name="border" Background="#303030" BorderBrush="#202020" BorderThickness="0" Height="30" Width="150">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="0" Width="0" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--// Icon //-->
+
+                        <ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="12" Width="12" Margin="10,0,0,0" VerticalAlignment="Center" />
+
+                        <!--// Menu Text //-->
+
+                        <ContentPresenter ContentSource="Header" Grid.Column="2" TextBlock.Foreground="White" TextBlock.FontSize="14" HorizontalAlignment="Left" RecognizesAccessKey="True" Margin="1,0,0,0" VerticalAlignment="Center" />
+
+
+                    </Grid>
+                </Border>
+
+
+                <ControlTemplate.Triggers>
+
+                    <Trigger Property="Icon" Value="{x:Null}">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Visibility" TargetName="Icon" Value="Visible" />
+                    </Trigger>
+
+                    <Trigger Property="IsHighlighted" Value="True">
+                        <Setter Property="Background" TargetName="border" Value="#404D5B" />
+                        <Setter Property="BorderBrush" TargetName="border" Value="#404D5B" />
+                    </Trigger>
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+
+            <!--// Maximize / Minimize App Button Style //-->
+
+            <ImageBrush x:Key="max_def" ImageSource="Assets/max_def.png" Stretch="None" />
+
+            <ImageBrush x:Key="max_mo" ImageSource="Assets/max_mo.png" Stretch="None" />
+
+            <Style x:Key="MaxBtnStyle" TargetType="{x:Type Button}">
+
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Width" Value="35" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Margin" Value="0,20,60,0" />
+
+                <Setter Property="Template">
+
+                    <Setter.Value>
+
+                        <ControlTemplate TargetType="{x:Type Button}">
+
+                            <Border x:Name="border" BorderThickness="0" Background="{StaticResource max_def}" />
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource max_mo}" />
+
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource max_mo}" />
+
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+
+                    </Setter.Value>
+
+                </Setter>
+
+
+            </Style>
+
+
+            <!--// Close App Button Style //-->
+
+            <ImageBrush x:Key="close_def" ImageSource="Assets/shutdown_def.png" Stretch="None" />
+
+            <ImageBrush x:Key="close_mo" ImageSource="Assets/shutdown_mo.png" Stretch="None" />
+
+            <Style x:Key="CloseBtnStyle" TargetType="{x:Type Button}">
+
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Width" Value="35" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Margin" Value="0,20,18,0" />
+
+                <Setter Property="Template">
+
+                    <Setter.Value>
+
+                        <ControlTemplate TargetType="{x:Type Button}">
+
+                            <Border x:Name="border" BorderThickness="0" Background="{StaticResource close_def}" />
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource close_mo}" />
+
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource close_mo}" />
+
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+
+                    </Setter.Value>
+
+                </Setter>
+
+
+            </Style>
+
+
+
+
+            <!--OLD-->
+         
+<!--<SolidColorBrush x:Key="HighlightedBackgroundBrush" Color="#336cb5" />
             <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#505050" />
             <SolidColorBrush x:Key="NormalBorderBrush" Color="#202020" />
             <SolidColorBrush x:Key="SolidMenuFontBrush" Color="#FFFFFFFF" />
@@ -65,7 +341,7 @@
             <Style TargetType="{x:Type Menu}">
                 <Setter Property="OverridesDefaultStyle" Value="True"/>
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <!--<Setter Property="Height" Value="25"/>-->
+                --><!--<Setter Property="Height" Value="25"/>--><!--
                 <Setter Property="Foreground" Value="{StaticResource SolidMenuFontBrush}"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -96,38 +372,34 @@
                                         <ColumnDefinition x:Name="Col3" Width="14"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- ContentPresenter to show an Icon if needed -->
-                                    <ContentPresenter Grid.Column="0" Margin="4,0,6,0" x:Name="Icon" VerticalAlignment="Center" ContentSource="Icon"/>
+                                    --><!-- ContentPresenter to show an Icon if needed --><!--
+                                    <ContentPresenter Grid.Column="0" Margin="4,0,6,0" x:Name="Icon" VerticalAlignment="Center" ContentSource="Icon" />
 
-                                    <!-- Glyph is a checkmark if needed for a checkable menu -->
-                                    <Grid Grid.Column="0" Visibility="Hidden" Margin="4,0,6,0" x:Name="GlyphPanel" VerticalAlignment="Center">
-                                        <Path x:Name="GlyphPanelpath" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Data="M0,2 L0,4.8 L2.5,7.4 L7.1,2.8 L7.1,0 L2.5,4.6 z" FlowDirection="LeftToRight"/>
-                                    </Grid>
-
-                                    <!-- Content for the menu text etc -->
+                                    --><!-- Content for the menu text etc --><!--
                                     <ContentPresenter Grid.Column="1"
                                 Margin="{TemplateBinding Padding}"
                                 x:Name="HeaderHost"
                                 RecognizesAccessKey="True"
-                                ContentSource="Header"/>
+                                ContentSource="Header"
+                                                      />
 
-                                    <!-- Content for the menu IGT -->
+                                    --><!-- Content for the menu IGT --><!--
                                     <ContentPresenter Grid.Column="2"
                                 Margin="8,1,8,1"
                                 x:Name="IGTHost"
                                 ContentSource="InputGestureText"
                                 VerticalAlignment="Center"/>
 
-                                    <!-- Arrow drawn path which points to the next level of the menu -->
+                                    --><!-- Arrow drawn path which points to the next level of the menu --><!--
                                     <Grid Grid.Column="3" Margin="4,0,6,0" x:Name="ArrowPanel" VerticalAlignment="Center">
                                         <Path x:Name="ArrowPanelPath" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Data="M0,0 L0,8 L4,4 z"/>
                                     </Grid>
 
-                                    <!-- The Popup is the body of the menu which expands down or across depending on the level of the item -->
+                                    --><!-- The Popup is the body of the menu which expands down or across depending on the level of the item --><!--
                                     <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" x:Name="SubMenuPopup" Focusable="false" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                                         <Border x:Name="SubMenuBorder" BorderBrush="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}" BorderThickness="0" Padding="2,2,2,2">
                                             <Grid x:Name="SubMenu" Grid.IsSharedSizeScope="True">
-                                                <!-- StackPanel holds children of the menu. This is set by IsItemsHost=True -->
+                                                --><!-- StackPanel holds children of the menu. This is set by IsItemsHost=True --><!--
                                                 <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
                                             </Grid>
                                         </Border>
@@ -135,33 +407,30 @@
                                 </Grid>
                             </Border>
 
-                            <!-- These triggers re-configure the four arrangements of MenuItem to show different levels of menu via Role -->
+                            --><!-- These triggers re-configure the four arrangements of MenuItem to show different levels of menu via Role --><!--
                             <ControlTemplate.Triggers>
-                                <!-- Role = TopLevelHeader : this is the root menu item in a menu; the Popup expands down -->
+                                --><!-- Role = TopLevelHeader : this is the root menu item in a menu; the Popup expands down --><!--
                                 <Trigger Property="Role" Value="TopLevelHeader">
                                     <Setter Property="Padding" Value="6,1,6,1"/>
                                     <Setter Property="Placement" Value="Bottom" TargetName="SubMenuPopup"/>
                                     <Setter Property="MinWidth" Value="0" TargetName="Col0"/>
                                     <Setter Property="Width" Value="Auto" TargetName="Col3"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="GlyphPanel"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="IGTHost"/>
                                     <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
                                 </Trigger>
 
-                                <!-- Role = TopLevelItem :  this is a child menu item from the top level without any child items-->
+                                --><!-- Role = TopLevelItem :  this is a child menu item from the top level without any child items--><!--
                                 <Trigger Property="Role" Value="TopLevelItem">
                                     <Setter Property="Padding" Value="6,1,6,1"/>
                                     <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
                                 </Trigger>
 
-                                <!-- Role = SubMenuHeader : this is a child menu item which does not have children -->
+                                --><!-- Role = SubMenuHeader : this is a child menu item which does not have children --><!--
                                 <Trigger Property="Role" Value="SubmenuHeader">
                                     <Setter Property="DockPanel.Dock" Value="Top"/>
                                     <Setter Property="Padding" Value="0,2,0,2"/>
                                 </Trigger>
 
-                                <!-- Role = SubMenuItem : this is a child menu item which has children-->
+                                --><!-- Role = SubMenuItem : this is a child menu item which has children--><!--
                                 <Trigger Property="Role" Value="SubmenuItem">
                                     <Setter Property="DockPanel.Dock" Value="Top"/>
                                     <Setter Property="Padding" Value="0,2,0,2"/>
@@ -171,18 +440,12 @@
                                     <Setter Property="PopupAnimation" Value="None" TargetName="SubMenuPopup"/>
                                 </Trigger>
 
-                                <!-- If no Icon is present the we collapse the Icon Content -->
+                                --><!-- If no Icon is present the we collapse the Icon Content --><!--
                                 <Trigger Property="Icon" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
                                 </Trigger>
 
-                                <!-- The GlyphPanel contains the CheckMark -->
-                                <Trigger Property="IsChecked" Value="true">
-                                    <Setter Property="Visibility" Value="Visible" TargetName="GlyphPanel"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
-                                </Trigger>
-
-                                <!-- Using the system colors for the Menu Highlight and IsEnabled-->
+                                --><!-- Using the system colors for the Menu Highlight and IsEnabled--><!--
                                 <Trigger Property="IsHighlighted" Value="true">
                                     <Setter Property="Background" Value="{StaticResource HighlightedBackgroundBrush}" TargetName="Border"/>
                                     <Setter Property="Foreground" Value="{StaticResource HighlightedText}"/>
@@ -218,7 +481,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
+</Style>-->
 
 
             <!--**************************
@@ -555,7 +818,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
+            
         </ResourceDictionary>
         
     </Application.Resources>

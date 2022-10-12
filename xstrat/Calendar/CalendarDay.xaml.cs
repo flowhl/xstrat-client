@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using xstrat.Core;
 
 namespace xstrat.Calendar
 {
@@ -12,6 +13,11 @@ namespace xstrat.Calendar
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        private void calendarDay_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Globals.CallCalendarEventCreated(Date);
         }
     }
 }

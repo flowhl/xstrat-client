@@ -127,6 +127,20 @@ namespace xstrat.Json
         }
     }
 
+    public class xPosition
+    {
+        public int id { get; set; }
+        public int map_id { get; set; }
+        public string name { get; set; }
+
+        public xPosition(int id, int map_id, string name)
+        {
+            this.id = id;
+            this.map_id = map_id;
+            this.name = name;
+        }
+    }
+
     public class NewParams
     {
         public string name { get; set; }

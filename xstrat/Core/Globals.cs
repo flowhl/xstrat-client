@@ -3,11 +3,15 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using xstrat.Json;
+using xstrat.MVVM.ViewModel;
 
 namespace xstrat.Core
 {
@@ -282,12 +286,21 @@ namespace xstrat.Core
         public static List<OffDayType> OffDayTypes = new List<OffDayType>();
         public static List<CalendarFilterType> CalendarFilterTypes = new List<CalendarFilterType>();
         public static List<Map> Maps = new List<Map>();
+        public static List<xPosition> xPositions = new List<xPosition>();
+
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
         public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
         public static teamInfo TeamInfo { get; set; }
         public static List<Strat> strats { get; set; } = new List<Strat>();
+
+        public static event EventHandler<CalendarEventCreatedArgs> CalendarEventCreated;
+
+        public static void CallCalendarEventCreated(DateTime Date)
+        {
+            CalendarEventCreated(null ,new CalendarEventCreatedArgs { Date = Date });
+        }
 
         public static string[] SeasonNames = new string[]{
             "Current Season", // API ID = 0
@@ -575,6 +588,7 @@ namespace xstrat.Core
                 RetrieveCalendarFilterTypes();
                 wnd.SetLoadingStatus("Retrieving maps");
                 RetrieveMaps();
+                RetrievexPositions();
                 RetrieveScrimModes();
                 RetrieveEventTypes();
                 wnd.SetLoadingStatus("Retrieving team");
@@ -583,6 +597,8 @@ namespace xstrat.Core
                 RetrieveAdminStatusAsync();
                 wnd.SetLoadingStatus("Retrieving team info");
                 RetrieveTeamInfoAsync();
+                wnd.SetLoadingStatus("Retrieving strats");
+                RetrieveStrats();
                 wnd.SetLoadingStatus("");
             }
         }
@@ -741,6 +757,31 @@ namespace xstrat.Core
                 Notify.sendError("Maps could not be loaded");
             }
         }
+        private static async Task RetrievexPositions()
+        {
+            var result = await ApiHandler.GetxPositions();
+            if (result.Item1)
+            {
+                string response = result.Item2;
+                //convert to json instance
+                JObject json = JObject.Parse(response);
+                var data = json.SelectToken("data").ToString();
+                if (data != null && data != "")
+                {
+                    List<xstrat.Json.xPosition> rList = JsonConvert.DeserializeObject<List<Json.xPosition>>(data);
+                    xPositions.Clear();
+                    xPositions = rList;
+                }
+                else
+                {
+                    Notify.sendError("xPositions could not be loaded");
+                }
+            }
+            else
+            {
+                Notify.sendError("xPositions could not be loaded");
+            }
+        }
         private static void RetrieveScrimModes()
         {
             ScrimModes.Clear();
@@ -762,28 +803,27 @@ namespace xstrat.Core
         }
         private static async Task RetrieveStrats()
         {
-            var result = await ApiHandler.Games();
+            var result = await ApiHandler.GetStrats();
             if (result.Item1)
             {
-                string resultJson = result.Item2;
                 string response = result.Item2;
                 //convert to json instance
                 JObject json = JObject.Parse(response);
                 var data = json.SelectToken("data").ToString();
                 if (data != null && data != "")
                 {
-                    List<xstrat.Json.Game> rList = JsonConvert.DeserializeObject<List<Json.Game>>(data);
+                    List<xstrat.Json.Strat> rList = JsonConvert.DeserializeObject<List<Json.Strat>>(data);
                     strats.Clear();
-                    games = rList;
+                    strats = rList;
                 }
                 else
                 {
-                    Notify.sendError("Games could not be loaded");
+                    Notify.sendError("Strats could not be loaded");
                 }
             }
             else
             {
-                Notify.sendError("Games could not be loaded");
+                Notify.sendError("Strats could not be loaded");
             }
         }
 
@@ -802,6 +842,23 @@ namespace xstrat.Core
         public static SolidColorBrush ToSolidColorBrush(this string hex_code)
         {
             return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
+        }
+        public static Image GetImageForFloorAndMap(int game_id, int map_id, int floor_id)
+        {
+            string fileName = game_id + "_" + map_id + "_" + floor_id + ".png";
+            var image = new Image();
+            image.Stretch = Stretch.Uniform;
+            var uriSource = new Uri(@"/Images/R6_Maps/" + fileName, UriKind.Relative);
+            image.Source = new BitmapImage(uriSource);
+            image.Height = 1500;
+            image.Width = 2000;
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.Fant);
+            return image;
+        }
+
+        public class CalendarEventCreatedArgs : EventArgs
+        {
+            public DateTime Date { get; set; }
         }
     }
 }

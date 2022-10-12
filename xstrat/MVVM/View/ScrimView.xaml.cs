@@ -65,6 +65,11 @@ namespace xstrat.MVVM.View
         public ScrimView()
         {
             InitializeComponent();
+            Loaded += ScrimView_Loaded;
+        }
+
+        private void ScrimView_Loaded(object sender, RoutedEventArgs e)
+        {
             // set date of first example event to +- middle of month
             DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 15);
 
@@ -78,8 +83,20 @@ namespace xstrat.MVVM.View
 
             // subscribe to double cliked event
             CalendarMonthUI.CalendarEventDoubleClickedEvent += Calendar_CalendarEventDoubleClickedEvent;
+            Globals.CalendarEventCreated += Globals_CalendarEventCreated;
         }
 
+        private void Globals_CalendarEventCreated(object sender, Globals.CalendarEventCreatedArgs e)
+        {
+            if (this.IsLoaded)
+            {
+                DateTime start = new DateTime(e.Date.Year, e.Date.Month, e.Date.Day, 0, 0, 0);
+                DateTime end = new DateTime(e.Date.Year, e.Date.Month, e.Date.Day, 23, 59, 59);
+                var responseWindow = new ScrimWindow(new Core.Window { StartDateTime = start, EndDateTime = end, AvailablePlayers = new List<Player>() });
+                responseWindow.Show();
+                responseWindow.Closing += ResponseWindow_Closing;
+            }
+        }
 
         private void Calendar_CalendarEventDoubleClickedEvent(object sender, CalendarEventView e)
         {
@@ -512,6 +529,7 @@ namespace xstrat.MVVM.View
             //MessageBox.Show(results.ToString());
         }
 
+        //Gets Free Timespans for day
         private List<Response> GetTimespans(DateTime date, string user_name, List<int> SelectedPlayerNumbers, int filtertype)
         {
             List<Response> timespans = new List<Response>();

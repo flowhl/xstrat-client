@@ -8,7 +8,7 @@
              PreviewMouseRightButtonDown="UserControl_MouseLeftButtonDown"
              PreviewMouseLeftButtonDown="UserControl_PreviewMouseLeftButtonDown"
              PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp">
-    <Grid>
+    <Grid Name="MainGrid">
             
     </Grid>
 </UserControl>

@@ -269,6 +269,7 @@
     <Compile Include="MVVM\ViewModel\StatsViewModel.cs" />
     <Compile Include="MVVM\ViewModel\StratMakerViewModel.cs" />
     <Compile Include="MVVM\ViewModel\TeamViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\WallEditorViewModel.cs" />
     <Compile Include="MVVM\View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
@@ -292,6 +293,9 @@
     </Compile>
     <Compile Include="MVVM\View\TeamView.xaml.cs">
       <DependentUpon>TeamView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\WallEditorView.xaml.cs">
+      <DependentUpon>WallEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Overlay\OverlayStep.xaml.cs">
       <DependentUpon>OverlayStep.xaml</DependentUpon>
@@ -493,6 +497,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\WallEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Overlay\OverlayStep.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -670,7 +678,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Fonts\" />
-    <Folder Include="Images\R6_Maps\" />
     <Folder Include="MVVM\Model\" />
   </ItemGroup>
   <ItemGroup>
@@ -901,6 +908,7 @@
     <Content Include="Images\R6_Icons\op_zofia.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\R6_Maps\1_6_1.png" />
     <Resource Include="WPFSpark\Resources\Images\wpfspark.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

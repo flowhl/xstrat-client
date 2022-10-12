@@ -45,14 +45,20 @@ namespace xstrat.MVVM.View
 
         public StratMakerView()
         {
-            xStratHelper.stratView = this;
             InitializeComponent();
+            Loaded += StratMakerView_Loaded;
+        }
+
+        private void StratMakerView_Loaded(object sender, RoutedEventArgs e)
+        {
+            xStratHelper.stratView = this;
+            xStratHelper.WEMode = false;
             Opened();
         }
 
         private void Opened()
         {
-            //_loadMaps();
+            _loadMaps();
             ToolTipChanged(View.ToolTip.Cursor);
             LoadColorButtons();
             UpdateFloorButtons();
@@ -354,39 +360,32 @@ namespace xstrat.MVVM.View
 
         private void _loadMaps()
         {
-            maps.Add(new XMap());
             UpdateTopBar();
         }
 
         private void UpdateTopBar()
         {
             var thickness = new Thickness(0, 0, 0, 0);
-            foreach (var map in maps)
+            foreach (var map in Globals.Maps)
             {
                 var mapItem = new MenuItem();
-                //mapItem.Name = map.Name + "MapItem";
-                mapItem.BorderThickness = thickness;
-                mapItem.Header = map.Name;
-                mapItem.Height = 30;
-                mapItem.Width = 200;
-
+                //mapItem.Name = map.name + "_MapItem";
+                mapItem.Header = map.name;
+                mapItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
                 List<MenuItem> subitems = new List<MenuItem>();
-                foreach (var pos in map.positions)
+                foreach (var pos in Globals.xPositions.Where(x => x.map_id == map.id))
                 {
                     var posItem = new MenuItem();
                     //posItem.Name = pos.name + "PositionItem";
                     posItem.Header = pos.name;
-                    posItem.BorderThickness = thickness;
-                    posItem.Height = 30;
-                    posItem.Width = 200;
-                    foreach (var strat in pos.strats)
+                    posItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
+                    foreach (var strat in Globals.strats.Where(x => x.position_id == pos.id))
                     {
                         var stratItem = new MenuItem();
-                        //stratItem.Name = strat.name + "StratItem";
-                        stratItem.BorderThickness = thickness;
                         stratItem.Header = strat.name;
-                        stratItem.Height = 30;
-                        stratItem.Width = 200;
+                        stratItem.Tag = strat;
+                        stratItem.Template = Application.Current.Resources["Item_Template"] as ControlTemplate;
+                        stratItem.Click += StratItem_Click;
                         posItem.Items.Add(stratItem);
                     }
                     mapItem.Items.Add(posItem);
@@ -394,26 +393,35 @@ namespace xstrat.MVVM.View
                 Menu.Items.Add(mapItem);
             }
         }
-        private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {/*
-            ImageStack.Children.Clear();
-            var index = MapSelector.SelectedIndex;
-            var images = StratHandler.getFloorsByListPos(index);
-            foreach (var image in images)
-            {
 
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
-                bi.EndInit();
-
-                Image img = new Image();
-                img.Source = bi;
-                img.Height = 1080;
-                img.Width = 1920;
-                ImageStack.Children.Add(img);
-            */
+        private void StratItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem sendObj = sender as MenuItem;
+            if (sendObj == null) return;
+            Strat strat = sendObj.Tag as Strat;
         }
+
+
+        //private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{/*
+        //    ImageStack.Children.Clear();
+        //    var index = MapSelector.SelectedIndex;
+        //    var images = StratHandler.getFloorsByListPos(index);
+        //    foreach (var image in images)
+        //    {
+
+        //        BitmapImage bi = new BitmapImage();
+        //        bi.BeginInit();
+        //        bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
+        //        bi.EndInit();
+
+        //        Image img = new Image();
+        //        img.Source = bi;
+        //        img.Height = 1080;
+        //        img.Width = 1920;
+        //        ImageStack.Children.Add(img);
+        //    */
+        //}
 
         private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -577,6 +585,16 @@ namespace xstrat.MVVM.View
             DrawingLayer.Children.Remove(item);
         }
         #endregion
+
+        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ReloadBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
     public enum ToolTip
     {

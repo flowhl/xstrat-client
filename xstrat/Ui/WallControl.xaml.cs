@@ -199,5 +199,16 @@ namespace xstrat.Ui
                     return MaterialDesignThemes.Wpf.PackIconKind.None;
             }
         }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double nwidth = ActualWidth / 6;
+            Rec1.Width = nwidth;
+            Rec2.Width = nwidth;
+            Rec3.Width = nwidth;
+            Rec4.Width = nwidth;
+            Rec5.Width = nwidth;
+            Rec6.Width = nwidth;
+        }
     }
 }

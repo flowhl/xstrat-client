@@ -1,7 +1,13 @@
-﻿<UserControl x:Class="xstrat.MVVM.View.StratMakerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:wpfext="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:XStrat="clr-namespace:XStrat" xmlns:xstrat="clr-namespace:XStrat" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150">
+﻿<UserControl x:Class="xstrat.MVVM.View.WallEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="160" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -34,14 +40,14 @@
 
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="#202020" VerticalScrollBarVisibility="Auto">
-            <Menu Background="#202020" Name="Menu" VerticalAlignment="Top">
-                <Menu.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </Menu.ItemsPanel>                
-            </Menu>
-        </ScrollViewer>
+                <Menu Background="#202020" Name="Menu" VerticalAlignment="Top">
+                    <Menu.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </Menu.ItemsPanel>
+                </Menu>
+            </ScrollViewer>
         </StackPanel>
 
 
@@ -49,7 +55,7 @@
             <Border Background="#202020" BorderThickness="0" Height="185" CornerRadius="0,0,20,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="400" />
+                        <ColumnDefinition Width="500" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Vertical" Grid.Column="0">
@@ -107,41 +113,13 @@
                                         <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCursor" Click="BtnCursor_Click" BorderBrush="#336CB5">
                                             <MaterialDesign:PackIcon Kind="CursorDefaultOutline" Foreground="White"></MaterialDesign:PackIcon>
                                         </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnBrush" Click="BtnBrush_Click" BorderBrush="#336CB5">
-                                            <MaterialDesign:PackIcon Kind="Brush" Foreground="White"></MaterialDesign:PackIcon>
-                                        </Button>
                                         <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnEraser" Click="BtnEraser_Click" BorderBrush="#336CB5">
                                             <MaterialDesign:PackIcon Kind="Trash" Foreground="White"></MaterialDesign:PackIcon>
-                                        </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnText" Click="BtnText_Click" BorderBrush="#336CB5">
-                                            <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15" Margin="0,-6,0,0" FontWeight="SemiBold" Foreground="White">T</Label>
-                                        </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnNodes" Click="BtnNodes_Click" BorderBrush="#336CB5">
-                                            <MaterialDesign:PackIcon Kind="Graph" Foreground="White"></MaterialDesign:PackIcon>
-                                        </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnArrow" Click="BtnArrow_Click" BorderBrush="#336CB5">
-                                            <MaterialDesign:PackIcon Kind="ArrowTopLeft" Foreground="White"></MaterialDesign:PackIcon>
-                                        </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCircle" Click="BtnCircle_Click" BorderBrush="#336CB5">
-                                            <MaterialDesign:PackIcon Kind="CircleOutline" Foreground="White"></MaterialDesign:PackIcon>
-                                        </Button>
-                                        <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnRectangle" Click="BtnRectangle_Click" BorderBrush="#336CB5">
-                                            <MaterialDesign:PackIcon Kind="RectangleOutline" Foreground="White"></MaterialDesign:PackIcon>
                                         </Button>
                                     </StackPanel>
                                 </Border>
                                 <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,10,0,0" VerticalAlignment="Top">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-                                        <!--Colors-->
-                                        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
-                                            <StackPanel Orientation="Horizontal" Margin="10,10,10,0" Height="35" HorizontalAlignment="Center" x:Name="SPColors">
-                                            </StackPanel>
-                                        </ScrollViewer>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <MaterialDesign:PackIcon Foreground="White" VerticalAlignment="Center" Kind="Brush" Height="12" Width="12" />
-                                            <Slider Margin="10" Orientation="Horizontal" Width="90" Minimum="5" Maximum="30" Name="BrushSlider" Value="10" ValueChanged="BrushSlider_ValueChanged"></Slider>
-                                            <MaterialDesign:PackIcon Foreground="White" VerticalAlignment="Center" Kind="Brush" Height="20" Width="20" />
-                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -166,14 +144,15 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!--<wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" x:Name="ZoomControl" MouseMove="DrawingLayer_MouseMove" ModifierMode="None">-->
-                <local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" MouseMove="DrawingLayer_MouseMove" Grid.ColumnSpan="2">
+                <local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#303030" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2">
                     <Grid Name="MapContent">
                         <Canvas Name="DrawingLayer">
                         </Canvas>
                         <Canvas Name="WallsLayer" Panel.ZIndex="1" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
-                            <local1:WallControl x:Name="WallControl1" Height="9" Width="60" Panel.ZIndex="2" Canvas.Left="300" Canvas.Top="200"></local1:WallControl>
                         </Canvas>
-                        <StackPanel Orientation="Horizontal" Name="MapStack"></StackPanel>
+                        <StackPanel Orientation="Horizontal" Name="MapStack" Panel.ZIndex="-1">
+                            <Rectangle Fill="CornflowerBlue" Height="1500" Width="2000"></Rectangle>
+                        </StackPanel>
                     </Grid>
                 </local1:ZoomBorder>
                 <!--</wpfext:ZoomControl>-->

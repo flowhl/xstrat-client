@@ -38,7 +38,7 @@
 
                     <Grid HorizontalAlignment="Stretch">
 
-                        <Image Source="./Images/topbar.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <Image Source="./Images/topbar.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0" PreviewMouseLeftButtonDown="Image_MouseLeftButtonUp"/>
 
                         <StackPanel HorizontalAlignment="Right"
                                 Orientation="Horizontal">
@@ -224,6 +224,13 @@
                              FontSize="14"
                              Style="{StaticResource MenuButtonTheme}"
                              Command="{Binding AboutViewCommand}"/>
+                    <RadioButton Content="Wall Editor"
+                                 Name="WallEditorBtn"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="14"
+                             Style="{StaticResource MenuButtonTheme}"
+                             Command="{Binding WallEditorViewCommand}"/>
 
                 </StackPanel>
                 </Border>

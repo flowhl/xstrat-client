@@ -30,6 +30,8 @@ namespace xstrat
 
         DateTime startTime = DateTime.Now;
 
+        int counterToUnlockEditor = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +42,7 @@ namespace xstrat
             Task loginTask = LoginWindowAsync();
             Loaded += MainWindow_Loaded;
             StateChanged += MainWindow_StateChanged;
+            WallEditorBtn.Visibility = Visibility.Collapsed;
         }
 
         private void MainWindow_StateChanged(object sender, EventArgs e)
@@ -207,6 +210,15 @@ namespace xstrat
             {
                 lv.SetStatusMessage(message);
             }
+        }
+
+        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(counterToUnlockEditor > 5)
+            {
+                WallEditorBtn.Visibility = Visibility.Visible;
+            }
+            counterToUnlockEditor++;
         }
     }
 }

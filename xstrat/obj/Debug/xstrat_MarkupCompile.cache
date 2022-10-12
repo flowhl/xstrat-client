@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\App.xaml
-48264164703
+49-1950613156
 78-2145402749
-115249976972
+1171942980848
 791624292285
-Calendar\CalendarDay.xaml;Calendar\CalendarEventView.xaml;Calendar\CalendarMonth.xaml;MainWindow.xaml;MVVM\View\AboutView.xaml;MVVM\View\CalendarView.xaml;MVVM\View\HomeView.xaml;MVVM\View\LicenseView.xaml;MVVM\View\LoadingView.xaml;MVVM\View\LoginView.xaml;MVVM\View\RegisterView.xaml;MVVM\View\RoutinesView.xaml;MVVM\View\ScrimView.xaml;MVVM\View\SettingsView.xaml;MVVM\View\SkinSwitcherView.xaml;MVVM\View\StatsView.xaml;MVVM\View\StratMakerView.xaml;MVVM\View\TeamView.xaml;Overlay\OverlayStep.xaml;Overlay\RoutineOverlay.xaml;StratHelper\StratContentControl.xaml;Ui\CalendarEventInfo.xaml;Ui\ColorDisplay.xaml;Ui\LicenseInfo.xaml;Ui\MapFloor.xaml;Ui\MenuButtonTheme.xaml;Ui\NumberBox.xaml;Ui\OffdayControl.xaml;Ui\OffDaysList.xaml;Ui\Routine.xaml;Ui\RoutineStep.xaml;Ui\ScrimControl.xaml;Ui\ScrimFinderControl.xaml;Ui\ScrimParticipationControl.xaml;Ui\ScrimWindow.xaml;Ui\SkinSwitcherControl.xaml;Ui\TeamDashboard.xaml;Ui\Teammate.xaml;Ui\DataSelector.xaml;Ui\TeamMatesControl.xaml;Ui\ToggleSwitch.xaml;Ui\UserCheckbox.xaml;Ui\WallControl.xaml;WPFSpark\FluidProgressBar\FluidProgressBar.xaml;WPFSpark\FluidStatusBar\FluidStatusBar.xaml;WPFSpark\Themes\Generic.xaml;WPFSpark\Themes\SparkWindow.Generic.Glass.xaml;WPFSpark\Themes\ToggleSwitch.Generic.xaml;
+Calendar\CalendarDay.xaml;Calendar\CalendarEventView.xaml;Calendar\CalendarMonth.xaml;MainWindow.xaml;MVVM\View\AboutView.xaml;MVVM\View\CalendarView.xaml;MVVM\View\HomeView.xaml;MVVM\View\LicenseView.xaml;MVVM\View\LoadingView.xaml;MVVM\View\LoginView.xaml;MVVM\View\RegisterView.xaml;MVVM\View\RoutinesView.xaml;MVVM\View\ScrimView.xaml;MVVM\View\SettingsView.xaml;MVVM\View\SkinSwitcherView.xaml;MVVM\View\StatsView.xaml;MVVM\View\StratMakerView.xaml;MVVM\View\TeamView.xaml;MVVM\View\WallEditorView.xaml;Overlay\OverlayStep.xaml;Overlay\RoutineOverlay.xaml;StratHelper\StratContentControl.xaml;Ui\CalendarEventInfo.xaml;Ui\ColorDisplay.xaml;Ui\LicenseInfo.xaml;Ui\MapFloor.xaml;Ui\MenuButtonTheme.xaml;Ui\NumberBox.xaml;Ui\OffdayControl.xaml;Ui\OffDaysList.xaml;Ui\Routine.xaml;Ui\RoutineStep.xaml;Ui\ScrimControl.xaml;Ui\ScrimFinderControl.xaml;Ui\ScrimParticipationControl.xaml;Ui\ScrimWindow.xaml;Ui\SkinSwitcherControl.xaml;Ui\TeamDashboard.xaml;Ui\Teammate.xaml;Ui\DataSelector.xaml;Ui\TeamMatesControl.xaml;Ui\ToggleSwitch.xaml;Ui\UserCheckbox.xaml;Ui\WallControl.xaml;WPFSpark\FluidProgressBar\FluidProgressBar.xaml;WPFSpark\FluidStatusBar\FluidStatusBar.xaml;WPFSpark\Themes\Generic.xaml;WPFSpark\Themes\SparkWindow.Generic.Glass.xaml;WPFSpark\Themes\ToggleSwitch.Generic.xaml;
 
 False
 

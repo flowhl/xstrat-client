@@ -12,10 +12,16 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Border BorderThickness="0" Background="#202020" CornerRadius="10" Margin="10,10,10,10">
-                <StackPanel Orientation="Vertical">
-                    <Label Foreground="White" FontSize="30" HorizontalAlignment="Center">Team Calendar:</Label>
-                    <local1:CalendarMonth x:Name="CalendarMonthUI" Events="{Binding ElementName=CalendarUI, Path=Events}" Margin="10,10,10,0" GridBrush="#336cb5" GridBorderThickness="0.8" Height="700"/>
-                    <Border Background="#222222" Margin="0,-100,0,0" CornerRadius="10">
+                <Grid>
+                    
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" Grid.Row="0">Team Calendar:</Label>
+                    <local1:CalendarMonth x:Name="CalendarMonthUI" Events="{Binding ElementName=CalendarUI, Path=Events}" Margin="30,30,30,0" GridBrush="#336cb5" GridBorderThickness="0.8" Grid.Row="1" />
+                    <Border Background="#222222" Margin="0,-100,0,0" CornerRadius="10" Grid.Row="2">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                             <StackPanel Name="Row1" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10">
                                 <CheckBox Foreground="White" Background="#b53333" FontSize="16" VerticalContentAlignment="Center" IsChecked="True" Name="OffDayChecks" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked">Off days</CheckBox>
@@ -27,7 +33,7 @@
                             <StackPanel Name="Row5" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10"></StackPanel>
                         </StackPanel>
                     </Border>
-                </StackPanel>
+                </Grid>
             </Border>
         </ScrollViewer>       
        

@@ -52,6 +52,8 @@ namespace xstrat.MVVM.View
 
         private void WallEditorView_Loaded(object sender, RoutedEventArgs e)
         {
+            //ZoomViewbox.Width = 100;
+            //ZoomViewbox.Height = 100;
             xStratHelper.editorView = this;
             xStratHelper.WEMode = true;
             Opened();
@@ -62,7 +64,7 @@ namespace xstrat.MVVM.View
             ToolTipChanged(View.ToolTip.Cursor);
             UpdateFloorButtons();
             LoadDragItems();
-            ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
+            //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
             MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
@@ -136,7 +138,7 @@ namespace xstrat.MVVM.View
         {
             if (ZoomSlider != null)
             {
-                ZoomSlider.Value = ZoomControl.ZoomValue * 100;
+                //ZoomSlider.Value = ZoomControl.ZoomValue * 100;
             }
         }
 
@@ -171,7 +173,7 @@ namespace xstrat.MVVM.View
                 newpos.Y -= 4.5;
 
                 WallControl newwc = new WallControl();
-                newwc.Height = 9;
+                newwc.Height = 19;
                 newwc.IsHitTestVisible = false;
                 newwc.Visibility = Visibility.Visible;
 
@@ -179,7 +181,7 @@ namespace xstrat.MVVM.View
 
                 StratContentControl newcc = new StratContentControl();
                 newcc.Content = newwc;
-                newcc.Height = 9;
+                newcc.Height = 19;
                 newcc.Width = 30;
                 newcc.Padding = new Thickness(1);
                 newcc.Style = this.FindResource("DesignerItemStyle") as Style;
@@ -338,7 +340,7 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor0 = !Floor0;
             UpdateFloorButtons();
-            ZoomControl.Focus();
+            //ZoomControl.Focus();
             floor_id = 0;
             LoadMapImages();
         }
@@ -348,7 +350,7 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor1 = !Floor1;
             UpdateFloorButtons();
-            ZoomControl.Focus();
+            //ZoomControl.Focus();
             floor_id = 1;
             LoadMapImages();
         }
@@ -358,7 +360,7 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor2 = !Floor2;
             UpdateFloorButtons();
-            ZoomControl.Focus();
+            //ZoomControl.Focus();
             floor_id = 2;
             LoadMapImages();
         }
@@ -368,17 +370,17 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor3 = !Floor3;
             UpdateFloorButtons();
-            ZoomControl.Focus();
+            //ZoomControl.Focus();
             floor_id = 3;
             LoadMapImages();
         }
 
         private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (ZoomControl != null && ZoomSlider.Value != ZoomControl.ZoomValue * 100)
-            {
-                ZoomControl.Zoom(ZoomSlider.Value);
-            }
+            //if (ZoomControl != null && ZoomSlider.Value != ZoomControl.ZoomValue * 100)
+            //{
+            //    ZoomControl.Zoom(ZoomSlider.Value);
+            //}
         }
 
         #region Helpers for XStrathelper

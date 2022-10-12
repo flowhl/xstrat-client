@@ -850,9 +850,9 @@ namespace xstrat.Core
             image.Stretch = Stretch.Uniform;
             var uriSource = new Uri(@"/Images/R6_Maps/" + fileName, UriKind.Relative);
             image.Source = new BitmapImage(uriSource);
-            image.Height = 1500;
-            image.Width = 2000;
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.Fant);
+            image.Height = 3000 / 1.3;
+            image.Width = 4000 / 1.3;
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
         }
 

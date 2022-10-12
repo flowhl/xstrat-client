@@ -31,10 +31,12 @@ namespace xstrat.Ui
         {
             InitializeComponent();
             states = new Wallstates[] { walls[0], walls[1], walls[2], walls[3], walls[4], walls[5] };
+            updateWidth();
         }
         public WallControl()
         {
             InitializeComponent();
+            updateWidth();
         }
 
         public string GetContent(int x, int y, int rotation)
@@ -201,6 +203,11 @@ namespace xstrat.Ui
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            updateWidth();
+        }
+
+        public void updateWidth()
         {
             double nwidth = ActualWidth / 6;
             Rec1.Width = nwidth;

@@ -63,7 +63,7 @@ namespace xstrat.MVVM.View
             LoadColorButtons();
             UpdateFloorButtons();
             LoadDragItems();
-            ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
+            //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
             MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
@@ -112,15 +112,6 @@ namespace xstrat.MVVM.View
                 DeleteFromCanvas();
             }
 
-        }
-
-
-        private void ZoomControl_ZoomChanged(object sender, EventArgs e)
-        {
-            if(ZoomSlider != null)
-            {
-                ZoomSlider.Value = ZoomControl.ZoomValue * 100;
-            }
         }
 
         #region Drag Items
@@ -549,13 +540,6 @@ namespace xstrat.MVVM.View
             BrushSize = (int)BrushSlider.Value;
         }
 
-        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if(ZoomControl != null && ZoomSlider.Value != ZoomControl.ZoomValue * 100)
-            {
-                ZoomControl.Zoom(ZoomSlider.Value);
-            }
-        }
 
         #region Helpers for XStrathelper
 

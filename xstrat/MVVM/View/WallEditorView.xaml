@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" mc:Ignorable="d" 
+             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:zoomcontrol="clr-namespace:Denxorz.ZoomControl;assembly=Denxorz.ZoomControl" mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -144,17 +144,20 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!--<wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" x:Name="ZoomControl" MouseMove="DrawingLayer_MouseMove" ModifierMode="None">-->
-                <local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#303030" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2">
+                <!--<local1:ZoomBorder x:Name="ZoomControl" ClipToBounds="True" Background="#303030" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2">-->
+                <!--<Viewbox x:Name="ZoomViewbox" Stretch="Fill">-->
+                <zoomcontrol:ZoomControl x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2">
                     <Grid Name="MapContent">
                         <Canvas Name="DrawingLayer">
                         </Canvas>
                         <Canvas Name="WallsLayer" Panel.ZIndex="1" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
                         </Canvas>
                         <StackPanel Orientation="Horizontal" Name="MapStack" Panel.ZIndex="-1">
-                            <Rectangle Fill="CornflowerBlue" Height="1500" Width="2000"></Rectangle>
                         </StackPanel>
                     </Grid>
-                </local1:ZoomBorder>
+                </zoomcontrol:ZoomControl>
+                <!--</Viewbox>-->
+                <!--</local1:ZoomBorder>-->
                 <!--</wpfext:ZoomControl>-->
                 <Expander ExpandDirection="Left" Grid.Column="2" HorizontalAlignment="Center" IsEnabled="True" Background="#171717">
                     <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">

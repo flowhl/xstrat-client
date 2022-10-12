@@ -493,3 +493,4 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.csproj.CoreC
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.csproj.CopyComplete
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.exe
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Debug\xstrat.pdb
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\bin\Debug\Denxorz.ZoomControl.dll

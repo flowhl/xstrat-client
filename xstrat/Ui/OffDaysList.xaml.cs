@@ -28,9 +28,13 @@ namespace xstrat.Ui
         public OffDaysList()
         {
             InitializeComponent();
-            RetrieveOffDays();
+            Loaded += OffDaysList_Loaded;
         }
 
+        private void OffDaysList_Loaded(object sender, RoutedEventArgs e)
+        {
+            RetrieveOffDays();
+        }
 
         private async void NewOffDay_Click(object sender, RoutedEventArgs e)
         {

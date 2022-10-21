@@ -75,10 +75,17 @@ namespace xstrat.Ui
             };
         }
 
-        public void SelectIndex(int index)
+        public void SelectIndexWhenLoaded(int index)
         {
             if(index < 0) return;
             indexToSelect = index;
+        }
+
+        public void SelectIndex(int index)
+        {
+            if (index < 0) return;
+            indexToSelect = index;
+            CBox.SelectedIndex = index;
         }
 
         public void UpdateUI()

@@ -23,6 +23,8 @@ namespace xstrat.Ui
     {
         public Wallstates[] states = new Wallstates[] {Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, };
 
+        public bool isLocked = false;
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,24 +41,9 @@ namespace xstrat.Ui
             updateWidth();
         }
 
-        public string GetContent(int x, int y, int rotation)
-        {
-            string content = "<Wall;";
-            content += x.ToString() + ";";
-            content += y.ToString() + ";";
-            content += rotation.ToString() + ";";
-            content += states[0] + ";";
-            content += states[1] + ";";
-            content += states[2] + ";";
-            content += states[3] + ";";
-            content += states[4] + ";";
-            content += states[5] + "";
-            content += "/>";
-            return content;
-        }
-
         private void StackPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (isLocked) return;
             var val = states[0];
             if (states.All(x => x == val))
             {
@@ -87,15 +74,13 @@ namespace xstrat.Ui
 
         private void Rec_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.Source == Rec1)
-            {
-                MessageBox.Show("");
-            }
+            if (isLocked) return;
         }
 
 
         private void StackPanel_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (isLocked) return;
             int clickedIndex = SP.Children.IndexOf((UIElement)e.OriginalSource);
             if(clickedIndex < states.Length && clickedIndex >= 0)
             {
@@ -157,8 +142,8 @@ namespace xstrat.Ui
                     return new SolidColorBrush(Colors.CornflowerBlue);
                 case Wallstates.removed: //transparent
                     return "#303030".ToSolidColorBrush();
-                case Wallstates.rotation: //
-                    return new SolidColorBrush(Colors.DeepPink);
+                case Wallstates.reinforced: //
+                    return "#101010".ToSolidColorBrush();
                 case Wallstates.mira: // mira purple
                     return new SolidColorBrush(Colors.Purple);
                 case Wallstates.head: // Red
@@ -181,10 +166,10 @@ namespace xstrat.Ui
                     SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
                     return MaterialDesignThemes.Wpf.PackIconKind.None;
                 case Wallstates.removed:
-                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
-                case Wallstates.rotation:
                     SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.Reload;
+                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                case Wallstates.reinforced:
+                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.LockOutline;
                     return MaterialDesignThemes.Wpf.PackIconKind.None;
                 case Wallstates.mira:
                     SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.RectangleOutline;
@@ -216,6 +201,13 @@ namespace xstrat.Ui
             Rec4.Width = nwidth;
             Rec5.Width = nwidth;
             Rec6.Width = nwidth;
+
+            Sym1.Width = nwidth;
+            Sym2.Width = nwidth;
+            Sym3.Width = nwidth;
+            Sym4.Width = nwidth;
+            Sym5.Width = nwidth;
+            Sym6.Width = nwidth;
         }
     }
 }

@@ -67,7 +67,7 @@ namespace xstrat.Ui
             ToHour.Value = int.Parse(offDay.end.Split(' ')[1].Split(':').First());
             ToMinute.Value = int.Parse(offDay.end.Split(' ')[1].Split(':')[1]);
             
-            TypeSelector.SelectIndex(offDay.typ);
+            TypeSelector.SelectIndexWhenLoaded(offDay.typ);
             if(offDay.typ == 1)
             {
                 TimeControl.Visibility = Visibility.Hidden;

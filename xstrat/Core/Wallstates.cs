@@ -10,11 +10,17 @@ namespace xstrat.Core
     {
         solid,
         removed,
-        rotation,
+        reinforced,
         mira,
         head,
         body,
         foot,
         punch
+    }
+    public enum Hatchstates
+    {
+        solid,
+        removed,
+        reinforced
     }
 }

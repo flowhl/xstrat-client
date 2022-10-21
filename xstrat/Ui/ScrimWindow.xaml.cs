@@ -104,7 +104,7 @@ namespace xstrat.Ui
                     PlayerStack.Children.Add(label);
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
-                EventTypeSelector.SelectIndex(0);
+                EventTypeSelector.SelectIndexWhenLoaded(0);
             }
             else if(type == 1)
             {
@@ -120,9 +120,9 @@ namespace xstrat.Ui
                 FromMinute.Value = start.Minute;
                 ToHour.Value = end.Hour;
                 ToMinute.Value = end.Minute;
-                MapSelector1.SelectIndex(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_1_id).FirstOrDefault()));
-                MapSelector2.SelectIndex(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_2_id).FirstOrDefault()));
-                MapSelector3.SelectIndex(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_3_id).FirstOrDefault()));
+                MapSelector1.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_1_id).FirstOrDefault()));
+                MapSelector2.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_2_id).FirstOrDefault()));
+                MapSelector3.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_3_id).FirstOrDefault()));
                 CreatorLabel.Content = Globals.getUserFromId(scrim.creator_id).name;
                 CreationDateLabel.Content = scrim.creation_date.Replace("T", " ").Replace("Z", "");
                 if (!Globals.AdminUser)
@@ -140,7 +140,7 @@ namespace xstrat.Ui
         private void EventTypeSelector_Loaded(object sender, RoutedEventArgs e)
         {
             EventTypeSelector.Loaded -= EventTypeSelector_Loaded;
-            EventTypeSelector.SelectIndex(scrim.event_type);
+            EventTypeSelector.SelectIndexWhenLoaded(scrim.event_type);
         }
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)

@@ -35,14 +35,7 @@ namespace xstrat
         public MainWindow()
         {
             InitializeComponent();
-            mv = (MainViewModel)DataContext;
-            mv.CurrentView = mv.LoadingVM;
-            SettingsHandler.Initialize();
-            ApiHandler.Initialize();
-            Task loginTask = LoginWindowAsync();
             Loaded += MainWindow_Loaded;
-            StateChanged += MainWindow_StateChanged;
-            WallEditorBtn.Visibility = Visibility.Collapsed;
         }
 
         private void MainWindow_StateChanged(object sender, EventArgs e)
@@ -73,6 +66,12 @@ namespace xstrat
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            mv = (MainViewModel)DataContext;
+            mv.CurrentView = mv.LoadingVM;
+            SettingsHandler.Initialize();
+            ApiHandler.Initialize();
+            Task loginTask = LoginWindowAsync();
+
             try
             {
                 manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat-client");
@@ -89,6 +88,9 @@ namespace xstrat
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy";
             Thread.CurrentThread.CurrentCulture = ci;
+
+            StateChanged += MainWindow_StateChanged;
+            WallEditorBtn.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

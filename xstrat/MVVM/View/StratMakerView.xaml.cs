@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,13 +15,18 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using System.Xml;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.StratHelper;
+using xstrat.Ui;
 using XStrat;
+using static System.Windows.Forms.AxHost;
 
 namespace xstrat.MVVM.View
 {
@@ -30,6 +36,8 @@ namespace xstrat.MVVM.View
     public partial class StratMakerView : UserControl
     {
         private List<XMap> maps = new List<XMap>();
+
+        public Strat currentStrat { get; set; }
 
         Image draggedItem;
 
@@ -42,6 +50,9 @@ namespace xstrat.MVVM.View
         public bool Floor1 { get; set; }
         public bool Floor2 { get; set; }
         public bool Floor3 { get; set; }
+
+        public int map_id;
+        public int pos_id;
 
         public StratMakerView()
         {
@@ -58,7 +69,7 @@ namespace xstrat.MVVM.View
 
         private void Opened()
         {
-            _loadMaps();
+            UpdateTopBar();
             ToolTipChanged(View.ToolTip.Cursor);
             LoadColorButtons();
             UpdateFloorButtons();
@@ -78,7 +89,72 @@ namespace xstrat.MVVM.View
 
         private void SelectMap()
         {
-            string name = StratFileHelper.GetImagePathForSpot(MapSelector.selectedMap.id, 1);
+            if (MapSelector.selectedMap != null)
+            {
+                map_id = MapSelector.selectedMap.id;
+            }
+            else
+            {
+                map_id = -1;
+            }
+            LoadMapImages();
+        }
+
+        private void LoadMapImages()
+        {
+            MapStack.Children.Clear();
+            if (map_id < 0) return;
+
+            List<int> floors = new List<int>();
+            if (Floor0) floors.Add(0);
+            if (Floor1) floors.Add(1);
+            if (Floor2) floors.Add(2);
+            if (Floor3) floors.Add(3);
+
+            int game_id = Globals.games.Where(x => x.name == Globals.TeamInfo.game_name).FirstOrDefault().id;
+
+            Point offset = new Point(0,0);
+
+            foreach (var floor in floors)
+            {
+                var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
+                MapStack.Children.Add(newimage);
+
+                WallsLayer.Children.Clear();
+
+                //add walls here
+                var objects = xStratHelper.GetWallObjects(map_id, floor);
+                foreach (var obj in objects)
+                {
+                    try
+                    {
+                        var newpos = new Point();
+                        newpos.X = obj.position_x + offset.X;
+                        newpos.Y = obj.position_y + offset.Y;
+
+                        WallControl newwc = new WallControl();
+                        newwc.Height = 19;
+                        newwc.Name = obj.uid;
+                        newwc.Width = obj.width;
+                        newwc.Padding = new Thickness(1);
+
+                        newwc.RenderTransform = obj.rotate;
+
+                        WallsLayer.Children.Add(newwc);
+
+                        Canvas.SetLeft(newwc, newpos.X);
+                        Canvas.SetTop(newwc, newpos.Y);
+                    }
+                    catch (Exception ex)
+                    {
+                        Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+                    }
+                }
+
+                offset.X += 4000 / 1.3;
+
+            }           
+
         }
 
         #endregion
@@ -349,13 +425,105 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        private void _loadMaps()
+
+
+        public void LoadStrat(int id)
         {
-            UpdateTopBar();
+            currentStrat = Globals.strats.Where(x => x.id == id).FirstOrDefault();
+            if (currentStrat == null) return;
+
+            map_id = currentStrat.map_id;
+
+            //body
+
+            map_id = currentStrat.map_id;
+            MapSelector.SelectIndexWhenLoaded(currentStrat.map_id);
+
+            //content
+
+            if (string.IsNullOrEmpty(currentStrat.content)) return;
+
+            StratContent content = GetStratContentFromString(currentStrat.content);
+
+            Floor0 = content.floors.Contains(0);
+            Floor1 = content.floors.Contains(1);
+            Floor2 = content.floors.Contains(2);
+            Floor3 = content.floors.Contains(3);
+            UpdateFloorButtons();
+
+            LoadMapImages();
+
+            var wallsList = WallsLayer.Children.OfType<WallControl>().ToList();
+
+            foreach (var wall in content.wallstatus)
+            {
+                var w = wallsList.Where(x => x.Uid == wall.wall_uid).FirstOrDefault();
+                if (w == null) continue;
+                w.states = wall.states;
+                //TODO user einfügen
+            }
+
+            Kommentar.Text = content.comment;
+        }
+
+        public async Task SaveStratAsync()
+        {
+            if(currentStrat == null)
+            {
+                Notify.sendError("No current strat");
+                return;
+            }
+
+            StratContent content = new StratContent(); //build here
+            
+            content.comment = Kommentar.Text;
+            content.wallstatus = GetWallObjs();
+
+            List<int> floors = new List<int>();
+            if (Floor0) floors.Add(0);
+            if (Floor1) floors.Add(1);
+            if (Floor2) floors.Add(2);
+            if (Floor3) floors.Add(3);
+
+            content.floors = floors;
+
+            string scontent = GetStratContentAsString(content);
+
+            if(string.IsNullOrEmpty(scontent))
+            {
+                Notify.sendError("Content cannot be empty");
+            }
+            else
+            {
+
+                (bool, string) result = await ApiHandler.SaveStrat(currentStrat.id, currentStrat.name, map_id, pos_id, currentStrat.version + 1, scontent);
+                if (result.Item1)
+                {
+                    Notify.sendSuccess("Strat saved successfully");
+                    Refresh();
+                }
+                else
+                {
+                    Notify.sendError("Could not save strat: " + result.Item2);
+                }
+            }
+        }
+
+        public List<WallObj> GetWallObjs()
+        {
+            List<WallObj> wallObjs = new List<WallObj>();
+
+            foreach (var wall in WallsLayer.Children.OfType<WallControl>())
+            {
+                wallObjs.Add(new WallObj { states = wall.states, wall_uid = wall.Uid });
+            }
+
+            return wallObjs;
         }
 
         private void UpdateTopBar()
         {
+            Menu.Items.Clear();
             var thickness = new Thickness(0, 0, 0, 0);
             foreach (var map in Globals.Maps)
             {
@@ -379,6 +547,13 @@ namespace xstrat.MVVM.View
                         stratItem.Click += StratItem_Click;
                         posItem.Items.Add(stratItem);
                     }
+                    var addItem = new MenuItem();
+                    addItem.Header = "New Strat";
+                    addItem.Tag = string.Format("create_{0}_{1}", map.id, pos.id);
+                    addItem.Template = Application.Current.Resources["Item_Template"] as ControlTemplate;
+                    addItem.Click += StratItem_Click;
+                    posItem.Items.Add(addItem);
+
                     mapItem.Items.Add(posItem);
                 }
                 Menu.Items.Add(mapItem);
@@ -389,9 +564,46 @@ namespace xstrat.MVVM.View
         {
             MenuItem sendObj = sender as MenuItem;
             if (sendObj == null) return;
-            Strat strat = sendObj.Tag as Strat;
-        }
 
+            if (sendObj.Tag.ToString().StartsWith("create_"))
+            {
+                var split = sendObj.Tag.ToString().Split('_');
+                int map_id = -1;
+                int pos_id = -1;
+                int.TryParse(split[1], out map_id);
+                int.TryParse(split[2], out pos_id);
+                CreateStrat(map_id, pos_id);                
+            }
+            else
+            {           
+                Strat strat = sendObj.Tag as Strat;
+                LoadStrat(strat.id);
+            }
+        }
+        
+        private async void CreateStrat(int map, int pos)
+        {
+            string inputString = Microsoft.VisualBasic.Interaction.InputBox("Name", "Name your strat", "");
+            if (string.IsNullOrEmpty(inputString)) 
+            {
+                Notify.sendError("Invalid name");
+                return;
+            }
+
+            //create scrim here
+            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.Game_id(),map, pos, 1, "");
+            if (result.Item1)
+            {
+                Notify.sendSuccess("Strat created successfully");
+                JObject json = JObject.Parse(result.Item2);
+                int strat_id = json.SelectToken("data").SelectToken("insertId").Value<int>();
+                Refresh();
+            }
+            else
+            {
+                Notify.sendError("Could not save new strat: " + result.Item2);
+            }
+        }
 
         //private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         //{/*
@@ -488,6 +700,7 @@ namespace xstrat.MVVM.View
             Floor0 = !Floor0;
             UpdateFloorButtons();
             ZoomControl.Focus();
+            LoadMapImages();
         }
 
         private void BtnFloor1_Click(object sender, RoutedEventArgs e)
@@ -495,6 +708,7 @@ namespace xstrat.MVVM.View
             Floor1 = !Floor1;
             UpdateFloorButtons();
             ZoomControl.Focus();
+            LoadMapImages();
         }
 
         private void BtnFloor2_Click(object sender, RoutedEventArgs e)
@@ -502,6 +716,7 @@ namespace xstrat.MVVM.View
             Floor2 = !Floor2;
             UpdateFloorButtons();
             ZoomControl.Focus();
+            LoadMapImages();
         }
 
         private void BtnFloor3_Click(object sender, RoutedEventArgs e)
@@ -509,6 +724,7 @@ namespace xstrat.MVVM.View
             Floor3 = !Floor3;
             UpdateFloorButtons();
             ZoomControl.Focus();
+            LoadMapImages();
         }
 
         #region drawing
@@ -570,14 +786,40 @@ namespace xstrat.MVVM.View
         }
         #endregion
 
-        private void NewBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void ReloadBtn_Click(object sender, RoutedEventArgs e)
         {
+            Refresh();
+        }
 
+        public async void Refresh()
+        {
+            await Globals.RetrieveStrats();
+            await Task.Delay(1000);
+            UpdateTopBar();
+        }
+
+        public string GetStratContentAsString(StratContent cnt)
+        {
+            using (var stringwriter = new System.IO.StringWriter())
+            {
+                var serializer = new XmlSerializer(cnt.GetType());
+                serializer.Serialize(stringwriter, cnt);
+                return stringwriter.ToString();
+            }
+        }
+
+        public StratContent GetStratContentFromString(string input)
+        {
+            using (var stringReader = new System.IO.StringReader(input))
+            {
+                var serializer = new XmlSerializer(typeof(StratContent));
+                return serializer.Deserialize(stringReader) as StratContent;
+            }
+        }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveStratAsync();
         }
     }
     public enum ToolTip
@@ -591,9 +833,7 @@ namespace xstrat.MVVM.View
         public List<DragNDropObj> dragNDropObjs { get; set; }
         public string comment { get; set; }
         public List<int> floors { get; set; }
-
-        public static StratContent Empyt = new StratContent();
-        
+                
         public StratContent()
         {
             wallstatus = new List<WallObj>();
@@ -605,7 +845,7 @@ namespace xstrat.MVVM.View
 
     public class WallObj
     {
-        public int wallID { get; set; }
+        public string wall_uid { get; set; }
         public int user_id { get; set; }
         public Wallstates[] states { get; set; }
     }

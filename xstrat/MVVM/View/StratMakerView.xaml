@@ -21,14 +21,14 @@
                     </Button.Content>
                 </Button>
 
-                <Button HorizontalAlignment="Left" Height="30" Width="30" Name="NewBtn" Margin="10" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="NewBtn_Click">
+                <Button HorizontalAlignment="Left" Height="30" Width="30" Name="SaveBtn" Margin="10" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="SaveBtn_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="5" />
                         </Style>
                     </Button.Resources>
                     <Button.Content>
-                        <MaterialDesign:PackIcon Height="30" Width="30" Kind="Add" />
+                        <MaterialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" />
                     </Button.Content>
                 </Button>
 
@@ -171,8 +171,9 @@
                         </Canvas>
                         <Canvas Name="WallsLayer" Panel.ZIndex="1" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
                             <local1:WallControl x:Name="WallControl1" Height="9" Width="60" Panel.ZIndex="2" Canvas.Left="300" Canvas.Top="200"></local1:WallControl>
+                            <local1:HatchControl Height="60" Width="60" Canvas.Left="500" Canvas.Top="50" Panel.ZIndex="2"></local1:HatchControl>
                         </Canvas>
-                        <StackPanel Orientation="Horizontal" Name="MapStack"></StackPanel>
+                        <StackPanel Orientation="Horizontal" Name="MapStack" Panel.ZIndex="-1"></StackPanel>
                     </Grid>
                 </zoomcontrol:ZoomControl>
                 <!--</wpfext:ZoomControl>-->

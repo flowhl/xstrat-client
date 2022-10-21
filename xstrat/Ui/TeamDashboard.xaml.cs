@@ -32,8 +32,14 @@ namespace xstrat.Ui
         public TeamDashboard()
         {
             InitializeComponent();
+            Loaded += TeamDashboard_Loaded;
+        }
+
+        private void TeamDashboard_Loaded(object sender, RoutedEventArgs e)
+        {
             Retrieve();
         }
+
         public async void Retrieve()
         {
             TeamName.Content = "Create or join a team";

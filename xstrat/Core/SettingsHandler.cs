@@ -17,10 +17,11 @@ namespace xstrat.Core
          * API domain
          * Last Login Mail
          */
-        
 
-        static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
-        static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
+
+        public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
+        public static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
+        public static readonly string MapsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/maps";
 
         //settings propeties:
         public static bool StayLoggedin { get; set; }
@@ -36,6 +37,10 @@ namespace xstrat.Core
             if (!Directory.Exists(SettingsFolder))
             {
                 Directory.CreateDirectory(SettingsFolder);
+            }
+            if (!Directory.Exists(MapsFolder))
+            {
+                Directory.CreateDirectory(MapsFolder);
             }
             if (!File.Exists(SettingsFile))
             {

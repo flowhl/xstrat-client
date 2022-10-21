@@ -801,7 +801,7 @@ namespace xstrat.Core
             EventTypes.Add(new EventType(5, "Match"));
             EventTypes.Add(new EventType(6, "Cup"));
         }
-        private static async Task RetrieveStrats()
+        public static async Task RetrieveStrats()
         {
             var result = await ApiHandler.GetStrats();
             if (result.Item1)
@@ -854,6 +854,13 @@ namespace xstrat.Core
             image.Width = 4000 / 1.3;
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
+        }
+
+        public static int Game_id()
+        {
+            var g = games.Where(x => x.name == TeamInfo.game_name).First();
+            if (g == null) return -1;
+            return g.id;
         }
 
         public class CalendarEventCreatedArgs : EventArgs

@@ -87,7 +87,7 @@ namespace xstrat.MVVM.View
             {
                 map_id = -1;
             }
-            //LoadMapImages();
+            LoadMapImages();
         }
 
         private void LoadMapImages()
@@ -98,6 +98,7 @@ namespace xstrat.MVVM.View
             int game_id = Globals.games.Where(x => x.name == Globals.TeamInfo.game_name).FirstOrDefault().id;
             var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor_id);
             MapStack.Children.Add(newimage);
+            WallObjectsToWalls();
         }
 
         #endregion
@@ -148,13 +149,23 @@ namespace xstrat.MVVM.View
         {
             if (Globals.TeamInfo.game_name == "R6 Siege")
             {
+                var grid = new Grid();
+                                
                 //create wall item
                 WallControl newWc = new WallControl();
                 newWc.MouseMove += Image_MouseMove;
                 newWc.MouseLeftButtonDown += NewImg_MouseLeftButtonDown;
-                newWc.Name = GetNextWallID();
+                newWc.Name = "template";
                 newWc.Margin = new Thickness(10);
-                IconsSP.Children.Add(newWc);
+                newWc.HorizontalAlignment = HorizontalAlignment.Center;
+                newWc.VerticalAlignment = VerticalAlignment.Center;
+                newWc.Height = 19;
+                newWc.Width = 60;
+                newWc.isLocked = true;
+
+                grid.Children.Add(newWc);                
+
+                IconsSP.Children.Add(grid);
             }
         }
 
@@ -172,10 +183,12 @@ namespace xstrat.MVVM.View
                 newpos.X -= 15;
                 newpos.Y -= 4.5;
 
+                string nameToSet = GetNextWallID();
+
                 WallControl newwc = new WallControl();
                 newwc.Height = 19;
                 newwc.IsHitTestVisible = false;
-                newwc.Visibility = Visibility.Visible;
+                newwc.Name = nameToSet;
 
                 //Height="9" Width="60" Panel.ZIndex="2"
 
@@ -187,6 +200,7 @@ namespace xstrat.MVVM.View
                 newcc.Style = this.FindResource("DesignerItemStyle") as Style;
                 newcc.BorderBrush = Brushes.Aqua;
                 newcc.BorderThickness = new Thickness(2);
+                newcc.Name = "SCC_" + nameToSet;
 
                 DrawingLayer.Children.Add(newcc);
 
@@ -340,7 +354,6 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor0 = !Floor0;
             UpdateFloorButtons();
-            //ZoomControl.Focus();
             floor_id = 0;
             LoadMapImages();
         }
@@ -350,7 +363,6 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor1 = !Floor1;
             UpdateFloorButtons();
-            //ZoomControl.Focus();
             floor_id = 1;
             LoadMapImages();
         }
@@ -360,7 +372,6 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor2 = !Floor2;
             UpdateFloorButtons();
-            //ZoomControl.Focus();
             floor_id = 2;
             LoadMapImages();
         }
@@ -370,7 +381,6 @@ namespace xstrat.MVVM.View
             DeselectFloors();
             Floor3 = !Floor3;
             UpdateFloorButtons();
-            //ZoomControl.Focus();
             floor_id = 3;
             LoadMapImages();
         }
@@ -412,18 +422,86 @@ namespace xstrat.MVVM.View
         }
         #endregion
 
-        private void NewBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void ReloadBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            WallObjectsToWalls();
         }
         private string GetNextWallID()
         {
-            return "";
+            int uid = DrawingLayer.Children.OfType<StratContentControl>().Count();
+            return "w_" + map_id + "_" + floor_id + "_" + uid;
         }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            xStratHelper.SaveWallObjects(WallsToWallObjects(), map_id, floor_id);
+            Notify.sendSuccess("Saved successfully");
+        }
+
+        private List<WallPositionObject> WallsToWallObjects()
+        {
+            List<WallPositionObject> wallObjects = new List<WallPositionObject>();
+
+            foreach (var item in DrawingLayer.Children.OfType<StratContentControl>())
+            {
+                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
+                wallObjects.Add(obj);
+            }
+
+            return wallObjects;
+        }
+
+        private void WallObjectsToWalls()
+        {
+            var objects = xStratHelper.GetWallObjects(map_id, floor_id);
+            DrawingLayer.Children.Clear();
+            foreach (var obj in objects)
+            {
+                try
+                {
+                    var newpos = new Point();
+                    newpos.X = obj.position_x;
+                    newpos.Y = obj.position_y;
+
+                    WallControl newwc = new WallControl();
+                    newwc.Height = 19;
+                    newwc.IsHitTestVisible = false;
+                    newwc.Visibility = Visibility.Visible;
+                    newwc.Name = obj.uid;
+
+                    StratContentControl newcc = new StratContentControl();
+                    newcc.Content = newwc;
+                    newcc.Height = 19;
+                    newcc.Width = obj.width;
+                    newcc.Padding = new Thickness(1);
+                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    newcc.BorderBrush = Brushes.Aqua;
+                    newcc.BorderThickness = new Thickness(2);
+                    newcc.RenderTransform = obj.rotate;
+                    newcc.Name = "SCC_" + obj.uid;
+
+                    DrawingLayer.Children.Add(newcc);
+
+                    Canvas.SetLeft(newcc, newpos.X);
+                    Canvas.SetTop(newcc, newpos.Y);
+
+                    DeselectAll();
+                    Selector.SetIsSelected(newcc, true);
+                    SetBrushToItem();
+                }
+                catch (Exception ex)
+                {
+                    Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+                }
+            }
+        } 
+    }
+
+    public class WallPositionObject{
+        public string uid { get; set; }
+        public double position_x { get; set; }
+        public double position_y { get; set; }
+        public RotateTransform rotate { get; set; }
+        public double width { get; set; }
     }
 }

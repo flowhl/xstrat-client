@@ -153,7 +153,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetMaps()
         {
             var CacheResponse = GetCachedResponse("GetMaps");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -177,7 +177,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetxPositions()
         {
             var CacheResponse = GetCachedResponse("GetxPositions");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -214,7 +214,7 @@ namespace xstrat
         public static async Task<(bool, string)> Games()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -238,7 +238,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetAdminStatus()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -300,7 +300,7 @@ namespace xstrat
         public static async Task<(bool, string)> VerifyAdmin()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -347,7 +347,7 @@ namespace xstrat
         public static async Task<(bool, string)> TeamJoinpassword()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -388,7 +388,7 @@ namespace xstrat
         public static async Task<(bool, string)> TeamMembers()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -412,7 +412,7 @@ namespace xstrat
         public static async Task<(bool, string)> TeamInfo()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -470,7 +470,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetColor()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -513,7 +513,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetDiscordId()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -556,7 +556,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetDiscordData()
         {
             var CacheResponse = GetCachedResponse("");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -653,7 +653,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetRoutineContent(int id)
         {
             var CacheResponse = GetCachedResponse( id.ToString());
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -683,7 +683,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetAllRoutines()
         {
             var CacheResponse = GetCachedResponse(MethodBase.GetCurrentMethod().Name, "");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -812,7 +812,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetUserOffDays()
         {
             var CacheResponse = GetCachedResponse("GetUserOffDays");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -842,7 +842,7 @@ namespace xstrat
         {
 
             var CacheResponse = GetCachedResponse("GetTeamOffDays");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1078,7 +1078,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetUbisoftID()
         {
             var CacheResponse = GetCachedResponse( "");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1114,7 +1114,7 @@ namespace xstrat
         {
 
             var CacheResponse = GetCachedResponse( username);
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1141,7 +1141,7 @@ namespace xstrat
         {
 
             var CacheResponse = GetCachedResponse( "");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1175,7 +1175,7 @@ namespace xstrat
         {
 
             var CacheResponse = GetCachedResponse( username);
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1207,7 +1207,7 @@ namespace xstrat
         {
 
             var CacheResponse = GetCachedResponse( "");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1241,7 +1241,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetLicenseStatus()
         {
             var CacheResponse = GetCachedResponse( "");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }
@@ -1347,7 +1347,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetStrats()
         {
             var CacheResponse = GetCachedResponse("GetStrats");
-            if (CacheResponse.Item2 != null && CacheResponse.Item2 != "")
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
             }

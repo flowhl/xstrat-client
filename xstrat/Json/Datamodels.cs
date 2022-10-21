@@ -298,7 +298,7 @@ namespace xstrat.Json
 
     public class Strat
     {
-        public int strat_id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public int team_id { get; set; }
         public int game_id { get; set; }
@@ -310,8 +310,9 @@ namespace xstrat.Json
         public int created_by { get; set; }
         public string last_edit_time { get; set; }
 
-        public Strat(string name, int team_id, int game_id, int map_id, int position_id, int version, string content, string created_date, int created_by, string last_edit_time)
+        public Strat(int id,string name, int team_id, int game_id, int map_id, int position_id, int version, string content, string created_date, int created_by, string last_edit_time)
         {
+            this.id = id;
             this.name = name;
             this.team_id = team_id;
             this.game_id = game_id;
@@ -326,7 +327,7 @@ namespace xstrat.Json
 
         public Strat()
         {
-            this.strat_id = 0;
+            this.id = 0;
             this.name = "strat 1";
             this.team_id = 0;
             this.game_id = 0;

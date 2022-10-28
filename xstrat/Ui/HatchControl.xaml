@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui"
-             mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="50">
-    <Grid IsHitTestVisible="False">
+             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="50" MouseLeftButtonDown="UserControl_MouseLeftButtonUp" MouseRightButtonDown="UserControl_MouseRightButtonUp">
+    <Grid IsHitTestVisible="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -15,9 +14,9 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Rectangle Name="Rec1" Grid.Row="0" Grid.Column="0" StrokeThickness="0" Fill="CornflowerBlue" MouseLeftButtonDown="Rec_MouseLeftButtonUp" MouseRightButtonDown="Rec1_MouseRightButtonUp"></Rectangle>
-        <Rectangle Name="Rec2" Grid.Row="1" Grid.Column="0" StrokeThickness="0" Fill="CornflowerBlue" MouseLeftButtonDown="Rec_MouseLeftButtonUp" MouseRightButtonDown="Rec2_MouseRightButtonUp"></Rectangle>
-        <Rectangle Name="Rec3" Grid.Row="0" Grid.Column="1" StrokeThickness="0" Fill="CornflowerBlue" MouseLeftButtonDown="Rec_MouseLeftButtonUp" MouseRightButtonDown="Rec3_MouseRightButtonUp"></Rectangle>
-        <Rectangle Name="Rec4" Grid.Row="1" Grid.Column="1" StrokeThickness="0" Fill="CornflowerBlue" MouseLeftButtonDown="Rec_MouseLeftButtonUp" MouseRightButtonDown="Rec4_MouseRightButtonUp"></Rectangle>
+        <Rectangle Name="Rec1" Grid.Row="0" Grid.Column="0" StrokeThickness="0" Fill="CornflowerBlue"></Rectangle>
+        <Rectangle Name="Rec2" Grid.Row="1" Grid.Column="0" StrokeThickness="0" Fill="CornflowerBlue"></Rectangle>
+        <Rectangle Name="Rec3" Grid.Row="0" Grid.Column="1" StrokeThickness="0" Fill="CornflowerBlue"></Rectangle>
+        <Rectangle Name="Rec4" Grid.Row="1" Grid.Column="1" StrokeThickness="0" Fill="CornflowerBlue"></Rectangle>
     </Grid>
 </UserControl>

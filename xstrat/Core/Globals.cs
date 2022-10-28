@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 using xstrat.Json;
 using xstrat.MVVM.ViewModel;
 
@@ -641,6 +643,7 @@ namespace xstrat.Core
                     catch (Exception ex)
                     {
                         Logger.Log("No Teaminfo found! " + ex.Message);
+                        Notify.sendError("No Teaminfo found! " + ex.Message);
                     }
                 }
                 else
@@ -866,6 +869,17 @@ namespace xstrat.Core
         public class CalendarEventCreatedArgs : EventArgs
         {
             public DateTime Date { get; set; }
+        }
+
+        public static string SerializeObject<T>(this T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
         }
     }
 }

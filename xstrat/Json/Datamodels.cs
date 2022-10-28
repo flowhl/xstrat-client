@@ -213,6 +213,10 @@ namespace xstrat.Json
             this.name = name;
             this.strats = strats;
         }
+
+        public Position()
+        {
+        }
     }
 
     public class Routine

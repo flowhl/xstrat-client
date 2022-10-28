@@ -77,28 +77,10 @@ namespace xstrat.MVVM.View
             //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
-            MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
         }
 
-        private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SelectMap();
-        }
 
         #region loading ui
-
-        private void SelectMap()
-        {
-            if (MapSelector.selectedMap != null)
-            {
-                map_id = MapSelector.selectedMap.id;
-            }
-            else
-            {
-                map_id = -1;
-            }
-            LoadMapImages();
-        }
 
         private void LoadMapImages()
         {
@@ -128,22 +110,69 @@ namespace xstrat.MVVM.View
                 {
                     try
                     {
-                        var newpos = new Point();
-                        newpos.X = obj.position_x + offset.X;
-                        newpos.Y = obj.position_y + offset.Y;
+                        if (obj.type == 0)
+                        {
+                            var newpos = new Point();
+                            newpos.X = obj.position_x + offset.X;
+                            newpos.Y = obj.position_y + offset.Y;
 
-                        WallControl newwc = new WallControl();
-                        newwc.Height = 19;
-                        newwc.Name = obj.uid;
-                        newwc.Width = obj.width;
-                        newwc.Padding = new Thickness(1);
+                            WallControl newwc = new WallControl();
+                            newwc.Height = 19;
+                            newwc.IsHitTestVisible = false;
+                            newwc.Visibility = Visibility.Visible;
+                            newwc.Name = obj.uid;
 
-                        newwc.RenderTransform = obj.rotate;
+                            StratContentControl newcc = new StratContentControl();
+                            newcc.Content = newwc;
+                            newcc.Height = 19;
+                            newcc.Width = obj.width;
+                            newcc.Padding = new Thickness(1);
+                            newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                            newcc.BorderBrush = Brushes.Aqua;
+                            newcc.BorderThickness = new Thickness(2);
+                            newcc.RenderTransform = obj.rotate;
+                            newcc.Name = "SCC_" + obj.uid;
 
-                        WallsLayer.Children.Add(newwc);
+                            DrawingLayer.Children.Add(newcc);
 
-                        Canvas.SetLeft(newwc, newpos.X);
-                        Canvas.SetTop(newwc, newpos.Y);
+                            Canvas.SetLeft(newcc, newpos.X);
+                            Canvas.SetTop(newcc, newpos.Y);
+
+                            DeselectAll();
+                            Selector.SetIsSelected(newcc, true);
+                            SetBrushToItem();
+                        }
+                        if (obj.type == 1)
+                        {
+                            var newpos = new Point();
+                            newpos.X = obj.position_x + offset.X;
+                            newpos.Y = obj.position_y + offset.Y;
+
+                            HatchControl newhc = new HatchControl();
+                            newhc.IsHitTestVisible = false;
+                            newhc.Name = obj.uid;
+
+                            StratContentControl newcc = new StratContentControl();
+                            newcc.Content = newhc;
+                            newcc.Height = 86;
+                            newcc.Width = 86;
+                            newcc.Width = obj.width;
+                            newcc.Padding = new Thickness(1);
+                            newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                            newcc.BorderBrush = Brushes.Aqua;
+                            newcc.BorderThickness = new Thickness(2);
+                            newcc.RenderTransform = obj.rotate;
+                            newcc.Name = "SCC_" + obj.uid;
+
+                            DrawingLayer.Children.Add(newcc);
+
+                            Canvas.SetLeft(newcc, newpos.X);
+                            Canvas.SetTop(newcc, newpos.Y);
+
+                            DeselectAll();
+                            Selector.SetIsSelected(newcc, true);
+                            SetBrushToItem();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -437,8 +466,12 @@ namespace xstrat.MVVM.View
             //body
 
             map_id = currentStrat.map_id;
-            MapSelector.SelectIndexWhenLoaded(currentStrat.map_id);
-
+            TxtMapName.Content = Globals.Maps.Where(x => x.id == currentStrat.map_id).FirstOrDefault()?.name;
+            TxtCreatedBy.Content = Globals.teammates.Where(x => x.id == currentStrat.created_by).FirstOrDefault()?.name;
+            TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-","/").Replace("T", " ");
+            TxtLastEdit.Content = currentStrat.last_edit_time?.ToString().Replace("-", "/").Replace("T", " ");
+            TxtVersion.Content = currentStrat.version;
+            
             //content
 
             if (string.IsNullOrEmpty(currentStrat.content)) return;
@@ -454,12 +487,20 @@ namespace xstrat.MVVM.View
             LoadMapImages();
 
             var wallsList = WallsLayer.Children.OfType<WallControl>().ToList();
+            var hatchList = WallsLayer.Children.OfType<HatchControl>().ToList();
 
             foreach (var wall in content.wallstatus)
             {
                 var w = wallsList.Where(x => x.Uid == wall.wall_uid).FirstOrDefault();
                 if (w == null) continue;
                 w.states = wall.states;
+                //TODO user einfügen
+            }
+            foreach (var hatch in content.hatchstatus)
+            {
+                var h = hatchList.Where(x => x.Uid == hatch.wall_uid).FirstOrDefault();
+                if (h == null) continue;
+                h.states = hatch.states;
                 //TODO user einfügen
             }
 
@@ -478,6 +519,7 @@ namespace xstrat.MVVM.View
             
             content.comment = Kommentar.Text;
             content.wallstatus = GetWallObjs();
+            content.hatchstatus = GetHatchObjs();
 
             List<int> floors = new List<int>();
             if (Floor0) floors.Add(0);
@@ -487,9 +529,10 @@ namespace xstrat.MVVM.View
 
             content.floors = floors;
 
-            string scontent = GetStratContentAsString(content);
+            //string scontent = GetStratContentAsString(content);
+            string scontent = content.SerializeObject();
 
-            if(string.IsNullOrEmpty(scontent))
+            if (string.IsNullOrEmpty(scontent))
             {
                 Notify.sendError("Content cannot be empty");
             }
@@ -517,8 +560,19 @@ namespace xstrat.MVVM.View
             {
                 wallObjs.Add(new WallObj { states = wall.states, wall_uid = wall.Uid });
             }
-
             return wallObjs;
+        }
+
+        public List<HatchObj> GetHatchObjs()
+        {
+            List<HatchObj> hatchObjs = new List<HatchObj>();
+
+            foreach (var hatch in WallsLayer.Children.OfType<HatchControl>())
+            {
+                hatchObjs.Add(new HatchObj { states = hatch.states, wall_uid = hatch.Uid });
+            }
+
+            return hatchObjs;
         }
 
         private void UpdateTopBar()
@@ -798,16 +852,6 @@ namespace xstrat.MVVM.View
             UpdateTopBar();
         }
 
-        public string GetStratContentAsString(StratContent cnt)
-        {
-            using (var stringwriter = new System.IO.StringWriter())
-            {
-                var serializer = new XmlSerializer(cnt.GetType());
-                serializer.Serialize(stringwriter, cnt);
-                return stringwriter.ToString();
-            }
-        }
-
         public StratContent GetStratContentFromString(string input)
         {
             using (var stringReader = new System.IO.StringReader(input))
@@ -826,10 +870,11 @@ namespace xstrat.MVVM.View
     {
         Cursor, Eraser, Text, Node, Arrow, Circle, Rectangle, Brush
     }
-
+    [Serializable]
     public class StratContent
     {
         public List<WallObj> wallstatus { get; set; }
+        public List<HatchObj> hatchstatus { get; set; }
         public List<DragNDropObj> dragNDropObjs { get; set; }
         public string comment { get; set; }
         public List<int> floors { get; set; }
@@ -837,10 +882,12 @@ namespace xstrat.MVVM.View
         public StratContent()
         {
             wallstatus = new List<WallObj>();
+            hatchstatus = new List<HatchObj>();
             dragNDropObjs = new List<DragNDropObj>();
             comment = "";
             floors = new List<int>();
         }
+
     }
 
     public class WallObj
@@ -849,6 +896,14 @@ namespace xstrat.MVVM.View
         public int user_id { get; set; }
         public Wallstates[] states { get; set; }
     }
+    public class HatchObj
+    {
+        public string wall_uid { get; set; }
+        public int user_id { get; set; }
+        public Hatchstates[] states { get; set; }
+    }
+
+
 
     public class DragNDropObj
     {

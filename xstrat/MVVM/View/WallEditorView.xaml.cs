@@ -44,6 +44,8 @@ namespace xstrat.MVVM.View
         public int map_id;
         public int floor_id;
 
+        public int? dropmode;
+
         public WallEditorView()
         {
             InitializeComponent();
@@ -166,6 +168,24 @@ namespace xstrat.MVVM.View
                 grid.Children.Add(newWc);                
 
                 IconsSP.Children.Add(grid);
+
+                var grid2 = new Grid();
+
+                //create wall item
+                HatchControl newHc = new HatchControl();
+                newHc.MouseMove += Image_MouseMove;
+                newHc.MouseLeftButtonDown += NewImg_MouseLeftButtonDown;
+                newHc.Name = "template";
+                newHc.Margin = new Thickness(10);
+                newHc.HorizontalAlignment = HorizontalAlignment.Center;
+                newHc.VerticalAlignment = VerticalAlignment.Center;
+                newHc.Height = 50;
+                newHc.Width = 50;
+                newHc.isLocked = true;
+
+                grid2.Children.Add(newHc);
+
+                IconsSP.Children.Add(grid2);
             }
         }
 
@@ -178,38 +198,77 @@ namespace xstrat.MVVM.View
         {
             try
             {
-                var newpos = e.GetPosition(DrawingLayer);
+                if(dropmode == 0 )
+                {
 
-                newpos.X -= 15;
-                newpos.Y -= 4.5;
+                    var newpos = e.GetPosition(DrawingLayer);
 
-                string nameToSet = GetNextWallID();
+                    newpos.X -= 15;
+                    newpos.Y -= 4.5;
 
-                WallControl newwc = new WallControl();
-                newwc.Height = 19;
-                newwc.IsHitTestVisible = false;
-                newwc.Name = nameToSet;
+                    string nameToSet = GetNextWallID();
 
-                //Height="9" Width="60" Panel.ZIndex="2"
+                    WallControl newwc = new WallControl();
+                    newwc.Height = 19;
+                    newwc.IsHitTestVisible = false;
+                    newwc.Name = nameToSet;
 
-                StratContentControl newcc = new StratContentControl();
-                newcc.Content = newwc;
-                newcc.Height = 19;
-                newcc.Width = 30;
-                newcc.Padding = new Thickness(1);
-                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                newcc.BorderBrush = Brushes.Aqua;
-                newcc.BorderThickness = new Thickness(2);
-                newcc.Name = "SCC_" + nameToSet;
+                    //Height="9" Width="60" Panel.ZIndex="2"
 
-                DrawingLayer.Children.Add(newcc);
+                    StratContentControl newcc = new StratContentControl();
+                    newcc.Content = newwc;
+                    newcc.Height = 19;
+                    newcc.Width = 30;
+                    newcc.Padding = new Thickness(1);
+                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    newcc.BorderBrush = Brushes.Aqua;
+                    newcc.BorderThickness = new Thickness(2);
+                    newcc.Name = "SCC_" + nameToSet;
 
-                Canvas.SetLeft(newcc, newpos.X);
-                Canvas.SetTop(newcc, newpos.Y);
+                    DrawingLayer.Children.Add(newcc);
 
-                DeselectAll();
-                Selector.SetIsSelected(newcc, true);
-                SetBrushToItem();
+                    Canvas.SetLeft(newcc, newpos.X);
+                    Canvas.SetTop(newcc, newpos.Y);
+
+                    DeselectAll();
+                    Selector.SetIsSelected(newcc, true);
+                    SetBrushToItem();
+                }
+                if(dropmode == 1)
+                {
+                    var newpos = e.GetPosition(DrawingLayer);
+
+                    newpos.X -= 15;
+                    newpos.Y -= 4.5;
+
+                    string nameToSet = GetNextWallID();
+
+                    HatchControl newwc = new HatchControl();
+                    newwc.IsHitTestVisible = false;
+                    newwc.Name = nameToSet;
+
+                    //Height="9" Width="60" Panel.ZIndex="2"
+
+                    StratContentControl newcc = new StratContentControl();
+                    newcc.Content = newwc;
+                    newcc.Height = 86;
+                    newcc.Width = 86;
+                    newcc.Padding = new Thickness(1);
+                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    newcc.BorderBrush = Brushes.Aqua;
+                    newcc.BorderThickness = new Thickness(0);
+                    newcc.Name = "SCC_" + nameToSet;
+
+                    DrawingLayer.Children.Add(newcc);
+
+                    Canvas.SetLeft(newcc, newpos.X);
+                    Canvas.SetTop(newcc, newpos.Y);
+
+                    DeselectAll();
+                    Selector.SetIsSelected(newcc, true);
+                    SetBrushToItem();
+                }
+                dropmode = null;
             }
             catch (Exception ex)
             {
@@ -324,7 +383,16 @@ namespace xstrat.MVVM.View
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(sender as WallControl, sender as WallControl, DragDropEffects.Move);
+                if(sender is WallControl)
+                {
+                    dropmode = 0;
+                    DragDrop.DoDragDrop(sender as WallControl, sender as WallControl, DragDropEffects.Move);
+                }
+                if(sender is HatchControl)
+                {
+                    dropmode = 1;
+                    DragDrop.DoDragDrop(sender as HatchControl, sender as HatchControl, DragDropEffects.Move);
+                }
             }
         }
 
@@ -444,7 +512,9 @@ namespace xstrat.MVVM.View
 
             foreach (var item in DrawingLayer.Children.OfType<StratContentControl>())
             {
-                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
+                int type = 0;
+                if (item.Content is HatchControl) type = 1;
+                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
                 wallObjects.Add(obj);
             }
 
@@ -459,35 +529,69 @@ namespace xstrat.MVVM.View
             {
                 try
                 {
-                    var newpos = new Point();
-                    newpos.X = obj.position_x;
-                    newpos.Y = obj.position_y;
+                    if(obj.type == 0)
+                    {
+                        var newpos = new Point();
+                        newpos.X = obj.position_x;
+                        newpos.Y = obj.position_y;
 
-                    WallControl newwc = new WallControl();
-                    newwc.Height = 19;
-                    newwc.IsHitTestVisible = false;
-                    newwc.Visibility = Visibility.Visible;
-                    newwc.Name = obj.uid;
+                        WallControl newwc = new WallControl();
+                        newwc.Height = 19;
+                        newwc.IsHitTestVisible = false;
+                        newwc.Visibility = Visibility.Visible;
+                        newwc.Name = obj.uid;
 
-                    StratContentControl newcc = new StratContentControl();
-                    newcc.Content = newwc;
-                    newcc.Height = 19;
-                    newcc.Width = obj.width;
-                    newcc.Padding = new Thickness(1);
-                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = Brushes.Aqua;
-                    newcc.BorderThickness = new Thickness(2);
-                    newcc.RenderTransform = obj.rotate;
-                    newcc.Name = "SCC_" + obj.uid;
+                        StratContentControl newcc = new StratContentControl();
+                        newcc.Content = newwc;
+                        newcc.Height = 19;
+                        newcc.Width = obj.width;
+                        newcc.Padding = new Thickness(1);
+                        newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                        newcc.BorderBrush = Brushes.Aqua;
+                        newcc.BorderThickness = new Thickness(2);
+                        newcc.RenderTransform = obj.rotate;
+                        newcc.Name = "SCC_" + obj.uid;
 
-                    DrawingLayer.Children.Add(newcc);
+                        DrawingLayer.Children.Add(newcc);
 
-                    Canvas.SetLeft(newcc, newpos.X);
-                    Canvas.SetTop(newcc, newpos.Y);
+                        Canvas.SetLeft(newcc, newpos.X);
+                        Canvas.SetTop(newcc, newpos.Y);
 
-                    DeselectAll();
-                    Selector.SetIsSelected(newcc, true);
-                    SetBrushToItem();
+                        DeselectAll();
+                        Selector.SetIsSelected(newcc, true);
+                        SetBrushToItem();
+                    }
+                    if(obj.type == 1)
+                    {
+                        var newpos = new Point();
+                        newpos.X = obj.position_x;
+                        newpos.Y = obj.position_y;
+
+                        HatchControl newhc = new HatchControl();
+                        newhc.IsHitTestVisible = false;
+                        newhc.Name = obj.uid;
+
+                        StratContentControl newcc = new StratContentControl();
+                        newcc.Content = newhc;
+                        newcc.Height = 86;
+                        newcc.Width = 86;
+                        newcc.Width = obj.width;
+                        newcc.Padding = new Thickness(1);
+                        newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                        newcc.BorderBrush = Brushes.Aqua;
+                        newcc.BorderThickness = new Thickness(2);
+                        newcc.RenderTransform = obj.rotate;
+                        newcc.Name = "SCC_" + obj.uid;
+
+                        DrawingLayer.Children.Add(newcc);
+
+                        Canvas.SetLeft(newcc, newpos.X);
+                        Canvas.SetTop(newcc, newpos.Y);
+
+                        DeselectAll();
+                        Selector.SetIsSelected(newcc, true);
+                        SetBrushToItem();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -499,6 +603,7 @@ namespace xstrat.MVVM.View
 
     public class WallPositionObject{
         public string uid { get; set; }
+        public int type { get; set; }
         public double position_x { get; set; }
         public double position_y { get; set; }
         public RotateTransform rotate { get; set; }

@@ -31,43 +31,7 @@ namespace xstrat.Ui
         {
             InitializeComponent();
         }
-
-        private void Rec_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var val = states[0];
-            if (states.All(x => x == val))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    states[i] = increaseHS(val);
-                }
-            }
-        }
-
-        private void Rec1_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            states[0] = increaseHS(states[0]);
-            UpdateUI();
-        }
-
-        private void Rec2_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            states[1] = increaseHS(states[1]);
-            UpdateUI();
-        }
-
-        private void Rec3_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            states[2] = increaseHS(states[2]);
-            UpdateUI();
-        }
-
-        private void Rec4_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            states[3] = increaseHS(states[3]);
-            UpdateUI();
-        }
-
+        
         private void UpdateUI()
         {
             for (int i = 0; i < 4; i++)
@@ -118,6 +82,50 @@ namespace xstrat.Ui
                 default:
                     return new SolidColorBrush(Colors.AliceBlue);
             }
+        }
+
+        private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (isLocked) return;
+            var val = states[0];
+            if (states.All(x => x == val))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    states[i] = increaseHS(val);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    states[i] = Hatchstates.solid;
+                }
+            }
+            UpdateUI();
+
+        }
+
+        private void UserControl_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (isLocked) return;
+            if (Rec1.IsMouseOver)
+            {
+                states[0] = increaseHS(states[0]);
+            }
+            if (Rec2.IsMouseOver)
+            {
+                states[1] = increaseHS(states[1]);
+            }
+            if (Rec3.IsMouseOver)
+            {
+                states[2] = increaseHS(states[2]);
+            }
+            if (Rec4.IsMouseOver)
+            {
+                states[3] = increaseHS(states[3]);
+            }
+            UpdateUI();
         }
     }
 }

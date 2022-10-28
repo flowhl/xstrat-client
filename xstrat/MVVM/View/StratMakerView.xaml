@@ -56,7 +56,8 @@
                         <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,5,0,10" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Label Foreground="White" VerticalAlignment="Center" FontSize="13">Map:</Label>
-                                <local1:DataSelector type="5" Width="200" Margin="5,5,25,5" x:Name="MapSelector"></local1:DataSelector>
+                                <!--<local1:DataSelector type="5" Width="200" Margin="5,5,25,5" x:Name="MapSelector"></local1:DataSelector>-->
+                                <Label Foreground="White" Name="TxtMapName" Width="200" HorizontalContentAlignment="Left" VerticalAlignment="Center" FontSize="13" FontWeight="Bold"></Label>
                                 <Button Foreground="#336CB5" Background="Transparent" BorderThickness="0" Name="BtnUndo" Click="BtnUndo_Click">
                                     <MaterialDesign:PackIcon Kind="Undo" Height="25" Width="25" />
                                 </Button>
@@ -148,12 +149,40 @@
                         </StackPanel>
 
                     </StackPanel>
-                    <Border Background="#181818" Grid.Column="1" Height="100" Width="500" CornerRadius="10" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        
+                    <Border Background="#181818" Height="100" Width="500" Margin="5" CornerRadius="10" HorizontalAlignment="Left">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
                             <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1" Name="IconsSP">
                             </StackPanel>
                         </ScrollViewer>
-                    </Border>                    
+                    </Border>
+                    <Border Background="#181818" Height="50" Margin="5" Width="500" CornerRadius="10" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <StackPanel Orientation="Horizontal" Margin="0,-4,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Version:</Label>
+                                        <Label Name="TxtVersion" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="115" HorizontalAlignment="Left"></Label>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Last Edit:</Label>
+                                        <Label Name="TxtLastEdit" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Created By:</Label>
+                                        <Label Name="TxtCreatedBy" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Created On:</Label>
+                                        <Label Name="TxtCreatedOn" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
+                                    </StackPanel>
+                                    
+                                </StackPanel>
+                            </StackPanel>
+                    </Border>
+                    </StackPanel>
                 </Grid>
             </Border>
         </Expander>

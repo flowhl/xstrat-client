@@ -27,6 +27,7 @@ using xstrat.StratHelper;
 using xstrat.Ui;
 using XStrat;
 using static System.Windows.Forms.AxHost;
+using System.ComponentModel;
 
 namespace xstrat.MVVM.View
 {
@@ -53,6 +54,8 @@ namespace xstrat.MVVM.View
 
         public int map_id;
         public int pos_id;
+
+        public double IconSize { get; set; }
 
         public StratMakerView()
         {
@@ -118,28 +121,15 @@ namespace xstrat.MVVM.View
 
                             WallControl newwc = new WallControl();
                             newwc.Height = 19;
-                            newwc.IsHitTestVisible = false;
-                            newwc.Visibility = Visibility.Visible;
                             newwc.Name = obj.uid;
+                            newwc.Width = obj.width;
+                            newwc.RenderTransform = obj.rotate;
 
-                            StratContentControl newcc = new StratContentControl();
-                            newcc.Content = newwc;
-                            newcc.Height = 19;
-                            newcc.Width = obj.width;
-                            newcc.Padding = new Thickness(1);
-                            newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                            newcc.BorderBrush = Brushes.Aqua;
-                            newcc.BorderThickness = new Thickness(2);
-                            newcc.RenderTransform = obj.rotate;
-                            newcc.Name = "SCC_" + obj.uid;
+                            WallsLayer.Children.Add(newwc);
 
-                            DrawingLayer.Children.Add(newcc);
+                            Canvas.SetLeft(newwc, newpos.X);
+                            Canvas.SetTop(newwc, newpos.Y);
 
-                            Canvas.SetLeft(newcc, newpos.X);
-                            Canvas.SetTop(newcc, newpos.Y);
-
-                            DeselectAll();
-                            Selector.SetIsSelected(newcc, true);
                             SetBrushToItem();
                         }
                         if (obj.type == 1)
@@ -149,28 +139,16 @@ namespace xstrat.MVVM.View
                             newpos.Y = obj.position_y + offset.Y;
 
                             HatchControl newhc = new HatchControl();
-                            newhc.IsHitTestVisible = false;
                             newhc.Name = obj.uid;
+                            newhc.RenderTransform = obj.rotate;
+                            newhc.Height = 86;
+                            newhc.Width = 86;
 
-                            StratContentControl newcc = new StratContentControl();
-                            newcc.Content = newhc;
-                            newcc.Height = 86;
-                            newcc.Width = 86;
-                            newcc.Width = obj.width;
-                            newcc.Padding = new Thickness(1);
-                            newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                            newcc.BorderBrush = Brushes.Aqua;
-                            newcc.BorderThickness = new Thickness(2);
-                            newcc.RenderTransform = obj.rotate;
-                            newcc.Name = "SCC_" + obj.uid;
+                            WallsLayer.Children.Add(newhc);
 
-                            DrawingLayer.Children.Add(newcc);
+                            Canvas.SetLeft(newhc, newpos.X);
+                            Canvas.SetTop(newhc, newpos.Y);
 
-                            Canvas.SetLeft(newcc, newpos.X);
-                            Canvas.SetTop(newcc, newpos.Y);
-
-                            DeselectAll();
-                            Selector.SetIsSelected(newcc, true);
                             SetBrushToItem();
                         }
                     }
@@ -181,7 +159,7 @@ namespace xstrat.MVVM.View
                 }
 
                 offset.X += 4000 / 1.3;
-
+                DeselectAll();
             }           
 
         }
@@ -256,8 +234,8 @@ namespace xstrat.MVVM.View
 
                 var newpos = e.GetPosition(DrawingLayer);
 
-                newpos.X -= 25;
-                newpos.Y -= 25;
+                newpos.X -= IconSize / 2;
+                newpos.Y -= IconSize / 2;
 
                 Image newimg = new Image();
                 newimg.IsHitTestVisible = false;
@@ -265,8 +243,8 @@ namespace xstrat.MVVM.View
 
                 StratContentControl newcc = new StratContentControl();
                 newcc.Content = newimg;
-                newcc.Height = 50;
-                newcc.Width = 50;
+                newcc.Height = IconSize;
+                newcc.Width = IconSize;
                 newcc.Padding = new Thickness(1);
                 newcc.Style = this.FindResource("DesignerItemStyle") as Style;
                 newcc.BorderBrush = Brushes.Transparent;
@@ -431,6 +409,7 @@ namespace xstrat.MVVM.View
                 case View.ToolTip.Brush:
                     CurrentToolTip = View.ToolTip.Brush;
                     DeselectAllToolTips();
+                    BtnBrush.BorderThickness = new Thickness(1);
                     break;
                 default:
                     CurrentToolTip = View.ToolTip.Cursor;
@@ -458,6 +437,10 @@ namespace xstrat.MVVM.View
 
         public void LoadStrat(int id)
         {
+            DrawingLayer.Children.Clear();
+            WallsLayer.Children.Clear();
+            MapStack.Children.Clear();
+
             currentStrat = Globals.strats.Where(x => x.id == id).FirstOrDefault();
             if (currentStrat == null) return;
 
@@ -491,18 +474,28 @@ namespace xstrat.MVVM.View
 
             foreach (var wall in content.wallstatus)
             {
-                var w = wallsList.Where(x => x.Uid == wall.wall_uid).FirstOrDefault();
+                var w = wallsList.Where(x => x.Name == wall.wall_uid).FirstOrDefault();
                 if (w == null) continue;
                 w.states = wall.states;
+                w.UpdateUI();
                 //TODO user einfügen
             }
             foreach (var hatch in content.hatchstatus)
             {
-                var h = hatchList.Where(x => x.Uid == hatch.wall_uid).FirstOrDefault();
+                var h = hatchList.Where(x => x.Name == hatch.hatch_uid).FirstOrDefault();
                 if (h == null) continue;
                 h.states = hatch.states;
+                h.UpdateUI();
                 //TODO user einfügen
             }
+
+            LoadDragNDropItems(content.dragNDropObjs);
+
+            IconSizeSlider.Value = content.IconSize;
+            IconSize = content.IconSize;
+            RescaleAllIcons(content.IconSize);
+
+
 
             Kommentar.Text = content.comment;
         }
@@ -520,6 +513,8 @@ namespace xstrat.MVVM.View
             content.comment = Kommentar.Text;
             content.wallstatus = GetWallObjs();
             content.hatchstatus = GetHatchObjs();
+            content.dragNDropObjs = GetDragNDropObjs();
+            content.IconSize = IconSize;
 
             List<int> floors = new List<int>();
             if (Floor0) floors.Add(0);
@@ -529,7 +524,6 @@ namespace xstrat.MVVM.View
 
             content.floors = floors;
 
-            //string scontent = GetStratContentAsString(content);
             string scontent = content.SerializeObject();
 
             if (string.IsNullOrEmpty(scontent))
@@ -543,7 +537,6 @@ namespace xstrat.MVVM.View
                 if (result.Item1)
                 {
                     Notify.sendSuccess("Strat saved successfully");
-                    Refresh();
                 }
                 else
                 {
@@ -552,13 +545,93 @@ namespace xstrat.MVVM.View
             }
         }
 
+        public List<DragNDropObj> GetDragNDropObjs()
+        {
+            List<DragNDropObj> result = new List<DragNDropObj>();
+
+            //Position pos
+            //int user_id
+            //type type
+            //string image
+            //double diameter
+
+            foreach (var item in DrawingLayer.Children)
+            {
+                var newEntry = new DragNDropObj();
+                if(item is StratContentControl)
+                {
+                    newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                    newEntry.UserID = (item as StratContentControl).UserID;
+                    Image image = ((item as StratContentControl).Content as Image);
+                    newEntry.image = ((BitmapImage)image.Source).UriSource.AbsolutePath;
+                    newEntry.type = DragNDropObjType.image;
+                }
+                if(item is Ellipse)
+                {
+                    newEntry.pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
+                    newEntry.diameter = (item as Ellipse).Width;
+                    newEntry.UserID = Globals.teammates.Where(x => x.color.ToSolidColorBrush().ToString() == (item as Ellipse).Fill.ToString().ToSolidColorBrush().ToString()).FirstOrDefault()?.id ?? -1;
+                    newEntry.type = DragNDropObjType.Circle;
+                }
+                if(newEntry != null) result.Add(newEntry);
+            }
+
+            return result;
+        }
+
+        public void LoadDragNDropItems(List<DragNDropObj> list)
+        {
+            foreach (var item in list)
+            {
+                if(item.type == DragNDropObjType.image)
+                {
+                    Point newpos = item.pos;
+
+                    Image newimg = new Image();
+                    newimg.IsHitTestVisible = false;
+                    newimg.Source = new BitmapImage(new Uri(item.image, UriKind.Absolute));
+
+                    StratContentControl newcc = new StratContentControl();
+                    newcc.Content = newimg;
+                    newcc.Height = 50;
+                    newcc.Width = 50;
+                    newcc.Padding = new Thickness(1);
+                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    newcc.BorderBrush = Brushes.Transparent;
+                    newcc.BorderThickness = new Thickness(2);
+                    newcc.UserID = item.UserID;
+
+                    DrawingLayer.Children.Add(newcc);
+
+                    Canvas.SetLeft(newcc, newpos.X);
+                    Canvas.SetTop(newcc, newpos.Y);
+
+                    DeselectAll();
+                }
+
+                if(item.type == DragNDropObjType.Circle)
+                {
+                    var ellipse = new Ellipse();
+                    ellipse.Fill = Globals.teammates.Where(x => x.id == item.UserID).FirstOrDefault()?.color?.ToSolidColorBrush() ?? Brushes.Red;
+                    ellipse.Width = item.diameter;
+                    ellipse.Height = item.diameter;
+                    DrawingLayer.Children.Add(ellipse);
+                    Canvas.SetLeft(ellipse, item.pos.X);
+                    Canvas.SetTop(ellipse, item.pos.Y);
+                }
+            }
+        }
+
+
+
+
         public List<WallObj> GetWallObjs()
         {
             List<WallObj> wallObjs = new List<WallObj>();
 
             foreach (var wall in WallsLayer.Children.OfType<WallControl>())
             {
-                wallObjs.Add(new WallObj { states = wall.states, wall_uid = wall.Uid });
+                wallObjs.Add(new WallObj { states = wall.states, wall_uid = wall.Name.Replace("SCC_", "") });
             }
             return wallObjs;
         }
@@ -569,7 +642,7 @@ namespace xstrat.MVVM.View
 
             foreach (var hatch in WallsLayer.Children.OfType<HatchControl>())
             {
-                hatchObjs.Add(new HatchObj { states = hatch.states, wall_uid = hatch.Uid });
+                hatchObjs.Add(new HatchObj { states = hatch.states, hatch_uid = hatch.Name.Replace("SCC_", "") });
             }
 
             return hatchObjs;
@@ -789,6 +862,7 @@ namespace xstrat.MVVM.View
             {
                 Point mousepoint = e.GetPosition(DrawingLayer);
                 paintCircle(CurrentBrush, mousepoint);
+                e.Handled = true;
             }
         }
 
@@ -847,13 +921,20 @@ namespace xstrat.MVVM.View
 
         public async void Refresh()
         {
+            ApiHandler.Waiting();
             await Globals.RetrieveStrats();
             await Task.Delay(1000);
             UpdateTopBar();
+            if(currentStrat != null)
+            {
+                LoadStrat(currentStrat.id);
+            }
+            ApiHandler.EndWaiting();
         }
 
         public StratContent GetStratContentFromString(string input)
         {
+            input = Globals.DecompressString(input);
             using (var stringReader = new System.IO.StringReader(input))
             {
                 var serializer = new XmlSerializer(typeof(StratContent));
@@ -865,6 +946,62 @@ namespace xstrat.MVVM.View
         {
             SaveStratAsync();
         }
+
+        private void ZoomControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CurrentToolTip == View.ToolTip.Brush)
+            {
+                e.Handled = true;
+            }
+            if(CurrentToolTip == View.ToolTip.Eraser)
+            {
+                deleteFromCanvasLoop = true;
+                DeleteFromCanvas();
+                e.Handled = true;
+            }
+        }
+
+        private void ZoomControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(CurrentToolTip == View.ToolTip.Brush)
+            {
+                e.Handled = true;
+            }
+            if (CurrentToolTip == View.ToolTip.Eraser)
+            {
+                deleteFromCanvasLoop = true;
+                DeleteFromCanvas();
+                e.Handled = true;
+            }
+        }
+
+        private void IconSizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            IconSize = e.NewValue;
+
+            //scale all icons
+            RescaleAllIcons(e.NewValue);
+        }
+
+        private void RescaleAllIcons(double size)
+        {
+            if (!IsLoaded || IconSizeSlider == null) return;
+            foreach (StratContentControl item in DrawingLayer.Children.OfType<StratContentControl>())
+            {
+                double newsize = size;
+                double oldsize = item.Width;
+
+                double left = Canvas.GetLeft(item) + (item.Width / 2) - (newsize / 2);
+                double top = Canvas.GetTop(item) + (item.Height / 2) - (newsize / 2);
+
+                item.Width = newsize;
+                item.Height = newsize;
+
+                Canvas.SetLeft(item, left);
+                Canvas.SetTop(item, top);
+            }
+        }
+
     }
     public enum ToolTip
     {
@@ -878,6 +1015,7 @@ namespace xstrat.MVVM.View
         public List<DragNDropObj> dragNDropObjs { get; set; }
         public string comment { get; set; }
         public List<int> floors { get; set; }
+        public double IconSize { get; set; }
                 
         public StratContent()
         {
@@ -898,7 +1036,7 @@ namespace xstrat.MVVM.View
     }
     public class HatchObj
     {
-        public string wall_uid { get; set; }
+        public string hatch_uid { get; set; }
         public int user_id { get; set; }
         public Hatchstates[] states { get; set; }
     }
@@ -907,11 +1045,17 @@ namespace xstrat.MVVM.View
 
     public class DragNDropObj
     {
-        public Position pos { get; set; }
-        public int user_id { get; set; }
-        public string type { get; set; }
+        public Point pos { get; set; }
+        public int UserID { get; set; }
+        public DragNDropObjType type { get; set; }
         public string image { get; set; }
         public double diameter { get; set; }
+    }
+
+    public enum DragNDropObjType 
+    {
+        image,
+        Circle
     }
     
 

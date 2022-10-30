@@ -6,9 +6,11 @@
              d:DesignHeight="775" d:DesignWidth="1150"
              Background="Transparent">
     <StackPanel Orientation="Vertical">
-        <Label Foreground="White" FontSize="24" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center">Dashboard</Label>
+        <Label Foreground="White" FontSize="24" FontWeight="SemiBold" Margin="5,0,0,0" Name="txtGreeting"></Label>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Height="750" HorizontalScrollBarVisibility="Disabled">
-            <ws:FluidWrapPanel x:Name="WrapPanel" Height="Auto"></ws:FluidWrapPanel>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Name="Row1"></StackPanel>
+            </StackPanel>
         </ScrollViewer>
     </StackPanel>
 </UserControl>

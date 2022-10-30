@@ -69,7 +69,7 @@ namespace xstrat.Ui
                     states[i] = Wallstates.solid;
                 }
             }
-            UpdateGUI();
+            UpdateUI();
         }
 
         private void Rec_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -93,9 +93,9 @@ namespace xstrat.Ui
                     states[clickedIndex] = Wallstates.head;
                 }
             }
-            UpdateGUI();
+            UpdateUI();
         }
-        private void UpdateGUI()
+        public void UpdateUI()
         {
             for (int i = 0; i < states.Length; i++)
             {

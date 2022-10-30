@@ -32,7 +32,63 @@ namespace xstrat.MVVM.View
         private void HomeView_Loaded(object sender, RoutedEventArgs e)
         {
             AddItems();
-            
+            txtGreeting.Content = GetGreeting();
+        }
+
+        public string GetGreeting()
+        {
+            string name = Globals.currentUser?.name;
+
+            if (string.IsNullOrEmpty(name)) return "";
+
+            TimeSpan morning_start = new TimeSpan(4, 0, 0); //10 o'clock
+            TimeSpan morning_end = new TimeSpan(12, 0, 0); //12 o'clock
+
+            TimeSpan evening_start = new TimeSpan(18, 0, 0); //18 o'clock
+            TimeSpan evening_end = new TimeSpan(23, 59, 0); //24 o'clock
+
+            TimeSpan now = DateTime.Now.TimeOfDay;
+
+            if ((now > morning_start) && (now < morning_end))
+            {
+                return "Good Morning, " + name + "!";
+            }
+
+            if((now > evening_start) && (now < evening_end))
+            {
+                return "Good Evening, " + name + "!";
+            }
+
+            int rnd = new Random().Next(0, 10);
+
+            switch (rnd)
+            {
+                case 0:
+                    return "Hi " + name + "!";
+                case 1:
+                    return "Welcome back " + name + "!";
+                case 2:
+                    return "Hey " + name+ "!";
+                case 3:
+                    return "Nice to see you " + name+ "!";
+                case 4:
+                    return "Hope you are doing well " + name+ "!";
+                case 5:
+                    return "Great to see you " + name+ "!";
+                case 6:
+                    return "Thank you for being here " + name+ "!";
+                case 7:
+                    return "Hello " + name+ "!";
+                case 8:
+                    return "Welcome back " + name + "!";
+                case 9:
+                    return "Great to see you " + name + "!";
+
+                default:
+                    break;
+            }
+
+            return "";
         }
 
         //var rnd = new Random();
@@ -63,13 +119,13 @@ namespace xstrat.MVVM.View
             li.Width = 400;
             li.Height = 275;
             li.Margin = new Thickness(10);
-            WrapPanel.Children.Add(li);
+            Row1.Children.Add(li);
         }
 
         private void AddToPanel(Control e)
         {
             e.Margin = new Thickness(10);
-            WrapPanel.Children.Add(e);
+            Row1.Children.Add(e);
         }
     }
 }

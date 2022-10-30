@@ -2,7 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -297,6 +299,13 @@ namespace xstrat.Core
         public static teamInfo TeamInfo { get; set; }
         public static List<Strat> strats { get; set; } = new List<Strat>();
 
+        public static event EventHandler<EventArgs> OnDataRetrieved;
+
+        public static void CallOnDataRetrieved()
+        {
+            OnDataRetrieved(null, new EventArgs());
+        }
+
         public static event EventHandler<CalendarEventCreatedArgs> CalendarEventCreated;
 
         public static void CallCalendarEventCreated(DateTime Date)
@@ -582,26 +591,27 @@ namespace xstrat.Core
             if (wnd.IsLoggedIn)
             {
                 wnd.SetLoadingStatus("Retrieving team mates");
-                RetrieveTeamMates();
-                RetrieveGames();
+                await RetrieveTeamMates();
+                await RetrieveGames();
                 wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveOffDayTypes();
                 wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveCalendarFilterTypes();
                 wnd.SetLoadingStatus("Retrieving maps");
-                RetrieveMaps();
-                RetrievexPositions();
+                await RetrieveMaps();
+                await RetrievexPositions();
                 RetrieveScrimModes();
                 RetrieveEventTypes();
                 wnd.SetLoadingStatus("Retrieving team");
-                RetrieveTeamName();
+                await RetrieveTeamName();
                 wnd.SetLoadingStatus("Retrieving admin status");
-                RetrieveAdminStatusAsync();
+                await RetrieveAdminStatusAsync();
                 wnd.SetLoadingStatus("Retrieving team info");
-                RetrieveTeamInfoAsync();
+                await RetrieveTeamInfoAsync();
                 wnd.SetLoadingStatus("Retrieving strats");
-                RetrieveStrats();
+                await RetrieveStrats();
                 wnd.SetLoadingStatus("");
+                CallOnDataRetrieved();
             }
         }
 
@@ -615,7 +625,7 @@ namespace xstrat.Core
         {
 
         }
-        public static async void RetrieveCurrentUser()
+        public static void RetrieveCurrentUser()
         {
             currentUser = getUserFromId(SettingsHandler.current_user_id);
         }
@@ -639,6 +649,7 @@ namespace xstrat.Core
                     try
                     {
                         TeamInfo = JsonConvert.DeserializeObject<List<teamInfo>>(data).First();
+                        Notify.sendInfo("Teaminfo loaded");
                     }
                     catch (Exception ex)
                     {
@@ -678,7 +689,7 @@ namespace xstrat.Core
                     throw new Exception("Teammates could not be loaded");
                 }
                 RetrieveCurrentUser();
-                await StatsDataSource.Init();
+                StatsDataSource.Init();
                 int max_id = 0;
                 foreach (var mate in teammates)
                 {
@@ -881,5 +892,76 @@ namespace xstrat.Core
                 return textWriter.ToString();
             }
         }
+
+        public static void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+
+            int cnt;
+
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+
+
+        /// <summary>
+        /// Compresses the string.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        public static string CompressString(string text)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+            }
+
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            var gZipBuffer = new byte[compressedData.Length + 4];
+            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+            return Convert.ToBase64String(gZipBuffer);
+        }
+
+        /// <summary>
+        /// Decompresses the string.
+        /// </summary>
+        /// <param name="compressedText">The compressed text.</param>
+        /// <returns></returns>
+        public static string DecompressString(string compressedText)
+        {
+            try
+            {
+                byte[] gZipBuffer = Convert.FromBase64String(compressedText);
+                using (var memoryStream = new MemoryStream())
+                {
+                    int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                    memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+
+                    var buffer = new byte[dataLength];
+
+                    memoryStream.Position = 0;
+                    using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
+                        gZipStream.Read(buffer, 0, buffer.Length);
+                    }
+
+                    return Encoding.UTF8.GetString(buffer);
+                }
+            }
+            catch
+            {
+                return compressedText;
+            }
+        }
+
     }
 }

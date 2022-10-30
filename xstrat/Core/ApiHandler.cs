@@ -1378,6 +1378,9 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> SaveStrat(int strat_id, string name, int map_id, int position_id, int version, string content)
         {
+            //compress
+            content = Globals.CompressString(content);
+
             RemoveFromCache("GetStrats");
             Waiting();
             var request = new RestRequest("strat/save", Method.Post);
@@ -1402,7 +1405,7 @@ namespace xstrat
         /// <summary>
         /// Sets waiting cursor
         /// </summary>
-        private static void Waiting()
+        public static void Waiting()
         {
             Cursor.Current = Cursors.WaitCursor;
         }
@@ -1410,7 +1413,7 @@ namespace xstrat
         /// <summary>
         /// Removes waiting cursor
         /// </summary>
-        private static void EndWaiting()
+        public static void EndWaiting()
         {
             Cursor.Current = Cursors.Default;
         }

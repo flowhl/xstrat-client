@@ -497,7 +497,7 @@ namespace xstrat.MVVM.View
         private string GetNextWallID()
         {
             int uid = DrawingLayer.Children.OfType<StratContentControl>().Count();
-            return "w_" + map_id + "_" + floor_id + "_" + uid;
+            return "id_" + map_id + "_" + floor_id + "_" + uid;
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -514,7 +514,7 @@ namespace xstrat.MVVM.View
             {
                 int type = 0;
                 if (item.Content is HatchControl) type = 1;
-                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
+                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name.Replace("SCC_", ""), width = item.Width };
                 wallObjects.Add(obj);
             }
 
@@ -539,7 +539,7 @@ namespace xstrat.MVVM.View
                         newwc.Height = 19;
                         newwc.IsHitTestVisible = false;
                         newwc.Visibility = Visibility.Visible;
-                        newwc.Name = obj.uid;
+                        newwc.Name = obj.uid.Replace("SCC_", "");
 
                         StratContentControl newcc = new StratContentControl();
                         newcc.Content = newwc;
@@ -550,7 +550,7 @@ namespace xstrat.MVVM.View
                         newcc.BorderBrush = Brushes.Aqua;
                         newcc.BorderThickness = new Thickness(2);
                         newcc.RenderTransform = obj.rotate;
-                        newcc.Name = "SCC_" + obj.uid;
+                        newcc.Name = "SCC_" + obj.uid.Replace("SCC_", "");
 
                         DrawingLayer.Children.Add(newcc);
 
@@ -569,7 +569,7 @@ namespace xstrat.MVVM.View
 
                         HatchControl newhc = new HatchControl();
                         newhc.IsHitTestVisible = false;
-                        newhc.Name = obj.uid;
+                        newhc.Name = obj.uid.Replace("SCC_", "");
 
                         StratContentControl newcc = new StratContentControl();
                         newcc.Content = newhc;
@@ -581,7 +581,7 @@ namespace xstrat.MVVM.View
                         newcc.BorderBrush = Brushes.Aqua;
                         newcc.BorderThickness = new Thickness(2);
                         newcc.RenderTransform = obj.rotate;
-                        newcc.Name = "SCC_" + obj.uid;
+                        newcc.Name = "SCC_" + obj.uid.Replace("SCC_", "");
 
                         DrawingLayer.Children.Add(newcc);
 

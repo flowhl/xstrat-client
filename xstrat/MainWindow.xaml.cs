@@ -66,6 +66,7 @@ namespace xstrat
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            Globals.OnDataRetrieved += Globals_OnDataRetrieved;
             mv = (MainViewModel)DataContext;
             mv.CurrentView = mv.LoadingVM;
             SettingsHandler.Initialize();
@@ -91,6 +92,11 @@ namespace xstrat
 
             StateChanged += MainWindow_StateChanged;
             WallEditorBtn.Visibility = Visibility.Collapsed;
+        }
+
+        private void Globals_OnDataRetrieved(object sender, EventArgs e)
+        {
+            EndLoading();
         }
 
         /// <summary>
@@ -138,7 +144,7 @@ namespace xstrat
                 if(verified)
                 {
                     Notify.ResumeLogging();
-                    EndLoading();
+                    //EndLoading();
                     IsLoggedIn = true;
                     return;
                 }
@@ -163,7 +169,7 @@ namespace xstrat
             }
             ApiHandler.AddBearer(token);
             NewlyRegistered = false;
-            EndLoading();
+            //EndLoading();
             IsLoggedIn = true;
             Notify.ResumeLogging();
             Globals.Init();

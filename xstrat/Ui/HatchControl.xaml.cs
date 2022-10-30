@@ -32,7 +32,7 @@ namespace xstrat.Ui
             InitializeComponent();
         }
         
-        private void UpdateUI()
+        public void UpdateUI()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -44,7 +44,7 @@ namespace xstrat.Ui
         {
             int i = (int)hs;
             i++;
-            if (i > 3) i = 0;
+            if (i >= 3) i = 0;
 
             return (Hatchstates)i;
         }

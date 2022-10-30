@@ -25,6 +25,8 @@ namespace XStrat
     {
         DateTime LastDown;
         public bool Selection { get; set; }
+        public bool Locked { get; set; } = false;
+        public int UserID { get; set; } = -1;
 
         public StratContentControl()
         {
@@ -33,6 +35,7 @@ namespace XStrat
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if(Locked) return;
             if (xStratHelper.WEMode)
             {
                 if (xStratHelper.editorView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
@@ -61,6 +64,7 @@ namespace XStrat
 
         private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Locked) return;
             if (xStratHelper.WEMode)
             {
                 if (xStratHelper.editorView.CurrentToolTip == xstrat.MVVM.View.ToolTip.Eraser)
@@ -95,6 +99,7 @@ namespace XStrat
 
         private void UserControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (Locked) return;
             if (xStratHelper.WEMode)
             {
                 if (xStratHelper.editorView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;

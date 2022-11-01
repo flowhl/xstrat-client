@@ -7,8 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="775" d:DesignWidth="1150">
     <StackPanel Orientation="Horizontal" Height="775" Width="1150">
-        <StackPanel Orientation="Vertical">
-            
+        <StackPanel Orientation="Vertical">            
             <Border BorderThickness="0" Background="#202020" CornerRadius="10" Width="300" Height="200" Margin="10,10,10,10">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,5">
                     <Label Foreground="White" FontSize="18" Content="General:" HorizontalAlignment="Center" FontWeight="SemiBold"></Label>
@@ -99,6 +98,19 @@
                     </Style>
                 </Button.Resources>
             </Button>
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <Border BorderThickness="0" Background="#202020" CornerRadius="10" Width="300" Height="200" Margin="10,10,10,10" Name="TeamAdminSettingsBorder">
+                <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+                    <Label Foreground="White" FontSize="18" Content="Team:" HorizontalAlignment="Center" FontWeight="SemiBold"></Label>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Label Foreground="White" FontSize="14" HorizontalAlignment="Right">Use OnDays instead of Offdays</Label>
+                            <local1:ToggleSwitch x:Name="SWUseOnDays" Height="20"></local1:ToggleSwitch>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </StackPanel>
 </UserControl>

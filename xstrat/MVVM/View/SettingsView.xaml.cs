@@ -35,11 +35,13 @@ namespace xstrat.MVVM.View
             if (!Globals.AdminUser)
             {
                 DcAdminView.Visibility = Visibility.Collapsed;
+                TeamAdminSettingsBorder.Visibility = Visibility.Collapsed;
             }
             else
             {
                 DcAdminView.Visibility = Visibility.Visible;
-                RetrieveDiscordData();
+                TeamAdminSettingsBorder.Visibility = Visibility.Visible;
+                RetrieveTeamSettingsData();
             }
         }
 
@@ -180,9 +182,9 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private async Task RetrieveDiscordData()
+        private async Task RetrieveTeamSettingsData()
         {
-            var result = await ApiHandler.GetDiscordData();
+            var result = await ApiHandler.GetTeamSettings();
             if (result.Item1)
             {
                 JObject json = JObject.Parse(result.Item2);
@@ -191,7 +193,7 @@ namespace xstrat.MVVM.View
                 {
                     try
                     {
-                        DiscordData dcData = JsonConvert.DeserializeObject<List<DiscordData>>(data).First();
+                        TeamSettingsData dcData = JsonConvert.DeserializeObject<List<TeamSettingsData>>(data).First();
                         if (dcData.webhook != null && dcData.webhook != string.Empty)
                         {
                             DCWebhook.Text = dcData.webhook;
@@ -200,6 +202,7 @@ namespace xstrat.MVVM.View
                         SwTimeChanged.setStatus(StringToBool(dcData.sn_changed.ToString()));
                         SwWeeklySummary.setStatus(StringToBool(dcData.sn_weekly.ToString()));
                         SwStartingSoon.setStatus(StringToBool(dcData.sn_soon.ToString()));
+                        SWUseOnDays.setStatus(StringToBool(dcData.use_on_days.ToString()));
                         ScrimTimeDelay.Value = dcData.sn_delay;
                     }
                     catch (Exception ex)
@@ -218,7 +221,7 @@ namespace xstrat.MVVM.View
         {
             if (DCWebhook.Text != null && DCWebhook.Text != string.Empty)
             {
-                var result = await ApiHandler.SetDiscordWebhook(DCWebhook.Text, Convert.ToInt32(SwNew.getStatus()), Convert.ToInt32(SwTimeChanged.getStatus()), Convert.ToInt32(SwWeeklySummary.getStatus()), Convert.ToInt32(SwStartingSoon.getStatus()), ScrimTimeDelay.Value);
+                var result = await ApiHandler.SetDiscordWebhook(DCWebhook.Text, Convert.ToInt32(SwNew.getStatus()), Convert.ToInt32(SwTimeChanged.getStatus()), Convert.ToInt32(SwWeeklySummary.getStatus()), Convert.ToInt32(SwStartingSoon.getStatus()), ScrimTimeDelay.Value, Convert.ToInt32(SWUseOnDays.getStatus()));
                 if (result.Item1)
                 {
                     Notify.sendSuccess("Changed Discord admin settings successfully");

@@ -553,7 +553,7 @@ namespace xstrat
             return (false, response.Content);
         }
 
-        public static async Task<(bool, string)> GetDiscordData()
+        public static async Task<(bool, string)> GetTeamSettings()
         {
             var CacheResponse = GetCachedResponse("");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
@@ -577,13 +577,13 @@ namespace xstrat
                 return (false, response.Content);
             }
         }
-        public static async Task<(bool, string)> SetDiscordWebhook(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay)
+        public static async Task<(bool, string)> SetDiscordWebhook(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay, int use_on_days)
         {
             RemoveFromCache("GetDiscordData");
             Waiting();
             var request = new RestRequest("team/setdiscorddata", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { webhook = webhook, sn_created = sn_created, sn_changed = sn_changed, sn_weekly = sn_weekly, sn_soon = sn_soon, sn_delay = sn_delay});
+            request.AddJsonBody(new { webhook = webhook, sn_created = sn_created, sn_changed = sn_changed, sn_weekly = sn_weekly, sn_soon = sn_soon, sn_delay = sn_delay, use_on_days = use_on_days });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success

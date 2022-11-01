@@ -57,7 +57,7 @@ namespace xstrat.Json
         public int changedRows { get; set; }
     }
 
-    public class DiscordData
+    public class TeamSettingsData
     {
         public string webhook { get; set; }
         public int sn_created { get; set; }
@@ -65,6 +65,7 @@ namespace xstrat.Json
         public int sn_weekly { get; set; }
         public int sn_soon { get; set; }
         public int sn_delay { get; set; }
+        public int use_on_days { get; set; }
 
     }
 

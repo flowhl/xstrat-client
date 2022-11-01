@@ -600,6 +600,7 @@ namespace xstrat.MVVM.View
                     newcc.BorderBrush = Brushes.Transparent;
                     newcc.BorderThickness = new Thickness(2);
                     newcc.UserID = item.UserID;
+                    newcc.PreviewMouseLeftButtonDown += Newcc_MouseLeftButtonDown;
 
                     DrawingLayer.Children.Add(newcc);
 
@@ -622,8 +623,13 @@ namespace xstrat.MVVM.View
             }
         }
 
-
-
+        private void Newcc_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(CurrentToolTip == View.ToolTip.Eraser)
+            {
+                RequestRemove(sender as StratContentControl);
+            }
+        }
 
         public List<WallObj> GetWallObjs()
         {

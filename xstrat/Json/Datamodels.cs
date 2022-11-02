@@ -343,11 +343,12 @@ namespace xstrat.Json
         }
     }
 
-    public class teamInfo
+    public class TeamInfo
     {
         public string team_name { get; set; }
         public string admin_name { get; set; }
         public string game_name { get; set; }
+        public int use_on_days { get; set; }
     }
 
     public class User

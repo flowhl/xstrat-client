@@ -69,6 +69,15 @@ namespace xstrat.MVVM.View
 
         private void CalendarView_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.teamInfo.use_on_days == 0)
+            {
+                OffDayChecks.Content = "Your off days";
+            }
+            else
+            {
+                OffDayChecks.Content = "Available days";
+            }
+
             RetrieveScrims();
             RetrieveOffDays();
             // draw days with events calendar

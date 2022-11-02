@@ -44,12 +44,25 @@ namespace xstrat.Ui
         public ScrimFinderControl()
         {
             InitializeComponent();
+            Loaded += ScrimFinderControl_Loaded1;
+        }
+
+        private void ScrimFinderControl_Loaded1(object sender, RoutedEventArgs e)
+        {
             CalendarTypeSelector.CBox.SelectionChanged += CBox_SelectionChanged;
             UpdateButtonColors();
             Loaded += ScrimFinderControl_Loaded;
             DurHour.Value = 2;
             ToHour.Value = 23;
             FromHour.Value = 20;
+            if (Globals.teamInfo.use_on_days == 0)
+            {
+                OffdayDisplay.NameInput= "Off-days";
+            }
+            else
+            {
+                OffdayDisplay.NameInput = "Available days";
+            }
         }
 
         private void ScrimFinderControl_Loaded(object sender, RoutedEventArgs e)

@@ -9,7 +9,7 @@
     <Grid>
         <Border BorderThickness="0" Background="#121212" CornerRadius="10" Width="820" Height="620" Margin="10,10,10,10" HorizontalAlignment="Left">
             <StackPanel Orientation="Vertical" Height="600" Width="800">
-                <Label Foreground="White" FontSize="34" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center">Your off days:</Label>
+                <Label Foreground="White" FontSize="34" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center" Name="TxtTitle"></Label>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500" VerticalAlignment="Top" Width="800">
                     <StackPanel Name="ODList" VerticalAlignment="Top" Width="800">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

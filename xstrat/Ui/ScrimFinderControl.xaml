@@ -167,7 +167,7 @@
                         </Button.Resources>
                     </Button>
                 </StackPanel>
-                <local:ColorDisplay Color="#D64251" Margin="10,0,10,0" NameInput="Offday"></local:ColorDisplay>
+                <local:ColorDisplay x:Name="OffdayDisplay" Color="#D64251" Margin="10,0,10,0" NameInput="Offday"></local:ColorDisplay>
                 <local:ColorDisplay Color="#2D9ED5" Margin="10,0,10,0" NameInput="Scrim"></local:ColorDisplay>
                 <local:ColorDisplay Color="#4ab859" Margin="10,0,10,0" NameInput="Recommended Scrim"></local:ColorDisplay>
                 <TextBlock  HorizontalAlignment="Center" Margin="10,20,10,0" Foreground="#888888" TextWrapping="Wrap">

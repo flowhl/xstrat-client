@@ -296,7 +296,7 @@ namespace xstrat.Core
         public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
-        public static teamInfo TeamInfo { get; set; }
+        public static TeamInfo teamInfo { get; set; }
         public static List<Strat> strats { get; set; } = new List<Strat>();
 
         public static event EventHandler<EventArgs> OnDataRetrieved;
@@ -632,11 +632,11 @@ namespace xstrat.Core
         public static async Task RetrieveTeamInfoAsync()
         {
             var result = await ApiHandler.TeamInfo();
-            if (TeamInfo != null)
+            if (teamInfo != null)
             {
-                TeamInfo.admin_name = null;
-                TeamInfo.game_name = null;
-                TeamInfo.team_name = "Create or join a team";
+                teamInfo.admin_name = null;
+                teamInfo.game_name = null;
+                teamInfo.team_name = "Create or join a team";
             }
             if (result.Item1)
             {
@@ -648,8 +648,7 @@ namespace xstrat.Core
                 {
                     try
                     {
-                        TeamInfo = JsonConvert.DeserializeObject<List<teamInfo>>(data).First();
-                        Notify.sendInfo("Teaminfo loaded");
+                        teamInfo = JsonConvert.DeserializeObject<List<TeamInfo>>(data).First();
                     }
                     catch (Exception ex)
                     {
@@ -872,7 +871,7 @@ namespace xstrat.Core
 
         public static int Game_id()
         {
-            var g = games.Where(x => x.name == TeamInfo.game_name).First();
+            var g = games.Where(x => x.name == teamInfo.game_name).First();
             if (g == null) return -1;
             return g.id;
         }

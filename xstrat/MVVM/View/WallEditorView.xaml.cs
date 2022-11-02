@@ -97,7 +97,7 @@ namespace xstrat.MVVM.View
             MapStack.Children.Clear();
             if (floor_id < 0) return;
             if (map_id < 0) return;
-            int game_id = Globals.games.Where(x => x.name == Globals.TeamInfo.game_name).FirstOrDefault().id;
+            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
             var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor_id);
             MapStack.Children.Add(newimage);
             WallObjectsToWalls();
@@ -149,7 +149,7 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if (Globals.TeamInfo.game_name == "R6 Siege")
+            if (Globals.teamInfo.game_name == "R6 Siege")
             {
                 var grid = new Grid();
                                 

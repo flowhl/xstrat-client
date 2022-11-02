@@ -20,6 +20,7 @@ using xstrat.Calendar;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.Ui;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Window = xstrat.Core.Window;
 
 namespace xstrat.MVVM.View
@@ -448,7 +449,7 @@ namespace xstrat.MVVM.View
                 foreach (var user in Globals.teammates)
                 {
                     var newPlayer = new Player();
-                    newPlayer.Responses = GetTimespans(date, user.name, SelectedPlayerNumbers, calendarFilterType.id);
+                    newPlayer.Responses = GetTimespans(date, user.name, SelectedPlayerNumbers, calendarFilterType.id, ScrimDuration);
                     newPlayer.ID = user.id;
                     players.Add(newPlayer);
                 }
@@ -529,8 +530,8 @@ namespace xstrat.MVVM.View
             //MessageBox.Show(results.ToString());
         }
 
-        //Gets Free Timespans for day
-        private List<Response> GetTimespans(DateTime date, string user_name, List<int> SelectedPlayerNumbers, int filtertype)
+        //Gets Free Timespans for day and player
+        private List<Response> GetTimespans(DateTime date, string user_name, List<int> SelectedPlayerNumbers, int filtertype, TimeSpan duration)
         {
             List<Response> timespans = new List<Response>();
 
@@ -602,42 +603,55 @@ namespace xstrat.MVVM.View
             var ScrimStartTime = DateTime.ParseExact((sDate + " " + ScrimStartHour.ToString().PadLeft(2, '0') + ":" + ScrimStartMin.ToString().PadLeft(2, '0') + ":00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
             var ScrimEndTime = DateTime.ParseExact((sDate + " " + ScrimEndHour.ToString().PadLeft(2, '0') + ":" + ScrimEndMin.ToString().PadLeft(2, '0') + ":00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
-            times.Add(DateTime.ParseExact( (sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-            times.Add(DateTime.ParseExact((sDate + " 23:59:59"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+            //offday regelung
 
-            foreach (var ev in events)
+            if(Globals.teamInfo.use_on_days == 0)
             {
-                times.Add(ev.DateFrom.GetValueOrDefault());
-                times.Add(ev.DateTo.GetValueOrDefault());
-            }
+                times.Add(DateTime.ParseExact( (sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                times.Add(DateTime.ParseExact((sDate + " 23:59:59"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
 
-            times.Sort();
-
-            bool free = true;
-
-            for (int i = 0; i < times.Count - 1; i++)
-            {
-                if (free)
+                foreach (var ev in events)
                 {
-                    var t1 = times[i];
-                    var t2 = times[i + 1];
-
-                    if(t1 < ScrimStartTime)
-                    {
-                        t1 = ScrimStartTime;
-                    }
-                    if(t2 > ScrimEndTime)
-                    {
-                        t2 = ScrimEndTime;
-                    }
-
-                    if (ScrimDuration <= t2 - t1) //mehr als scrim zeit
-                    {
-                        timespans.Add(new Response { StartDateTime = t1, EndDateTime = t2 });
-                    }
+                    times.Add(ev.DateFrom.GetValueOrDefault());
+                    times.Add(ev.DateTo.GetValueOrDefault());
                 }
-                free = !free;
-                
+
+                times.Sort();
+
+                bool free = true;
+
+                for (int i = 0; i < times.Count - 1; i++)
+                {
+                    if (free)
+                    {
+                        var t1 = times[i];
+                        var t2 = times[i + 1];
+
+                        if(t1 < ScrimStartTime)
+                        {
+                            t1 = ScrimStartTime;
+                        }
+                        if(t2 > ScrimEndTime)
+                        {
+                            t2 = ScrimEndTime;
+                        }
+
+                        if (ScrimDuration <= t2 - t1) //mehr als scrim zeit
+                        {
+                            timespans.Add(new Response { StartDateTime = t1, EndDateTime = t2 });
+                        }
+                    }
+                    free = !free;
+                }
+            }
+            else
+            {
+                var fittingevents = events.Where(x => x.DateTo - x.DateFrom >= duration);
+
+                foreach (var item in fittingevents)
+                { 
+                    timespans.Add(new Response { StartDateTime = item.DateFrom.GetValueOrDefault(), EndDateTime = item.DateTo.GetValueOrDefault() });
+                }
             }
 
             return timespans;

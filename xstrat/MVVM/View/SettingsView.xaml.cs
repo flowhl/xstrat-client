@@ -24,11 +24,17 @@ namespace xstrat.MVVM.View
         public SettingsView()
         {
             InitializeComponent();
+            Loaded += SettingsView_Loaded;
+            
+        }
+
+        private void SettingsView_Loaded(object sender, RoutedEventArgs e)
+        {
             SkinSwitcherPathDisplay.Text = SettingsHandler.SkinSwitcherPath;
             RememberMeSettings.setStatus(SettingsHandler.StayLoggedin);
             RetrieveDiscordIDAsync();
             RetrieveUbisoftIDAsync();
-            if(SettingsHandler.APIURL != null)
+            if (SettingsHandler.APIURL != null)
             {
                 APIText.Text = SettingsHandler.APIURL;
             }

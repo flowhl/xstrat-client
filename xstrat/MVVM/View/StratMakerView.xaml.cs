@@ -96,7 +96,7 @@ namespace xstrat.MVVM.View
             if (Floor2) floors.Add(2);
             if (Floor3) floors.Add(3);
 
-            int game_id = Globals.games.Where(x => x.name == Globals.TeamInfo.game_name).FirstOrDefault().id;
+            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
 
             Point offset = new Point(0,0);
 
@@ -201,7 +201,7 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if(Globals.TeamInfo.game_name == "R6 Siege")
+            if(Globals.teamInfo.game_name == "R6 Siege")
             {
                 IconsSP.Children.Clear();
                 string folder = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"/Images/R6_Icons/";

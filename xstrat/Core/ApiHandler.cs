@@ -537,7 +537,7 @@ namespace xstrat
         }
         public static async Task<(bool, string)> SetDiscordId(string discord)
         {
-            RemoveFromCache("GetDiscordId");
+            RemoveFromCache("GetTeamSettings");
             Waiting();
             var request = new RestRequest("team/setdiscord", Method.Post);
             request.RequestFormat = DataFormat.Json;
@@ -555,7 +555,7 @@ namespace xstrat
 
         public static async Task<(bool, string)> GetTeamSettings()
         {
-            var CacheResponse = GetCachedResponse("");
+            var CacheResponse = GetCachedResponse("GetTeamSettings");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;

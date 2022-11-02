@@ -16,11 +16,13 @@ FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\SkinSwitcherView.x
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\StatsView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\StratMakerView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\TeamView.xaml;;
+FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\MVVM\View\WallEditorView.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Overlay\OverlayStep.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Overlay\RoutineOverlay.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\StratHelper\StratContentControl.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\CalendarEventInfo.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\ColorDisplay.xaml;;
+FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\HatchControl.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\LicenseInfo.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\MapFloor.xaml;;
 FD:\Github_repos\xstrat\Client\xstrat-client\xstrat\Ui\MenuButtonTheme.xaml;;

@@ -445,3 +445,8 @@ D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\FluidSta
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\Themes\SparkWindow.Generic.Glass.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\WPFSpark\Themes\ToggleSwitch.Generic.baml
 D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\xstrat.WPFSpark.Properties.Resources.resources
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\bin\Release\Denxorz.ZoomControl.dll
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\WallEditorView.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\HatchControl.g.cs
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\MVVM\View\WallEditorView.baml
+D:\Github_repos\xstrat\Client\xstrat-client\xstrat\obj\Release\Ui\HatchControl.baml

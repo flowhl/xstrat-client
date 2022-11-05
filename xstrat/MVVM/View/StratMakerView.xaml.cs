@@ -28,6 +28,7 @@ using xstrat.Ui;
 using XStrat;
 using static System.Windows.Forms.AxHost;
 using System.ComponentModel;
+using System.Data;
 
 namespace xstrat.MVVM.View
 {
@@ -57,6 +58,8 @@ namespace xstrat.MVVM.View
 
         public double IconSize { get; set; }
 
+        public DataTable AssignmentTable = new DataTable();
+
         public StratMakerView()
         {
             InitializeComponent();
@@ -67,6 +70,18 @@ namespace xstrat.MVVM.View
         {
             xStratHelper.stratView = this;
             xStratHelper.WEMode = false;
+            AssignmentTable.Columns.Clear();
+            AssignmentTable.Columns.Add("player");
+            AssignmentTable.Columns.Add("loadout");
+            AssignmentTable.Columns.Add("gadgets");
+            AssignmentTable.Columns.Add("position");
+
+            AssignmentTable.Rows.Clear();
+
+            AssignmentTable.Rows.Add("Jonas der HS", "goarnix", "asdf", "pos 1");
+
+            AssignmentTableGrid.DataContext = AssignmentTable;
+
             Opened();
         }
 
@@ -489,13 +504,19 @@ namespace xstrat.MVVM.View
                 //TODO user einfügen
             }
 
+            //load datatable            
+
+            AssignmentTable.Rows.Clear();
+            foreach (var row in content.dataRows)
+            {
+                AssignmentTable.Rows.Add(row);
+            }
+
             LoadDragNDropItems(content.dragNDropObjs);
 
             IconSizeSlider.Value = content.IconSize;
             IconSize = content.IconSize;
             RescaleAllIcons(content.IconSize);
-
-
 
             Kommentar.Text = content.comment;
         }
@@ -515,6 +536,7 @@ namespace xstrat.MVVM.View
             content.hatchstatus = GetHatchObjs();
             content.dragNDropObjs = GetDragNDropObjs();
             content.IconSize = IconSize;
+            content.dataRows = AssignmentTable.Rows;
 
             List<int> floors = new List<int>();
             if (Floor0) floors.Add(0);
@@ -1022,6 +1044,7 @@ namespace xstrat.MVVM.View
         public string comment { get; set; }
         public List<int> floors { get; set; }
         public double IconSize { get; set; }
+        public DataRowCollection dataRows { get; set; }
                 
         public StratContent()
         {

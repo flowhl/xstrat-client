@@ -214,11 +214,29 @@
                     </Grid>
                 </zoomcontrol:ZoomControl>
                 <!--</wpfext:ZoomControl>-->
-                <Expander ExpandDirection="Left" Grid.Column="2" HorizontalAlignment="Center" IsEnabled="True" Background="#171717">
+                <Grid Grid.Column="2" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="0" IsEnabled="True" Background="#171717">
                     <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
                         <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
                     </Border>
                 </Expander>
+                <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="1" IsEnabled="True" Background="#171717">
+                    <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                            <DataGrid Name="AssignmentTableGrid" ItemsSource="{Binding}" Foreground="Black" Background="Transparent">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn x:Name="PlayerColumn" Header="Player" Binding="{Binding player}"></DataGridTextColumn>
+                                    <DataGridTextColumn x:Name="LoadoutColumn" Header="Loadout" Binding="{Binding loadout}"></DataGridTextColumn>
+                                    <DataGridTextColumn x:Name="GadgetsColumn" Header="Gadgets" Binding="{Binding gadgets}"></DataGridTextColumn>
+                                    <DataGridTextColumn x:Name="PositionColumn" Header="Position" Binding="{Binding position}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                    </Border>
+                </Expander>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

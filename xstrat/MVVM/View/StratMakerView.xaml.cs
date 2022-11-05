@@ -80,8 +80,6 @@ namespace xstrat.MVVM.View
 
             AssignmentTable.Rows.Add("Jonas der HS", "goarnix", "asdf", "pos 1");
 
-            AssignmentTableGrid.DataContext = AssignmentTable;
-
             Opened();
         }
 

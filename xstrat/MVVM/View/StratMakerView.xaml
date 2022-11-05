@@ -158,14 +158,14 @@
 
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Column="1">
-                        
-                    <Border Background="#181818" Height="100" Width="500" Margin="5" CornerRadius="10" HorizontalAlignment="Left">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
-                            <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1" Name="IconsSP">
-                            </StackPanel>
-                        </ScrollViewer>
-                    </Border>
-                    <Border Background="#181818" Height="50" Margin="5" Width="500" CornerRadius="10" HorizontalAlignment="Left">
+
+                        <Border Background="#181818" Height="100" Width="500" Margin="5" CornerRadius="10" HorizontalAlignment="Left">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
+                                <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1" Name="IconsSP">
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                        <Border Background="#181818" Height="50" Margin="5" Width="500" CornerRadius="10" HorizontalAlignment="Left">
                             <StackPanel Orientation="Vertical" Margin="5">
                                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,0">
                                     <StackPanel Orientation="Horizontal">
@@ -186,10 +186,10 @@
                                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Created On:</Label>
                                         <Label Name="TxtCreatedOn" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
                                     </StackPanel>
-                                    
+
                                 </StackPanel>
                             </StackPanel>
-                    </Border>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -202,7 +202,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!--<wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" x:Name="ZoomControl" MouseMove="DrawingLayer_MouseMove" ModifierMode="None">-->
-                <zoomcontrol:ZoomControl x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2" MouseMove="DrawingLayer_MouseMove" PreviewMouseLeftButtonDown="ZoomControl_PreviewMouseLeftButtonDown" MouseLeftButtonDown="ZoomControl_MouseLeftButtonDown" >
+                <zoomcontrol:ZoomControl x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2" MouseMove="DrawingLayer_MouseMove" PreviewMouseLeftButtonDown="ZoomControl_PreviewMouseLeftButtonDown" MouseLeftButtonDown="ZoomControl_MouseLeftButtonDown">
                     <Grid Name="MapContent">
                         <Canvas Name="DrawingLayer">
                         </Canvas>
@@ -219,23 +219,61 @@
                         <RowDefinition Height="2*"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="0" IsEnabled="True" Background="#171717">
-                    <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
-                        <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
-                    </Border>
-                </Expander>
-                <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="1" IsEnabled="True" Background="#171717">
-                    <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
-                            <DataGrid Name="AssignmentTableGrid" ItemsSource="{Binding}" Foreground="Black" Background="Transparent">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn x:Name="PlayerColumn" Header="Player" Binding="{Binding player}"></DataGridTextColumn>
-                                    <DataGridTextColumn x:Name="LoadoutColumn" Header="Loadout" Binding="{Binding loadout}"></DataGridTextColumn>
-                                    <DataGridTextColumn x:Name="GadgetsColumn" Header="Gadgets" Binding="{Binding gadgets}"></DataGridTextColumn>
-                                    <DataGridTextColumn x:Name="PositionColumn" Header="Position" Binding="{Binding position}"></DataGridTextColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                    </Border>
-                </Expander>
+                    <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="0" IsEnabled="True" Background="#171717">
+                        <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                            <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
+                        </Border>
+                    </Expander>
+                    <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="1" IsEnabled="True" Background="#171717">
+                        <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                            <Grid Margin="10" Width="450">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <!--Headers-->
+                                <Label Foreground="White" Grid.Column="0">Player</Label>
+                                <Label Foreground="White" Grid.Column="1">Loadout</Label>
+                                <Label Foreground="White" Grid.Column="2">Gadget</Label>
+                                <Label Foreground="White" Grid.Column="3">Position</Label>
+                                <!--Columns-->
+                                <!--Player-->
+                                <local1:DataSelector Margin="2" Grid.Row="1" x:Name="Player1" />
+                                <local1:DataSelector Margin="2" Grid.Row="2" x:Name="Player2" />
+                                <local1:DataSelector Margin="2" Grid.Row="3" x:Name="Player3" />
+                                <local1:DataSelector Margin="2" Grid.Row="4" x:Name="Player4" />
+                                <local1:DataSelector Margin="2" Grid.Row="5" x:Name="Player5" />
+                                <!--Loadout-->
+                                <TextBox Foreground="White" BorderThickness="0" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Height="20" Background="#202020" VerticalAlignment="Center" Name="Loadout1" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Name="Loadout2" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="Loadout3" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Name="Loadout4" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Name="Loadout5" />
+                                <!--Gadget-->
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Name="Gadget1" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Name="Gadget2" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Name="Gadget3" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Name="Gadget4" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Name="Gadget5" />
+                                <!--Position-->
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Name="Position1" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Name="Position2" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Name="Position3" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Name="Position4" />
+                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="5" VerticalAlignment="Center" Name="Position5" />
+                            </Grid>
+                        </Border>
+                    </Expander>
                 </Grid>
             </Grid>
         </Border>

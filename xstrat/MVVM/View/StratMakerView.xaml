@@ -254,23 +254,23 @@
                                 <local1:DataSelector Margin="2" Grid.Row="4" x:Name="Player4" />
                                 <local1:DataSelector Margin="2" Grid.Row="5" x:Name="Player5" />
                                 <!--Loadout-->
-                                <TextBox Foreground="White" BorderThickness="0" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Height="20" Background="#202020" VerticalAlignment="Center" Name="Loadout1" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Name="Loadout2" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="Loadout3" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Name="Loadout4" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Name="Loadout5" />
+                                <TextBox Margin="1" Foreground="White" BorderThickness="0" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Height="20" Background="#202020" VerticalAlignment="Center" Name="Loadout1" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Name="Loadout2" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="Loadout3" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Name="Loadout4" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Name="Loadout5" />
                                 <!--Gadget-->
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Name="Gadget1" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Name="Gadget2" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Name="Gadget3" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Name="Gadget4" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Name="Gadget5" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Name="Gadget1" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Name="Gadget2" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Name="Gadget3" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Name="Gadget4" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Name="Gadget5" />
                                 <!--Position-->
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Name="Position1" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Name="Position2" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Name="Position3" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Name="Position4" />
-                                <TextBox Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="5" VerticalAlignment="Center" Name="Position5" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Name="Position1" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Name="Position2" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Name="Position3" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Name="Position4" />
+                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="5" VerticalAlignment="Center" Name="Position5" />
                             </Grid>
                         </Border>
                     </Expander>

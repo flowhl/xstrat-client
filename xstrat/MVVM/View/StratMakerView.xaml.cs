@@ -78,8 +78,6 @@ namespace xstrat.MVVM.View
 
             AssignmentTable.Rows.Clear();
 
-            AssignmentTable.Rows.Add("Jonas der HS", "goarnix", "asdf", "pos 1");
-
             Opened();
         }
 
@@ -510,6 +508,8 @@ namespace xstrat.MVVM.View
                 AssignmentTable.Rows.Add(row);
             }
 
+            LoadDataTable();
+
             LoadDragNDropItems(content.dragNDropObjs);
 
             IconSizeSlider.Value = content.IconSize;
@@ -563,6 +563,58 @@ namespace xstrat.MVVM.View
                     Notify.sendError("Could not save strat: " + result.Item2);
                 }
             }
+        }
+
+        public void LoadDataTable()
+        {
+            if (AssignmentTable == null) return;
+            if (AssignmentTable.Rows.Count < 5) return;
+                
+            var row = AssignmentTable.Rows[0];
+            
+            Player1.SelectUserID((int)row["player"]);
+            Loadout1.Text = (string)row["loadout"];
+            Gadget1.Text = (string)row["gadgets"];
+            Position1.Text = (string)row["position"];
+
+            row = AssignmentTable.Rows[1];
+
+            Player2.SelectUserID((int)row["player"]);
+            Loadout2.Text = (string)row["loadout"];
+            Gadget2.Text = (string)row["gadgets"];
+            Position2.Text = (string)row["position"];
+
+            row = AssignmentTable.Rows[2];
+
+            Player3.SelectUserID((int)row["player"]);
+            Loadout3.Text = (string)row["loadout"];
+            Gadget3.Text = (string)row["gadgets"];
+            Position3.Text = (string)row["position"];
+
+            row = AssignmentTable.Rows[3];
+
+            Player4.SelectUserID((int)row["player"]);
+            Loadout4.Text = (string)row["loadout"];
+            Gadget4.Text = (string)row["gadgets"];
+            Position4.Text = (string)row["position"];
+
+            row = AssignmentTable.Rows[4];
+
+            Player5.SelectUserID((int)row["player"]);
+            Loadout5.Text = (string)row["loadout"];
+            Gadget5.Text = (string)row["gadgets"];
+            Position5.Text = (string)row["position"];
+        }
+
+        public void SaveDataTable()
+        {
+            AssignmentTable.Rows.Clear();
+            AssignmentTable.Rows.Add(Player1.selectedUser.id, Loadout1.Text, Gadget1.Text, Position1.Text);
+            AssignmentTable.Rows.Add(Player2.selectedUser.id, Loadout2.Text, Gadget2.Text, Position2.Text);
+            AssignmentTable.Rows.Add(Player3.selectedUser.id, Loadout3.Text, Gadget3.Text, Position3.Text);
+            AssignmentTable.Rows.Add(Player4.selectedUser.id, Loadout4.Text, Gadget4.Text, Position4.Text);
+            AssignmentTable.Rows.Add(Player5.selectedUser.id, Loadout5.Text, Gadget5.Text, Position5.Text);
+
         }
 
         public List<DragNDropObj> GetDragNDropObjs()
@@ -1066,6 +1118,11 @@ namespace xstrat.MVVM.View
         public string hatch_uid { get; set; }
         public int user_id { get; set; }
         public Hatchstates[] states { get; set; }
+    }
+
+    public class AssignmentTable
+    {
+        //TODO
     }
 
 

@@ -88,6 +88,13 @@ namespace xstrat.Ui
             CBox.SelectedIndex = index;
         }
 
+        public void SelectUserID(int uid)
+        {
+            if (type != 1) return;
+            indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.teammates.Where(x => x.id == uid).FirstOrDefault()?.name));
+            SelectIndex(indexToSelect);
+        }
+
         public void UpdateUI()
         {
             if(type == 1)

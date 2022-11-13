@@ -20,7 +20,7 @@
                     <TextBox Width="200" Foreground="White" Background="Transparent" BorderThickness="0" Text="Title" VerticalAlignment="Center" Name="TitleText" FontSize="18" Margin="0,0,10,0"/>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15">Created on</Label>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Name="CreationDate" Margin="0,0,80,0">01.01.2022</Label>
-                    <local:DataSelector type="3" Width="130" Height="25" x:Name="TypeSelector" Margin="5,0,0,0"></local:DataSelector>
+                    <local:DataSelector Type="Offdaytype" Width="130" Height="25" x:Name="TypeSelector" Margin="5,0,0,0"></local:DataSelector>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Height="30" HorizontalAlignment="Center">
                     <DatePicker Background="Transparent" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="FromDatePicker">

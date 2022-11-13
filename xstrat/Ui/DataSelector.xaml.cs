@@ -32,8 +32,10 @@ namespace xstrat.Ui
         public Map selectedMap { get; set; } = null;
         public ScrimMode selectedScrimMode { get; set; } = null;
         public EventType selectedEventType { get; set; } = null;
-        public int type { get; set; } = 0;
-        public int indexToSelect = 0;
+        public Operator selectedOperator { get; set; } = null;
+
+        public DataSelectorTypes Type { get; set; } = 0;
+        public int indexToSelect = -1;
         /// <summary>
         /// type:
         /// 1 - teammates
@@ -55,18 +57,7 @@ namespace xstrat.Ui
         }
 
 
-        /// <summary>
-        /// type:
-        /// 1 - teammates
-        /// 2 - game
-        /// 3 - offdaytype
-        /// 4 - calendar filter
-        /// 5 - Map
-        /// 6 - ScrimMode
-        /// 7 - EventType
-        /// </summary>
-        /// <param name="type"></param>
-        public DataSelector(int type_id)
+        public DataSelector(DataSelectorTypes Type)
         {
             InitializeComponent();
             Loaded += (sender, args) =>
@@ -90,14 +81,20 @@ namespace xstrat.Ui
 
         public void SelectUserID(int uid)
         {
-            if (type != 1) return;
+            if (Type != DataSelectorTypes.Teammates) return;
             indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.teammates.Where(x => x.id == uid).FirstOrDefault()?.name));
+            SelectIndex(indexToSelect);
+        }
+        public void SelectOperator(int id)
+        {
+            if (Type != DataSelectorTypes.AttackOperators && Type != DataSelectorTypes.DefenseOperators && Type != DataSelectorTypes.AllOperators) return;
+            indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.Operators.Where(x => x.id == id).FirstOrDefault()?.name));
             SelectIndex(indexToSelect);
         }
 
         public void UpdateUI()
         {
-            if(type == 1)
+            if(Type == DataSelectorTypes.Teammates)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.teammates)
@@ -106,7 +103,7 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if (type == 2)
+            else if (Type == DataSelectorTypes.Game)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.games)
@@ -115,7 +112,7 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if(type == 3)
+            else if(Type == DataSelectorTypes.OffdayType)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.OffDayTypes)
@@ -124,7 +121,7 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if (type == 4)
+            else if (Type == DataSelectorTypes.CalendarFilter)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.CalendarFilterTypes)
@@ -133,7 +130,7 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if (type == 5)
+            else if (Type == DataSelectorTypes.Map)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.Maps)
@@ -142,7 +139,7 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if (type == 6)
+            else if (Type == DataSelectorTypes.ScrimMode)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.ScrimModes)
@@ -151,10 +148,37 @@ namespace xstrat.Ui
                 }
                 CBox.SelectedIndex = indexToSelect;
             }
-            else if (type == 7)
+            else if (Type == DataSelectorTypes.EventType)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.EventTypes)
+                {
+                    CBox.Items.Add(item.name);
+                }
+                CBox.SelectedIndex = indexToSelect;
+            }
+            else if (Type == DataSelectorTypes.AllOperators)
+            {
+                CBox.Items.Clear();
+                foreach (var item in Globals.Operators)
+                {
+                    CBox.Items.Add(item.name);
+                }
+                CBox.SelectedIndex = indexToSelect;
+            }
+            else if (Type == DataSelectorTypes.DefenseOperators)
+            {
+                CBox.Items.Clear();
+                foreach (var item in Globals.Operators.Where(x => x.type == 0))
+                {
+                    CBox.Items.Add(item.name);
+                }
+                CBox.SelectedIndex = indexToSelect;
+            }
+            else if (Type == DataSelectorTypes.AttackOperators)
+            {
+                CBox.Items.Clear();
+                foreach (var item in Globals.Operators.Where(x => x.type == 1))
                 {
                     CBox.Items.Add(item.name);
                 }
@@ -166,34 +190,59 @@ namespace xstrat.Ui
         private void CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CBox.SelectedIndex < 0) return;
-            if(type == 1)
+            if(Type == DataSelectorTypes.Teammates)
             {
                 selectedUser = Globals.teammates[CBox.SelectedIndex];
             }
-            else if(type == 2)
+            else if(Type == DataSelectorTypes.Game)
             {
                 selectedGame = Globals.games[CBox.SelectedIndex];
             }
-            else if(type == 3)
+            else if(Type == DataSelectorTypes.OffdayType)
             {
                 selectedOffDayType = Globals.OffDayTypes[CBox.SelectedIndex];
             }
-            else if (type == 4)
+            else if (Type == DataSelectorTypes.CalendarFilter)
             {
                 selectedCalendarFilterType = Globals.CalendarFilterTypes[CBox.SelectedIndex];
             }
-            else if (type == 5)
+            else if (Type == DataSelectorTypes.Map)
             {
                 selectedMap = Globals.Maps[CBox.SelectedIndex];
             }
-            else if (type == 6)
+            else if (Type == DataSelectorTypes.ScrimMode)
             {
                 selectedScrimMode = Globals.ScrimModes[CBox.SelectedIndex];
             }
-            else if (type == 7)
+            else if (Type == DataSelectorTypes.EventType)
             {
                 selectedEventType = Globals.EventTypes[CBox.SelectedIndex];
             }
+            else if (Type == DataSelectorTypes.AllOperators)
+            {
+                selectedOperator = Globals.Operators.Where(x => x.name == CBox.SelectedItem.ToString()).FirstOrDefault();
+            }
+            else if (Type == DataSelectorTypes.DefenseOperators)
+            {
+                selectedOperator = Globals.Operators.Where(x => x.name == CBox.SelectedItem.ToString()).FirstOrDefault();
+            }
+            else if (Type == DataSelectorTypes.AttackOperators)
+            {
+                selectedOperator = Globals.Operators.Where(x => x.name == CBox.SelectedItem.ToString()).FirstOrDefault();
+            }
         }
+    }
+    public enum DataSelectorTypes
+    {
+        Teammates,
+        Game,
+        OffdayType,
+        CalendarFilter,
+        Map,
+        ScrimMode,
+        EventType,
+        AttackOperators,
+        DefenseOperators,
+        AllOperators,
     }
 }

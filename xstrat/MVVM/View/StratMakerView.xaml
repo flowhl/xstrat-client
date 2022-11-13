@@ -174,7 +174,11 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Last Edit:</Label>
-                                        <Label Name="TxtLastEdit" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
+                                        <Label Name="TxtLastEdit" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left" Margin="0,0,14,0"></Label>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Ban Att:</Label>
+                                        <local1:DataSelector x:Name="AttBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
@@ -185,6 +189,10 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Created On:</Label>
                                         <Label Name="TxtCreatedOn" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Ban Def:</Label>
+                                        <local1:DataSelector x:Name="DefBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
                                     </StackPanel>
 
                                 </StackPanel>

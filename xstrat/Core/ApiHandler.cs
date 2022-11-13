@@ -174,6 +174,30 @@ namespace xstrat
             }
         }
 
+        public static async Task<(bool, string)> GetOperators()
+        {
+            var CacheResponse = GetCachedResponse("GetOperators");
+            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            {
+                return CacheResponse;
+            }
+            else
+            {
+                Waiting();
+                var request = new RestRequest("operators", Method.Get);
+                request.RequestFormat = DataFormat.Json;
+                var response = await client.ExecuteAsync<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    AddToCache("GetOperators", (true, response.Content), 120);
+                    return (true, response.Content);
+                }
+                EndWaiting();
+                return (false, "db error");
+            }
+        }
+
         public static async Task<(bool, string)> GetxPositions()
         {
             var CacheResponse = GetCachedResponse("GetxPositions");

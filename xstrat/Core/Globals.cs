@@ -290,6 +290,7 @@ namespace xstrat.Core
         public static List<OffDayType> OffDayTypes = new List<OffDayType>();
         public static List<CalendarFilterType> CalendarFilterTypes = new List<CalendarFilterType>();
         public static List<Map> Maps = new List<Map>();
+        public static List<Operator> Operators = new List<Operator>();
         public static List<xPosition> xPositions = new List<xPosition>();
 
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
@@ -298,6 +299,8 @@ namespace xstrat.Core
         public static User currentUser { get; set; }
         public static TeamInfo teamInfo { get; set; }
         public static List<Strat> strats { get; set; } = new List<Strat>();
+
+        public static DateTime lastEventClicked { get; set; }
 
         public static event EventHandler<EventArgs> OnDataRetrieved;
 
@@ -599,8 +602,12 @@ namespace xstrat.Core
                 RetrieveCalendarFilterTypes();
                 wnd.SetLoadingStatus("Retrieving maps");
                 await RetrieveMaps();
+                wnd.SetLoadingStatus("Retrieving operators");
+                await RetrieveOperators();
+                wnd.SetLoadingStatus("Retrieving positions");
                 await RetrievexPositions();
                 RetrieveScrimModes();
+                wnd.SetLoadingStatus("Retrieving scrimmodes");
                 RetrieveEventTypes();
                 wnd.SetLoadingStatus("Retrieving team");
                 await RetrieveTeamName();
@@ -770,6 +777,34 @@ namespace xstrat.Core
                 Notify.sendError("Maps could not be loaded");
             }
         }
+
+        private static async Task RetrieveOperators()
+        {
+            var result = await ApiHandler.GetOperators();
+            if (result.Item1)
+            {
+                string resultJson = result.Item2;
+                string response = result.Item2;
+                //convert to json instance
+                JObject json = JObject.Parse(response);
+                var data = json.SelectToken("data").ToString();
+                if (data != null && data != "")
+                {
+                    List<xstrat.Json.Operator> rList = JsonConvert.DeserializeObject<List<Json.Operator>>(data);
+                    Operators.Clear();
+                    Operators = rList;
+                }
+                else
+                {
+                    Notify.sendError("Operators could not be loaded");
+                }
+            }
+            else
+            {
+                Notify.sendError("Operators could not be loaded");
+            }
+        }
+
         private static async Task RetrievexPositions()
         {
             var result = await ApiHandler.GetxPositions();

@@ -17,7 +17,9 @@ namespace xstrat.Calendar
 
         private void calendarDay_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if ((DateTime.Now - xstrat.Core.Globals.lastEventClicked).TotalMilliseconds < 1000) return;
             Globals.CallCalendarEventCreated(Date);
+            xstrat.Core.Globals.lastEventClicked = DateTime.Now;
         }
     }
 }

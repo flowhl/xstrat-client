@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Scrim" Height="830" Width="700" Background="#161616" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Deactivated="Window_Deactivated">
+        Title="Scrim" Height="830" Width="700" Background="#161616" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" Topmost="True">
     <Grid>
         <StackPanel Orientation="Vertical">
             <Label Name="TypeLabel" Foreground="#336cb5" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold">Create new event</Label>
@@ -17,7 +16,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <Label Foreground="White" HorizontalAlignment="Center" FontSize="16" FontWeight="SemiBold">Type:</Label>
-                <local:DataSelector x:Name="EventTypeSelector" type="7" Height="25" Width="200" Margin="10,0,0,0"></local:DataSelector>
+                <local:DataSelector x:Name="EventTypeSelector" Type="EventType" Height="25" Width="200" Margin="10,0,0,0"></local:DataSelector>
             </StackPanel>
 
             
@@ -90,9 +89,9 @@
                 <Border Background="#336cb5" Height="8" BorderThickness="0" Width="225" CornerRadius="5"></Border>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <local:DataSelector x:Name="MapSelector1" type="5" Width="200" Margin="0,5,0,0"></local:DataSelector>
-                <local:DataSelector x:Name="MapSelector2" type="5" Width="200" Margin="0,5,0,0"></local:DataSelector>
-                <local:DataSelector x:Name="MapSelector3" type="5" Width="200" Margin="0,5,0,0"></local:DataSelector>
+                <local:DataSelector x:Name="MapSelector1" Type="Map" Width="200" Margin="0,5,0,0"></local:DataSelector>
+                <local:DataSelector x:Name="MapSelector2" Type="Map" Width="200" Margin="0,5,0,0"></local:DataSelector>
+                <local:DataSelector x:Name="MapSelector3" Type="Map" Width="200" Margin="0,5,0,0"></local:DataSelector>
             </StackPanel>
 
 
@@ -102,7 +101,7 @@
                 <Label Foreground="#336cb5" Content="Mode" Width="45" HorizontalContentAlignment="Center"></Label>
                 <Border Background="#336cb5" Height="8" BorderThickness="0" Width="225" CornerRadius="5"></Border>
             </StackPanel>
-            <local:DataSelector type="6" x:Name="ScrimModeSelector" Width="200"></local:DataSelector>
+            <local:DataSelector Type="ScrimMode" x:Name="ScrimModeSelector" Width="200"></local:DataSelector>
 
 
             <!--Users-->

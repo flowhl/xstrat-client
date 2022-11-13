@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,7 +21,7 @@ using xstrat.Calendar;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.Ui;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using UserControl = System.Windows.Controls.UserControl;
 using Window = xstrat.Core.Window;
 
 namespace xstrat.MVVM.View

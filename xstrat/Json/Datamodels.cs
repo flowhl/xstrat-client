@@ -389,6 +389,28 @@ namespace xstrat.Json
 
     }
 
+    public class Operator
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int game_id { get; set; }
+        public int type { get; set; }
+
+        public Operator(int id, string name, int game_id, int type)
+        {
+            this.id = id;
+            this.name = name;
+            this.game_id = game_id;
+            this.type = type;
+        }
+
+        public Operator(){
+            
+        }
+    }
+
+
+
 
     /// <summary>
     /// api response by stats call

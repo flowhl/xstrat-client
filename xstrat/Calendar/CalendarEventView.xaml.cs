@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using xstrat.Core;
 
 namespace xstrat.Calendar
 {
@@ -40,15 +42,22 @@ namespace xstrat.Calendar
         {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
             {
+                if ((DateTime.Now - xstrat.Core.Globals.lastEventClicked).TotalMilliseconds < 1000) return;
                 _calendar.CalendarEventDoubleClicked(this);
+                e.Handled = true;
+                xstrat.Core.Globals.lastEventClicked = DateTime.Now;
             }
             else if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
             {
                 _calendar.CalendarEventClicked(this);
+                e.Handled = true;
             }
             else if(e.ChangedButton == MouseButton.Middle && e.ClickCount == 1)
             {
+                if ((DateTime.Now - xstrat.Core.Globals.lastEventClicked).TotalMilliseconds < 1000) return;
                 _calendar.CalendarEventMiddleMouseClicked(this);
+                e.Handled = true;
+                xstrat.Core.Globals.lastEventClicked = DateTime.Now;
             }
         }
     }

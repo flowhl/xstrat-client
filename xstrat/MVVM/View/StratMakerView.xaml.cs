@@ -29,6 +29,7 @@ using XStrat;
 using static System.Windows.Forms.AxHost;
 using System.ComponentModel;
 using System.Data;
+using JetBrains.Annotations;
 
 namespace xstrat.MVVM.View
 {
@@ -58,8 +59,6 @@ namespace xstrat.MVVM.View
 
         public double IconSize { get; set; }
 
-        public DataTable AssignmentTable = new DataTable();
-
         public StratMakerView()
         {
             InitializeComponent();
@@ -70,13 +69,6 @@ namespace xstrat.MVVM.View
         {
             xStratHelper.stratView = this;
             xStratHelper.WEMode = false;
-            AssignmentTable.Columns.Clear();
-            AssignmentTable.Columns.Add("player");
-            AssignmentTable.Columns.Add("loadout");
-            AssignmentTable.Columns.Add("gadgets");
-            AssignmentTable.Columns.Add("position");
-
-            AssignmentTable.Rows.Clear();
 
             Opened();
         }
@@ -478,6 +470,9 @@ namespace xstrat.MVVM.View
             Floor3 = content.floors.Contains(3);
             UpdateFloorButtons();
 
+            AttBanSelector.SelectOperator(content.banAtt?.id ?? -1);
+            DefBanSelector.SelectOperator(content.banDef?.id ?? -1);
+
             LoadMapImages();
 
             var wallsList = WallsLayer.Children.OfType<WallControl>().ToList();
@@ -500,15 +495,7 @@ namespace xstrat.MVVM.View
                 //TODO user einfügen
             }
 
-            //load datatable            
-
-            AssignmentTable.Rows.Clear();
-            foreach (var row in content.dataRows)
-            {
-                AssignmentTable.Rows.Add(row);
-            }
-
-            LoadDataTable();
+            LoadAssignmentTable(content.assignmentTable);
 
             LoadDragNDropItems(content.dragNDropObjs);
 
@@ -534,7 +521,6 @@ namespace xstrat.MVVM.View
             content.hatchstatus = GetHatchObjs();
             content.dragNDropObjs = GetDragNDropObjs();
             content.IconSize = IconSize;
-            content.dataRows = AssignmentTable.Rows;
 
             List<int> floors = new List<int>();
             if (Floor0) floors.Add(0);
@@ -543,6 +529,9 @@ namespace xstrat.MVVM.View
             if (Floor3) floors.Add(3);
 
             content.floors = floors;
+            content.banDef = DefBanSelector.selectedOperator;
+            content.banAtt = AttBanSelector.selectedOperator;
+            content.assignmentTable = GetAssignmentTable();
 
             string scontent = content.SerializeObject();
 
@@ -565,56 +554,45 @@ namespace xstrat.MVVM.View
             }
         }
 
-        public void LoadDataTable()
+        public AssignmentTable GetAssignmentTable()
         {
-            if (AssignmentTable == null) return;
-            if (AssignmentTable.Rows.Count < 5) return;
-                
-            var row = AssignmentTable.Rows[0];
-            
-            Player1.SelectUserID((int)row["player"]);
-            Loadout1.Text = (string)row["loadout"];
-            Gadget1.Text = (string)row["gadgets"];
-            Position1.Text = (string)row["position"];
+            var table = new AssignmentTable();
 
-            row = AssignmentTable.Rows[1];
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.id ?? -1, gadgets = Gadget1.Text, loadout = Loadout1.Text, position = Position1.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.id ?? -1, gadgets = Gadget2.Text, loadout = Loadout2.Text, position = Position2.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.id ?? -1, gadgets = Gadget3.Text, loadout = Loadout3.Text, position = Position3.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.id ?? -1, gadgets = Gadget4.Text, loadout = Loadout4.Text, position = Position4.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.id ?? -1, gadgets = Gadget5.Text, loadout = Loadout5.Text, position = Position5.Text });
 
-            Player2.SelectUserID((int)row["player"]);
-            Loadout2.Text = (string)row["loadout"];
-            Gadget2.Text = (string)row["gadgets"];
-            Position2.Text = (string)row["position"];
-
-            row = AssignmentTable.Rows[2];
-
-            Player3.SelectUserID((int)row["player"]);
-            Loadout3.Text = (string)row["loadout"];
-            Gadget3.Text = (string)row["gadgets"];
-            Position3.Text = (string)row["position"];
-
-            row = AssignmentTable.Rows[3];
-
-            Player4.SelectUserID((int)row["player"]);
-            Loadout4.Text = (string)row["loadout"];
-            Gadget4.Text = (string)row["gadgets"];
-            Position4.Text = (string)row["position"];
-
-            row = AssignmentTable.Rows[4];
-
-            Player5.SelectUserID((int)row["player"]);
-            Loadout5.Text = (string)row["loadout"];
-            Gadget5.Text = (string)row["gadgets"];
-            Position5.Text = (string)row["position"];
+            return table;
         }
 
-        public void SaveDataTable()
+        public void LoadAssignmentTable(AssignmentTable table)
         {
-            AssignmentTable.Rows.Clear();
-            AssignmentTable.Rows.Add(Player1.selectedUser.id, Loadout1.Text, Gadget1.Text, Position1.Text);
-            AssignmentTable.Rows.Add(Player2.selectedUser.id, Loadout2.Text, Gadget2.Text, Position2.Text);
-            AssignmentTable.Rows.Add(Player3.selectedUser.id, Loadout3.Text, Gadget3.Text, Position3.Text);
-            AssignmentTable.Rows.Add(Player4.selectedUser.id, Loadout4.Text, Gadget4.Text, Position4.Text);
-            AssignmentTable.Rows.Add(Player5.selectedUser.id, Loadout5.Text, Gadget5.Text, Position5.Text);
+            Player1.SelectUserID(table.Rows[0].User_id);
+            Gadget1.Text = table.Rows[0].gadgets;
+            Loadout1.Text = table.Rows[0].loadout;
+            Position1.Text = table.Rows[0].position;
 
+            Player2.SelectUserID(table.Rows[1].User_id);
+            Gadget2.Text = table.Rows[1].gadgets;
+            Loadout2.Text = table.Rows[1].loadout;
+            Position2.Text = table.Rows[1].position;
+
+            Player3.SelectUserID(table.Rows[2].User_id);
+            Gadget3.Text = table.Rows[2].gadgets;
+            Loadout3.Text = table.Rows[2].loadout;
+            Position3.Text = table.Rows[2].position;
+
+            Player4.SelectUserID(table.Rows[3].User_id);
+            Gadget4.Text = table.Rows[3].gadgets;
+            Loadout4.Text = table.Rows[3].loadout;
+            Position4.Text = table.Rows[3].position;
+
+            Player5.SelectUserID(table.Rows[4].User_id);
+            Gadget5.Text = table.Rows[4].gadgets;
+            Loadout5.Text = table.Rows[4].loadout;
+            Position5.Text = table.Rows[4].position;
         }
 
         public List<DragNDropObj> GetDragNDropObjs()
@@ -1094,8 +1072,11 @@ namespace xstrat.MVVM.View
         public string comment { get; set; }
         public List<int> floors { get; set; }
         public double IconSize { get; set; }
-        public DataRowCollection dataRows { get; set; }
-                
+        public AssignmentTable assignmentTable { get; set; }
+        public Operator banDef { get; set; }
+        public Operator banAtt { get; set; }
+
+
         public StratContent()
         {
             wallstatus = new List<WallObj>();
@@ -1122,7 +1103,15 @@ namespace xstrat.MVVM.View
 
     public class AssignmentTable
     {
-        //TODO
+        public List<AssignmentTableDataRow> Rows = new List<AssignmentTableDataRow>();
+    }
+
+    public class AssignmentTableDataRow
+    {
+        public int User_id { get; set; }
+        public string loadout { get; set; }
+        public string gadgets { get; set; }
+        public string position { get; set; }
     }
 
 

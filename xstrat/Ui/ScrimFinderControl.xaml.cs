@@ -49,6 +49,8 @@ namespace xstrat.Ui
 
         private void ScrimFinderControl_Loaded1(object sender, RoutedEventArgs e)
         {
+            CalendarTypeSelector.SelectIndex(0);
+            PlayerAmount.Value = 5;
             CalendarTypeSelector.CBox.SelectionChanged += CBox_SelectionChanged;
             UpdateButtonColors();
             Loaded += ScrimFinderControl_Loaded;

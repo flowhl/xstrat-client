@@ -138,7 +138,7 @@
                     <Label Foreground="#336cb5" Content="PLAYERS" Width="75" HorizontalContentAlignment="Center"></Label>
                     <Border Background="#336cb5" Height="8" BorderThickness="0" Width="85" CornerRadius="5"></Border>
                 </StackPanel>
-                <local:DataSelector Width="150" type="4" x:Name="CalendarTypeSelector"></local:DataSelector>
+                <local:DataSelector Width="150" Type="Calendar_filter" x:Name="CalendarTypeSelector"></local:DataSelector>
                 <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
                     <StackPanel Orientation="Vertical" Name="Playerlist">
                     </StackPanel>

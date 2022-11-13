@@ -291,12 +291,12 @@ namespace xstrat.Ui
             }
         }
 
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-            if (IsLoaded && opened)
-            {
-                this.Close();
-            }
-        }
+        //private void Window_Deactivated(object sender, EventArgs e)
+        //{
+        //    if (IsLoaded && opened)
+        //    {
+        //        this.Close();
+        //    }
+        //}
     }
 }

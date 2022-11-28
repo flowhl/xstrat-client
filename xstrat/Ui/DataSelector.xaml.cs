@@ -36,6 +36,8 @@ namespace xstrat.Ui
 
         public DataSelectorTypes Type { get; set; } = 0;
         public int indexToSelect = -1;
+        public string valueToSelect = string.Empty;
+
         /// <summary>
         /// type:
         /// 1 - teammates
@@ -85,11 +87,15 @@ namespace xstrat.Ui
             indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.teammates.Where(x => x.id == uid).FirstOrDefault()?.name));
             SelectIndex(indexToSelect);
         }
-        public void SelectOperator(int id)
+        public void SelectOperator(string val)
         {
             if (Type != DataSelectorTypes.AttackOperators && Type != DataSelectorTypes.DefenseOperators && Type != DataSelectorTypes.AllOperators) return;
-            indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.Operators.Where(x => x.id == id).FirstOrDefault()?.name));
-            SelectIndex(indexToSelect);
+            SelectValue(val);
+        }
+        public void SelectValue(string val)
+        {
+            valueToSelect = val;
+            CBox.SelectedValue = val;
         }
 
         public void UpdateUI()
@@ -101,7 +107,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.Game)
             {
@@ -110,7 +115,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if(Type == DataSelectorTypes.OffdayType)
             {
@@ -119,7 +123,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.CalendarFilter)
             {
@@ -128,7 +131,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.Map)
             {
@@ -137,7 +139,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.ScrimMode)
             {
@@ -146,7 +147,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.EventType)
             {
@@ -155,7 +155,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.AllOperators)
             {
@@ -164,7 +163,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.DefenseOperators)
             {
@@ -173,7 +171,6 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
             else if (Type == DataSelectorTypes.AttackOperators)
             {
@@ -182,8 +179,9 @@ namespace xstrat.Ui
                 {
                     CBox.Items.Add(item.name);
                 }
-                CBox.SelectedIndex = indexToSelect;
             }
+            if(indexToSelect > -1) CBox.SelectedIndex = indexToSelect;
+            if (!string.IsNullOrEmpty(valueToSelect)) CBox.SelectedValue = valueToSelect;
         }
 
 

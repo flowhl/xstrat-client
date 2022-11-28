@@ -1,5 +1,7 @@
 ﻿<UserControl x:Class="xstrat.MVVM.View.StratMakerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:wpfext="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:XStrat="clr-namespace:XStrat" xmlns:xstrat="clr-namespace:XStrat" xmlns:zoomcontrol="clr-namespace:Denxorz.ZoomControl;assembly=Denxorz.ZoomControl" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
+        
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160" />
             <ColumnDefinition />
@@ -176,10 +178,6 @@
                                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Last Edit:</Label>
                                         <Label Name="TxtLastEdit" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left" Margin="0,0,14,0"></Label>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Ban Att:</Label>
-                                        <local1:DataSelector x:Name="AttBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
-                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Horizontal">
@@ -190,11 +188,6 @@
                                         <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Created On:</Label>
                                         <Label Name="TxtCreatedOn" Foreground="White" VerticalAlignment="Center" FontSize="10" Width="100" HorizontalAlignment="Left"></Label>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Foreground="White" VerticalAlignment="Center" FontSize="10">Ban Def:</Label>
-                                        <local1:DataSelector x:Name="DefBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
-                                    </StackPanel>
-
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -220,70 +213,85 @@
                         </Canvas>
                         <StackPanel Orientation="Horizontal" Name="MapStack" Panel.ZIndex="-1"></StackPanel>
                     </Grid>
-                </zoomcontrol:ZoomControl>
+                </zoomcontrol:ZoomControl>  
                 <!--</wpfext:ZoomControl>-->
-                <Grid Grid.Column="2" HorizontalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="0" IsEnabled="True" Background="#171717">
-                        <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
-                            <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
-                        </Border>
-                    </Expander>
-                    <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="1" IsEnabled="True" Background="#171717">
-                        <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
-                            <Grid Margin="10" Width="450">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <!--Headers-->
-                                <Label Foreground="White" Grid.Column="0">Player</Label>
-                                <Label Foreground="White" Grid.Column="1">Loadout</Label>
-                                <Label Foreground="White" Grid.Column="2">Gadget</Label>
-                                <Label Foreground="White" Grid.Column="3">Position</Label>
-                                <!--Columns-->
-                                <!--Player-->
-                                <local1:DataSelector Margin="2" Grid.Row="1" x:Name="Player1" />
-                                <local1:DataSelector Margin="2" Grid.Row="2" x:Name="Player2" />
-                                <local1:DataSelector Margin="2" Grid.Row="3" x:Name="Player3" />
-                                <local1:DataSelector Margin="2" Grid.Row="4" x:Name="Player4" />
-                                <local1:DataSelector Margin="2" Grid.Row="5" x:Name="Player5" />
-                                <!--Loadout-->
-                                <TextBox Margin="1" Foreground="White" BorderThickness="0" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Height="20" Background="#202020" VerticalAlignment="Center" Name="Loadout1" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Name="Loadout2" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="Loadout3" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Name="Loadout4" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Name="Loadout5" />
-                                <!--Gadget-->
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Name="Gadget1" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Name="Gadget2" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Name="Gadget3" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Name="Gadget4" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Name="Gadget5" />
-                                <!--Position-->
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Name="Position1" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Name="Position2" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Name="Position3" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Name="Position4" />
-                                <TextBox Margin="1"  Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="5" VerticalAlignment="Center" Name="Position5" />
-                            </Grid>
-                        </Border>
-                    </Expander>
-                </Grid>
             </Grid>
         </Border>
+    </Grid>
+
+    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Height="560">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.7*"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Expander ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="0" IsEnabled="True" >
+            <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                <TextBox Name="Kommentar" Foreground="White" Width="200" TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" Margin="10" BorderThickness="0"></TextBox>
+            </Border>
+        </Expander>
+        <Expander x:Name="BansExpander" ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="1" IsEnabled="True">
+            <Border Background="#303030" BorderThickness="0" CornerRadius="20" Margin="5">
+                <Grid Margin="10" Width="450">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--Bans-->
+
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0">
+                        <Label Foreground="White" VerticalAlignment="Center" Margin="0,-2,0,0">Attacker Ban:</Label>
+                        <local1:DataSelector x:Name="AttBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2">
+                        <Label Foreground="White" VerticalAlignment="Center" Margin="0,-2,0,0">Defender Ban:</Label>
+                        <local1:DataSelector x:Name="DefBanSelector" Type="DefenseOperators" Width="120"></local1:DataSelector>
+                    </StackPanel>
+
+                    <!--Headers-->
+                    <Label Foreground="White" Grid.Row="1" Grid.Column="0" Margin="0,-2,0,0">Player</Label>
+                    <Label Foreground="White" Grid.Row="1" Grid.Column="1" Margin="0,-2,0,0">Loadout</Label>
+                    <Label Foreground="White" Grid.Row="1" Grid.Column="2" Margin="0,-2,0,0">Gadget</Label>
+                    <Label Foreground="White" Grid.Row="1" Grid.Column="3" Margin="0,-2,0,0">Position</Label>
+                    <!--Columns-->
+                    <!--Player-->
+                    <local1:DataSelector Margin="2" Grid.Row="2" x:Name="Player1" />
+                    <local1:DataSelector Margin="2" Grid.Row="3" x:Name="Player2" />
+                    <local1:DataSelector Margin="2" Grid.Row="4" x:Name="Player3" />
+                    <local1:DataSelector Margin="2" Grid.Row="5" x:Name="Player4" />
+                    <local1:DataSelector Margin="2" Grid.Row="6" x:Name="Player5" />
+                    <!--Loadout-->
+                    <TextBox Margin="1" Foreground="White" BorderThickness="0" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" Height="20" Background="#202020" VerticalAlignment="Center" Name="Loadout1" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Name="Loadout2" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Name="Loadout3" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Name="Loadout4" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" Name="Loadout5" />
+                    <!--Gadget-->
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Name="Gadget1" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Name="Gadget2" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Name="Gadget3" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Name="Gadget4" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" Name="Gadget5" />
+                    <!--Position-->
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Name="Position1" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Name="Position2" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Name="Position3" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="5" VerticalAlignment="Center" Name="Position4" />
+                    <TextBox Margin="1" Foreground="White" VerticalContentAlignment="Center" Height="20" Background="#202020" BorderThickness="0" Grid.Column="3" Grid.Row="6" VerticalAlignment="Center" Name="Position5" />
+                </Grid>
+            </Border>
+        </Expander>
+        </Grid>
     </Grid>
 </UserControl>

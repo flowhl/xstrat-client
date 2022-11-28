@@ -470,8 +470,8 @@ namespace xstrat.MVVM.View
             Floor3 = content.floors.Contains(3);
             UpdateFloorButtons();
 
-            AttBanSelector.SelectOperator(content.banAtt?.id ?? -1);
-            DefBanSelector.SelectOperator(content.banDef?.id ?? -1);
+            AttBanSelector.SelectValue(content?.banAtt?.name ?? "");
+            DefBanSelector.SelectValue(content?.banDef?.name ?? "");
 
             LoadMapImages();
 
@@ -569,27 +569,27 @@ namespace xstrat.MVVM.View
 
         public void LoadAssignmentTable(AssignmentTable table)
         {
-            Player1.SelectUserID(table.Rows[0].User_id);
+            Player1.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
             Gadget1.Text = table.Rows[0].gadgets;
             Loadout1.Text = table.Rows[0].loadout;
             Position1.Text = table.Rows[0].position;
 
-            Player2.SelectUserID(table.Rows[1].User_id);
+            Player2.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
             Gadget2.Text = table.Rows[1].gadgets;
             Loadout2.Text = table.Rows[1].loadout;
             Position2.Text = table.Rows[1].position;
 
-            Player3.SelectUserID(table.Rows[2].User_id);
+            Player3.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
             Gadget3.Text = table.Rows[2].gadgets;
             Loadout3.Text = table.Rows[2].loadout;
             Position3.Text = table.Rows[2].position;
 
-            Player4.SelectUserID(table.Rows[3].User_id);
+            Player4.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
             Gadget4.Text = table.Rows[3].gadgets;
             Loadout4.Text = table.Rows[3].loadout;
             Position4.Text = table.Rows[3].position;
 
-            Player5.SelectUserID(table.Rows[4].User_id);
+            Player5.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
             Gadget5.Text = table.Rows[4].gadgets;
             Loadout5.Text = table.Rows[4].loadout;
             Position5.Text = table.Rows[4].position;

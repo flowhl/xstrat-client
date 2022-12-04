@@ -31,7 +31,6 @@ namespace xstrat.MVVM.View
 
         private void HomeView_Loaded(object sender, RoutedEventArgs e)
         {
-            AddItems();
             txtGreeting.Content = GetGreeting();
         }
 
@@ -107,20 +106,20 @@ namespace xstrat.MVVM.View
 
         //}
 
-        private void AddItems()
-        {
-            AddToPanel(new SkinSwitcherControl());
-            AddToPanel(new TeamMatesControl());
+        //private void AddItems()
+        //{
+        //    AddToPanel(new SkinSwitcherControl());
+        //    AddToPanel(new TeamMatesControl());
 
-            var li = new Viewbox();
-            li.StretchDirection = StretchDirection.Both;
-            li.Stretch = Stretch.Uniform;
-            li.Child = new LicenseInfo(true);
-            li.Width = 400;
-            li.Height = 275;
-            li.Margin = new Thickness(10);
-            Row1.Children.Add(li);
-        }
+        //    var li = new Viewbox();
+        //    li.StretchDirection = StretchDirection.Both;
+        //    li.Stretch = Stretch.Uniform;
+        //    li.Child = new LicenseInfo(true);
+        //    li.Width = 400;
+        //    li.Height = 275;
+        //    li.Margin = new Thickness(10);
+        //    Row1.Children.Add(li);
+        //}
 
         private void AddToPanel(Control e)
         {

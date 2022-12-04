@@ -10,7 +10,7 @@
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,-65,0,0" CanVerticallyScroll="False" VerticalAlignment="Center">
             <Image Source="/Images/slogan.png" Width="250" Height="65"/>
-            <Label Foreground="White" Content="Register now!" HorizontalAlignment="Center" FontSize="20" FontWeight="SemiBold" Margin="0,10,0,20"/>
+            <Label Style="{StaticResource PH2}" Content="Register now!" HorizontalAlignment="Center" Margin="0,10,0,20"/>
             <Label Name="Error" Content="" HorizontalAlignment="Center" Foreground="Red" MaxWidth="250"/>
             <Border Background="#202020" CornerRadius="10" Margin="0,5,0,0">
                 <StackPanel Orientation="Horizontal">
@@ -32,20 +32,8 @@
             </Border>
             <Border HorizontalAlignment="Left" Height="8" Margin="5" Width="0" CornerRadius="3" Background="#336cb5" Name="StrengthSlider"></Border>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-            <Button Height="40" Width="250" Name="RegisterBtn" Foreground="White" Content="Register" FontSize="17" Background="#202020" BorderThickness="0" Margin="0,10,0,0" Click="RegisterBtn_Click">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Height="40" Width="250" Name="BackBtn" Foreground="White" Content="Back to login" FontSize="17" Background="#202020" BorderThickness="0" Margin="0,10,0,0" Click="BackBtn_Click">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
+            <Button Style="{StaticResource Secondary}" Height="40" Width="250" Name="RegisterBtn"  Content="Register" Margin="0,10,0,0" Click="RegisterBtn_Click" />
+            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="BackBtn" Content="Back to login" Margin="0,10,0,0" Click="BackBtn_Click" />
         </StackPanel>
     </Grid>
 </UserControl>

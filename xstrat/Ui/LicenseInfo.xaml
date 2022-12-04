@@ -8,9 +8,9 @@
              d:DesignHeight="550" d:DesignWidth="650">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Border Background="#161616" CornerRadius="10" Margin="30" Width="550">
-                <StackPanel Orientation="Vertical">
-                    <Grid Margin="50">
+            <Border Background="#161616" CornerRadius="10" Margin="30" Width="550" Height="330">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <Grid Margin="20">
                         <MaterialDesign:PackIcon x:Name="LicenseStatusIcon" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Kind="None" Width="80" Height="80"></MaterialDesign:PackIcon>
                         <Ellipse Width="85" Height="85" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1">
                             <Ellipse.Fill>
@@ -39,7 +39,7 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <Border Background="#161616" Name="EnterPanel" CornerRadius="10" Margin="10" Width="550">
+            <Border Background="#161616" Name="EnterPanel" CornerRadius="10" Margin="10" Width="550" Height="165">
             <StackPanel Orientation="Vertical" Margin="20">
             <Grid HorizontalAlignment="Center" Margin="0">
                     <TextBox Height="30"  Width="350" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" x:Name="SearchTermTextBox" FontSize="17" Margin="5" Foreground="White" Background="#303030" BorderThickness="0" />

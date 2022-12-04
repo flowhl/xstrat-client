@@ -11,6 +11,7 @@
         <ResourceDictionary>
             
             <!--MVVM-->
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Ui/MenuButtonTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -57,11 +58,115 @@
                 <view:WallEditorView />
             </DataTemplate>
 
+            
+            <!--XStrat Design Concept-->
 
+            <!--Primary Labels-->
+            <Style x:Key="PH1" TargetType="Label">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+            <Style x:Key="PH2" TargetType="Label">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+            <Style x:Key="P1" TargetType="Label">
+                <Setter Property="Foreground" Value="#f0f0f0" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+            <Style x:Key="P2" TargetType="Label">
+                <Setter Property="Foreground" Value="#f0f0f0" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
 
-            <!--**************************
-    * STYLE: MenuItem
-    ************************** -->
+            <Style x:Key="PS" TargetType="Label">
+                <Setter Property="Foreground" Value="#f0f0f0" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            <!--Secondary Labels-->
+            <Style x:Key="SH1" TargetType="Label">
+                <Setter Property="Foreground" Value="#336cb5" />
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+            <Style x:Key="SH2" TargetType="Label">
+                <Setter Property="Foreground" Value="#336cb5" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+            <Style x:Key="S1" TargetType="Label">
+                <Setter Property="Foreground" Value="#336cb5" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+            <Style x:Key="S2" TargetType="Label">
+                <Setter Property="Foreground" Value="#336cb5" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+            
+            <!--Borders-->
+
+            <Style x:Key="Area" TargetType="Border">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="#161616" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="CornerRadius" Value="10" />
+            </Style>
+            
+            <Style x:Key="Control" TargetType="Border">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="#202020" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="CornerRadius" Value="10" />
+            </Style>
+            
+            <!--Buttons-->
+
+            <Style x:Key="Primary" TargetType="Button">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Background" Value="#242424" />
+                <Setter Property="Margin" Value="10" />
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Key="Secondary" TargetType="Button">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Background" Value="#336cb5" />
+                <Setter Property="Margin" Value="10" />
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Key="Small" TargetType="Button">
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Background" Value="#202020" />
+                <Setter Property="Margin" Value="10" />
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <!--Menu item-->
 
             <!--// Menu with SubMenu Template //-->
 
@@ -233,104 +338,7 @@
             </ControlTemplate>
 
 
-            <!--// Maximize / Minimize App Button Style //-->
-
-            <ImageBrush x:Key="max_def" ImageSource="Assets/max_def.png" Stretch="None" />
-
-            <ImageBrush x:Key="max_mo" ImageSource="Assets/max_mo.png" Stretch="None" />
-
-            <Style x:Key="MaxBtnStyle" TargetType="{x:Type Button}">
-
-                <Setter Property="Height" Value="35" />
-                <Setter Property="Width" Value="35" />
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Margin" Value="0,20,60,0" />
-
-                <Setter Property="Template">
-
-                    <Setter.Value>
-
-                        <ControlTemplate TargetType="{x:Type Button}">
-
-                            <Border x:Name="border" BorderThickness="0" Background="{StaticResource max_def}" />
-
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="IsMouseOver" Value="True">
-
-                                    <Setter Property="Background" TargetName="border" Value="{StaticResource max_mo}" />
-
-                                </Trigger>
-
-                                <Trigger Property="IsPressed" Value="True">
-
-                                    <Setter Property="Background" TargetName="border" Value="{StaticResource max_mo}" />
-
-                                </Trigger>
-
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-
-                    </Setter.Value>
-
-                </Setter>
-
-
-            </Style>
-
-
-            <!--// Close App Button Style //-->
-
-            <ImageBrush x:Key="close_def" ImageSource="Assets/shutdown_def.png" Stretch="None" />
-
-            <ImageBrush x:Key="close_mo" ImageSource="Assets/shutdown_mo.png" Stretch="None" />
-
-            <Style x:Key="CloseBtnStyle" TargetType="{x:Type Button}">
-
-                <Setter Property="Height" Value="35" />
-                <Setter Property="Width" Value="35" />
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Margin" Value="0,20,18,0" />
-
-                <Setter Property="Template">
-
-                    <Setter.Value>
-
-                        <ControlTemplate TargetType="{x:Type Button}">
-
-                            <Border x:Name="border" BorderThickness="0" Background="{StaticResource close_def}" />
-
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="IsMouseOver" Value="True">
-
-                                    <Setter Property="Background" TargetName="border" Value="{StaticResource close_mo}" />
-
-                                </Trigger>
-
-                                <Trigger Property="IsPressed" Value="True">
-
-                                    <Setter Property="Background" TargetName="border" Value="{StaticResource close_mo}" />
-
-                                </Trigger>
-
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-
-                    </Setter.Value>
-
-                </Setter>
-
-
-            </Style>
-
-
-
-
+            
             <!--OLD-->
          
 <!--<SolidColorBrush x:Key="HighlightedBackgroundBrush" Color="#336cb5" />

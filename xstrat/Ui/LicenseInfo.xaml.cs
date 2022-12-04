@@ -25,24 +25,20 @@ namespace xstrat.Ui
     {
         public int Subscribed { get; set; }
         public DateTime? End { get; set; }
+        public bool HideEnterOption { get; set; } = false;
 
         public LicenseInfo()
         {
             InitializeComponent();
             Loaded += LicenseInfo_Loaded;
         }
-        public LicenseInfo(bool hideEnterOption)
-        {
-            InitializeComponent();
-            Loaded += LicenseInfo_Loaded;
-            if (hideEnterOption)
-            {
-                EnterPanel.Visibility = Visibility.Collapsed;
-            }
-        }
 
         private void LicenseInfo_Loaded(object sender, RoutedEventArgs e)
         {
+            if (HideEnterOption)
+            {
+                EnterPanel.Visibility = Visibility.Collapsed;
+            }
             RetrieveStatus();
         }
 

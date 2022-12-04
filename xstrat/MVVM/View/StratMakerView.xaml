@@ -220,7 +220,7 @@
     </Grid>
 
     <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Height="560">
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions>   
             <RowDefinition Height="1.7*"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>

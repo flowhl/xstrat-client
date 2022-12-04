@@ -7,7 +7,7 @@
     <Grid>
         <StackPanel Orientation="Vertical" Margin="5,-150,5,5" VerticalAlignment="Center" HorizontalAlignment="Center">
             <ws1:SprocketControl Height="100" Width="100" TickColor="#336CB5" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></ws1:SprocketControl>
-            <Label Margin="5,-10,5,5" Name="TextStatus" Background="Transparent" Foreground="#336CB5" MaxWidth="600" FontSize="12" HorizontalAlignment="Center">Loading...</Label>
+            <Label Style="{StaticResource S2}" Margin="5,-10,5,5" Name="TextStatus" MaxWidth="600" HorizontalAlignment="Center">Loading...</Label>
             <TextBlock Margin="5" Name="TextMessage" Background="Transparent" Foreground="#cccccc" MaxWidth="600" TextWrapping="Wrap" FontSize="15" HorizontalAlignment="Center" TextAlignment="Center">I am a nice message bla bla bla ahsdhashdahdahsdfhasdhjkhjklasfdhlhajkfsdhjklafsdhjkafsdhj</TextBlock>
         </StackPanel>
     </Grid>

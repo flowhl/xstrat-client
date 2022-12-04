@@ -8,7 +8,7 @@
              d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <Border Width="330" HorizontalAlignment="Left" Background="#181818" CornerRadius="20" Height="750" Margin="20,10,20,0" Name="RoutinesOverview" VerticalAlignment="Top">
+            <Border Style="{StaticResource Area}" Width="330" HorizontalAlignment="Left" Height="750" Margin="20,10,20,0" Name="RoutinesOverview" VerticalAlignment="Top">
                 <StackPanel HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
                         <martialDesign:PackIcon Height="50" Width="50" Foreground="White" VerticalAlignment="Center" Kind="Timetable"></martialDesign:PackIcon>
@@ -18,17 +18,11 @@
                         <StackPanel Orientation="Vertical" Name="RoutinesSP">
                         </StackPanel>
                     </ScrollViewer>
-                    <Button Background="#336cb5" Foreground="White" FontSize="17" FontWeight="SemiBold" Margin="10,10,10,0" BorderThickness="0" Content="Add New" Height="40" Width="100" Name="NewButton" Click="NewButton_Click">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                    <Button Style="{StaticResource Primary}" Content="Add New" Height="40" Width="100" Name="NewButton" Click="NewButton_Click" />
                 </StackPanel>
             </Border>
             <StackPanel Orientation="Vertical">
-                <Border Width="450" Height="600" HorizontalAlignment="Left" Background="#181818" CornerRadius="20" Margin="20,10,20,0" Name="EditRoutine">
+                <Border Style="{StaticResource Area}" Width="450" Height="600" HorizontalAlignment="Left" Margin="20,10,20,0" Name="EditRoutine">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
                             <martialDesign:PackIcon Height="50" Width="50" Foreground="White" VerticalAlignment="Center" Kind="FormatListCheckbox"></martialDesign:PackIcon>
@@ -41,22 +35,10 @@
                         </ScrollViewer>
                     </StackPanel>
                 </Border>
-                <Border Width="450" Height="130" HorizontalAlignment="Left" Background="#181818" CornerRadius="20" Margin="20,20,0,0" Name="ButtonsPanel">
+                <Border Style="{StaticResource Area}" Width="450" Height="130" HorizontalAlignment="Left" Margin="20,20,0,0" Name="ButtonsPanel">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Background="#336cb5" Foreground="White" FontSize="17" FontWeight="SemiBold" Margin="10,10,10,10" BorderThickness="0" Content="Save" Height="40" Width="180" Name="SaveButton" Click="SaveButton_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-                        <Button Background="#336cb5" Foreground="White" FontSize="17" FontWeight="SemiBold" Margin="10,10,10,10" BorderThickness="0" Content="Open in Overlay" Height="40" Width="180" Name="OpenOverlayButton" Click="OpenOverlayButton_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
+                        <Button Style="{StaticResource Secondary}" Content="Save" Height="40" Width="180" Name="SaveButton" Click="SaveButton_Click" />
+                        <Button Style="{StaticResource Primary}" Content="Open in Overlay" Height="40" Width="180" Name="OpenOverlayButton" Click="OpenOverlayButton_Click" />
                     </StackPanel>
                 </Border>
             </StackPanel>

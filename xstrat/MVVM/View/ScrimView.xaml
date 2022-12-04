@@ -11,30 +11,20 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical" >
 
-                <Border Background="#202020" CornerRadius="10" Margin="10">
+                <Border Style="{StaticResource Area}">
                     <Grid Height="Auto" Margin="10">
                         <StackPanel Orientation="Vertical">
                             <Grid>
-                                <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold">Your Events:</Label>
+                                <Label Style="{StaticResource PH1}" HorizontalAlignment="Center" VerticalAlignment="Center">Your Events:</Label>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button HorizontalAlignment="Right" Height="40" Width="40" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="10" Click="ReloadBtn_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10"/>
-                                            </Style>
-                                        </Button.Resources>
+                                    <Button Style="{StaticResource Secondary}" HorizontalAlignment="Right" Height="40" Width="40" Name="ReloadBtn" Click="ReloadBtn_Click">
                                         <Button.Content>
                                             <materialDesign:PackIcon Height="30" Width="30" Kind="Reload"/>
                                         </Button.Content>
                                     </Button>
-                                    
-                                    <Button HorizontalAlignment="Right" Height="40" Width="40" Name="NewBtn" Margin="10" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="NewBtn_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10"/>
-                                            </Style>
-                                        </Button.Resources>
+
+                                    <Button Style="{StaticResource Secondary}" HorizontalAlignment="Right" Height="40" Width="40" Name="NewBtn" Click="NewBtn_Click">
                                         <Button.Content>
                                             <materialDesign:PackIcon Height="30" Width="30" Kind="Add"/>
                                         </Button.Content>
@@ -51,7 +41,7 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Border Background="#202020" CornerRadius="10" Margin="10">                    
+                <Border Style="{StaticResource Area}">                    
                     <Grid Height="Auto" Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

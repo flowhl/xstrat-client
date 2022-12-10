@@ -6,8 +6,8 @@
              d:DesignHeight="775" d:DesignWidth="1150"
              Background="Transparent">
     <StackPanel Orientation="Vertical" Margin="20">
-        <Label Style="{StaticResource PH1}">Dashboard</Label>
-        <Label Style="{StaticResource P1}" Name="txtGreeting">Hello User!</Label>
+        <Label Style="{StaticResource PH1}" HorizontalAlignment="Left">Dashboard</Label>
+        <Label Style="{StaticResource S1}" Name="txtGreeting" HorizontalAlignment="Left">Hello User!</Label>
         <!--Main Scollboard-->
         <ScrollViewer VerticalScrollBarVisibility="Auto" Height="750" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical">

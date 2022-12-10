@@ -323,7 +323,7 @@ namespace xstrat.MVVM.View
             foreach (var user in Globals.teammates)
             {
                 Button newBtn = new Button();
-                newBtn.Name = "Color_" + user.name;
+                newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(user.name);
                 newBtn.Tag = user;
                 newBtn.Background = user.color.ToSolidColorBrush();
                 newBtn.BorderThickness = new Thickness(0);

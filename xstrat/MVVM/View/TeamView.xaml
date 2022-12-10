@@ -10,54 +10,42 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Name="JoinCreatePanel" Visibility="Collapsed">
-                    <Border BorderThickness="0" Background="#161616" CornerRadius="10" Width="350" Height="280" Margin="10,10,10,10" HorizontalAlignment="Left" Name="JoinTeamPannel">
+                    <Border Style="{StaticResource Control}" Width="350" Height="280" HorizontalAlignment="Left" Name="JoinTeamPannel">
                         <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                            <Label Foreground="White" FontSize="24" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center">No team? Join now!</Label>
-                            <Border Background="#202020" CornerRadius="10" Margin="0,20,0,0" Width="250">
+                            <Label Style="{StaticResource PH1}" Margin="0,10,0,0">No team? Join now!</Label>
+                            <Border Style="{StaticResource Control}" Margin="0,20,0,0" Width="250">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon x:Name="joinIcon1" HorizontalAlignment="Center" Kind="PersonAdd" VerticalAlignment="Center" Foreground="white" Margin="10,0,0,0"/>
                                     <TextBox x:Name="team_id" Height="30" Width="200" CaretBrush="White" Background="Transparent" BorderThickness="0" Margin="5,5,5,5" Text="Team ID" VerticalContentAlignment="Center"  Foreground="White"></TextBox>
                                 </StackPanel>
                             </Border>
-                            <Border Background="#202020" CornerRadius="10" Margin="0,20,0,0" Width="250">
+                            <Border Style="{StaticResource Control}" Margin="0,20,0,0" Width="250">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon x:Name="joinIcon2" HorizontalAlignment="Center" Kind="Password" VerticalAlignment="Center" Foreground="white" Margin="10,0,0,0"/>
                                     <TextBox x:Name="password" Height="30" Width="200" CaretBrush="White" Background="Transparent" BorderThickness="0" Text="Join Password"  Margin="5,5,5,5" VerticalContentAlignment="Center"  Foreground="White"></TextBox>
                                 </StackPanel>
                             </Border>
-                            <Button Height="40" Width="250" Name="JoinBtn" Foreground="White" Content="Join" FontSize="17" Background="#202020" BorderThickness="0" Margin="0,20,0,0" Click="JoinBtn_Click">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="10"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+                            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="JoinBtn" Content="Join" Margin="0,20,0,0" Click="JoinBtn_Click" />
                         </StackPanel>
                     </Border>
-                    <Border BorderThickness="0" Background="#161616" CornerRadius="10" Width="350" Height="280" Margin="10,10,10,10" HorizontalAlignment="Left" Name="CreateTéamPanel">
+                    <Border Style="{StaticResource Control}" Width="350" Height="280"  HorizontalAlignment="Left" Name="CreateTéamPanel">
                         <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                            <Label Foreground="White" FontSize="24" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center">Create your own!</Label>
-                            <Border Background="#202020" CornerRadius="10" Margin="0,20,0,0" Width="250">
+                            <Label Style="{StaticResource PH1}" Margin="0,10,0,0" HorizontalAlignment="Center">Create your own!</Label>
+                            <Border Style="{StaticResource Control}" Margin="0,20,0,0" Width="250">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon x:Name="EmailIcon" HorizontalAlignment="Center" Kind="Email" VerticalAlignment="Center" Foreground="white" Margin="10,0,0,0"/>
                                     <TextBox x:Name="team_name" Height="30" Width="200" CaretBrush="White" Background="Transparent" BorderThickness="0" Margin="5,5,5,5" Text="Team Name" VerticalContentAlignment="Center"  Foreground="White"></TextBox>
                                 </StackPanel>
                             </Border>
                             <local1:DataSelector Type="Game" Width="250" Margin="0,20,0,0" x:Name="GameSelector"></local1:DataSelector>
-                            <Button Height="40" Width="250" Name="CreateBtn" Foreground="White" Content="Create" FontSize="17" Background="#202020" BorderThickness="0" Margin="0,20,0,0" Click="CreateBtn_Click">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="10"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+                            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="CreateBtn" Content="Create" Margin="0,20,0,0" Click="CreateBtn_Click" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Name="TeamDashboard" Visibility="Collapsed">
-                    <Border BorderThickness="0" Background="#121212" CornerRadius="10" Width="820" Height="620" Margin="10,10,10,10" HorizontalAlignment="Left">
+                    <Border Style="{StaticResource Area}" Width="820" Height="620" HorizontalAlignment="Left">
                         <StackPanel Orientation="Vertical">
-                            <Label Foreground="White" FontSize="34" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center">Your Team:</Label>
+                            <Label Style="{StaticResource PH1}" Margin="0,10,0,0" >Your Team:</Label>
                             <local1:TeamDashboard Height="600" Width="800" x:Name="TDashboard"></local1:TeamDashboard>
                         </StackPanel>
                     </Border>

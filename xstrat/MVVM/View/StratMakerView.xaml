@@ -10,27 +10,17 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.RowSpan="2" Background="#202020">
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.RowSpan="2" Background="#181818">
             <Grid Height="50">
-                <Button HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Margin="10" Click="ReloadBtn_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5" />
-                        </Style>
-                    </Button.Resources>
+                <Button Style="{StaticResource Secondary}" HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Click="ReloadBtn_Click">
                     <Button.Content>
-                        <MaterialDesign:PackIcon Height="30" Width="30" Kind="Reload" />
+                        <MaterialDesign:PackIcon Height="25" Width="25" Kind="Reload" />
                     </Button.Content>
                 </Button>
 
-                <Button HorizontalAlignment="Left" Height="30" Width="30" Name="SaveBtn" Margin="10" Foreground="White" FontSize="17" Background="#336cb5" BorderThickness="0" Click="SaveBtn_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5" />
-                        </Style>
-                    </Button.Resources>
-                    <Button.Content>
-                        <MaterialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" />
+                    <Button Style="{StaticResource Secondary}" HorizontalAlignment="Left" Height="30" Width="30" Name="SaveBtn" Click="SaveBtn_Click">
+                        <Button.Content>
+                        <MaterialDesign:PackIcon Height="25" Width="24" Kind="ContentSave" />
                     </Button.Content>
                 </Button>
 
@@ -48,14 +38,14 @@
 
 
         <Expander Grid.Row="1" IsExpanded="True" Background="Transparent" VerticalAlignment="Top" Grid.Column="1">
-            <Border Background="#202020" BorderThickness="0" Height="185" CornerRadius="0,0,20,0">
+                <Border Style="{StaticResource Area}" Height="185" CornerRadius="0,0,20,0" Margin="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="400" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Vertical" Grid.Column="0">
-                        <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,5,0,10" HorizontalAlignment="Left">
+                            <Border Style="{StaticResource Control}" Height="Auto" Margin="10,5,0,10" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Label Foreground="White" VerticalAlignment="Center" FontSize="13">Map:</Label>
                                 <!--<local1:DataSelector type="5" Width="200" Margin="5,5,25,5" x:Name="MapSelector"></local1:DataSelector>-->
@@ -71,41 +61,17 @@
 
                         <StackPanel Orientation="Horizontal">
                             <!--Floors-->
-                            <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,0,0,0">
+                                <Border Style="{StaticResource Control}" Height="Auto" Margin="10,0,0,0">
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10">
                                     <Label Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Width="70" HorizontalAlignment="Left" Margin="0,-5,0,0">Floors:</Label>
-                                    <Button Height="20" Width="75" Name="BtnFloor0" Foreground="White" Content="0" FontSize="13" Background="#202020" BorderThickness="0" Click="BtnFloor0_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10" />
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
-                                    <Button Height="20" Width="75" Name="BtnFloor1" Foreground="White" Content="1" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor1_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10" />
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
-                                    <Button Height="20" Width="75" Name="BtnFloor2" Foreground="White" Content="2" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor2_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10" />
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
-                                    <Button Height="20" Width="75" Name="BtnFloor3" Foreground="White" Content="3" FontSize="13" Background="#202020" BorderThickness="0" Margin="0,3,0,0" Click="BtnFloor3_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="10" />
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
-                                </StackPanel>
+                                        <Button Style="{StaticResource Small}" Margin="0" Height="20" Width="75" Name="BtnFloor0" Content="0" Click="BtnFloor0_Click" />
+                                        <Button Style="{StaticResource Small}" Margin="0,3,0,0" Height="20" Width="75" Name="BtnFloor1" Content="1" Click="BtnFloor1_Click" />
+                                        <Button Style="{StaticResource Small}" Margin="0,3,0,0" Height="20" Width="75" Name="BtnFloor2" Content="2" Click="BtnFloor2_Click" />
+                                        <Button Style="{StaticResource Small}" Margin="0,3,0,0" Height="20" Width="75" Name="BtnFloor3" Content="3" Click="BtnFloor3_Click" />
+                                    </StackPanel>
                             </Border>
                             <StackPanel Orientation="Vertical">
-                                <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,0,0,0" VerticalAlignment="Top">
+                                    <Border Style="{StaticResource Control}" Height="Auto" Margin="10,0,0,0" VerticalAlignment="Top">
                                     <StackPanel Orientation="Horizontal" Margin="5">
                                         <Button Background="Transparent" Height="25" Width="25" Margin="3" Name="BtnCursor" Click="BtnCursor_Click" BorderBrush="#336CB5">
                                             <MaterialDesign:PackIcon Kind="CursorDefaultOutline" Foreground="White"></MaterialDesign:PackIcon>
@@ -133,7 +99,7 @@
                                         </Button>
                                     </StackPanel>
                                 </Border>
-                                <Border Background="#181818" BorderThickness="0" Height="Auto" CornerRadius="10" Margin="10,10,0,0" VerticalAlignment="Top">
+                                    <Border Style="{StaticResource Control}" Height="Auto" CornerRadius="10" Margin="10,10,0,0" VerticalAlignment="Top">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                         <!--Colors-->
                                         <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
@@ -161,13 +127,13 @@
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Column="1">
 
-                        <Border Background="#181818" Height="100" Width="500" Margin="5" CornerRadius="10" HorizontalAlignment="Left">
+                            <Border Style="{StaticResource Control}" Height="100" Width="500" Margin="5" HorizontalAlignment="Left">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible">
                                 <StackPanel Orientation="Horizontal" Height="80" Grid.Column="1" Name="IconsSP">
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>
-                        <Border Background="#181818" Height="50" Margin="5" Width="500" CornerRadius="10" HorizontalAlignment="Left">
+                            <Border Style="{StaticResource Control}" Height="50" Margin="5" Width="500" HorizontalAlignment="Left">
                             <StackPanel Orientation="Vertical" Margin="5">
                                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,0">
                                     <StackPanel Orientation="Horizontal">

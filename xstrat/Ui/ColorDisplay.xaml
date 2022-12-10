@@ -10,7 +10,7 @@
         <StackPanel Orientation="Horizontal">
             <CheckBox Name="CBox" VerticalAlignment="Center" Background="#336cb5"></CheckBox>
             <Ellipse Name="ColorCircle" Height="15" Width="15" Margin="2"></Ellipse>
-            <Label Name="LabelText" VerticalAlignment="Center" Foreground="White" FontSize="15"></Label>
+            <Label Style="{StaticResource P2}" Name="LabelText" VerticalAlignment="Center"></Label>
         </StackPanel>
     </Grid>
 </UserControl>

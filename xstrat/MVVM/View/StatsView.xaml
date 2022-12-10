@@ -87,13 +87,13 @@
                     <!--Charts-->
                     <StackPanel Orientation="Vertical" Height="Auto">
                         <StackPanel Orientation="Vertical" Margin="10">
-                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Scrim Responses</Label>
+                            <Label Style="{StaticResource P2}" >Scrim Responses</Label>
                             <ScrollViewer Height="320" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                                 <lvc:CartesianChart Series="{Binding ScrimBarSeries}" XAxes="{Binding GeneralBarXAxes}" Height="300"></lvc:CartesianChart>
                             </ScrollViewer>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="0,50,0,0">
-                            <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Scrim Participation</Label>
+                            <Label Style="{StaticResource P2}">Scrim Participation</Label>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                                 <lvc:CartesianChart Series="{Binding ScrimHistorySeries}" XAxes="{Binding ScrimHistoryXAxes}" Height="300" ZoomMode="X" Width="1200" TooltipPosition="Top"/>
                             </ScrollViewer>
@@ -108,11 +108,11 @@
                     </StackPanel>
                     <!--Charts-->
                     <StackPanel Orientation="Vertical">
-                        <Label Foreground="White" HorizontalAlignment="Center" FontSize="18">Ranked KD by Seasons</Label>
+                        <Label Style="{StaticResource P2}">Ranked KD by Seasons</Label>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <lvc:CartesianChart Series="{Binding RankedKDSeries}" XAxes="{Binding RankedKDXAxes}" Height="300" TooltipPosition="Top"/>
                         </ScrollViewer>
-                        <Label Foreground="White" HorizontalAlignment="Center" FontSize="18" Margin="0,50,0,0">Current season</Label>
+                        <Label Style="{StaticResource P2}" Margin="0,50,0,0">Current season</Label>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <lvc:CartesianChart Series="{Binding RankedBalkenSeries}" XAxes="{Binding RankedBalkenXAxes}" Height="300" TooltipPosition="Top"/>
                         </ScrollViewer>

@@ -1,14 +1,7 @@
-﻿<UserControl x:Class="xstrat.Ui.LicenseInfo"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="650">
+﻿<UserControl x:Class="xstrat.Ui.LicenseInfo" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" mc:Ignorable="d" d:DesignHeight="550" d:DesignWidth="650">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Border Background="#161616" CornerRadius="10" Margin="30" Width="550" Height="330">
+            <Border Style="{StaticResource Control}" Margin="30" Width="550" Height="330">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                     <Grid Margin="20">
                         <MaterialDesign:PackIcon x:Name="LicenseStatusIcon" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Kind="None" Width="80" Height="80"></MaterialDesign:PackIcon>
@@ -17,64 +10,52 @@
                                 <LinearGradientBrush EndPoint="3,1" StartPoint="0.3,0">
                                     <LinearGradientBrush.RelativeTransform>
                                         <TransformGroup>
-                                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
-                                            <TranslateTransform/>
+                                            <ScaleTransform CenterY="0.5" CenterX="0.5" />
+                                            <SkewTransform CenterY="0.5" CenterX="0.5" />
+                                            <RotateTransform CenterY="0.5" CenterX="0.5" />
+                                            <TranslateTransform />
                                         </TransformGroup>
                                     </LinearGradientBrush.RelativeTransform>
-                                    <GradientStop Color="#336CB5" Offset="0"/>
-                                    <GradientStop Color="#28558F" Offset="1"/>
+                                    <GradientStop Color="#336CB5" Offset="0" />
+                                    <GradientStop Color="#28558F" Offset="1" />
                                 </LinearGradientBrush>
                             </Ellipse.Fill>
                         </Ellipse>
                     </Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                        <Label Foreground="#AAAAAA" FontSize="17">Your license:</Label>
-                        <Label Foreground="#336CB5" FontSize="17" FontWeight="SemiBold" Name="LicenseStatusText"></Label>
+                        <Label Style="{StaticResource P1}">Your license:</Label>
+                        <Label Style="{StaticResource S2}" Name="LicenseStatusText"></Label>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-5,0,30">
-                        <Label Foreground="#BBBBBB" FontSize="17" FontWeight="SemiBold">Expiry:</Label>
-                        <Label Foreground="#336CB5" FontSize="17" FontWeight="Bold" Name="ExpiryText"></Label>
+                        <Label Style="{StaticResource P1}">Expiry:</Label>
+                        <Label Style="{StaticResource S2}" Name="ExpiryText"></Label>
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <Border Background="#161616" Name="EnterPanel" CornerRadius="10" Margin="10" Width="550" Height="165">
-            <StackPanel Orientation="Vertical" Margin="20">
-            <Grid HorizontalAlignment="Center" Margin="0">
-                    <TextBox Height="30"  Width="350" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" x:Name="SearchTermTextBox" FontSize="17" Margin="5" Foreground="White" Background="#303030" BorderThickness="0" />
-                    <TextBlock IsHitTestVisible="False" FontSize="17" Text="Enter License Key" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+            <Border Style="{StaticResource Control}" Name="EnterPanel" Width="550" Height="165">
+                <StackPanel Orientation="Vertical" Margin="20">
+                    <Grid HorizontalAlignment="Center" Margin="0">
+                        <TextBox Height="30" Width="350" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" x:Name="SearchTermTextBox" FontSize="17" Margin="5" Foreground="White" Background="#303030" BorderThickness="0" />
+                        <TextBlock IsHitTestVisible="False" FontSize="17" Text="Enter License Key" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Height="35" Width="150" Name="ActivateBtn" Foreground="White" Content="Activate" FontSize="17" Background="#336CB5" BorderThickness="0" Margin="20" Click="ActivateBtn_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-                        <Button Height="35" Width="150" Name="GetLicenseBtn" Foreground="White" Content="Purchase Key" FontSize="17" Background="#101010" BorderThickness="0" Margin="20" Click="GetLicenseBtn_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
+                        <Button Style="{StaticResource Secondary}" Height="35" Width="150" Name="ActivateBtn" Content="Activate" Margin="20" Click="ActivateBtn_Click" />
+                        <Button Style="{StaticResource Primary}" Height="35" Width="150" Name="GetLicenseBtn" Content="Purchase Key" Margin="20" Click="GetLicenseBtn_Click" />
 
                     </StackPanel>
-            </StackPanel>
-                </Border>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

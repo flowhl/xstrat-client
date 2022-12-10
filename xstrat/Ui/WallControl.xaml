@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="19" d:DesignWidth="40" SizeChanged="UserControl_SizeChanged">
+             d:DesignHeight="19" d:DesignWidth="40" SizeChanged="UserControl_SizeChanged" BorderThickness="1" BorderBrush="Transparent">
     <Grid>
         <StackPanel IsHitTestVisible="False" Orientation="Horizontal" Name="SPIcons" Panel.ZIndex="1">
             <materialDesign:PackIcon Height="20" Width="10" Foreground="#202020" Panel.ZIndex="1" IsHitTestVisible="False"  HorizontalAlignment="Center" VerticalAlignment="Center" Name="Sym1" Kind="None"></materialDesign:PackIcon>

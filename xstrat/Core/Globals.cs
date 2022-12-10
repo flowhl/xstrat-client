@@ -8,6 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -995,6 +996,12 @@ namespace xstrat.Core
             {
                 return compressedText;
             }
+        }
+
+        public static string RemoveIllegalCharactersFromName(string input)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            return rgx.Replace(input, "");
         }
 
     }

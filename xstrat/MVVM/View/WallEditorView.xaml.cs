@@ -29,8 +29,6 @@ namespace xstrat.MVVM.View
     /// </summary>
     public partial class WallEditorView : UserControl
     {
-        private List<XMap> maps = new List<XMap>();
-
         public ToolTip CurrentToolTip;
         public Brush CurrentBrush = null;
         public bool isMouseDown = false;
@@ -46,6 +44,10 @@ namespace xstrat.MVVM.View
 
         public int? dropmode;
 
+        public List<string> Walls { get; set; }
+        public string SelectedWall { get; set; }
+        public UserControl CurrentElement { get; set; }
+
         public WallEditorView()
         {
             InitializeComponent();
@@ -54,11 +56,34 @@ namespace xstrat.MVVM.View
 
         private void WallEditorView_Loaded(object sender, RoutedEventArgs e)
         {
-            //ZoomViewbox.Width = 100;
-            //ZoomViewbox.Height = 100;
+            WallList.SelectionChanged += WallList_SelectionChanged;
             xStratHelper.editorView = this;
             xStratHelper.WEMode = true;
             Opened();
+        }
+
+
+        private void WallList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedWall = WallList?.SelectedValue?.ToString() ?? null;
+            CurrentElement = GetWallControlByName(SelectedWall);
+            ResetBorderBrush();
+            if (CurrentElement == null) return;
+            CurrentElement.BorderBrush = Brushes.Red;
+        }
+
+        private void ResetBorderBrush()
+        {
+            var walls = DrawingLayer.Children.OfType<WallControl>();
+            foreach (var wall in walls)
+            {
+                wall.BorderBrush = Brushes.Transparent;
+            }
+            var hatches = DrawingLayer.Children.OfType<HatchControl>();
+            foreach (var hatch in hatches)
+            {
+                hatch.BorderBrush = Brushes.Transparent;
+            }
         }
 
         private void Opened()
@@ -66,7 +91,6 @@ namespace xstrat.MVVM.View
             ToolTipChanged(View.ToolTip.Cursor);
             UpdateFloorButtons();
             LoadDragItems();
-            //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
             MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
@@ -78,6 +102,32 @@ namespace xstrat.MVVM.View
         }
 
         #region loading ui
+
+        private void UpdateWallsList()
+        {
+            List<string> list = new List<string>();
+            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
+            {
+                list.Add(item.Name);
+            }
+            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
+            {
+                list.Add(item.Name);
+            }
+            list.Sort();
+            Walls = list;
+            WallList.ItemsSource = Walls;
+        }
+
+        public UserControl GetWallControlByName(string name)
+        {
+            if (!Walls.Contains(name)) return null;
+            var wall = DrawingLayer.Children.OfType<WallControl>().Where(x => x.Name == name).FirstOrDefault();
+            var hatch = DrawingLayer.Children.OfType<HatchControl>().Where(x => x.Name == name).FirstOrDefault();
+            if (wall != null) return wall;
+            if (hatch != null) return hatch;
+            return null;
+        }
 
         private void SelectMap()
         {
@@ -104,6 +154,162 @@ namespace xstrat.MVVM.View
         }
 
         #endregion
+
+        #region Keyboard
+
+        private void Border_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleKeyPress();
+        }
+
+
+        private void HandleKeyPress()
+        {
+            if (Keyboard.IsKeyDown(Key.A))
+            {
+                MoveLeft();
+            }
+            else if (Keyboard.IsKeyDown(Key.D))
+            {
+                MoveRight();
+            }
+            else if (Keyboard.IsKeyDown(Key.W))
+            {
+                MoveUp();
+            }
+            else if (Keyboard.IsKeyDown(Key.S))
+            {
+                MoveDown();
+            }
+            else if (Keyboard.IsKeyDown(Key.R))
+            {
+                Rotate();
+            }
+            else if (Keyboard.IsKeyDown(Key.Y))
+            {
+                DecreaseWidth();
+            }
+            else if (Keyboard.IsKeyDown(Key.X))
+            {
+                IncreaseWidth();
+            }
+            else if (Keyboard.IsKeyDown(Key.Delete))
+            {
+                Delete();
+            }
+        }
+
+        private void MoveLeft()
+        {
+            if (CurrentElement == null) return;
+            int amount = 1;
+            if(Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 10;
+            }
+            Canvas.SetLeft(CurrentElement, Canvas.GetLeft(CurrentElement) - amount);
+        }
+
+        private void MoveRight()
+        {
+
+            if (CurrentElement == null) return;
+            int amount = 1;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 10;
+            }
+            Canvas.SetLeft(CurrentElement, Canvas.GetLeft(CurrentElement) + amount);
+        }
+
+        private void MoveUp()
+        {
+
+            if (CurrentElement == null) return;
+            int amount = 1;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 10;
+            }
+            Canvas.SetTop(CurrentElement, Canvas.GetTop(CurrentElement) - amount);
+        }
+
+        private void MoveDown()
+        {
+
+            if (CurrentElement == null) return;
+            int amount = 1;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 10;
+            }
+            Canvas.SetTop(CurrentElement, Canvas.GetTop(CurrentElement) + amount);
+        }
+
+        private void Rotate()
+        {
+            if (CurrentElement == null) return;
+            if(CurrentElement.RenderTransform == null) CurrentElement.RenderTransform = new RotateTransform(0.0);
+            RotateTransform rotation = CurrentElement.RenderTransform as RotateTransform;
+            double angle = rotation.Angle;
+            if(Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    angle -= 1;
+                }
+                else
+                {
+                    angle -= 45;
+                }
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    angle -= 1;
+                }
+                else
+                {
+                    angle -= 45;
+                }
+            }
+            if (angle > 360) angle -= 360;
+            if (angle < -360) angle += 360;
+            CurrentElement.RenderTransform = rotation;
+        }
+
+        private void DecreaseWidth()
+        {
+            if (CurrentElement == null || CurrentElement is HatchControl) return;
+            int amount = 1;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 5;
+            }
+            CurrentElement.Width -= amount;
+        }
+
+        private void IncreaseWidth()
+        {
+            if (CurrentElement == null || CurrentElement is HatchControl) return;
+            int amount = 1;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                amount = 5;
+            }
+            CurrentElement.Width += amount;
+        }
+
+        private void Delete()
+        {
+            if (CurrentElement == null) return;
+            DrawingLayer.Children.Remove(CurrentElement);
+            CurrentElement = null;
+            UpdateWallsList();
+        }
+        #endregion
+
 
         private void StratMakerView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -136,14 +342,6 @@ namespace xstrat.MVVM.View
 
         }
 
-
-        private void ZoomControl_ZoomChanged(object sender, EventArgs e)
-        {
-            if (ZoomSlider != null)
-            {
-                //ZoomSlider.Value = ZoomControl.ZoomValue * 100;
-            }
-        }
 
         #region Drag Items
 
@@ -200,7 +398,6 @@ namespace xstrat.MVVM.View
             {
                 if(dropmode == 0 )
                 {
-
                     var newpos = e.GetPosition(DrawingLayer);
 
                     newpos.X -= 15;
@@ -212,27 +409,15 @@ namespace xstrat.MVVM.View
                     newwc.Height = 19;
                     newwc.IsHitTestVisible = false;
                     newwc.Name = nameToSet;
+                    newwc.Width = 60;
 
-                    //Height="9" Width="60" Panel.ZIndex="2"
+                    DrawingLayer.Children.Add(newwc);
 
-                    StratContentControl newcc = new StratContentControl();
-                    newcc.Content = newwc;
-                    newcc.Height = 19;
-                    newcc.Width = 30;
-                    newcc.Padding = new Thickness(1);
-                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = Brushes.Aqua;
-                    newcc.BorderThickness = new Thickness(2);
-                    newcc.Name = "SCC_" + nameToSet;
+                    Canvas.SetLeft(newwc, newpos.X);
+                    Canvas.SetTop(newwc, newpos.Y);
+                    UpdateWallsList();
+                    WallList.SelectedValue = nameToSet;
 
-                    DrawingLayer.Children.Add(newcc);
-
-                    Canvas.SetLeft(newcc, newpos.X);
-                    Canvas.SetTop(newcc, newpos.Y);
-
-                    DeselectAll();
-                    Selector.SetIsSelected(newcc, true);
-                    SetBrushToItem();
                 }
                 if(dropmode == 1)
                 {
@@ -246,27 +431,15 @@ namespace xstrat.MVVM.View
                     HatchControl newwc = new HatchControl();
                     newwc.IsHitTestVisible = false;
                     newwc.Name = nameToSet;
+                    newwc.Height = 86;
+                    newwc.Width = 86;
 
-                    //Height="9" Width="60" Panel.ZIndex="2"
+                    DrawingLayer.Children.Add(newwc);
 
-                    StratContentControl newcc = new StratContentControl();
-                    newcc.Content = newwc;
-                    newcc.Height = 86;
-                    newcc.Width = 86;
-                    newcc.Padding = new Thickness(1);
-                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = Brushes.Aqua;
-                    newcc.BorderThickness = new Thickness(0);
-                    newcc.Name = "SCC_" + nameToSet;
-
-                    DrawingLayer.Children.Add(newcc);
-
-                    Canvas.SetLeft(newcc, newpos.X);
-                    Canvas.SetTop(newcc, newpos.Y);
-
-                    DeselectAll();
-                    Selector.SetIsSelected(newcc, true);
-                    SetBrushToItem();
+                    Canvas.SetLeft(newwc, newpos.X);
+                    Canvas.SetTop(newwc, newpos.Y);
+                    UpdateWallsList();
+                    WallList.SelectedValue = nameToSet;
                 }
                 dropmode = null;
             }
@@ -276,14 +449,6 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private void SetBrushToItem()
-        {
-            var items = DrawingLayer.Children.OfType<StratContentControl>().Where(x => Selector.GetIsSelected(x));
-            foreach (var item in items)
-            {
-                item.BorderBrush = CurrentBrush;
-            }
-        }
 
         #endregion
 
@@ -369,16 +534,6 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void WallsLayer_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
-
         private void Image_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -453,14 +608,6 @@ namespace xstrat.MVVM.View
             LoadMapImages();
         }
 
-        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //if (ZoomControl != null && ZoomSlider.Value != ZoomControl.ZoomValue * 100)
-            //{
-            //    ZoomControl.Zoom(ZoomSlider.Value);
-            //}
-        }
-
         #region Helpers for XStrathelper
 
         public void PointDragMove(Point p)
@@ -496,8 +643,31 @@ namespace xstrat.MVVM.View
         }
         private string GetNextWallID()
         {
-            int uid = DrawingLayer.Children.OfType<StratContentControl>().Count();
-            return "id_" + map_id + "_" + floor_id + "_" + uid;
+            List<int> numbers = new List<int>();
+            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
+            {
+                string num = item.Name;
+                num = num.Replace("id_", "");
+                int toRemove = 2 + map_id.ToString().Length + floor_id.ToString().Length;
+                num = num.Remove(0, toRemove);
+
+                int number = int.Parse(num);
+                numbers.Add(number);
+            }
+            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
+            {
+                string num = item.Name;
+                num = num.Replace("id_", "");
+                int toRemove = 2 + map_id.ToString().Length + floor_id.ToString().Length;
+                num = num.Remove(0, toRemove);
+
+                int number = int.Parse(num);
+                numbers.Add(number);
+            }
+
+            int uid = Enumerable.Range(1, Int32.MaxValue).Except(numbers).First();
+
+            return "id_" + map_id + "_" + floor_id + "_" + uid.ToString().PadLeft(3,'0');
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -510,11 +680,17 @@ namespace xstrat.MVVM.View
         {
             List<WallPositionObject> wallObjects = new List<WallPositionObject>();
 
-            foreach (var item in DrawingLayer.Children.OfType<StratContentControl>())
+            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
             {
                 int type = 0;
-                if (item.Content is HatchControl) type = 1;
-                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name.Replace("SCC_", ""), width = item.Width };
+                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
+                wallObjects.Add(obj);                
+            }
+
+            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
+            {
+                int type = 1;
+                var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
                 wallObjects.Add(obj);
             }
 
@@ -538,28 +714,14 @@ namespace xstrat.MVVM.View
                         WallControl newwc = new WallControl();
                         newwc.Height = 19;
                         newwc.IsHitTestVisible = false;
-                        newwc.Visibility = Visibility.Visible;
+                        newwc.Width = obj.width;
+                        newwc.RenderTransform = obj.rotate;
                         newwc.Name = obj.uid.Replace("SCC_", "");
 
-                        StratContentControl newcc = new StratContentControl();
-                        newcc.Content = newwc;
-                        newcc.Height = 19;
-                        newcc.Width = obj.width;
-                        newcc.Padding = new Thickness(1);
-                        newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                        newcc.BorderBrush = Brushes.Aqua;
-                        newcc.BorderThickness = new Thickness(2);
-                        newcc.RenderTransform = obj.rotate;
-                        newcc.Name = "SCC_" + obj.uid.Replace("SCC_", "");
+                        DrawingLayer.Children.Add(newwc);
 
-                        DrawingLayer.Children.Add(newcc);
-
-                        Canvas.SetLeft(newcc, newpos.X);
-                        Canvas.SetTop(newcc, newpos.Y);
-
-                        DeselectAll();
-                        Selector.SetIsSelected(newcc, true);
-                        SetBrushToItem();
+                        Canvas.SetLeft(newwc, newpos.X);
+                        Canvas.SetTop(newwc, newpos.Y);
                     }
                     if(obj.type == 1)
                     {
@@ -570,27 +732,14 @@ namespace xstrat.MVVM.View
                         HatchControl newhc = new HatchControl();
                         newhc.IsHitTestVisible = false;
                         newhc.Name = obj.uid.Replace("SCC_", "");
+                        newhc.Height = 86;
+                        newhc.Width = 86;
+                        newhc.RenderTransform = obj.rotate;
 
-                        StratContentControl newcc = new StratContentControl();
-                        newcc.Content = newhc;
-                        newcc.Height = 86;
-                        newcc.Width = 86;
-                        newcc.Width = obj.width;
-                        newcc.Padding = new Thickness(1);
-                        newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                        newcc.BorderBrush = Brushes.Aqua;
-                        newcc.BorderThickness = new Thickness(2);
-                        newcc.RenderTransform = obj.rotate;
-                        newcc.Name = "SCC_" + obj.uid.Replace("SCC_", "");
+                        DrawingLayer.Children.Add(newhc);
 
-                        DrawingLayer.Children.Add(newcc);
-
-                        Canvas.SetLeft(newcc, newpos.X);
-                        Canvas.SetTop(newcc, newpos.Y);
-
-                        DeselectAll();
-                        Selector.SetIsSelected(newcc, true);
-                        SetBrushToItem();
+                        Canvas.SetLeft(newhc, newpos.X);
+                        Canvas.SetTop(newhc, newpos.Y);
                     }
                 }
                 catch (Exception ex)
@@ -598,7 +747,19 @@ namespace xstrat.MVVM.View
                     Notify.sendError("Error creating ContentControl for image: " + ex.Message);
                 }
             }
-        } 
+            UpdateWallsList();
+        }
+
+        private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void WallsLayer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
     }
 
     public class WallPositionObject{

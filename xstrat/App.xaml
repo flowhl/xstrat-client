@@ -66,43 +66,52 @@
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="24" />
                 <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="PH2" TargetType="Label">
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="20" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="P1" TargetType="Label">
                 <Setter Property="Foreground" Value="#f0f0f0" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="P2" TargetType="Label">
                 <Setter Property="Foreground" Value="#f0f0f0" />
                 <Setter Property="FontSize" Value="16" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
 
             <Style x:Key="PS" TargetType="Label">
                 <Setter Property="Foreground" Value="#f0f0f0" />
                 <Setter Property="FontSize" Value="14" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <!--Secondary Labels-->
             <Style x:Key="SH1" TargetType="Label">
                 <Setter Property="Foreground" Value="#336cb5" />
                 <Setter Property="FontSize" Value="24" />
                 <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="SH2" TargetType="Label">
                 <Setter Property="Foreground" Value="#336cb5" />
                 <Setter Property="FontSize" Value="20" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="S1" TargetType="Label">
                 <Setter Property="Foreground" Value="#336cb5" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             <Style x:Key="S2" TargetType="Label">
                 <Setter Property="Foreground" Value="#336cb5" />
                 <Setter Property="FontSize" Value="16" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
             
             <!--Borders-->
@@ -128,7 +137,7 @@
                 <Setter Property="BorderBrush" Value="Transparent" />
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="16" />
-                <Setter Property="Background" Value="#242424" />
+                <Setter Property="Background" Value="#282828" />
                 <Setter Property="Margin" Value="10" />
                 <Style.Resources>
                     <Style TargetType="Border">
@@ -156,7 +165,7 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="12" />
-                <Setter Property="Background" Value="#202020" />
+                <Setter Property="Background" Value="#282828" />
                 <Setter Property="Margin" Value="10" />
                 <Style.Resources>
                     <Style TargetType="Border">
@@ -336,160 +345,6 @@
 
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-
-
-            
-            <!--OLD-->
-         
-<!--<SolidColorBrush x:Key="HighlightedBackgroundBrush" Color="#336cb5" />
-            <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#505050" />
-            <SolidColorBrush x:Key="NormalBorderBrush" Color="#202020" />
-            <SolidColorBrush x:Key="SolidMenuFontBrush" Color="#FFFFFFFF" />
-            <SolidColorBrush x:Key="HighlightedText" Color="#FFFFFFFF" />
-            <Style TargetType="{x:Type Menu}">
-                <Setter Property="OverridesDefaultStyle" Value="True"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                --><!--<Setter Property="Height" Value="25"/>--><!--
-                <Setter Property="Foreground" Value="{StaticResource SolidMenuFontBrush}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Menu}">
-                            <Border
-            Background="{StaticResource MenuBackgroundBrush}"
-            BorderBrush="{StaticResource MenuBackgroundBrush}"
-            BorderThickness="0">
-                                <StackPanel ClipToBounds="True" Orientation="Horizontal" IsItemsHost="True"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style TargetType="{x:Type MenuItem}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type MenuItem}">
-                            <Border x:Name="Border"
-                  Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="0">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition x:Name="Col0" MinWidth="17" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="MenuTextColumnGroup"/>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup"/>
-                                        <ColumnDefinition x:Name="Col3" Width="14"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    --><!-- ContentPresenter to show an Icon if needed --><!--
-                                    <ContentPresenter Grid.Column="0" Margin="4,0,6,0" x:Name="Icon" VerticalAlignment="Center" ContentSource="Icon" />
-
-                                    --><!-- Content for the menu text etc --><!--
-                                    <ContentPresenter Grid.Column="1"
-                                Margin="{TemplateBinding Padding}"
-                                x:Name="HeaderHost"
-                                RecognizesAccessKey="True"
-                                ContentSource="Header"
-                                                      />
-
-                                    --><!-- Content for the menu IGT --><!--
-                                    <ContentPresenter Grid.Column="2"
-                                Margin="8,1,8,1"
-                                x:Name="IGTHost"
-                                ContentSource="InputGestureText"
-                                VerticalAlignment="Center"/>
-
-                                    --><!-- Arrow drawn path which points to the next level of the menu --><!--
-                                    <Grid Grid.Column="3" Margin="4,0,6,0" x:Name="ArrowPanel" VerticalAlignment="Center">
-                                        <Path x:Name="ArrowPanelPath" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Data="M0,0 L0,8 L4,4 z"/>
-                                    </Grid>
-
-                                    --><!-- The Popup is the body of the menu which expands down or across depending on the level of the item --><!--
-                                    <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" x:Name="SubMenuPopup" Focusable="false" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
-                                        <Border x:Name="SubMenuBorder" BorderBrush="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}" BorderThickness="0" Padding="2,2,2,2">
-                                            <Grid x:Name="SubMenu" Grid.IsSharedSizeScope="True">
-                                                --><!-- StackPanel holds children of the menu. This is set by IsItemsHost=True --><!--
-                                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
-                                            </Grid>
-                                        </Border>
-                                    </Popup>
-                                </Grid>
-                            </Border>
-
-                            --><!-- These triggers re-configure the four arrangements of MenuItem to show different levels of menu via Role --><!--
-                            <ControlTemplate.Triggers>
-                                --><!-- Role = TopLevelHeader : this is the root menu item in a menu; the Popup expands down --><!--
-                                <Trigger Property="Role" Value="TopLevelHeader">
-                                    <Setter Property="Padding" Value="6,1,6,1"/>
-                                    <Setter Property="Placement" Value="Bottom" TargetName="SubMenuPopup"/>
-                                    <Setter Property="MinWidth" Value="0" TargetName="Col0"/>
-                                    <Setter Property="Width" Value="Auto" TargetName="Col3"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
-                                </Trigger>
-
-                                --><!-- Role = TopLevelItem :  this is a child menu item from the top level without any child items--><!--
-                                <Trigger Property="Role" Value="TopLevelItem">
-                                    <Setter Property="Padding" Value="6,1,6,1"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
-                                </Trigger>
-
-                                --><!-- Role = SubMenuHeader : this is a child menu item which does not have children --><!--
-                                <Trigger Property="Role" Value="SubmenuHeader">
-                                    <Setter Property="DockPanel.Dock" Value="Top"/>
-                                    <Setter Property="Padding" Value="0,2,0,2"/>
-                                </Trigger>
-
-                                --><!-- Role = SubMenuItem : this is a child menu item which has children--><!--
-                                <Trigger Property="Role" Value="SubmenuItem">
-                                    <Setter Property="DockPanel.Dock" Value="Top"/>
-                                    <Setter Property="Padding" Value="0,2,0,2"/>
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowPanel"/>
-                                </Trigger>
-                                <Trigger Property="IsSuspendingPopupAnimation" Value="true">
-                                    <Setter Property="PopupAnimation" Value="None" TargetName="SubMenuPopup"/>
-                                </Trigger>
-
-                                --><!-- If no Icon is present the we collapse the Icon Content --><!--
-                                <Trigger Property="Icon" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
-                                </Trigger>
-
-                                --><!-- Using the system colors for the Menu Highlight and IsEnabled--><!--
-                                <Trigger Property="IsHighlighted" Value="true">
-                                    <Setter Property="Background" Value="{StaticResource HighlightedBackgroundBrush}" TargetName="Border"/>
-                                    <Setter Property="Foreground" Value="{StaticResource HighlightedText}"/>
-                                    <Setter Property="BorderBrush" Value="{StaticResource NormalBorderBrush}" TargetName="Border"/>
-                                </Trigger>
-                                <Trigger Property="IsHighlighted" Value="false">
-                                    <Setter Property="Background" Value="{StaticResource MenuBackgroundBrush}" TargetName="Border"/>
-                                    <Setter Property="Foreground" Value="{StaticResource SolidMenuFontBrush}"/>
-                                    <Setter Property="BorderBrush" Value="{StaticResource MenuBackgroundBrush}" TargetName="Border"/>
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Foreground" Value="LightGray"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="{x:Type ResizeGrip}">
-                <Setter Property="OverridesDefaultStyle" Value="True" />
-                <Setter Property="Foreground" Value="#303030"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ResizeGrip}">
-                            <Border Background="{TemplateBinding Background}"
-                    SnapsToDevicePixels="True"
-                    Width="10"
-                    Height="10">
-                                <Path Data="M7.677,7.5300003 L9.677,7.5300003 9.677,9.5300002 7.677,9.5300002 z M3.786,7.5300003 L5.7859998,7.5300003 5.7859998,9.5300002 3.786,9.5300002 z M0,7.5300003 L2,7.5300003 2,9.5300002 0,9.5300002 z M3.786,3.8280003 L5.7859998,3.8280003 5.7859998,5.8280003 3.786,5.8280003 z M7.677,3.7660003 L9.677,3.7660003 9.677,5.7659999 7.677,5.7659999 z M7.677,0 L9.677,0 9.677,2 7.677,2 z" Fill="{TemplateBinding Foreground}" Height="9.53" Stretch="Fill" VerticalAlignment="Top" Width="9.677"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-</Style>-->
 
 
             <!--**************************

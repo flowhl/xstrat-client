@@ -9,7 +9,7 @@
              d:DesignHeight="70" d:DesignWidth="720"
              >
     <Grid Height="60" Width="700" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Height="60" Width="700" CornerRadius="10" Background="#181818">
+        <Border Style="{StaticResource Control}" Margin="0" Height="60" Width="700">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Height="30" HorizontalAlignment="Left">
                     <Button Width="30" Height="30" Background="Transparent" Foreground="White" BorderThickness="0" Margin="0,0,70,0" Name="DeleteButton" Click="DeleteButton_Click">

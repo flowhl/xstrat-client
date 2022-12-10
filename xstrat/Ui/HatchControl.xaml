@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui"
-             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="50" MouseLeftButtonDown="UserControl_MouseLeftButtonUp" MouseRightButtonDown="UserControl_MouseRightButtonUp">
+             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="50" MouseLeftButtonDown="UserControl_MouseLeftButtonUp" BorderThickness="1" BorderBrush="Transparent" MouseRightButtonDown="UserControl_MouseRightButtonUp">
     <Grid IsHitTestVisible="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>

@@ -8,14 +8,14 @@
         Title="Scrim" Height="830" Width="700" Background="#161616" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" Topmost="True">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Label Name="TypeLabel" Foreground="#336cb5" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold">Create new event</Label>
+            <Label Style="{StaticResource SH1}" Name="TypeLabel">Create new event</Label>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <Label Width="250" HorizontalContentAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="28" FontWeight="Bold">Your Team</Label>
                 <Label VerticalAlignment="Center" Foreground="#336cb5" FontSize="38" FontWeight="Bold">VS</Label>
                 <TextBox Name="OpponentNameBox" Width="250" HorizontalContentAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="28" FontWeight="SemiBold" Background="Transparent" BorderThickness="0">Name</TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                <Label Foreground="White" HorizontalAlignment="Center" FontSize="16" FontWeight="SemiBold">Type:</Label>
+                <Label Style="{StaticResource P1}">Type:</Label>
                 <local:DataSelector x:Name="EventTypeSelector" Type="EventType" Height="25" Width="200" Margin="10,0,0,0"></local:DataSelector>
             </StackPanel>
 
@@ -126,21 +126,8 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,10,0,30" HorizontalAlignment="Center">
-                <Button Height="40" Width="250" Name="SaveBtn" Foreground="White" Content="Save" FontSize="17" Background="#202020" BorderThickness="0" Margin="10" Click="SaveBtn_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="10"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-
-                <Button Height="40" Width="250" Name="DeleteBtn" Foreground="White" Content="Delete" FontSize="17" Background="#202020" BorderThickness="0" Margin="10" Click="DeleteBtn_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="10"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="SaveBtn" Content="Save" Click="SaveBtn_Click" />
+                <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="DeleteBtn" Content="Delete" Click="DeleteBtn_Click" />
             </StackPanel>
         </StackPanel>
     </Grid>

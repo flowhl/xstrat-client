@@ -4,10 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XStrat"
-             mc:Ignorable="d" 
-             PreviewMouseRightButtonDown="UserControl_MouseLeftButtonDown"
-             PreviewMouseLeftButtonDown="UserControl_PreviewMouseLeftButtonDown"
-             PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp">
+             mc:Ignorable="d">
     <Grid Name="MainGrid">
             
     </Grid>

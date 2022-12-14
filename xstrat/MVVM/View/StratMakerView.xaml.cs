@@ -30,6 +30,9 @@ using static System.Windows.Forms.AxHost;
 using System.ComponentModel;
 using System.Data;
 using JetBrains.Annotations;
+using SkiaSharp;
+using static WPFSpark.MonitorHelper;
+using Microsoft.Win32;
 
 namespace xstrat.MVVM.View
 {
@@ -57,6 +60,9 @@ namespace xstrat.MVVM.View
         public int map_id;
         public int pos_id;
 
+        public double TranslateXLast { get; set; }
+        public double TranslateYLast { get; set; }
+
         public double IconSize { get; set; }
 
         public StratMakerView()
@@ -82,7 +88,14 @@ namespace xstrat.MVVM.View
             LoadDragItems();
             //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
-            MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
+            //MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
+            DrawingLayer.MouseLeftButtonUp += DrawingLayer_MouseLeftButtonUp;
+            
+        }
+
+        private void DrawingLayer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
 
 
@@ -189,11 +202,11 @@ namespace xstrat.MVVM.View
         private void StratMakerView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             deleteFromCanvasLoop = true;
-            if(!DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.IsMouseOver).Any())
-            {
-                DeselectAll();
-            }
-            if(CurrentToolTip == View.ToolTip.Eraser)
+            //if (!DrawingLayer.Children.OfType<StratContentControl>().Where(x => (x.PointFromScreen(Mouse.GetPosition(this)) - x.PointToScreen(new Point(0, 0))).Length < 20).Any())
+            //{
+            //    DeselectAll();
+            //}
+            if (CurrentToolTip == View.ToolTip.Eraser)
             {
                 DeleteFromCanvas();
             }
@@ -960,10 +973,18 @@ namespace xstrat.MVVM.View
         {
             foreach (Control child in DrawingLayer.Children.OfType<Control>())
             {
+                Selector.SetIsSelected(child, true);
+            }
+        }
+
+        public void SelectAll()
+        {
+            foreach (Control child in DrawingLayer.Children.OfType<Control>())
+            {
                 Selector.SetIsSelected(child, false);
             }
         }
-        
+
         public void RequestRemove(StratContentControl item)
         {
             DrawingLayer.Children.Remove(item);
@@ -1019,6 +1040,9 @@ namespace xstrat.MVVM.View
 
         private void ZoomControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            TranslateXLast = ZoomControl.TranslateX;
+            TranslateYLast = ZoomControl.TranslateY;
+
             if(CurrentToolTip == View.ToolTip.Brush)
             {
                 e.Handled = true;
@@ -1058,6 +1082,95 @@ namespace xstrat.MVVM.View
             }
         }
 
+        private void ZoomControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(TranslateXLast != ZoomControl.TranslateX || TranslateYLast != ZoomControl.TranslateY)
+            {
+                ZoomControl.InvalidateVisual();
+            }
+        }
+
+        #region Hotkeys
+
+        private void UserControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                DeselectAll();
+                return;
+            }
+
+            if(e.Key == Key.LeftCtrl)
+            {
+                if(Keyboard.IsKeyDown(Key.A))
+                {
+                    SelectAll();
+                    return;
+                }
+
+                if (Keyboard.IsKeyDown(Key.S))
+                {
+                    SaveStratAsync();
+                    return;
+                }
+
+                if (Keyboard.IsKeyDown(Key.R))
+                {
+                    Refresh();
+                    return;
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region Print
+
+        private void PrintBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(MapContent);
+            double dpi = 96d;
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, dpi, dpi, System.Windows.Media.PixelFormats.Default);
+
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                VisualBrush vb = new VisualBrush(MapContent);
+                dc.DrawRectangle(vb, null, new Rect(new Point(), bounds.Size));
+            }
+
+            rtb.Render(dv);
+
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            try
+            {
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+                pngEncoder.Save(ms);
+                ms.Close();
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "PNG | *.png";
+                saveFileDialog.CheckFileExists = false;
+                saveFileDialog.CheckPathExists = false;
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filename = saveFileDialog.FileName;
+                    System.IO.File.WriteAllBytes(filename, ms.ToArray());
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        #endregion
     }
     public enum ToolTip
     {

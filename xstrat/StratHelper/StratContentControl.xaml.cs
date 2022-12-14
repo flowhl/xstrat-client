@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using xstrat.Core;
 using xstrat.StratHelper;
 
 namespace XStrat
@@ -23,7 +24,8 @@ namespace XStrat
     /// </summary>
     public partial class StratContentControl : UserControl
     {
-        DateTime LastDown;
+        public bool IsDragging { get; set; }
+        Point Start { get; set; }
         public bool Selection { get; set; }
         public bool Locked { get; set; } = false;
         public int UserID { get; set; } = -1;
@@ -31,103 +33,65 @@ namespace XStrat
         public StratContentControl()
         {
             InitializeComponent();
+            this.PreviewMouseLeftButtonUp += StratContentControl_MouseLeftButtonDown;
+            this.PreviewMouseDown += StratContentControl_PreviewMouseDown;
         }
 
-        private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void StratContentControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(Locked) return;
-            if (xStratHelper.WEMode)
-            {
-                if (xStratHelper.editorView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                Selection = !Selection;
-                if (!Keyboard.IsKeyDown(Key.LeftShift))
-                {
-                    xStratHelper.editorView.DeselectAll();
-                    Selector.SetIsSelected(this, Selection);
-                }
-                Selector.SetIsSelected(this, Selection);
-                LastDown = DateTime.Now;
-            }
-            else
-            {
-                if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                Selection = !Selection;
-                if (!Keyboard.IsKeyDown(Key.LeftShift))
-                {
-                    xStratHelper.stratView.DeselectAll();
-                    Selector.SetIsSelected(this, Selection);
-                }
-                Selector.SetIsSelected(this, Selection);
-                LastDown = DateTime.Now;
-            }
+            IsDragging = false;
+            Start = Mouse.GetPosition(Globals.wnd);
         }
 
-        private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void StratContentControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var End = Mouse.GetPosition(Globals.wnd);
+
+            IsDragging = (End - Start).Length > 10;
+            if(!IsDragging) HandleClick();
+        }
+
+        private void HandleClick()
         {
             if (Locked) return;
-            if (xStratHelper.WEMode)
+
+            if (xStratHelper.stratView.CurrentToolTip == xstrat.MVVM.View.ToolTip.Eraser)
             {
-                if (xStratHelper.editorView.CurrentToolTip == xstrat.MVVM.View.ToolTip.Eraser)
-                {
-                    xStratHelper.editorView.RequestRemove(this);
-                    return;
-                }
-                if (xStratHelper.editorView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                if (!Selection)
-                {
-                    Selector.SetIsSelected(this, true);
-                    LastDown = DateTime.Now;
-                }
+                xStratHelper.stratView.RequestRemove(this);
+                return;
+            }
+            if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                xStratHelper.stratView.DeselectAll();
+                Selector.SetIsSelected(this, true);
             }
             else
             {
-                if (xStratHelper.stratView.CurrentToolTip == xstrat.MVVM.View.ToolTip.Eraser)
-                {
-                    xStratHelper.stratView.RequestRemove(this);
-                    return;
-                }
-                if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                if (!Selection)
-                {
-                    Selector.SetIsSelected(this, true);
-                    LastDown = DateTime.Now;
-                }
+                Selector.SetIsSelected(this, true);
             }
+        }
 
+        //private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if(Locked) return;
+
+        //    if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
+        //    Selection = !Selection;
+        //    if (!Keyboard.IsKeyDown(Key.LeftShift))
+        //    {
+        //        xStratHelper.stratView.DeselectAll();
+        //        Selector.SetIsSelected(this, Selection);
+        //    }
+        //    Selector.SetIsSelected(this, Selection);
+        ////    LastDown = DateTime.Now;
+
+        //}
+
+        //private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
             
-        }
-
-        private void UserControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (Locked) return;
-            if (xStratHelper.WEMode)
-            {
-                if (xStratHelper.editorView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                if (!Selection)
-                {
-                    if (!Keyboard.IsKeyDown(Key.LeftShift) && (DateTime.Now - LastDown).TotalMilliseconds < 100)
-                    {
-                        xStratHelper.editorView.DeselectAll();
-                        Selector.SetIsSelected(this, true);
-                    }
-                    Selector.SetIsSelected(this, true);
-                }
-            }
-            else
-            {
-                if (xStratHelper.stratView.CurrentToolTip != xstrat.MVVM.View.ToolTip.Cursor) return;
-                if (!Selection)
-                {
-                    if (!Keyboard.IsKeyDown(Key.LeftShift) && (DateTime.Now - LastDown).TotalMilliseconds < 100)
-                    {
-                        xStratHelper.stratView.DeselectAll();
-                        Selector.SetIsSelected(this, true);
-                    }
-                    Selector.SetIsSelected(this, true);
-                }
-            }
-
-        }
+        //}
 
     }
 }

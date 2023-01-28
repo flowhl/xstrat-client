@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +18,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.StratHelper;
@@ -74,12 +78,12 @@ namespace xstrat.MVVM.View
 
         private void ResetBorderBrush()
         {
-            var walls = DrawingLayer.Children.OfType<WallControl>();
+            var walls = WallsLayer.Children.OfType<WallControl>();
             foreach (var wall in walls)
             {
                 wall.BorderBrush = Brushes.Transparent;
             }
-            var hatches = DrawingLayer.Children.OfType<HatchControl>();
+            var hatches = WallsLayer.Children.OfType<HatchControl>();
             foreach (var hatch in hatches)
             {
                 hatch.BorderBrush = Brushes.Transparent;
@@ -88,9 +92,7 @@ namespace xstrat.MVVM.View
 
         private void Opened()
         {
-            ToolTipChanged(View.ToolTip.Cursor);
             UpdateFloorButtons();
-            LoadDragItems();
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
             MapSelector.CBox.SelectionChanged += MapSelector_SelectionChanged;
@@ -106,11 +108,11 @@ namespace xstrat.MVVM.View
         private void UpdateWallsList()
         {
             List<string> list = new List<string>();
-            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
+            foreach (var item in WallsLayer.Children.OfType<WallControl>())
             {
                 list.Add(item.Name);
             }
-            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
+            foreach (var item in WallsLayer.Children.OfType<HatchControl>())
             {
                 list.Add(item.Name);
             }
@@ -122,8 +124,8 @@ namespace xstrat.MVVM.View
         public UserControl GetWallControlByName(string name)
         {
             if (!Walls.Contains(name)) return null;
-            var wall = DrawingLayer.Children.OfType<WallControl>().Where(x => x.Name == name).FirstOrDefault();
-            var hatch = DrawingLayer.Children.OfType<HatchControl>().Where(x => x.Name == name).FirstOrDefault();
+            var wall = WallsLayer.Children.OfType<WallControl>().Where(x => x.Name == name).FirstOrDefault();
+            var hatch = WallsLayer.Children.OfType<HatchControl>().Where(x => x.Name == name).FirstOrDefault();
             if (wall != null) return wall;
             if (hatch != null) return hatch;
             return null;
@@ -142,15 +144,41 @@ namespace xstrat.MVVM.View
             LoadMapImages();
         }
 
-        private void LoadMapImages()
+        private void LoadMapImages(string svgPath = null)
         {
             MapStack.Children.Clear();
+            WallsLayer.Children.Clear();
+
             if (floor_id < 0) return;
             if (map_id < 0) return;
             int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
-            var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor_id);
-            MapStack.Children.Add(newimage);
-            WallObjectsToWalls();
+
+            XmlDocument svgFile;
+
+            if (string.IsNullOrEmpty(svgPath))
+            {
+                svgFile = Globals.GetSCVDocumentForMapAndFloor(map_id, floor_id);
+            }
+            else
+            {
+                svgFile = Globals.GetSVGDocumentFromPath(svgPath);
+            }
+
+            if (svgFile == null) return;
+
+            var SVGContent = Globals.GetSvgContent(svgFile, game_id, map_id, floor_id);
+
+            var newimage = Globals.GetImageForSVG(SVGContent);
+
+            if (newimage != null)
+            {
+                //double widthToSet = 4000 * (MapStack.Children.Count);
+                MapStack.Children.Add(newimage);
+                //Canvas.SetLeft(newimage,widthToSet);
+            }
+            CreateWallsBeta(SVGContent);
+            UpdateWallsList();
+            ZoomControl.ZoomToFill();
         }
 
         #endregion
@@ -203,7 +231,7 @@ namespace xstrat.MVVM.View
         {
             if (CurrentElement == null) return;
             int amount = 1;
-            if(Keyboard.IsKeyDown(Key.LeftShift))
+            if (Keyboard.IsKeyDown(Key.LeftShift))
             {
                 amount = 10;
             }
@@ -249,10 +277,10 @@ namespace xstrat.MVVM.View
         private void Rotate()
         {
             if (CurrentElement == null) return;
-            if(CurrentElement.RenderTransform == null) CurrentElement.RenderTransform = new RotateTransform(0.0);
+            if (CurrentElement.RenderTransform == null) CurrentElement.RenderTransform = new RotateTransform(0.0);
             RotateTransform rotation = CurrentElement.RenderTransform as RotateTransform;
             double angle = rotation.Angle;
-            if(Keyboard.IsKeyDown(Key.LeftShift))
+            if (Keyboard.IsKeyDown(Key.LeftShift))
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
@@ -304,7 +332,7 @@ namespace xstrat.MVVM.View
         private void Delete()
         {
             if (CurrentElement == null) return;
-            DrawingLayer.Children.Remove(CurrentElement);
+            WallsLayer.Children.Remove(CurrentElement);
             CurrentElement = null;
             UpdateWallsList();
         }
@@ -313,79 +341,15 @@ namespace xstrat.MVVM.View
 
         private void StratMakerView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            deleteFromCanvasLoop = false;
-        }
-
-        private bool deleteFromCanvasLoop = false;
-
-        private async void DeleteFromCanvas()
-        {
-            while (deleteFromCanvasLoop)
-            {
-                var dList = DrawingLayer.Children.OfType<UIElement>().Where(x => Math.Abs(Mouse.GetPosition(x).X) < BrushSize && Math.Abs(Mouse.GetPosition(x).Y) < BrushSize).ToList();
-                dList.ForEach(x => DrawingLayer.Children.Remove(x));
-                await Task.Delay(5);
-            }
         }
 
         private void StratMakerView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            deleteFromCanvasLoop = true;
-            if (!DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.IsMouseOver).Any())
-            {
-                DeselectAll();
-            }
-            if (CurrentToolTip == View.ToolTip.Eraser)
-            {
-                DeleteFromCanvas();
-            }
-
+            
         }
 
 
         #region Drag Items
-
-        private void LoadDragItems()
-        {
-            if (Globals.teamInfo.game_name == "R6 Siege")
-            {
-                var grid = new Grid();
-                                
-                //create wall item
-                WallControl newWc = new WallControl();
-                newWc.MouseMove += Image_MouseMove;
-                newWc.MouseLeftButtonDown += NewImg_MouseLeftButtonDown;
-                newWc.Name = "template";
-                newWc.Margin = new Thickness(10);
-                newWc.HorizontalAlignment = HorizontalAlignment.Center;
-                newWc.VerticalAlignment = VerticalAlignment.Center;
-                newWc.Height = 19;
-                newWc.Width = 60;
-                newWc.isLocked = true;
-
-                grid.Children.Add(newWc);                
-
-                IconsSP.Children.Add(grid);
-
-                var grid2 = new Grid();
-
-                //create wall item
-                HatchControl newHc = new HatchControl();
-                newHc.MouseMove += Image_MouseMove;
-                newHc.MouseLeftButtonDown += NewImg_MouseLeftButtonDown;
-                newHc.Name = "template";
-                newHc.Margin = new Thickness(10);
-                newHc.HorizontalAlignment = HorizontalAlignment.Center;
-                newHc.VerticalAlignment = VerticalAlignment.Center;
-                newHc.Height = 50;
-                newHc.Width = 50;
-                newHc.isLocked = true;
-
-                grid2.Children.Add(newHc);
-
-                IconsSP.Children.Add(grid2);
-            }
-        }
 
         private void NewImg_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -394,59 +358,7 @@ namespace xstrat.MVVM.View
 
         private void ZoomControl_Drop(object sender, DragEventArgs e)
         {
-            try
-            {
-                if(dropmode == 0 )
-                {
-                    var newpos = e.GetPosition(DrawingLayer);
 
-                    newpos.X -= 15;
-                    newpos.Y -= 4.5;
-
-                    string nameToSet = GetNextWallID();
-
-                    WallControl newwc = new WallControl();
-                    newwc.Height = 19;
-                    newwc.IsHitTestVisible = false;
-                    newwc.Name = nameToSet;
-                    newwc.Width = 60;
-
-                    DrawingLayer.Children.Add(newwc);
-
-                    Canvas.SetLeft(newwc, newpos.X);
-                    Canvas.SetTop(newwc, newpos.Y);
-                    UpdateWallsList();
-                    WallList.SelectedValue = nameToSet;
-
-                }
-                if(dropmode == 1)
-                {
-                    var newpos = e.GetPosition(DrawingLayer);
-
-                    newpos.X -= 15;
-                    newpos.Y -= 4.5;
-
-                    string nameToSet = GetNextWallID();
-
-                    HatchControl newwc = new HatchControl();
-                    newwc.IsHitTestVisible = false;
-                    newwc.Name = nameToSet;
-                    newwc.Height = 86;
-                    newwc.Width = 86;
-
-                    DrawingLayer.Children.Add(newwc);
-
-                    Canvas.SetLeft(newwc, newpos.X);
-                    Canvas.SetTop(newwc, newpos.Y);
-                    UpdateWallsList();
-                    WallList.SelectedValue = nameToSet;
-                }
-                dropmode = null;
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError("Error creating ContentControl for image: " + ex.Message);
-            }
         }
 
 
@@ -502,74 +414,22 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        #region ToolTips
-
-        public void ToolTipChanged(ToolTip tip)
-        {
-            switch (tip)
-            {
-                case View.ToolTip.Cursor:
-                    CurrentToolTip = View.ToolTip.Cursor;
-                    System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
-                    DeselectAllToolTips();
-                    BtnCursor.BorderThickness = new Thickness(1);
-                    break;
-                case View.ToolTip.Eraser:
-                    CurrentToolTip = View.ToolTip.Eraser;
-                    DeselectAllToolTips();
-                    BtnEraser.BorderThickness = new Thickness(1);
-                    break;
-                default:
-                    CurrentToolTip = View.ToolTip.Cursor;
-                    DeselectAllToolTips();
-                    break;
-            }
-        }
-
-        private void DeselectAllToolTips()
-        {
-            BtnCursor.BorderThickness = new Thickness(0);
-            BtnEraser.BorderThickness = new Thickness(0);
-        }
-
-        #endregion
 
         private void Image_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(sender is WallControl)
+                if (sender is WallControl)
                 {
                     dropmode = 0;
                     DragDrop.DoDragDrop(sender as WallControl, sender as WallControl, DragDropEffects.Move);
                 }
-                if(sender is HatchControl)
+                if (sender is HatchControl)
                 {
                     dropmode = 1;
                     DragDrop.DoDragDrop(sender as HatchControl, sender as HatchControl, DragDropEffects.Move);
                 }
             }
-        }
-
-
-        private void BtnUndo_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnRedo_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnCursor_Click(object sender, RoutedEventArgs e)
-        {
-            ToolTipChanged(View.ToolTip.Cursor);
-        }
-
-        private void BtnEraser_Click(object sender, RoutedEventArgs e)
-        {
-            ToolTipChanged(View.ToolTip.Eraser);
         }
 
         private void BtnFloor0_Click(object sender, RoutedEventArgs e)
@@ -612,7 +472,7 @@ namespace xstrat.MVVM.View
 
         public void PointDragMove(Point p)
         {
-            foreach (Control child in DrawingLayer.Children.OfType<Control>())
+            foreach (Control child in WallsLayer.Children.OfType<Control>())
             {
                 if (Selector.GetIsSelected(child))
                 {
@@ -625,7 +485,7 @@ namespace xstrat.MVVM.View
 
         public void DeselectAll()
         {
-            foreach (Control child in DrawingLayer.Children.OfType<Control>())
+            foreach (Control child in WallsLayer.Children.OfType<Control>())
             {
                 Selector.SetIsSelected(child, false);
             }
@@ -633,61 +493,27 @@ namespace xstrat.MVVM.View
 
         public void RequestRemove(StratContentControl item)
         {
-            DrawingLayer.Children.Remove(item);
+            WallsLayer.Children.Remove(item);
         }
         #endregion
 
         private void ReloadBtn_Click(object sender, RoutedEventArgs e)
         {
-            WallObjectsToWalls();
+            LoadMapImages();
         }
-        private string GetNextWallID()
-        {
-            List<int> numbers = new List<int>();
-            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
-            {
-                string num = item.Name;
-                num = num.Replace("id_", "");
-                int toRemove = 2 + map_id.ToString().Length + floor_id.ToString().Length;
-                num = num.Remove(0, toRemove);
-
-                int number = int.Parse(num);
-                numbers.Add(number);
-            }
-            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
-            {
-                string num = item.Name;
-                num = num.Replace("id_", "");
-                int toRemove = 2 + map_id.ToString().Length + floor_id.ToString().Length;
-                num = num.Remove(0, toRemove);
-
-                int number = int.Parse(num);
-                numbers.Add(number);
-            }
-
-            int uid = Enumerable.Range(1, Int32.MaxValue).Except(numbers).First();
-
-            return "id_" + map_id + "_" + floor_id + "_" + uid.ToString().PadLeft(3,'0');
-        }
-
-        private void SaveBtn_Click(object sender, RoutedEventArgs e)
-        {
-            xStratHelper.SaveWallObjects(WallsToWallObjects(), map_id, floor_id);
-            Notify.sendSuccess("Saved successfully");
-        }
-
+        
         private List<WallPositionObject> WallsToWallObjects()
         {
             List<WallPositionObject> wallObjects = new List<WallPositionObject>();
 
-            foreach (var item in DrawingLayer.Children.OfType<WallControl>())
+            foreach (var item in WallsLayer.Children.OfType<WallControl>())
             {
                 int type = 0;
                 var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
-                wallObjects.Add(obj);                
+                wallObjects.Add(obj);
             }
 
-            foreach (var item in DrawingLayer.Children.OfType<HatchControl>())
+            foreach (var item in WallsLayer.Children.OfType<HatchControl>())
             {
                 int type = 1;
                 var obj = new WallPositionObject { position_x = Canvas.GetLeft(item), type = type, position_y = Canvas.GetTop(item), rotate = item.RenderTransform as RotateTransform, uid = item.Name, width = item.Width };
@@ -697,58 +523,154 @@ namespace xstrat.MVVM.View
             return wallObjects;
         }
 
-        private void WallObjectsToWalls()
+        private void CreateWallsBeta(SvgContent svg)
         {
-            var objects = xStratHelper.GetWallObjects(map_id, floor_id);
-            DrawingLayer.Children.Clear();
-            foreach (var obj in objects)
+            if (svg == null) return;
+            WallsLayer.Children.Clear();
+
+            var Walls = svg.Rects.Where(x => x.style.Contains("#linear-gradient"));
+
+            foreach (var Wall in Walls)
             {
-                try
+                #region testcode
+                //var rect = new Rectangle();
+
+                //Point pos = new Point(Wall.x, Wall.y);
+
+                //rect.Fill = Brushes.Pink;
+
+                //rect.Width = Wall.width;
+                //rect.Height = Wall.height;
+
+                ////transform
+                //if (Wall.hasTransform)
+                //{
+                //    //rect.RenderTransformOrigin = new Point(Wall.width / 2, Wall.height / 2);
+
+                //    rect.RenderTransformOrigin = new Point(0.5, 0.5);
+                //    rect.RenderTransform = new RotateTransform(Wall.rotation);
+                //    //pos = new Point(Wall.translateX, Wall.translateY);
+
+                //}
+
+                //WallsLayer.Children.Add(rect);
+
+                //Canvas.SetLeft(rect, pos.X);
+                //Canvas.SetTop(rect, pos.Y);
+
+                #endregion
+
+                if (Globals.isWithin5Percent(Wall.width, Wall.height))
                 {
-                    if(obj.type == 0)
+                    //Hatch
+                    HatchControl hatch = new HatchControl();
+
+                    Point pos = new Point(Wall.x, Wall.y);
+
+                    hatch.IsHitTestVisible = false;
+
+                    hatch.Width = Wall.width;
+                    hatch.Height = Wall.height;
+
+                    hatch.Name = Wall.uid;
+
+                    //transform
+                    if (Wall.hasTransform)
                     {
-                        var newpos = new Point();
-                        newpos.X = obj.position_x;
-                        newpos.Y = obj.position_y;
-
-                        WallControl newwc = new WallControl();
-                        newwc.Height = 19;
-                        newwc.IsHitTestVisible = false;
-                        newwc.Width = obj.width;
-                        newwc.RenderTransform = obj.rotate;
-                        newwc.Name = obj.uid.Replace("SCC_", "");
-
-                        DrawingLayer.Children.Add(newwc);
-
-                        Canvas.SetLeft(newwc, newpos.X);
-                        Canvas.SetTop(newwc, newpos.Y);
+                        hatch.RenderTransformOrigin = new Point(0.5, 0.5);
+                        hatch.RenderTransform = new RotateTransform(Wall.rotation);
                     }
-                    if(obj.type == 1)
-                    {
-                        var newpos = new Point();
-                        newpos.X = obj.position_x;
-                        newpos.Y = obj.position_y;
 
-                        HatchControl newhc = new HatchControl();
-                        newhc.IsHitTestVisible = false;
-                        newhc.Name = obj.uid.Replace("SCC_", "");
-                        newhc.Height = 86;
-                        newhc.Width = 86;
-                        newhc.RenderTransform = obj.rotate;
+                    WallsLayer.Children.Add(hatch);
 
-                        DrawingLayer.Children.Add(newhc);
-
-                        Canvas.SetLeft(newhc, newpos.X);
-                        Canvas.SetTop(newhc, newpos.Y);
-                    }
+                    Canvas.SetLeft(hatch, pos.X);
+                    Canvas.SetTop(hatch, pos.Y);
                 }
-                catch (Exception ex)
+                else
                 {
-                    Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+                    //Wall
+
+                    WallControl wall = new WallControl();
+
+                    Point pos = new Point(Wall.x, Wall.y);
+
+                    wall.IsHitTestVisible = false;
+
+                    wall.Width = Wall.width;
+                    wall.Height = Wall.height;
+
+                    wall.Name = Wall.uid;
+
+                    //transform
+                    if (Wall.hasTransform)
+                    {
+                        wall.RenderTransformOrigin = new Point(0.5, 0.5);
+                        wall.RenderTransform = new RotateTransform(Wall.rotation);
+                    }
+
+                    WallsLayer.Children.Add(wall);
+
+                    Canvas.SetLeft(wall, pos.X);
+                    Canvas.SetTop(wall, pos.Y);
                 }
             }
+
             UpdateWallsList();
         }
+
+
+        //private void WallObjectsToWalls()
+        //{
+        //    var objects = xStratHelper.GetWallObjects(map_id, floor_id);
+        //    DrawingLayer.Children.Clear();
+        //    foreach (var obj in objects)
+        //    {
+        //        try
+        //        {
+        //            if (obj.type == 0)
+        //            {
+        //                var newpos = new Point();
+        //                newpos.X = obj.position_x;
+        //                newpos.Y = obj.position_y;
+
+        //                WallControl newwc = new WallControl();
+        //                newwc.Height = 19;
+        //                newwc.IsHitTestVisible = false;
+        //                newwc.Width = obj.width;
+        //                newwc.RenderTransform = obj.rotate;
+        //                newwc.Name = obj.uid.Replace("SCC_", "");
+
+        //                DrawingLayer.Children.Add(newwc);
+
+        //                Canvas.SetLeft(newwc, newpos.X);
+        //                Canvas.SetTop(newwc, newpos.Y);
+        //            }
+        //            if (obj.type == 1)
+        //            {
+        //                var newpos = new Point();
+        //                newpos.X = obj.position_x;
+        //                newpos.Y = obj.position_y;
+
+        //                HatchControl newhc = new HatchControl();
+        //                newhc.IsHitTestVisible = false;
+        //                newhc.Name = obj.uid.Replace("SCC_", "");
+        //                newhc.Height = 86;
+        //                newhc.Width = 86;
+        //                newhc.RenderTransform = obj.rotate;
+
+        //                DrawingLayer.Children.Add(newhc);
+
+        //                Canvas.SetLeft(newhc, newpos.X);
+        //                Canvas.SetTop(newhc, newpos.Y);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+        //        }
+        //    }
+        //    UpdateWallsList();
+        //}
 
         private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -760,9 +682,23 @@ namespace xstrat.MVVM.View
 
         }
 
+        private void LoadFromFile_Click(object sender, RoutedEventArgs e)
+        {
+            string path = null;
+
+            //open file dialog
+
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = "SVG files (*.svg) | *.svg";
+            openFileDialog.CheckFileExists = true;
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) path = openFileDialog.FileName;
+
+            LoadMapImages(path);
+        }
     }
 
-    public class WallPositionObject{
+    public class WallPositionObject
+    {
         public string uid { get; set; }
         public int type { get; set; }
         public double position_x { get; set; }
@@ -770,4 +706,5 @@ namespace xstrat.MVVM.View
         public RotateTransform rotate { get; set; }
         public double width { get; set; }
     }
+
 }

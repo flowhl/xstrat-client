@@ -119,12 +119,20 @@ namespace xstrat.Json
         public int id { get; set; }
         public string name { get; set; }
         public int game_id { get; set; }
+        public string floor_0_svg { get; set; }
+        public string floor_1_svg { get; set; }
+        public string floor_2_svg { get; set; }
+        public string floor_3_svg { get; set; }
 
-        public Map(int id, string name, int game_id)
+        public Map(int id, string name, int game_id, string floor_0_svg, string floor_1_svg, string floor_2_svg, string floor_3_svg)
         {
             this.id = id;
             this.name = name;
             this.game_id = game_id;
+            this.floor_0_svg = floor_0_svg;
+            this.floor_1_svg = floor_1_svg;
+            this.floor_2_svg = floor_2_svg;
+            this.floor_3_svg = floor_3_svg;
         }
     }
 

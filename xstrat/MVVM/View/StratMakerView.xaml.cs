@@ -33,6 +33,7 @@ using JetBrains.Annotations;
 using SkiaSharp;
 using static WPFSpark.MonitorHelper;
 using Microsoft.Win32;
+using Path = System.Windows.Shapes.Path;
 
 namespace xstrat.MVVM.View
 {
@@ -76,6 +77,8 @@ namespace xstrat.MVVM.View
             xStratHelper.stratView = this;
             xStratHelper.WEMode = false;
 
+            Globals.wnd.KeyDown += KeyDown;
+
             Opened();
         }
 
@@ -89,13 +92,69 @@ namespace xstrat.MVVM.View
             //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
             MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
             //MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
-            DrawingLayer.MouseLeftButtonUp += DrawingLayer_MouseLeftButtonUp;
+            ZoomControl.MouseLeftButtonDown += ZC_MouseLeftButtonDown;
             
         }
 
-        private void DrawingLayer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
+        public Point? ArrowPoint1 = null;
 
+        private void ZC_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //catch when chlick
+            var mouseover = DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.IsMouseCaptureWithin);
+            if (mouseover != null && mouseover.Count() > 0) return;
+
+            //cursor
+            if (CurrentToolTip == View.ToolTip.Cursor) DeselectAll();
+
+            //text
+            if (CurrentToolTip == View.ToolTip.Text)
+            {
+                var newpos = e.GetPosition(DrawingLayer);
+
+                TextControl txt = new TextControl();
+                txt.MainContent.Text = "Text";
+
+                StratContentControl newcc = new StratContentControl();
+                newcc.Content = txt;
+                newcc.Height = 100;
+                newcc.Width = 300;
+                newcc.Padding = new Thickness(1);
+                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                newcc.BorderBrush = Brushes.Transparent;
+                newcc.BorderThickness = new Thickness(2);
+
+                DrawingLayer.Children.Add(newcc);
+
+                Canvas.SetLeft(newcc, newpos.X);
+                Canvas.SetTop(newcc, newpos.Y);
+            }
+
+            //Arrow
+            if (CurrentToolTip == View.ToolTip.Arrow)
+            {
+                if(ArrowPoint1 == null)
+                {
+                    ArrowPoint1 = Mouse.GetPosition(DrawingLayer);
+                }
+                else
+                {
+                    Path arrow = CreateArrow(ArrowPoint1.GetValueOrDefault(), Mouse.GetPosition(DrawingLayer), 20);
+
+                    // Add the arrow to the canvas
+                    DrawingLayer.Children.Add(arrow);
+
+                    arrow.PreviewMouseLeftButtonDown+= Arrow_MouseLeftButtonDown;
+
+                    ArrowPoint1 = null;
+                }
+
+            }
+        }
+
+        private void Arrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -103,80 +162,81 @@ namespace xstrat.MVVM.View
 
         private void LoadMapImages()
         {
-            MapStack.Children.Clear();
-            if (map_id < 0) return;
+            //MapStack.Children.Clear();
+            //if (map_id < 0) return;
 
-            List<int> floors = new List<int>();
-            if (Floor0) floors.Add(0);
-            if (Floor1) floors.Add(1);
-            if (Floor2) floors.Add(2);
-            if (Floor3) floors.Add(3);
+            //List<int> floors = new List<int>();
+            //if (Floor0) floors.Add(0);
+            //if (Floor1) floors.Add(1);
+            //if (Floor2) floors.Add(2);
+            //if (Floor3) floors.Add(3);
 
-            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
+            //int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
 
-            Point offset = new Point(0,0);
+            //Point offset = new Point(0,0);
 
-            foreach (var floor in floors)
-            {
-                var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
-                MapStack.Children.Add(newimage);
+            //foreach (var floor in floors)
+            //{
+            //    var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
+            //    MapStack.Children.Add(newimage);
 
-                WallsLayer.Children.Clear();
+            //    WallsLayer.Children.Clear();
 
-                //add walls here
-                var objects = xStratHelper.GetWallObjects(map_id, floor);
-                foreach (var obj in objects)
-                {
-                    try
-                    {
-                        if (obj.type == 0)
-                        {
-                            var newpos = new Point();
-                            newpos.X = obj.position_x + offset.X;
-                            newpos.Y = obj.position_y + offset.Y;
+            //    //add walls here
+            //    //var objects = xStratHelper.GetWallObjects(map_id, floor);
+            //    var objects = null;
+            //    foreach (var obj in objects)
+            //    {
+            //        try
+            //        {
+            //            if (obj.type == 0)
+            //            {
+            //                var newpos = new Point();
+            //                newpos.X = obj.position_x + offset.X;
+            //                newpos.Y = obj.position_y + offset.Y;
 
-                            WallControl newwc = new WallControl();
-                            newwc.Height = 19;
-                            newwc.Name = obj.uid;
-                            newwc.Width = obj.width;
-                            newwc.RenderTransform = obj.rotate;
+            //                WallControl newwc = new WallControl();
+            //                newwc.Height = 19;
+            //                newwc.Name = obj.uid;
+            //                newwc.Width = obj.width;
+            //                newwc.RenderTransform = obj.rotate;
 
-                            WallsLayer.Children.Add(newwc);
+            //                WallsLayer.Children.Add(newwc);
 
-                            Canvas.SetLeft(newwc, newpos.X);
-                            Canvas.SetTop(newwc, newpos.Y);
+            //                Canvas.SetLeft(newwc, newpos.X);
+            //                Canvas.SetTop(newwc, newpos.Y);
 
-                            SetBrushToItem();
-                        }
-                        if (obj.type == 1)
-                        {
-                            var newpos = new Point();
-                            newpos.X = obj.position_x + offset.X;
-                            newpos.Y = obj.position_y + offset.Y;
+            //                SetBrushToItem();
+            //            }
+            //            if (obj.type == 1)
+            //            {
+            //                var newpos = new Point();
+            //                newpos.X = obj.position_x + offset.X;
+            //                newpos.Y = obj.position_y + offset.Y;
 
-                            HatchControl newhc = new HatchControl();
-                            newhc.Name = obj.uid;
-                            newhc.RenderTransform = obj.rotate;
-                            newhc.Height = 86;
-                            newhc.Width = 86;
+            //                HatchControl newhc = new HatchControl();
+            //                newhc.Name = obj.uid;
+            //                newhc.RenderTransform = obj.rotate;
+            //                newhc.Height = 86;
+            //                newhc.Width = 86;
 
-                            WallsLayer.Children.Add(newhc);
+            //                WallsLayer.Children.Add(newhc);
 
-                            Canvas.SetLeft(newhc, newpos.X);
-                            Canvas.SetTop(newhc, newpos.Y);
+            //                Canvas.SetLeft(newhc, newpos.X);
+            //                Canvas.SetTop(newhc, newpos.Y);
 
-                            SetBrushToItem();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError("Error creating ContentControl for image: " + ex.Message);
-                    }
-                }
+            //                SetBrushToItem();
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+            //        }
+            //    }
 
-                offset.X += 4000 / 1.3;
-                DeselectAll();
-            }           
+            //    offset.X += 4000 / 1.3;
+            //    DeselectAll();
+            //}           
 
         }
 
@@ -220,8 +280,8 @@ namespace xstrat.MVVM.View
             if(Globals.teamInfo.game_name == "R6 Siege")
             {
                 IconsSP.Children.Clear();
-                string folder = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"/Images/R6_Icons/";
-                var allItems = Directory.GetFiles(folder, "*.png").ToList();
+                string folder = Globals.XStratInstallPath + @"/Images/Icons/";
+                var allItems = Directory.GetFiles(folder, "*.png").Where(x => x != null && System.IO.Path.GetFileName(x).StartsWith("r6_")).ToList();
                 foreach(var item in allItems)
                 {
                     if (item == null || item == "") continue;
@@ -263,7 +323,7 @@ namespace xstrat.MVVM.View
                 newcc.Width = IconSize;
                 newcc.Padding = new Thickness(1);
                 newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                newcc.BorderBrush = Brushes.Transparent;
+                newcc.BorderBrush = CurrentBrush;
                 newcc.BorderThickness = new Thickness(2);
 
                 DrawingLayer.Children.Add(newcc);
@@ -449,7 +509,85 @@ namespace xstrat.MVVM.View
 
         #endregion
 
+        #region ToolTips Methods:
 
+        public Path CreateArrow(Point pointStart, Point pointEnd, double arrowWidth, Brush brush = null)
+        {
+            // Create a path to represent the arrow
+            Path arrowPath = new Path();
+
+            if(brush == null)
+            {
+                // Set the stroke and fill colors for the path
+                arrowPath.Stroke = CurrentBrush;
+                arrowPath.Fill = CurrentBrush;
+            }
+            else
+            {
+                arrowPath.Stroke = brush;
+                arrowPath.Fill = brush;
+            }
+            
+
+            // Create a geometry group to hold the arrow head and tail geometries
+            GeometryGroup arrowGeometryGroup = new GeometryGroup();
+
+            // Create a line geometry for the tail of the arrow
+            LineGeometry arrowTail = new LineGeometry();
+            arrowTail.StartPoint = pointStart;  // Start point of the line
+            arrowTail.EndPoint = pointEnd;  // End point of the line
+
+            // Add the line geometry to the geometry group
+            arrowGeometryGroup.Children.Add(arrowTail);
+
+            // Calculate the angle of the arrow tail
+            double angle = Math.Atan2(pointEnd.Y - pointStart.Y, pointEnd.X - pointStart.X);
+
+            // Calculate the points for the arrow head
+            Point pointTop = new Point(pointEnd.X - arrowWidth * Math.Cos(angle - Math.PI / 6), pointEnd.Y - arrowWidth * Math.Sin(angle - Math.PI / 6));
+            Point pointBottom = new Point(pointEnd.X - arrowWidth * Math.Cos(angle + Math.PI / 6), pointEnd.Y - arrowWidth * Math.Sin(angle + Math.PI / 6));
+
+            // Create a polyline geometry for the head of the arrow
+            PolyLineSegment arrowHead = new PolyLineSegment();
+            arrowHead.Points.Add(pointEnd);  // End point of the line
+            arrowHead.Points.Add(pointTop);  // Point for the top of the arrow head
+            arrowHead.Points.Add(pointBottom);  // Point for the bottom of the arrow head
+            arrowHead.Points.Add(pointEnd);  // End point of the line
+
+            // Create a path figure to hold the polyline geometry
+            PathFigure arrowHeadFigure = new PathFigure();
+            arrowHeadFigure.StartPoint = pointEnd;  // Start point of the line (same as tail)
+            arrowHeadFigure.Segments.Add(arrowHead);  // Add the polyline geometry to the figure
+
+            // Create a path geometry to hold the path figure
+            PathGeometry arrowHeadGeometry = new PathGeometry();
+            arrowHeadGeometry.Figures.Add(arrowHeadFigure);
+
+            // Add the path geometry to the geometry group
+            arrowGeometryGroup.Children.Add(arrowHeadGeometry);
+
+            // Set the geometry group as the data for the path
+            arrowPath.Data = arrowGeometryGroup;
+
+            return arrowPath;
+        }
+
+        #endregion
+
+        private void Newcc_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CurrentToolTip == View.ToolTip.Eraser)
+            {
+                RequestRemove(sender as StratContentControl);
+            }
+        }
+
+        #region Load Save
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveStratAsync();
+        }
 
         public void LoadStrat(int id)
         {
@@ -621,20 +759,51 @@ namespace xstrat.MVVM.View
             foreach (var item in DrawingLayer.Children)
             {
                 var newEntry = new DragNDropObj();
+                
+                // Image or Text
                 if(item is StratContentControl)
                 {
-                    newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                    newEntry.UserID = (item as StratContentControl).UserID;
-                    Image image = ((item as StratContentControl).Content as Image);
-                    newEntry.image = ((BitmapImage)image.Source).UriSource.AbsolutePath;
-                    newEntry.type = DragNDropObjType.image;
+                    if((item as StratContentControl).Content is Image)
+                    {
+                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.brush = (item as StratContentControl).BorderBrush.ToString();
+                        Image image = ((item as StratContentControl).Content as Image);
+                        newEntry.image = ((BitmapImage)image.Source).UriSource.AbsolutePath;
+                        newEntry.type = DragNDropObjType.Image;
+                    }
+                    if ((item as StratContentControl).Content is TextControl)
+                    {
+                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.width = (item as StratContentControl).Width;
+                        newEntry.height = (item as StratContentControl).Height;
+                        newEntry.textContent = ((item as StratContentControl).Content as TextControl).MainContent.Text;
+                        newEntry.type = DragNDropObjType.Text;
+                    }
+
                 }
+
+                //Drawing
                 if(item is Ellipse)
                 {
                     newEntry.pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
                     newEntry.diameter = (item as Ellipse).Width;
-                    newEntry.UserID = Globals.teammates.Where(x => x.color.ToSolidColorBrush().ToString() == (item as Ellipse).Fill.ToString().ToSolidColorBrush().ToString()).FirstOrDefault()?.id ?? -1;
+                    newEntry.brush = (item as Ellipse).Fill.ToString();
                     newEntry.type = DragNDropObjType.Circle;
+                }
+
+                //Arrow
+                if(item is Path)
+                {
+                    newEntry.pos = new Point(Canvas.GetLeft(item as Path), Canvas.GetTop(item as Path));                    
+
+                    var g = ((item as Path).Data as GeometryGroup).Children.First();
+                    if (g == null) continue;
+
+                    newEntry.arrowGeometryStart = (g as LineGeometry).StartPoint;
+                    newEntry.arrowGeometryEnd = (g as LineGeometry).EndPoint;
+
+                    newEntry.brush = (item as Path).Fill.ToString();
+                    newEntry.type = DragNDropObjType.Arrow;
                 }
                 if(newEntry != null) result.Add(newEntry);
             }
@@ -646,7 +815,7 @@ namespace xstrat.MVVM.View
         {
             foreach (var item in list)
             {
-                if(item.type == DragNDropObjType.image)
+                if(item.type == DragNDropObjType.Image)
                 {
                     Point newpos = item.pos;
 
@@ -660,38 +829,57 @@ namespace xstrat.MVVM.View
                     newcc.Width = 50;
                     newcc.Padding = new Thickness(1);
                     newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = Brushes.Transparent;
+                    newcc.BorderBrush = item.brush.ToSolidColorBrush();
                     newcc.BorderThickness = new Thickness(2);
-                    newcc.UserID = item.UserID;
                     newcc.PreviewMouseLeftButtonDown += Newcc_MouseLeftButtonDown;
 
                     DrawingLayer.Children.Add(newcc);
 
                     Canvas.SetLeft(newcc, newpos.X);
                     Canvas.SetTop(newcc, newpos.Y);
-
-                    DeselectAll();
                 }
 
                 if(item.type == DragNDropObjType.Circle)
                 {
                     var ellipse = new Ellipse();
-                    ellipse.Fill = Globals.teammates.Where(x => x.id == item.UserID).FirstOrDefault()?.color?.ToSolidColorBrush() ?? Brushes.Red;
+                    ellipse.Fill = item.brush.ToSolidColorBrush();
                     ellipse.Width = item.diameter;
                     ellipse.Height = item.diameter;
                     DrawingLayer.Children.Add(ellipse);
                     Canvas.SetLeft(ellipse, item.pos.X);
                     Canvas.SetTop(ellipse, item.pos.Y);
                 }
-            }
-        }
 
-        private void Newcc_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if(CurrentToolTip == View.ToolTip.Eraser)
-            {
-                RequestRemove(sender as StratContentControl);
+                if(item.type == DragNDropObjType.Text)
+                {
+                    TextControl txt = new TextControl();
+                    txt.MainContent.Text = "Text";
+
+                    StratContentControl newcc = new StratContentControl();
+                    newcc.Content = txt;
+                    newcc.Height = 100;
+                    newcc.Width = 300;
+                    newcc.Padding = new Thickness(1);
+                    newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    newcc.BorderBrush = Brushes.Transparent;
+                    newcc.BorderThickness = new Thickness(2);
+
+                    DrawingLayer.Children.Add(newcc);
+
+                    Canvas.SetLeft(newcc, item.pos.X);
+                    Canvas.SetTop(newcc, item.pos.Y);
+                }
+
+                if(item.type == DragNDropObjType.Arrow)
+                {
+                    var arrow = CreateArrow(item.arrowGeometryStart, item.arrowGeometryEnd, 20, item.brush.ToSolidColorBrush());
+                    DrawingLayer.Children.Add(arrow);
+                    Canvas.SetLeft(arrow, item.pos.X);
+                    Canvas.SetTop(arrow, item.pos.Y);
+
+                }
             }
+            DeselectAll();
         }
 
         public List<WallObj> GetWallObjs()
@@ -801,26 +989,31 @@ namespace xstrat.MVVM.View
             }
         }
 
-        //private void MapSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{/*
-        //    ImageStack.Children.Clear();
-        //    var index = MapSelector.SelectedIndex;
-        //    var images = StratHandler.getFloorsByListPos(index);
-        //    foreach (var image in images)
-        //    {
 
-        //        BitmapImage bi = new BitmapImage();
-        //        bi.BeginInit();
-        //        bi.UriSource = new Uri(image.Item2, UriKind.Absolute);
-        //        bi.EndInit();
+        public async void Refresh()
+        {
+            ApiHandler.Waiting();
+            await Globals.RetrieveStrats();
+            await Task.Delay(1000);
+            UpdateTopBar();
+            if (currentStrat != null)
+            {
+                LoadStrat(currentStrat.id);
+            }
+            ApiHandler.EndWaiting();
+        }
 
-        //        Image img = new Image();
-        //        img.Source = bi;
-        //        img.Height = 1080;
-        //        img.Width = 1920;
-        //        ImageStack.Children.Add(img);
-        //    */
-        //}
+        public StratContent GetStratContentFromString(string input)
+        {
+            input = Globals.DecompressString(input);
+            using (var stringReader = new System.IO.StringReader(input))
+            {
+                var serializer = new XmlSerializer(typeof(StratContent));
+                return serializer.Deserialize(stringReader) as StratContent;
+            }
+        }
+
+        #endregion
 
         private void WallsLayer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -840,6 +1033,7 @@ namespace xstrat.MVVM.View
             }
         }
 
+        #region Buttons
 
         private void BtnUndo_Click(object sender, RoutedEventArgs e)
         {
@@ -923,6 +1117,12 @@ namespace xstrat.MVVM.View
             LoadMapImages();
         }
 
+        private void ReloadBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh();
+        }
+        #endregion
+
         #region drawing
 
         private void DrawingLayer_MouseMove(object sender, MouseEventArgs e)
@@ -946,13 +1146,12 @@ namespace xstrat.MVVM.View
             DrawingLayer.Children.Add(ellipse);
         }
 
-        #endregion
-
         private void BrushSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             BrushSize = (int)BrushSlider.Value;
         }
 
+        #endregion
 
         #region Helpers for XStrathelper
 
@@ -973,7 +1172,7 @@ namespace xstrat.MVVM.View
         {
             foreach (Control child in DrawingLayer.Children.OfType<Control>())
             {
-                Selector.SetIsSelected(child, true);
+                Selector.SetIsSelected(child, false);
             }
         }
 
@@ -981,7 +1180,7 @@ namespace xstrat.MVVM.View
         {
             foreach (Control child in DrawingLayer.Children.OfType<Control>())
             {
-                Selector.SetIsSelected(child, false);
+                Selector.SetIsSelected(child, true);
             }
         }
 
@@ -991,38 +1190,7 @@ namespace xstrat.MVVM.View
         }
         #endregion
 
-        private void ReloadBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Refresh();
-        }
 
-        public async void Refresh()
-        {
-            ApiHandler.Waiting();
-            await Globals.RetrieveStrats();
-            await Task.Delay(1000);
-            UpdateTopBar();
-            if(currentStrat != null)
-            {
-                LoadStrat(currentStrat.id);
-            }
-            ApiHandler.EndWaiting();
-        }
-
-        public StratContent GetStratContentFromString(string input)
-        {
-            input = Globals.DecompressString(input);
-            using (var stringReader = new System.IO.StringReader(input))
-            {
-                var serializer = new XmlSerializer(typeof(StratContent));
-                return serializer.Deserialize(stringReader) as StratContent;
-            }
-        }
-
-        private void SaveBtn_Click(object sender, RoutedEventArgs e)
-        {
-            SaveStratAsync();
-        }
 
         private void ZoomControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -1092,7 +1260,7 @@ namespace xstrat.MVVM.View
 
         #region Hotkeys
 
-        private void UserControl_KeyDown(object sender, KeyEventArgs e)
+        private void KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Escape)
             {
@@ -1100,25 +1268,32 @@ namespace xstrat.MVVM.View
                 return;
             }
 
-            if(e.Key == Key.LeftCtrl)
+            if(e.Key == Key.A)
             {
-                if(Keyboard.IsKeyDown(Key.A))
+                if(Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
                     SelectAll();
                     return;
                 }
+            }
 
-                if (Keyboard.IsKeyDown(Key.S))
+            if (e.Key == Key.S)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
                     SaveStratAsync();
                     return;
                 }
+            }
 
-                if (Keyboard.IsKeyDown(Key.R))
+            if (e.Key == Key.R)
+            {
+                if(Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
                     Refresh();
                     return;
                 }
+
             }
 
         }
@@ -1232,16 +1407,23 @@ namespace xstrat.MVVM.View
     public class DragNDropObj
     {
         public Point pos { get; set; }
-        public int UserID { get; set; }
+        public string brush { get; set; }
         public DragNDropObjType type { get; set; }
+        public double width { get; set; }
+        public double height { get; set; }
+        public string textContent{ get; set; }
+        public Point arrowGeometryStart { get; set; }
+        public Point arrowGeometryEnd { get; set; }
         public string image { get; set; }
         public double diameter { get; set; }
     }
 
     public enum DragNDropObjType 
     {
-        image,
-        Circle
+        Image,
+        Circle,
+        Text,
+        Arrow
     }
     
 

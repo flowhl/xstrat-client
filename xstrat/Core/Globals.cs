@@ -17,6 +17,18 @@ using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using xstrat.Json;
 using xstrat.MVVM.ViewModel;
+using SVGImage.SVG;
+using System.Reflection;
+using System.Globalization;
+using System.Xml;
+using xstrat.MVVM.View;
+using JetBrains.Annotations;
+using static WPFSpark.MonitorHelper;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
+using System.Xml.Linq;
+using SkiaSharp.Views.WPF;
+using NuGet;
 
 namespace xstrat.Core
 {
@@ -136,44 +148,44 @@ namespace xstrat.Core
         }
         public static async Task RetrieveStatsDataAsync(string ubisoft_id, int user_id = -1)
         {
-            if(!string.IsNullOrEmpty(ubisoft_id) && user_id >= 0)
+            if (!string.IsNullOrEmpty(ubisoft_id) && user_id >= 0)
             {
-                    try
+                try
+                {
+                    (bool, string) result = await ApiHandler.GetStats(ubisoft_id);
+                    if (result.Item1)
                     {
-                        (bool, string) result = await ApiHandler.GetStats(ubisoft_id);
-                        if (result.Item1)
+                        string response = result.Item2;
+                        //convert to json instance
+                        JObject json = JObject.Parse(response);
+                        var data = json.SelectToken("data").ToString();
+                        if (data != null && data != "")
                         {
-                            string response = result.Item2;
-                            //convert to json instance
-                            JObject json = JObject.Parse(response);
-                            var data = json.SelectToken("data").ToString();
-                            if (data != null && data != "")
+                            StatsResponse sr = JsonConvert.DeserializeObject<StatsResponse>(data);
+                            sr.StatsResponseDetails.Values.First().xstrat_user_id = user_id;
+                            if (sr != null)
                             {
-                                StatsResponse sr = JsonConvert.DeserializeObject<StatsResponse>(data);
-                                sr.StatsResponseDetails.Values.First().xstrat_user_id = user_id;
-                                if (sr != null)
-                                {
-                                    PlayerStats.Add(sr);
-                                }
-                            }
-                            else
-                            {
-                                Notify.sendError("Playerstats could not be loaded");
-                                throw new Exception("Playerstats could not be loaded");
+                                PlayerStats.Add(sr);
                             }
                         }
                         else
                         {
-                            return;
+                            Notify.sendError("Playerstats could not be loaded");
+                            throw new Exception("Playerstats could not be loaded");
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Notify.sendError(ex.Message);
+                        return;
                     }
+                }
+                catch (Exception ex)
+                {
+                    Notify.sendError(ex.Message);
+                }
 
                 //scrim stats
-                if(user_id >= 0)
+                if (user_id >= 0)
                 {
                     try
                     {
@@ -207,8 +219,8 @@ namespace xstrat.Core
                     {
                         Notify.sendError(ex.Message);
                     }
-                }            
-            
+                }
+
             }
             return;
         }
@@ -314,8 +326,9 @@ namespace xstrat.Core
 
         public static void CallCalendarEventCreated(DateTime Date)
         {
-            CalendarEventCreated(null ,new CalendarEventCreatedArgs { Date = Date });
+            CalendarEventCreated(null, new CalendarEventCreatedArgs { Date = Date });
         }
+        public static string XStratInstallPath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
         public static string[] SeasonNames = new string[]{
             "Current Season", // API ID = 0
@@ -458,127 +471,88 @@ namespace xstrat.Core
             ,"op_zofia.png"
         };
 
-        public enum Icons
-        {
-            //g_Alibi
-            //, g_AruniGate
-            //, g_Bandit
-            //, g_Barb
-            //, g_Barricade
-            //, g_BulletProofCam
-            //, g_BulletProofCamArrow
-            //, g_Castle
-            //, g_Claymore
-            //, g_Drone
-            //, g_Echo
-            //, g_Ela
-            //, g_Frost
-            //, g_Goyo
-            //, g_GoyoShieldTopDown
-            //, g_ImpactGrenade
-            //, g_Jager
-            //, g_Kaid
-            //, g_Kapkan
-            //, g_Lesion
-            //, g_Maestro
-            //, g_MelusiBanshee
-            //, g_Mira
-            //, g_Mozzie
-            //, g_Mute
-            //, g_NitroCell
-            //, g_Nomad
-            //, g_Osa
-            //, g_ProximityMine
-            //, g_Shield
-            //, g_ShieldTopDown
-            //, g_Smoke
-            //, g_Thunderbird
-            //, g_ToxicBabe
-            //, g_ToxicBabeSmoke
-            //, g_TraxStingers
-            //, g_Valkyrie
-            //, g_Wamai
-            //, g_Zero
-             op_ace
-            , op_alibi
-            , op_amaru
-            , op_aruni
-            , op_ash
-            , op_azami
-            , op_bandit
-            , op_blackbeard
-            , op_blitz
-            , op_buck
-            , op_capitao
-            , op_castle
-            , op_caveira
-            , op_clash
-            , op_doc
-            , op_dokkaebi
-            , op_echo
-            , op_ela
-            , op_finka
-            , op_flores
-            , op_frost
-            , op_fuze
-            , op_glaz
-            , op_goyo
-            , op_gridlock
-            , op_hibana
-            , op_iana
-            , op_iq
-            , op_jackal
-            , op_jager
-            , op_kaid
-            , op_kali
-            , op_kapkan
-            , op_lesion
-            , op_lion
-            , op_maestro
-            , op_maverick
-            , op_melusi
-            , op_mira
-            , op_montagne
-            , op_mozzie
-            , op_mute
-            , op_nokk
-            , op_nomad
-            , op_oryx
-            , op_osa
-            , op_pulse
-            , op_recruit_blue
-            , op_recruit_green
-            , op_recruit_orange
-            , op_recruit_red
-            , op_recruit_yellow
-            , op_rook
-            , op_sledge
-            , op_smoke
-            , op_tachanka
-            , op_thatcher
-            , op_thermite
-            , op_thorn
-            , op_thunderbird
-            , op_twitch
-            , op_valkyrie
-            , op_vigil
-            , op_wamai
-            , op_warden
-            , op_ying
-            , op_zero
-            , op_zofia
-        }
+        //public enum Icons
+        //{
+        //      op_ace
+        //    , op_alibi
+        //    , op_amaru
+        //    , op_aruni
+        //    , op_ash
+        //    , op_azami
+        //    , op_bandit
+        //    , op_blackbeard
+        //    , op_blitz
+        //    , op_buck
+        //    , op_capitao
+        //    , op_castle
+        //    , op_caveira
+        //    , op_clash
+        //    , op_doc
+        //    , op_dokkaebi
+        //    , op_echo
+        //    , op_ela
+        //    , op_finka
+        //    , op_flores
+        //    , op_frost
+        //    , op_fuze
+        //    , op_glaz
+        //    , op_goyo
+        //    , op_gridlock
+        //    , op_hibana
+        //    , op_iana
+        //    , op_iq
+        //    , op_jackal
+        //    , op_jager
+        //    , op_kaid
+        //    , op_kali
+        //    , op_kapkan
+        //    , op_lesion
+        //    , op_lion
+        //    , op_maestro
+        //    , op_maverick
+        //    , op_melusi
+        //    , op_mira
+        //    , op_montagne
+        //    , op_mozzie
+        //    , op_mute
+        //    , op_nokk
+        //    , op_nomad
+        //    , op_oryx
+        //    , op_osa
+        //    , op_pulse
+        //    , op_recruit_blue
+        //    , op_recruit_green
+        //    , op_recruit_orange
+        //    , op_recruit_red
+        //    , op_recruit_yellow
+        //    , op_rook
+        //    , op_sledge
+        //    , op_smoke
+        //    , op_tachanka
+        //    , op_thatcher
+        //    , op_thermite
+        //    , op_thorn
+        //    , op_thunderbird
+        //    , op_twitch
+        //    , op_valkyrie
+        //    , op_vigil
+        //    , op_wamai
+        //    , op_warden
+        //    , op_ying
+        //    , op_zero
+        //    , op_zofia
+        //}
 
-        private static int lastcustomuserid; 
+        private static int lastcustomuserid;
 
-        public static int LastCustomUserId   
+        public static int LastCustomUserId
         {
             get
             {
                 lastcustomuserid++;
                 return lastcustomuserid;
             }
-            private set { lastcustomuserid = value; }  
+            private set { lastcustomuserid = value; }
         }
 
         public static List<Tuple<int, string>> customUserIdsAndNames { get; set; } = new List<Tuple<int, string>>();
@@ -586,7 +560,7 @@ namespace xstrat.Core
         public static string UserIdToName(int id)
         {
             var teammate = teammates.Where(x => x.id == id).FirstOrDefault();
-            if(teammate == null) return null;
+            if (teammate == null) return null;
             return teammate.name;
         }
 
@@ -700,7 +674,7 @@ namespace xstrat.Core
                 int max_id = 0;
                 foreach (var mate in teammates)
                 {
-                    if(mate.id > max_id) max_id = mate.id;
+                    if (mate.id > max_id) max_id = mate.id;
                 }
                 lastcustomuserid = max_id;
             }
@@ -885,25 +859,212 @@ namespace xstrat.Core
         public static int getUserIdFromName(string name)
         {
             var rows = teammates.Where(x => x.name.ToUpper().StartsWith(name.ToUpper()));
-            if(rows.Any()) return rows.First().id;
+            if (rows.Any()) return rows.First().id;
             return -1;
         }
         public static SolidColorBrush ToSolidColorBrush(this string hex_code)
         {
             return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
         }
-        public static Image GetImageForFloorAndMap(int game_id, int map_id, int floor_id)
+
+        #region SVG
+
+        public static string GetPathFromId(int game_id, int map_id, int floor_id)
         {
-            string fileName = game_id + "_" + map_id + "_" + floor_id + ".png";
-            var image = new Image();
-            image.Stretch = Stretch.Uniform;
-            var uriSource = new Uri(@"/Images/R6_Maps/" + fileName, UriKind.Relative);
-            image.Source = new BitmapImage(uriSource);
-            image.Height = 3000 / 1.3;
-            image.Width = 4000 / 1.3;
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
+            string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
+            if (!File.Exists(file)) return null;
+            return file;
+        }
+
+        public static XmlDocument GetSCVDocumentForMapAndFloor(int map_id, int floor_id = 0)
+        {
+            var map = Globals.Maps.Where(x => x.id == map_id).FirstOrDefault();
+            if (map == null) return null;
+            if (floor_id < 0 || floor_id > 4) return null;
+
+            string svg = null;
+            if(floor_id == 0 && !string.IsNullOrEmpty(map.floor_0_svg))
+            {
+                svg = map.floor_0_svg;
+            }
+            if (floor_id == 1 && !string.IsNullOrEmpty(map.floor_1_svg))
+            {
+                svg = map.floor_1_svg;
+            }
+            if (floor_id == 2 && !string.IsNullOrEmpty(map.floor_2_svg))
+            {
+                svg = map.floor_2_svg;
+            }
+            if (floor_id == 3 && !string.IsNullOrEmpty(map.floor_3_svg))
+            {
+                svg = map.floor_3_svg;
+            }
+
+            if(string.IsNullOrEmpty(svg)) return null;
+
+            var xml = new XmlDocument();
+            xml.LoadXml(svg);
+            return xml;
+        }
+
+        public static XmlDocument GetSVGDocumentFromPath(string path)
+        {
+            if (!File.Exists(path)) return null;
+
+            //load svg
+            XmlDocument svgDocument = new XmlDocument();
+            svgDocument.Load(path);
+            return svgDocument;
+        }
+
+        public static SvgContent GetSvgContent(XmlDocument svgDocument, int game_id, int map_id, int floor_id)
+        {
+            #region Generate svgContent
+            SvgContent svgContent = new SvgContent();
+
+            svgContent.Rects = new List<SvgRect>();
+            
+            svgContent.Name = svgDocument.Name;
+
+            svgContent.XmlDocument = svgDocument;
+            #endregion
+            #region remove walls
+
+            var XDocumentNoWalls = XDocument.Parse(svgDocument.OuterXml);
+
+            var rectsToRemove = XDocumentNoWalls.Descendants().Where(e => e.Name.LocalName == "rect" && e.Attribute("style").Value.Contains("linear-gradient")).ToList();
+
+            foreach (var rect in rectsToRemove)
+            {
+                rect.Remove();
+            }
+
+            string svgStringNoWalls = XDocumentNoWalls.ToString();
+
+            XmlDocument XmlDocumentNoWalls = new XmlDocument();
+            XmlDocumentNoWalls.LoadXml(svgStringNoWalls);
+
+            svgContent.XmlDocumentNoWalls = XmlDocumentNoWalls;
+
+            #endregion
+            #region Get Viewbox
+
+            XmlNode svg = svgDocument.ChildNodes[1];
+            string viewBox = svg.Attributes["viewBox"].Value;
+
+            string[] values = viewBox.Split(' ');
+
+            #endregion    
+            #region Viewbox analysis
+
+            double vx = Globals.GetDouble(values[0], 0.0);
+            double vy = Globals.GetDouble(values[1], 0.0);
+            double vwidth = Globals.GetDouble(values[2], 0.0);
+            double vheight = Globals.GetDouble(values[3], 0.0);
+
+            svgContent.ViewBoxDimensions = new Point(vwidth, vheight);
+            svgContent.ViewBoxPosition = new Point(vx, vy);
+            
+            #endregion
+            #region Generate Rectangles
+
+            XmlNodeList rectangles = svgDocument.GetElementsByTagName("rect");
+
+            foreach (XmlNode rectangle in rectangles)
+            {
+                var attributes = rectangle.Attributes;
+                
+                double x = Globals.GetDouble(attributes["x"]?.Value ?? "0", 0);
+                double y = Globals.GetDouble(attributes["y"]?.Value ?? "0", 0);
+                double width = Globals.GetDouble(attributes["width"].Value, 0);
+                double height = Globals.GetDouble(attributes["height"].Value, 0);
+                string style = attributes["style"].Value;
+                string transform = attributes["transform"]?.Value;
+
+                string stringToHash = x + "_" + y + "_" + width + "_" + height;
+                string hash = string.Format("{0:X}", stringToHash.GetHashCode());
+
+                string uid = "_" + game_id + "_" + map_id + "_" + floor_id + "_" + hash;
+
+                double translateX = 0;
+                double translateY = 0;
+                double rotation = 0;
+                bool hasTransform = false;
+
+                if (!string.IsNullOrEmpty(transform))
+                {
+                    hasTransform = true;
+
+                    // Parse the transform attribute
+                    string[] transformValues = transform.Split(' ');
+                    translateX = Globals.GetDouble(transformValues[0].Substring(10), 0);
+                    translateY = Globals.GetDouble(transformValues[1].Substring(0, transformValues[1].Length - 1), 0);
+                    rotation = Globals.GetDouble(transformValues[2].Substring(7).Replace(")", ""), 0);
+                }
+
+
+                SvgRect svgRect = new SvgRect { height = height, width = width, x = x, y = y, style = style, transform = transform, uid = uid, translateX = translateX, translateY = translateY, rotation = rotation, hasTransform = hasTransform };
+
+                svgContent.Rects.Add(svgRect);
+            }
+            #endregion
+            return svgContent;
+        }
+
+        public static SVGImage.SVG.SVGImage GetImageForSVG(SvgContent svg)
+        {
+            if (svg == null) return null;
+
+            
+            //generate svg viewer
+            var image = new SVGImage.SVG.SVGImage();
+
+            var stream = new MemoryStream();
+            svg.XmlDocumentNoWalls.Save(stream);
+            stream.Position = 0;
+
+            image.SetImage(stream);
+
+            image.Height = svg.ViewBoxDimensions.Y;
+            image.Width = svg.ViewBoxDimensions.X;
+
             return image;
         }
+
+        public static SVGImage.SVG.SVGImage GetImageForFloorAndMap(int game_id, int map_id, int floor_id)
+        {
+            //get file name
+            string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
+            string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
+            if (!File.Exists(file)) return null;
+            
+            //generate svg viewer
+            var image = new SVGImage.SVG.SVGImage();
+            image.SetImage(File.OpenRead(file));
+
+            //analyse svg to get dimensions:
+            XmlDocument svgDocument = new XmlDocument();
+            svgDocument.Load(file);
+
+            XmlNode svg = svgDocument.ChildNodes[1];
+            string viewBox = svg.Attributes["viewBox"].Value;
+
+            string[] values = viewBox.Split(' ');
+
+            double vx = Globals.GetDouble(values[0], 0.0);
+            double vy = Globals.GetDouble(values[1], 0.0);
+            double vwidth = Globals.GetDouble(values[2], 0.0);
+            double vheight = Globals.GetDouble(values[3], 0.0);
+
+            //set image size
+            image.Height = vheight;
+            image.Width = vwidth;
+
+            return image;
+        }
+
+        #endregion
 
         public static int Game_id()
         {
@@ -1004,5 +1165,52 @@ namespace xstrat.Core
             return rgx.Replace(input, "");
         }
 
+        public static double GetDouble(string value, double defaultValue)
+        {
+            double result;
+
+            value = value.Replace(",", ".");
+
+            //Try parsing in the current culture
+            if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result)) 
+            {
+                result = defaultValue;
+            }
+
+            return result;
+        }
+
+        public static bool isWithin5Percent(double x, double y)
+        {
+            double difference = Math.Abs(x - y);
+            double threshold = y * 0.05;
+            return difference < threshold;
+        }
+    }
+
+    public class SvgRect
+    {
+        public string uid { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
+        public double width { get; set; }
+        public double height { get; set; }
+        public string style { get; set; }
+        public string transform { get; set; }
+
+        public double translateX { get; set; }
+        public double translateY { get; set; }
+        public double rotation { get; set; }
+        public bool hasTransform { get; set; }
+    }
+
+    public class SvgContent
+    {
+        public string Name { get; set; }
+        public List<SvgRect> Rects { get; set; }
+        public Point ViewBoxPosition { get; set; }
+        public Point ViewBoxDimensions { get; set; }
+        public XmlDocument XmlDocument { get; set; }
+        public XmlDocument XmlDocumentNoWalls { get; set; }
     }
 }

@@ -162,82 +162,169 @@ namespace xstrat.MVVM.View
 
         private void LoadMapImages()
         {
-            //MapStack.Children.Clear();
-            //if (map_id < 0) return;
+            MapStack.Children.Clear();
+            WallsLayer.Children.Clear();
+            DrawingLayer.Children.Clear();
 
-            //List<int> floors = new List<int>();
-            //if (Floor0) floors.Add(0);
-            //if (Floor1) floors.Add(1);
-            //if (Floor2) floors.Add(2);
-            //if (Floor3) floors.Add(3);
+            if (map_id < 0) return;
 
-            //int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
+            List<int> floors = new List<int>();
+            if (Floor0) floors.Add(0);
+            if (Floor1) floors.Add(1);
+            if (Floor2) floors.Add(2);
+            if (Floor3) floors.Add(3);
 
-            //Point offset = new Point(0,0);
+            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
 
-            //foreach (var floor in floors)
-            //{
-            //    var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
-            //    MapStack.Children.Add(newimage);
+            double offset = 0;
 
-            //    WallsLayer.Children.Clear();
+            foreach (var floor in floors)
+            {
+                XmlDocument svgFile;
 
-            //    //add walls here
-            //    //var objects = xStratHelper.GetWallObjects(map_id, floor);
-            //    var objects = null;
-            //    foreach (var obj in objects)
-            //    {
-            //        try
-            //        {
-            //            if (obj.type == 0)
-            //            {
-            //                var newpos = new Point();
-            //                newpos.X = obj.position_x + offset.X;
-            //                newpos.Y = obj.position_y + offset.Y;
+                
+                svgFile = Globals.GetSCVDocumentForMapAndFloor(map_id, floor);
 
-            //                WallControl newwc = new WallControl();
-            //                newwc.Height = 19;
-            //                newwc.Name = obj.uid;
-            //                newwc.Width = obj.width;
-            //                newwc.RenderTransform = obj.rotate;
+                if (svgFile == null) continue;
 
-            //                WallsLayer.Children.Add(newwc);
+                var SVGContent = Globals.GetSvgContent(svgFile, game_id, map_id, floor);
 
-            //                Canvas.SetLeft(newwc, newpos.X);
-            //                Canvas.SetTop(newwc, newpos.Y);
+                var newimage = Globals.GetImageForSVG(SVGContent);
 
-            //                SetBrushToItem();
-            //            }
-            //            if (obj.type == 1)
-            //            {
-            //                var newpos = new Point();
-            //                newpos.X = obj.position_x + offset.X;
-            //                newpos.Y = obj.position_y + offset.Y;
+                if (newimage != null)
+                {
+                    //add image
+                    MapStack.Children.Add(newimage);
+                    Canvas.SetLeft(newimage,offset);
 
-            //                HatchControl newhc = new HatchControl();
-            //                newhc.Name = obj.uid;
-            //                newhc.RenderTransform = obj.rotate;
-            //                newhc.Height = 86;
-            //                newhc.Width = 86;
+                    //add Walls
+                    CreateWallsBeta(SVGContent, offset);
 
-            //                WallsLayer.Children.Add(newhc);
+                    offset += SVGContent.ViewBoxDimensions.X;
+                }
 
-            //                Canvas.SetLeft(newhc, newpos.X);
-            //                Canvas.SetTop(newhc, newpos.Y);
 
-            //                SetBrushToItem();
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Notify.sendError("Error creating ContentControl for image: " + ex.Message);
-            //        }
-            //    }
+                //    var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
+                //    MapStack.Children.Add(newimage);
 
-            //    offset.X += 4000 / 1.3;
-            //    DeselectAll();
-            //}           
+                //    WallsLayer.Children.Clear();
 
+                //    //add walls here
+                //    //var objects = xStratHelper.GetWallObjects(map_id, floor);
+                //    var objects = null;
+                //    foreach (var obj in objects)
+                //    {
+                //        try
+                //        {
+                //            if (obj.type == 0)
+                //            {
+                //                var newpos = new Point();
+                //                newpos.X = obj.position_x + offset.X;
+                //                newpos.Y = obj.position_y + offset.Y;
+
+                //                WallControl newwc = new WallControl();
+                //                newwc.Height = 19;
+                //                newwc.Name = obj.uid;
+                //                newwc.Width = obj.width;
+                //                newwc.RenderTransform = obj.rotate;
+
+                //                WallsLayer.Children.Add(newwc);
+
+                //                Canvas.SetLeft(newwc, newpos.X);
+                //                Canvas.SetTop(newwc, newpos.Y);
+
+                //                SetBrushToItem();
+                //            }
+                //            if (obj.type == 1)
+                //            {
+                //                var newpos = new Point();
+                //                newpos.X = obj.position_x + offset.X;
+                //                newpos.Y = obj.position_y + offset.Y;
+
+                //                HatchControl newhc = new HatchControl();
+                //                newhc.Name = obj.uid;
+                //                newhc.RenderTransform = obj.rotate;
+                //                newhc.Height = 86;
+                //                newhc.Width = 86;
+
+                //                WallsLayer.Children.Add(newhc);
+
+                //                Canvas.SetLeft(newhc, newpos.X);
+                //                Canvas.SetTop(newhc, newpos.Y);
+
+                //                SetBrushToItem();
+                //            }
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            Notify.sendError("Error creating ContentControl for image: " + ex.Message);
+                //        }
+                //    }
+
+                //    offset.X += 4000 / 1.3;
+                //    DeselectAll();
+            }
+
+        }
+
+        private void CreateWallsBeta(SvgContent svg, double offset = 0)
+        {
+            if (svg == null) return;
+
+            var Walls = svg.Rects.Where(x => x.style.Contains("#linear-gradient"));
+
+            foreach (var Wall in Walls)
+            {
+                if (Globals.isWithin5Percent(Wall.width, Wall.height))
+                {
+                    //Hatch
+                    HatchControl hatch = new HatchControl();
+
+                    Point pos = new Point(Wall.x, Wall.y);
+
+                    hatch.Width = Wall.width;
+                    hatch.Height = Wall.height;
+
+                    hatch.Name = Wall.uid;
+
+                    //transform
+                    if (Wall.hasTransform)
+                    {
+                        hatch.RenderTransformOrigin = new Point(0.5, 0.5);
+                        hatch.RenderTransform = new RotateTransform(Wall.rotation);
+                    }
+
+                    WallsLayer.Children.Add(hatch);
+
+                    Canvas.SetLeft(hatch, pos.X + offset);
+                    Canvas.SetTop(hatch, pos.Y);
+                }
+                else
+                {
+                    //Wall
+
+                    WallControl wall = new WallControl();
+
+                    Point pos = new Point(Wall.x, Wall.y);
+
+                    wall.Width = Wall.width;
+                    wall.Height = Wall.height;
+
+                    wall.Name = Wall.uid;
+
+                    //transform
+                    if (Wall.hasTransform)
+                    {
+                        wall.RenderTransformOrigin = new Point(0.5, 0.5);
+                        wall.RenderTransform = new RotateTransform(Wall.rotation);
+                    }
+
+                    WallsLayer.Children.Add(wall);
+
+                    Canvas.SetLeft(wall, pos.X + offset);
+                    Canvas.SetTop(wall, pos.Y);
+                }
+            }
         }
 
         #endregion

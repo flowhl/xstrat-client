@@ -33,10 +33,7 @@ namespace xstrat.MVVM.View
     /// </summary>
     public partial class WallEditorView : UserControl
     {
-        public ToolTip CurrentToolTip;
-        public Brush CurrentBrush = null;
         public bool isMouseDown = false;
-        public int BrushSize { get; set; } = 10;
 
         public bool Floor0 { get; set; }
         public bool Floor1 { get; set; }
@@ -45,8 +42,6 @@ namespace xstrat.MVVM.View
 
         public int map_id;
         public int floor_id;
-
-        public int? dropmode;
 
         public List<string> Walls { get; set; }
         public string SelectedWall { get; set; }
@@ -65,7 +60,6 @@ namespace xstrat.MVVM.View
             xStratHelper.WEMode = true;
             Opened();
         }
-
 
         private void WallList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -413,24 +407,6 @@ namespace xstrat.MVVM.View
 
 
         #endregion
-
-
-        private void Image_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (sender is WallControl)
-                {
-                    dropmode = 0;
-                    DragDrop.DoDragDrop(sender as WallControl, sender as WallControl, DragDropEffects.Move);
-                }
-                if (sender is HatchControl)
-                {
-                    dropmode = 1;
-                    DragDrop.DoDragDrop(sender as HatchControl, sender as HatchControl, DragDropEffects.Move);
-                }
-            }
-        }
 
         private void BtnFloor0_Click(object sender, RoutedEventArgs e)
         {

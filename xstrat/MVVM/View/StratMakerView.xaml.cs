@@ -34,6 +34,7 @@ using SkiaSharp;
 using static WPFSpark.MonitorHelper;
 using Microsoft.Win32;
 using Path = System.Windows.Shapes.Path;
+using System.Runtime.CompilerServices;
 
 namespace xstrat.MVVM.View
 {
@@ -855,7 +856,7 @@ namespace xstrat.MVVM.View
                         newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
                         newEntry.brush = (item as StratContentControl).BorderBrush.ToString();
                         Image image = ((item as StratContentControl).Content as Image);
-                        newEntry.image = ((BitmapImage)image.Source).UriSource.AbsolutePath;
+                        newEntry.image = GetRelativePathForImage(((BitmapImage)image.Source).UriSource);
                         newEntry.type = DragNDropObjType.Image;
                     }
                     if ((item as StratContentControl).Content is TextControl)
@@ -898,8 +899,27 @@ namespace xstrat.MVVM.View
             return result;
         }
 
+        public string GetRelativePathForImage(Uri image)
+        {
+            string folder = Globals.XStratInstallPath + @"/Images/Icons/";
+            
+            Uri baseFolder = new Uri(folder);
+            
+            if (image == null) return null;
+
+            var relativeUri = image.MakeRelativeUri(baseFolder).ToString();
+
+            if(relativeUri == "./")
+            {
+                return System.IO.Path.GetFileName(image.AbsolutePath);
+            }
+            return null;
+        }
+
         public void LoadDragNDropItems(List<DragNDropObj> list)
         {
+            string ImageFolder = Globals.XStratInstallPath + @"/Images/Icons/";
+
             foreach (var item in list)
             {
                 if(item.type == DragNDropObjType.Image)
@@ -908,7 +928,7 @@ namespace xstrat.MVVM.View
 
                     Image newimg = new Image();
                     newimg.IsHitTestVisible = false;
-                    newimg.Source = new BitmapImage(new Uri(item.image, UriKind.Absolute));
+                    newimg.Source = new BitmapImage(new Uri(ImageFolder + item.image, UriKind.Absolute));
 
                     StratContentControl newcc = new StratContentControl();
                     newcc.Content = newimg;

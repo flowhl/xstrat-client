@@ -44,16 +44,15 @@ namespace xstrat.Ui
         public ScrimFinderControl()
         {
             InitializeComponent();
-            Loaded += ScrimFinderControl_Loaded1;
+            Loaded += ScrimFinderControl_Loaded;
         }
 
-        private void ScrimFinderControl_Loaded1(object sender, RoutedEventArgs e)
+        private void ScrimFinderControl_Loaded(object sender, RoutedEventArgs e)
         {
             CalendarTypeSelector.SelectIndex(0);
             PlayerAmount.Value = 5;
             CalendarTypeSelector.CBox.SelectionChanged += CBox_SelectionChanged;
             UpdateButtonColors();
-            Loaded += ScrimFinderControl_Loaded;
             DurHour.Value = 2;
             ToHour.Value = 23;
             FromHour.Value = 20;
@@ -65,10 +64,6 @@ namespace xstrat.Ui
             {
                 OffdayDisplay.NameInput = "Available days";
             }
-        }
-
-        private void ScrimFinderControl_Loaded(object sender, RoutedEventArgs e)
-        {
             //Fill Player selection list for Calendar filter
             foreach (var user in Globals.teammates)
             {

@@ -9,9 +9,10 @@ namespace xstrat.Core
     public enum Wallstates
     {
         solid,
-        removed,
         reinforced,
+        removed,
         mira,
+        miraReversed,
         head,
         body,
         foot,

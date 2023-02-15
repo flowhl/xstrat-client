@@ -25,6 +25,17 @@ namespace xstrat.Ui
 
         public bool isLocked = false;
 
+        public ImageSource None { get; set; } = null;
+        public ImageSource Breach { get; set; }
+        public ImageSource Reinforcement { get; set; }
+        public ImageSource HeadLevel { get; set; }
+        public ImageSource BodyLevel { get; set; }
+        public ImageSource FootLevel { get; set; }
+        public ImageSource MurderHole { get; set; }
+        public ImageSource Mira { get; set; }
+        public ImageSource MiraReversed { get; set; }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -32,13 +43,27 @@ namespace xstrat.Ui
         public WallControl(Wallstates[] walls)
         {
             InitializeComponent();
+            Init();
             states = new Wallstates[] { walls[0], walls[1], walls[2], walls[3], walls[4], walls[5] };
             updateWidth();
         }
         public WallControl()
         {
             InitializeComponent();
+            Init();
             updateWidth();
+        }
+
+        public void Init()
+        {
+            Breach = GetImageSource("/Images/Icons/wall_breach.png");
+            Reinforcement = GetImageSource("/Images/Icons/wall_reinforcement.png");
+            HeadLevel = GetImageSource("/Images/Icons/wall_head.png");
+            BodyLevel = GetImageSource("/Images/Icons/wall_body.png");
+            FootLevel = GetImageSource("/Images/Icons/wall_foot.png");
+            MurderHole = GetImageSource("/Images/Icons/wall_murderhole.png");
+            Mira = GetImageSource("/Images/Icons/wall_mira.png");
+            MiraReversed = GetImageSource("/Images/Icons/wall_mirareversed.png");
         }
 
         private void StackPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -47,7 +72,7 @@ namespace xstrat.Ui
             var val = states[0];
             if (states.All(x => x == val))
             {
-                if(val >= Wallstates.mira)
+                if(val >= Wallstates.miraReversed)
                 {
                     for (int i = 0; i < states.Length; i++)
                     {
@@ -99,36 +124,36 @@ namespace xstrat.Ui
         {
             for (int i = 0; i < states.Length; i++)
             {
-                SetState(i, states[i], stateToIcon(states[i]));
+                SetState(i, states[i], StateToImage(states[i]));
             }
         }
-        private void SetState(int SPIndex, Wallstates ws, MaterialDesignThemes.Wpf.PackIconKind icon)
+        private void SetState(int SPIndex, Wallstates ws, ImageSource source)
         {
             switch (SPIndex)
             {
                 case 0:
                     Rec1.Fill = stateToColor(ws);
-                    Sym1.Kind = icon;
+                    Icon1.Source = source;
                     break;
                 case 1:
                     Rec2.Fill = stateToColor(ws);
-                    Sym2.Kind = icon;
+                    Icon2.Source = source;
                     break;
                 case 2:
                     Rec3.Fill = stateToColor(ws);
-                    Sym3.Kind = icon;
+                    Icon3.Source = source;
                     break;
                 case 3:
                     Rec4.Fill = stateToColor(ws);
-                    Sym4.Kind = icon;
+                    Icon4.Source = source;
                     break;
                 case 4:
                     Rec5.Fill = stateToColor(ws);
-                    Sym5.Kind = icon;
+                    Icon5.Source = source;
                     break;
                 case 5:
                     Rec6.Fill = stateToColor(ws);
-                    Sym6.Kind = icon;
+                    Icon6.Source = source;
                     break;
                 default:
                     break;
@@ -146,6 +171,8 @@ namespace xstrat.Ui
                     return "#101010".ToSolidColorBrush();
                 case Wallstates.mira: // mira purple
                     return new SolidColorBrush(Colors.Purple);
+                case Wallstates.miraReversed: // mira purple
+                    return new SolidColorBrush(Colors.Purple);
                 case Wallstates.head: // Red
                     return new SolidColorBrush(Colors.Red);
                 case Wallstates.body: // Orange-Red
@@ -158,32 +185,50 @@ namespace xstrat.Ui
                     return new SolidColorBrush(Colors.AliceBlue);
             }
         }
-        private MaterialDesignThemes.Wpf.PackIconKind stateToIcon(Wallstates ws)
+        private ImageSource StateToImage(Wallstates ws)
         {
             switch (ws)
             {
                 case Wallstates.solid:
-                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                    CenterIcon.Source = None;
+                    CenterIcon.Height = 19;
+                    CenterIcon.Width = 19;
+                    return None;
                 case Wallstates.removed:
-                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.Reload;
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                    CenterIcon.Source = Breach;
+                    CenterIcon.Height = 22;
+                    CenterIcon.Width = double.NaN;
+                    return None;
                 case Wallstates.reinforced:
-                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.LockOutline;
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                    CenterIcon.Source = Reinforcement;
+                    CenterIcon.Height = 19;
+                    CenterIcon.Width = this.Width * 0.9;
+                    return None;
                 case Wallstates.mira:
-                    SymAll.Kind = MaterialDesignThemes.Wpf.PackIconKind.RectangleOutline;
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                    CenterIcon.Source = Mira;
+                    CenterIcon.Height = 50;
+                    CenterIcon.Width = 50;
+                    return None;
+                case Wallstates.miraReversed:
+                    CenterIcon.Source = MiraReversed;
+                    CenterIcon.Height = 50;
+                    CenterIcon.Width = 50;
+                    return None;
                 case Wallstates.head:
-                    return MaterialDesignThemes.Wpf.PackIconKind.HeadPlusOutline;
+                    CenterIcon.Source = None;
+                    return HeadLevel;
                 case Wallstates.body:
-                    return MaterialDesignThemes.Wpf.PackIconKind.Person;
+                    CenterIcon.Source = None;
+                    return BodyLevel;
                 case Wallstates.foot:
-                    return MaterialDesignThemes.Wpf.PackIconKind.ShoePrint;
+                    CenterIcon.Source = None;
+                    return FootLevel;
                 case Wallstates.punch:
-                    return MaterialDesignThemes.Wpf.PackIconKind.EyeArrowLeftOutline;
+                    CenterIcon.Source = None;
+                    return MurderHole;
                 default:
-                    return MaterialDesignThemes.Wpf.PackIconKind.None;
+                    CenterIcon.Source = None;
+                    return None;
             }
         }
 
@@ -202,12 +247,20 @@ namespace xstrat.Ui
             Rec5.Width = nwidth;
             Rec6.Width = nwidth;
 
-            Sym1.Width = nwidth;
-            Sym2.Width = nwidth;
-            Sym3.Width = nwidth;
-            Sym4.Width = nwidth;
-            Sym5.Width = nwidth;
-            Sym6.Width = nwidth;
+            Icon1.Width = nwidth;
+            Icon2.Width = nwidth;
+            Icon3.Width = nwidth;
+            Icon4.Width = nwidth;
+            Icon5.Width = nwidth;
+            Icon6.Width = nwidth;
+        }
+
+        public ImageSource GetImageSource(string relativePath)
+        {
+            Uri uri = new Uri(relativePath, UriKind.Relative);
+            BitmapImage bitmapImage = new BitmapImage(uri);
+
+            return bitmapImage;
         }
     }
 }

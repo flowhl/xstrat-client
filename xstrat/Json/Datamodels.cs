@@ -200,6 +200,7 @@ namespace xstrat.Json
         /// 2 - wöchentlich
         /// 3 - jede 2. woche
         /// 4 - monatlich
+        /// 5 - daily
         /// </summary>
         public OffDayType(int id, string name)
         {

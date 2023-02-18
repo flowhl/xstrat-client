@@ -717,6 +717,7 @@ namespace xstrat.Core
             OffDayTypes.Add(new OffDayType(2, "weekly"));
             OffDayTypes.Add(new OffDayType(3, "every second week"));
             OffDayTypes.Add(new OffDayType(4, "monthly"));
+            OffDayTypes.Add(new OffDayType(5, "daily"));
         }
         private static void RetrieveCalendarFilterTypes()
         {

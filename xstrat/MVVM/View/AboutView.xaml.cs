@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace xstrat.MVVM.View
         public AboutView()
         {
             InitializeComponent();
+            TxtVersion.Content = "Beta: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
 }

@@ -149,13 +149,15 @@ namespace xstrat.MVVM.View
 
                     ArrowPoint1 = null;
                 }
-
             }
         }
 
         private void Arrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            if(CurrentToolTip == View.ToolTip.Eraser)
+            {
+                DrawingLayer.Children.Remove(sender as Path);
+            }
         }
 
 

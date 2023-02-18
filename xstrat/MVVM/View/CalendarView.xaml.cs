@@ -343,7 +343,10 @@ namespace xstrat.MVVM.View
                 }
                 else if (od.typ == 2) //weekly
                 {
-                    for (int i = 0; i < 24; i++)
+                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 7;
+                    if (offset < 0) offset = 0;
+
+                    for (int i = 0; i < offset + 24; i++)
                     {
                         from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7*i);
                         to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
@@ -355,7 +358,10 @@ namespace xstrat.MVVM.View
                 }
                 else if (od.typ == 3) // every second week
                 {
-                    for (int i = 0; i < 12; i++)
+                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 14;
+                    if (offset < 0) offset = 0;
+
+                    for (int i = 0; i < offset + 12; i++)
                     {
                         from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
                         to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
@@ -367,7 +373,10 @@ namespace xstrat.MVVM.View
                 }
                 else if (od.typ == 4) // monthly
                 {
-                    for (int i = 0; i < 6; i++)
+                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 30;
+                    if (offset < 0) offset = 0;
+
+                    for (int i = 0; i < offset + 6; i++)
                     {
                         from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
                         to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
@@ -377,8 +386,23 @@ namespace xstrat.MVVM.View
                         }
                     }
                 }
+                else if (od.typ == 5) // daily
+                {
+                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays;
+                    if (offset < 0) offset = 0;
 
-                
+                    for (int i = 0; i < offset + 365; i++)
+                    {
+                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        if (from != null && to != null)
+                        {
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                        }
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {

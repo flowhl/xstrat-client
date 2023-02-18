@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace xstrat.Core
     public static class Notify
     {
         private static bool endLogging = false;
-        static NotificationManager notificationManager = new NotificationManager();
+        public static NotificationManager NotifyManager = new NotificationManager();
         public static void sendInfo(string message)
         {
             if (endLogging) return;
-            notificationManager.Show(new NotificationContent
+            NotifyManager.Show(new NotificationContent
             {
                 Title = "Info",
                 Message = message,
@@ -24,7 +25,7 @@ namespace xstrat.Core
         public static void sendWarn(string message)
         {
             if (endLogging) return;
-            notificationManager.Show(new NotificationContent
+            NotifyManager.Show(new NotificationContent
             {
                 Title = "Warning!",
                 Message = message,
@@ -34,7 +35,7 @@ namespace xstrat.Core
         public static void sendSuccess(string message)
         {
             if (endLogging) return;
-            notificationManager.Show(new NotificationContent
+            NotifyManager.Show(new NotificationContent
             {
                 Title = "Success!",
                 Message = message,
@@ -44,7 +45,7 @@ namespace xstrat.Core
         public static void sendError(string message)
         {
             if (endLogging) return;
-            notificationManager.Show(new NotificationContent
+            NotifyManager.Show(new NotificationContent
             {
                 Title = "Error!",
                 Message = message,
@@ -58,6 +59,12 @@ namespace xstrat.Core
         public static void ResumeLogging()
         {
             endLogging = false;
+        }
+        public static void CleanUp()
+        {
+            var Window = NotifyManager?.GetType()?.GetField("_window", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            var windowInstance = Window?.GetValue(Window) as NotificationsOverlayWindow;
+            windowInstance?.Close();
         }
     }
 }

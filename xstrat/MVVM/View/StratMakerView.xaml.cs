@@ -35,6 +35,12 @@ using static WPFSpark.MonitorHelper;
 using Microsoft.Win32;
 using Path = System.Windows.Shapes.Path;
 using System.Runtime.CompilerServices;
+using System.Drawing;
+using Point = System.Windows.Point;
+using Image = System.Windows.Controls.Image;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace xstrat.MVVM.View
 {
@@ -90,17 +96,20 @@ namespace xstrat.MVVM.View
             LoadColorButtons();
             UpdateFloorButtons();
             LoadDragItems();
-            //ZoomControl.ZoomChanged += ZoomControl_ZoomChanged;
-            MouseLeftButtonDown += StratMakerView_MouseLeftButtonDown;
-            //MouseLeftButtonUp += StratMakerView_MouseLeftButtonUp;
-            ZoomControl.MouseLeftButtonDown += ZC_MouseLeftButtonDown;
-            
+            ZoomControl.MouseLeftButtonDown += ZC_MouseLeftButtonDown;            
         }
 
-        public Point? ArrowPoint1 = null;
+        public Point? ClickPoint1 = null;
 
         private void ZC_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Point MousePosition = e.GetPosition(DrawingLayer);
+            MouseClickedOnCanvas(MousePosition);
+        }
+
+        public void MouseClickedOnCanvas(Point MousePosition)
+        {
+
             //catch when chlick
             var mouseover = DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.IsMouseCaptureWithin);
             if (mouseover != null && mouseover.Count() > 0) return;
@@ -111,46 +120,159 @@ namespace xstrat.MVVM.View
             //text
             if (CurrentToolTip == View.ToolTip.Text)
             {
-                var newpos = e.GetPosition(DrawingLayer);
-
-                TextControl txt = new TextControl();
-                txt.MainContent.Text = "Text";
-
-                StratContentControl newcc = new StratContentControl();
-                newcc.Content = txt;
-                newcc.Height = 100;
-                newcc.Width = 300;
-                newcc.Padding = new Thickness(1);
-                newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                newcc.BorderBrush = Brushes.Transparent;
-                newcc.BorderThickness = new Thickness(2);
-
-                DrawingLayer.Children.Add(newcc);
-
-                Canvas.SetLeft(newcc, newpos.X);
-                Canvas.SetTop(newcc, newpos.Y);
+                CreateText(MousePosition);
             }
 
             //Arrow
             if (CurrentToolTip == View.ToolTip.Arrow)
             {
-                if(ArrowPoint1 == null)
-                {
-                    ArrowPoint1 = Mouse.GetPosition(DrawingLayer);
-                }
-                else
-                {
-                    Path arrow = CreateArrow(ArrowPoint1.GetValueOrDefault(), Mouse.GetPosition(DrawingLayer), 20);
+                CreateArrow(MousePosition);
+            }
 
-                    // Add the arrow to the canvas
-                    DrawingLayer.Children.Add(arrow);
+            //Rectangle
+            if (CurrentToolTip == View.ToolTip.Rectangle)
+            {
+                CreateRectangle(MousePosition);
+            }
 
-                    arrow.PreviewMouseLeftButtonDown+= Arrow_MouseLeftButtonDown;
-
-                    ArrowPoint1 = null;
-                }
+            //Circle
+            if (CurrentToolTip == View.ToolTip.Circle)
+            {
+                CreateCircle(MousePosition);
             }
         }
+
+        public void CreateText(Point MousePosition)
+        {
+            TextControl txt = new TextControl();
+            txt.MainContent.Text = "Text";
+
+            StratContentControl newcc = new StratContentControl();
+            newcc.Content = txt;
+            newcc.Height = 100;
+            newcc.Width = 300;
+            newcc.Padding = new Thickness(1);
+            newcc.Style = this.FindResource("DesignerItemStyle") as Style;
+            newcc.BorderBrush = Brushes.Transparent;
+            newcc.BorderThickness = new Thickness(2);
+
+            DrawingLayer.Children.Add(newcc);
+
+            Canvas.SetLeft(newcc, MousePosition.X);
+            Canvas.SetTop(newcc, MousePosition.Y);
+        }
+
+        public void CreateArrow(Point MousePosition)
+        {
+            if (ClickPoint1 == null)
+            {
+                ClickPoint1 = MousePosition;
+            }
+            else
+            {
+                Path arrow = CreateArrow(ClickPoint1.GetValueOrDefault(), MousePosition, 20);
+
+                // Add the arrow to the canvas
+                DrawingLayer.Children.Add(arrow);
+
+                arrow.PreviewMouseLeftButtonDown += Arrow_MouseLeftButtonDown;
+
+                ClickPoint1 = null;
+            }
+        }
+
+        public void CreateRectangle(Point MousePosition)
+        {
+            if (ClickPoint1 == null)
+            {
+                ClickPoint1 = MousePosition;
+            }
+            else
+            {
+                Point startPoint = ClickPoint1.GetValueOrDefault();
+                Point endPoint = MousePosition;
+
+                // calculate the minimum and maximum X and Y values
+                double minX = Math.Min(startPoint.X, endPoint.X);
+                double maxX = Math.Max(startPoint.X, endPoint.X);
+                double minY = Math.Min(startPoint.Y, endPoint.Y);
+                double maxY = Math.Max(startPoint.Y, endPoint.Y);
+
+                var scc = new StratContentControl();
+
+                scc.Padding = new Thickness(1);
+                scc.Style = this.FindResource("DesignerItemStyle") as Style;
+                scc.BorderBrush = Brushes.Transparent;
+                scc.BorderThickness = new Thickness(2);
+
+                // create a new rectangle object
+                Rectangle rectangle = new Rectangle();
+                rectangle.IsHitTestVisible = false;
+
+                // set the width and height of the rectangle
+                scc.Width = maxX - minX;
+                scc.Height = maxY - minY;
+
+                scc.Content = rectangle;
+
+
+                // Add the rect to the canvas
+                DrawingLayer.Children.Add(scc);
+
+                // set the position of the rectangle on the canvas
+                Canvas.SetLeft(scc, minX);
+                Canvas.SetTop(scc, minY);
+
+                // set the fill color of the rectangle
+                rectangle.Fill = CurrentBrush;
+
+                ClickPoint1 = null;
+            }
+        }
+
+        public void CreateCircle(Point MousePosition)
+        {
+            if (ClickPoint1 == null)
+            {
+                ClickPoint1 = MousePosition;
+            }
+            else
+            {
+                Point startPoint = ClickPoint1.GetValueOrDefault();
+                Point endPoint = MousePosition;
+
+                double radius = Math.Max(Math.Abs(startPoint.X - endPoint.X), Math.Abs(startPoint.Y - endPoint.Y));
+
+                var scc = new StratContentControl();
+
+                scc.Padding = new Thickness(1);
+                scc.Style = this.FindResource("DesignerItemStyle") as Style;
+                scc.BorderBrush = Brushes.Transparent;
+                scc.BorderThickness = new Thickness(2);
+
+                Ellipse circle = new Ellipse();
+                circle.IsHitTestVisible = false;
+
+                scc.Content = circle;
+
+                scc.Width = radius * 2;
+                scc.Height = radius * 2;
+
+
+                // set the fill color of the rectangle
+                circle.Fill = CurrentBrush;
+
+                // Add the circle to the canvas
+                DrawingLayer.Children.Add(scc);
+                
+                // set the position of the rectangle on the canvas
+                Canvas.SetLeft(scc, startPoint.X - radius);
+                Canvas.SetTop(scc, startPoint.Y - radius);
+
+                ClickPoint1 = null;
+            }
+        }
+
 
         private void Arrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -339,28 +461,10 @@ namespace xstrat.MVVM.View
 
         private bool deleteFromCanvasLoop = false;
 
-        private async void DeleteFromCanvas()
+        private void DeleteFromCanvas(Point point)
         {
-            while (deleteFromCanvasLoop)
-            {
-                var dList = DrawingLayer.Children.OfType<UIElement>().Where(x => Math.Abs(Mouse.GetPosition(x).X) < BrushSize && Math.Abs(Mouse.GetPosition(x).Y) < BrushSize).ToList();
-                dList.ForEach(x => DrawingLayer.Children.Remove(x));
-                await Task.Delay(5);
-            }
-        }
-
-        private void StratMakerView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            deleteFromCanvasLoop = true;
-            //if (!DrawingLayer.Children.OfType<StratContentControl>().Where(x => (x.PointFromScreen(Mouse.GetPosition(this)) - x.PointToScreen(new Point(0, 0))).Length < 20).Any())
-            //{
-            //    DeselectAll();
-            //}
-            if (CurrentToolTip == View.ToolTip.Eraser)
-            {
-                DeleteFromCanvas();
-            }
-
+            var dList = DrawingLayer.Children.OfType<UIElement>().Where(x => Math.Abs(Mouse.GetPosition(x).X) < BrushSize && Math.Abs(Mouse.GetPosition(x).Y) < BrushSize).ToList();
+            dList.ForEach(x => DrawingLayer.Children.Remove(x));
         }
 
         #region Drag Items
@@ -533,6 +637,8 @@ namespace xstrat.MVVM.View
 
         public void ToolTipChanged(ToolTip tip)
         {
+            ClickPoint1 = null;
+
             switch (tip)
             {
                 case View.ToolTip.Cursor:
@@ -606,7 +712,7 @@ namespace xstrat.MVVM.View
             // Create a path to represent the arrow
             Path arrowPath = new Path();
 
-            if(brush == null)
+            if (brush == null)
             {
                 // Set the stroke and fill colors for the path
                 arrowPath.Stroke = CurrentBrush;
@@ -617,7 +723,7 @@ namespace xstrat.MVVM.View
                 arrowPath.Stroke = brush;
                 arrowPath.Fill = brush;
             }
-            
+
 
             // Create a geometry group to hold the arrow head and tail geometries
             GeometryGroup arrowGeometryGroup = new GeometryGroup();
@@ -1310,7 +1416,7 @@ namespace xstrat.MVVM.View
             if(CurrentToolTip == View.ToolTip.Eraser)
             {
                 deleteFromCanvasLoop = true;
-                DeleteFromCanvas();
+                //DeleteFromCanvas();
                 e.Handled = true;
             }
         }
@@ -1327,7 +1433,7 @@ namespace xstrat.MVVM.View
             if (CurrentToolTip == View.ToolTip.Eraser)
             {
                 deleteFromCanvasLoop = true;
-                DeleteFromCanvas();
+                //DeleteFromCanvas();
                 e.Handled = true;
             }
         }
@@ -1404,6 +1510,42 @@ namespace xstrat.MVVM.View
                 }
 
             }
+
+            if (e.Key == Key.D1)
+            {
+                ToolTipChanged(View.ToolTip.Cursor);
+            }
+            if (e.Key == Key.D2)
+            {
+                ToolTipChanged(View.ToolTip.Brush);
+            }
+            if (e.Key == Key.D3)
+            {
+                ToolTipChanged(View.ToolTip.Eraser);
+            }
+            if (e.Key == Key.D4)
+            {
+                ToolTipChanged(View.ToolTip.Text);
+            }
+            if (e.Key == Key.D5)
+            {
+                ToolTipChanged(View.ToolTip.Node);
+            }
+            if (e.Key == Key.D6)
+            {
+                ToolTipChanged(View.ToolTip.Arrow);
+            }
+            if (e.Key == Key.D7)
+            {
+                ToolTipChanged(View.ToolTip.Circle);
+            }
+            if (e.Key == Key.D8)
+            {
+                ToolTipChanged(View.ToolTip.Rectangle);
+            }
+
+
+
 
         }
 

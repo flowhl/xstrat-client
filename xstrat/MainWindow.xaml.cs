@@ -36,6 +36,12 @@ namespace xstrat
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Notify.CleanUp();
         }
 
         private void MainWindow_StateChanged(object sender, EventArgs e)
@@ -131,6 +137,7 @@ namespace xstrat
         {
             Application.Current.Shutdown();
         }
+
 
         /// <summary>
         /// show login window

@@ -145,7 +145,7 @@ namespace xstrat.MVVM.View
         public void CreateText(Point MousePosition)
         {
             TextControl txt = new TextControl();
-            txt.MainContent.Text = "Text";
+            txt.MainContent.Text = "Enter Text";
 
             StratContentControl newcc = new StratContentControl();
             newcc.Content = txt;
@@ -158,8 +158,8 @@ namespace xstrat.MVVM.View
 
             DrawingLayer.Children.Add(newcc);
 
-            Canvas.SetLeft(newcc, MousePosition.X);
-            Canvas.SetTop(newcc, MousePosition.Y);
+            Canvas.SetLeft(newcc, MousePosition.X - 150);
+            Canvas.SetTop(newcc, MousePosition.Y - 50);
         }
 
         public void CreateArrow(Point MousePosition)
@@ -645,46 +645,55 @@ namespace xstrat.MVVM.View
                     CurrentToolTip = View.ToolTip.Cursor;
                     System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
                     DeselectAllToolTips();
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = false);
                     BtnCursor.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Eraser:
                     CurrentToolTip = View.ToolTip.Eraser;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnEraser.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Text:
                     CurrentToolTip = View.ToolTip.Text;
                     System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.IBeam;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnText.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Node:
                     CurrentToolTip = View.ToolTip.Node;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnNodes.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Arrow:
                     CurrentToolTip = View.ToolTip.Arrow;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnArrow.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Circle:
                     CurrentToolTip = View.ToolTip.Circle;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnCircle.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Rectangle:
                     CurrentToolTip = View.ToolTip.Rectangle;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnRectangle.BorderThickness = new Thickness(1);
                     break;
                 case View.ToolTip.Brush:
                     CurrentToolTip = View.ToolTip.Brush;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     BtnBrush.BorderThickness = new Thickness(1);
                     break;
                 default:
                     CurrentToolTip = View.ToolTip.Cursor;
+                    DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is TextControl).ToList().ForEach(x => (x.Content as TextControl).Locked = true);
                     DeselectAllToolTips();
                     break;
             }
@@ -1068,7 +1077,7 @@ namespace xstrat.MVVM.View
                 if (item.type == DragNDropObjType.Text)
                 {
                     TextControl txt = new TextControl();
-                    txt.MainContent.Text = "Text";
+                    txt.MainContent.Text = item.textContent;
 
                     StratContentControl newcc = new StratContentControl();
                     newcc.Content = txt;
@@ -1442,7 +1451,6 @@ namespace xstrat.MVVM.View
                             }
                         }
                     }
-
                     // Update the canvas
                     DrawingLayer.InvalidateVisual();
                 }
@@ -1617,39 +1625,36 @@ namespace xstrat.MVVM.View
 
             if (e.Key == Key.D1)
             {
-                ToolTipChanged(View.ToolTip.Cursor);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Cursor);
             }
             if (e.Key == Key.D2)
             {
-                ToolTipChanged(View.ToolTip.Brush);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Brush);
             }
             if (e.Key == Key.D3)
             {
-                ToolTipChanged(View.ToolTip.Eraser);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Eraser);
             }
             if (e.Key == Key.D4)
             {
-                ToolTipChanged(View.ToolTip.Text);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Text);
             }
             if (e.Key == Key.D5)
             {
-                ToolTipChanged(View.ToolTip.Node);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Node);
             }
             if (e.Key == Key.D6)
             {
-                ToolTipChanged(View.ToolTip.Arrow);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Arrow);
             }
             if (e.Key == Key.D7)
             {
-                ToolTipChanged(View.ToolTip.Circle);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Circle);
             }
             if (e.Key == Key.D8)
             {
-                ToolTipChanged(View.ToolTip.Rectangle);
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Rectangle);
             }
-
-
-
 
         }
 

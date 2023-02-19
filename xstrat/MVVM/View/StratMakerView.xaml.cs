@@ -96,7 +96,7 @@ namespace xstrat.MVVM.View
             LoadColorButtons();
             UpdateFloorButtons();
             LoadDragItems();
-            ZoomControl.MouseLeftButtonDown += ZC_MouseLeftButtonDown;            
+            ZoomControl.MouseLeftButtonDown += ZC_MouseLeftButtonDown;
         }
 
         public Point? ClickPoint1 = null;
@@ -264,7 +264,7 @@ namespace xstrat.MVVM.View
 
                 // Add the circle to the canvas
                 DrawingLayer.Children.Add(scc);
-                
+
                 // set the position of the rectangle on the canvas
                 Canvas.SetLeft(scc, startPoint.X - radius);
                 Canvas.SetTop(scc, startPoint.Y - radius);
@@ -276,7 +276,7 @@ namespace xstrat.MVVM.View
 
         private void Arrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(CurrentToolTip == View.ToolTip.Eraser)
+            if (CurrentToolTip == View.ToolTip.Eraser)
             {
                 DrawingLayer.Children.Remove(sender as Path);
             }
@@ -307,7 +307,7 @@ namespace xstrat.MVVM.View
             {
                 XmlDocument svgFile;
 
-                
+
                 svgFile = Globals.GetSCVDocumentForMapAndFloor(map_id, floor);
 
                 if (svgFile == null) continue;
@@ -320,7 +320,7 @@ namespace xstrat.MVVM.View
                 {
                     //add image
                     MapStack.Children.Add(newimage);
-                    Canvas.SetLeft(newimage,offset);
+                    Canvas.SetLeft(newimage, offset);
 
                     //add Walls
                     CreateWallsBeta(SVGContent, offset);
@@ -471,12 +471,12 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if(Globals.teamInfo.game_name == "R6 Siege")
+            if (Globals.teamInfo.game_name == "R6 Siege")
             {
                 IconsSP.Children.Clear();
                 string folder = Globals.XStratInstallPath + @"/Images/Icons/";
                 var allItems = Directory.GetFiles(folder, "*.png").Where(x => x != null && System.IO.Path.GetFileName(x).StartsWith("r6_")).ToList();
-                foreach(var item in allItems)
+                foreach (var item in allItems)
                 {
                     if (item == null || item == "") continue;
                     //<Image x:Name="Alibi" Source="/Images/R6_Icons/g_Alibi.png" MouseMove="Image_MouseMove"/>
@@ -490,7 +490,7 @@ namespace xstrat.MVVM.View
                 }
             }
         }
-        
+
         private void NewImg_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             draggedItem = sender as Image;
@@ -686,7 +686,7 @@ namespace xstrat.MVVM.View
                 default:
                     CurrentToolTip = View.ToolTip.Cursor;
                     DeselectAllToolTips();
-                    break;  
+                    break;
             }
         }
 
@@ -801,10 +801,10 @@ namespace xstrat.MVVM.View
             map_id = currentStrat.map_id;
             TxtMapName.Content = Globals.Maps.Where(x => x.id == currentStrat.map_id).FirstOrDefault()?.name;
             TxtCreatedBy.Content = Globals.teammates.Where(x => x.id == currentStrat.created_by).FirstOrDefault()?.name;
-            TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-","/").Replace("T", " ");
+            TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-", "/").Replace("T", " ");
             TxtLastEdit.Content = currentStrat.last_edit_time?.ToString().Replace("-", "/").Replace("T", " ");
             TxtVersion.Content = currentStrat.version;
-            
+
             //content
 
             if (string.IsNullOrEmpty(currentStrat.content)) return;
@@ -855,14 +855,14 @@ namespace xstrat.MVVM.View
 
         public async Task SaveStratAsync()
         {
-            if(currentStrat == null)
+            if (currentStrat == null)
             {
                 Notify.sendError("No current strat");
                 return;
             }
 
             StratContent content = new StratContent(); //build here
-            
+
             content.comment = Kommentar.Text;
             content.wallstatus = GetWallObjs();
             content.hatchstatus = GetHatchObjs();
@@ -955,11 +955,11 @@ namespace xstrat.MVVM.View
             foreach (var item in DrawingLayer.Children)
             {
                 var newEntry = new DragNDropObj();
-                
+
                 // Image or Text
-                if(item is StratContentControl)
+                if (item is StratContentControl)
                 {
-                    if((item as StratContentControl).Content is Image)
+                    if ((item as StratContentControl).Content is Image)
                     {
                         newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
                         newEntry.brush = (item as StratContentControl).BorderBrush.ToString();
@@ -979,7 +979,7 @@ namespace xstrat.MVVM.View
                 }
 
                 //Drawing
-                if(item is Ellipse)
+                if (item is Ellipse)
                 {
                     newEntry.pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
                     newEntry.diameter = (item as Ellipse).Width;
@@ -988,9 +988,9 @@ namespace xstrat.MVVM.View
                 }
 
                 //Arrow
-                if(item is Path)
+                if (item is Path)
                 {
-                    newEntry.pos = new Point(Canvas.GetLeft(item as Path), Canvas.GetTop(item as Path));                    
+                    newEntry.pos = new Point(Canvas.GetLeft(item as Path), Canvas.GetTop(item as Path));
 
                     var g = ((item as Path).Data as GeometryGroup).Children.First();
                     if (g == null) continue;
@@ -1001,7 +1001,7 @@ namespace xstrat.MVVM.View
                     newEntry.brush = (item as Path).Fill.ToString();
                     newEntry.type = DragNDropObjType.Arrow;
                 }
-                if(newEntry != null) result.Add(newEntry);
+                if (newEntry != null) result.Add(newEntry);
             }
 
             return result;
@@ -1010,14 +1010,14 @@ namespace xstrat.MVVM.View
         public string GetRelativePathForImage(Uri image)
         {
             string folder = Globals.XStratInstallPath + @"/Images/Icons/";
-            
+
             Uri baseFolder = new Uri(folder);
-            
+
             if (image == null) return null;
 
             var relativeUri = image.MakeRelativeUri(baseFolder).ToString();
 
-            if(relativeUri == "./")
+            if (relativeUri == "./")
             {
                 return System.IO.Path.GetFileName(image.AbsolutePath);
             }
@@ -1030,7 +1030,7 @@ namespace xstrat.MVVM.View
 
             foreach (var item in list)
             {
-                if(item.type == DragNDropObjType.Image)
+                if (item.type == DragNDropObjType.Image)
                 {
                     Point newpos = item.pos;
 
@@ -1054,7 +1054,7 @@ namespace xstrat.MVVM.View
                     Canvas.SetTop(newcc, newpos.Y);
                 }
 
-                if(item.type == DragNDropObjType.Circle)
+                if (item.type == DragNDropObjType.Circle)
                 {
                     var ellipse = new Ellipse();
                     ellipse.Fill = item.brush.ToSolidColorBrush();
@@ -1065,7 +1065,7 @@ namespace xstrat.MVVM.View
                     Canvas.SetTop(ellipse, item.pos.Y);
                 }
 
-                if(item.type == DragNDropObjType.Text)
+                if (item.type == DragNDropObjType.Text)
                 {
                     TextControl txt = new TextControl();
                     txt.MainContent.Text = "Text";
@@ -1085,7 +1085,7 @@ namespace xstrat.MVVM.View
                     Canvas.SetTop(newcc, item.pos.Y);
                 }
 
-                if(item.type == DragNDropObjType.Arrow)
+                if (item.type == DragNDropObjType.Arrow)
                 {
                     var arrow = CreateArrow(item.arrowGeometryStart, item.arrowGeometryEnd, 20, item.brush.ToSolidColorBrush());
                     DrawingLayer.Children.Add(arrow);
@@ -1171,26 +1171,26 @@ namespace xstrat.MVVM.View
                 int pos_id = -1;
                 int.TryParse(split[1], out map_id);
                 int.TryParse(split[2], out pos_id);
-                CreateStrat(map_id, pos_id);                
+                CreateStrat(map_id, pos_id);
             }
             else
-            {           
+            {
                 Strat strat = sendObj.Tag as Strat;
                 LoadStrat(strat.id);
             }
         }
-        
+
         private async void CreateStrat(int map, int pos)
         {
             string inputString = Microsoft.VisualBasic.Interaction.InputBox("Name", "Name your strat", "");
-            if (string.IsNullOrEmpty(inputString)) 
+            if (string.IsNullOrEmpty(inputString))
             {
                 Notify.sendError("Invalid name");
                 return;
             }
 
             //create scrim here
-            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.Game_id(),map, pos, 1, "");
+            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.Game_id(), map, pos, 1, "");
             if (result.Item1)
             {
                 Notify.sendSuccess("Strat created successfully");
@@ -1242,7 +1242,7 @@ namespace xstrat.MVVM.View
 
         private void Image_MouseMove(object sender, MouseEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragDrop.DoDragDrop(sender as Image, sender as Image, DragDropEffects.Move);
             }
@@ -1339,16 +1339,120 @@ namespace xstrat.MVVM.View
         #endregion
 
         #region drawing
+        private Point previousMousePosition;
 
         private void DrawingLayer_MouseMove(object sender, MouseEventArgs e)
         {
-            if(CurrentToolTip == View.ToolTip.Brush && Mouse.LeftButton == MouseButtonState.Pressed)
+            
+            if (CurrentToolTip == View.ToolTip.Brush && Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 Point mousepoint = e.GetPosition(DrawingLayer);
                 paintCircle(CurrentBrush, mousepoint);
                 e.Handled = true;
             }
+            if (CurrentToolTip == View.ToolTip.Eraser && Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                ////V1
+                //    Point currentMousePosition = e.GetPosition(DrawingLayer);
+
+                //    double distance = (currentMousePosition - previousMousePosition).Length;
+                //    if (distance > 0)
+                //    {
+                //        // Determine the range of the eraser based on the distance
+                //        Rect eraserRect = new Rect(currentMousePosition, previousMousePosition);
+                //        eraserRect.Inflate(10, 10); // Increase the size of the eraser
+
+                //        // Iterate through all the objects in the canvas and check if they intersect with the eraser
+                //        for (int i = DrawingLayer.Children.Count - 1; i >= 0; i--)
+                //        {
+                //            UIElement element = DrawingLayer.Children[i];
+
+                //            if (element is StratContentControl && (element as StratContentControl).Content is UIElement) element = (element as StratContentControl).Content as UIElement;
+
+                //            Rect elementRect = VisualTreeHelper.GetDescendantBounds(element);
+                //            elementRect = element.TransformToAncestor(DrawingLayer).TransformBounds(elementRect);
+
+                //            if (eraserRect.IntersectsWith(elementRect))
+                //            {
+                //                // Remove the object from the canvas
+                //                DrawingLayer.Children.RemoveAt(i);
+                //            }
+                //        }
+
+                //        // Update the canvas
+                //        DrawingLayer.InvalidateVisual();
+                //    }
+
+                //    previousMousePosition = currentMousePosition;
+
+                Point currentMousePosition = e.GetPosition(DrawingLayer);
+
+                double distance = (currentMousePosition - previousMousePosition).Length;
+                if (distance > 0)
+                {
+                    // Determine the range of the eraser based on the distance
+                    double eraserRadius = BrushSize;
+                    Ellipse eraser = new Ellipse
+                    {
+                        Width = eraserRadius * 2,
+                        Height = eraserRadius * 2,
+                        Fill = Brushes.White,
+                        Opacity = 0.01, // make the eraser invisible
+                        StrokeThickness = 1,
+                        Stroke = Brushes.Black
+                    };
+
+                    // Position the eraser at the current mouse position
+                    Canvas.SetLeft(eraser, currentMousePosition.X - eraserRadius);
+                    Canvas.SetTop(eraser, currentMousePosition.Y - eraserRadius);
+
+                    // Create a Geometry object that represents the area that should be erased
+                    EllipseGeometry eraserGeometry = new EllipseGeometry(currentMousePosition, eraserRadius, eraserRadius);
+
+                    // Iterate through all the objects in the canvas and check if they intersect with the eraser
+                    for (int i = DrawingLayer.Children.Count - 1; i >= 0; i--)
+                    {
+                        UIElement element = DrawingLayer.Children[i] as UIElement;
+                        
+                        if (element == null) continue;
+
+                        if(element is Ellipse)
+                        {
+                            var el = element as Ellipse;
+                            double X = Canvas.GetLeft(el) + el.Width;
+                            double Y = Canvas.GetTop(el) + el.Height;
+
+                            if(Math.Abs(X - currentMousePosition.X) < eraserRadius && Math.Abs(Y - currentMousePosition.Y) < eraserRadius)
+                            {
+                                // Remove the object from the canvas
+                                DrawingLayer.Children.RemoveAt(i);
+                            }
+                        }
+                        else
+                        { 
+                            Rect elementRect = VisualTreeHelper.GetDescendantBounds(element);
+                            elementRect = element.TransformToAncestor(DrawingLayer).TransformBounds(elementRect);
+
+                            // Check if the element intersects with the eraser shape
+                            Geometry elementGeometry = new RectangleGeometry(elementRect);
+                            if (elementGeometry != null && elementGeometry.FillContains(eraserGeometry))
+                            {
+                                // Remove the object from the canvas
+                                DrawingLayer.Children.RemoveAt(i);
+                            }
+                        }
+                    }
+
+                    // Update the canvas
+                    DrawingLayer.InvalidateVisual();
+                }
+
+                previousMousePosition = currentMousePosition;   
+            }
+
+            
         }
+
 
         private void paintCircle(Brush circleColor, Point position)
         {
@@ -1413,7 +1517,7 @@ namespace xstrat.MVVM.View
             {
                 e.Handled = true;
             }
-            if(CurrentToolTip == View.ToolTip.Eraser)
+            if (CurrentToolTip == View.ToolTip.Eraser)
             {
                 deleteFromCanvasLoop = true;
                 //DeleteFromCanvas();
@@ -1426,7 +1530,7 @@ namespace xstrat.MVVM.View
             TranslateXLast = ZoomControl.TranslateX;
             TranslateYLast = ZoomControl.TranslateY;
 
-            if(CurrentToolTip == View.ToolTip.Brush)
+            if (CurrentToolTip == View.ToolTip.Brush)
             {
                 e.Handled = true;
             }
@@ -1467,7 +1571,7 @@ namespace xstrat.MVVM.View
 
         private void ZoomControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(TranslateXLast != ZoomControl.TranslateX || TranslateYLast != ZoomControl.TranslateY)
+            if (TranslateXLast != ZoomControl.TranslateX || TranslateYLast != ZoomControl.TranslateY)
             {
                 ZoomControl.InvalidateVisual();
             }
@@ -1477,15 +1581,15 @@ namespace xstrat.MVVM.View
 
         private void KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 DeselectAll();
                 return;
             }
 
-            if(e.Key == Key.A)
+            if (e.Key == Key.A)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl))
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
                     SelectAll();
                     return;
@@ -1503,7 +1607,7 @@ namespace xstrat.MVVM.View
 
             if (e.Key == Key.R)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl))
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
                     Refresh();
                     return;
@@ -1595,7 +1699,7 @@ namespace xstrat.MVVM.View
                 MessageBox.Show(err.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
+
         #endregion
     }
     public enum ToolTip
@@ -1662,20 +1766,20 @@ namespace xstrat.MVVM.View
         public DragNDropObjType type { get; set; }
         public double width { get; set; }
         public double height { get; set; }
-        public string textContent{ get; set; }
+        public string textContent { get; set; }
         public Point arrowGeometryStart { get; set; }
         public Point arrowGeometryEnd { get; set; }
         public string image { get; set; }
         public double diameter { get; set; }
     }
 
-    public enum DragNDropObjType 
+    public enum DragNDropObjType
     {
         Image,
         Circle,
         Text,
         Arrow
     }
-    
+
 
 }

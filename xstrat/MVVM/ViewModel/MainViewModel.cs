@@ -27,6 +27,7 @@ namespace xstrat.MVVM.ViewModel
         public RelayCommand LicenseViewCommand { get; set; }
         public RelayCommand LoadingViewCommand { get; set; }
         public RelayCommand WallEditorViewCommand { get; set; }
+        public RelayCommand ReplayViewCommand { get; set; }
 
 
         public HomeViewModel HomeVM { get; set; }
@@ -44,6 +45,7 @@ namespace xstrat.MVVM.ViewModel
         public LicenseViewModel LicenseVM { get; set; }
         public LoadingViewModel LoadingVM { get; set; }
         public WallEditorViewModel WallEditorVM { get; set; }
+        public ReplayViewModel ReplayVM { get; set; }
         public object _currentView;
 
         public object CurrentView
@@ -72,6 +74,7 @@ namespace xstrat.MVVM.ViewModel
             LicenseVM = new LicenseViewModel();
             LoadingVM = new LoadingViewModel();
             WallEditorVM = new WallEditorViewModel();
+            ReplayVM = new ReplayViewModel();
 
             CurrentView = HomeVM;
 
@@ -90,6 +93,7 @@ namespace xstrat.MVVM.ViewModel
             LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = LicenseVM; });
             LoadingViewCommand = new RelayCommand(o => { CurrentView = LoadingVM; });
             WallEditorViewCommand = new RelayCommand(o => { CurrentView = WallEditorVM; });
+            ReplayViewCommand = new RelayCommand(o => { CurrentView = ReplayVM; });
         }
     }
 }

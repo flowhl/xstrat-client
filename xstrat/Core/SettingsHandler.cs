@@ -22,6 +22,7 @@ namespace xstrat.Core
         public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
         public static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
         public static readonly string MapsFolder = Globals.XStratInstallPath + @"/Images/Maps/";
+        public static readonly string XStratReplayPath = Globals.XStratInstallPath + @"/Replays";
 
         //settings propeties:
         public static bool StayLoggedin { get; set; }
@@ -31,6 +32,8 @@ namespace xstrat.Core
         public static string APIURL { get; set; }
         public static string LastLoginMail { get; set; }
         public static int current_user_id { get; set; }
+        public static string GameReplayPath { get; set; }
+
 
         public static async void Initialize()
         {
@@ -61,6 +64,7 @@ namespace xstrat.Core
                 APIURL = lines[4];
                 LastLoginMail = lines[5];
                 current_user_id = Convert.ToInt32(lines[6]);
+                GameReplayPath = lines[7];
             }
             catch (Exception ex)
             {
@@ -80,7 +84,8 @@ namespace xstrat.Core
             SkinSwitcherStatus.ToString(),
             APIURL,
             LastLoginMail,
-            current_user_id.ToString()
+            current_user_id.ToString(),
+            GameReplayPath
             };
 
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))
@@ -98,7 +103,8 @@ namespace xstrat.Core
             false.ToString(),
             "https://api.xstrat.app/api",
             "",
-            "-1",            
+            "-1",
+            "",
             };
 
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))

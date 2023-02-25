@@ -264,6 +264,8 @@
     <Compile Include="Calendar\ICalendarEvent.cs" />
     <Compile Include="Calendar\MonthNumberToNameConverter.cs" />
     <Compile Include="Core\ApiHandler.cs" />
+    <Compile Include="Core\DissectDataModels.cs" />
+    <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\Globals.cs" />
     <Compile Include="Core\Notify.cs" />
     <Compile Include="Core\RoutineButtonClicked.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LoadingViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\ReplayViewModel.cs" />
     <Compile Include="MVVM\ViewModel\RoutinesViewModel.cs" />
     <Compile Include="MVVM\ViewModel\ScrimViewModel.cs" />
     <Compile Include="MVVM\ViewModel\StatsViewModel.cs" />
@@ -288,6 +291,9 @@
     </Compile>
     <Compile Include="MVVM\View\LoadingView.xaml.cs">
       <DependentUpon>LoadingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ReplayView.xaml.cs">
+      <DependentUpon>ReplayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\RoutinesView.xaml.cs">
       <DependentUpon>RoutinesView.xaml</DependentUpon>
@@ -482,6 +488,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ReplayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,7 +22,7 @@ namespace xstrat.Core
         public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
         public static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
         public static readonly string MapsFolder = Globals.XStratInstallPath + @"/Images/Maps/";
-        public static readonly string XStratReplayPath = Globals.XStratInstallPath + @"/Replays";
+        public static readonly string XStratReplayPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/replays";
 
         //settings propeties:
         public static bool StayLoggedin { get; set; }

@@ -178,6 +178,20 @@
                 </Style.Resources>
             </Style>
 
+            <Style x:Key="DataGridSmall" TargetType="Button">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Background" Value="#336cb5" />
+                <Setter Property="Margin" Value="2" />
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"></Setter>
+                    </Style>
+                </Style.Resources>
+            </Style>
+
             <!--Menu item-->
 
             <!--// Menu with SubMenu Template //-->
@@ -685,6 +699,54 @@
                 </Setter>
             </Style>
             
+            <!--DataGrid-->
+            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+                <Setter Property="Background" Value="#252526" />
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <Setter Property="BorderBrush" Value="#2B2B2B" />
+                <Setter Property="RowBackground" Value="#2B2B2B" />
+                <Setter Property="AlternatingRowBackground" Value="#252526" />
+                <Setter Property="HorizontalGridLinesBrush" Value="#3C3C3C" />
+                <Setter Property="VerticalGridLinesBrush" Value="#3C3C3C" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="RowHeight" Value="30" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="ColumnHeaderStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Background" Value="#1E1E1E" />
+                            <Setter Property="Foreground" Value="#FFFFFF" />
+                            <Setter Property="BorderBrush" Value="#2B2B2B" />
+                            <Setter Property="BorderThickness" Value="0,0,1,2" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="6" />
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                            <Setter Property="FontFamily" Value="Segoe UI" />
+                            <Setter Property="SeparatorBrush" Value="#FFFFFF" />
+                            <Setter Property="SeparatorVisibility" Value="Visible" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="CellStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="#FFFFFF" />
+                            <Setter Property="BorderBrush" Value="#2B2B2B" />
+                            <Setter Property="BorderThickness" Value="0,0,1,1" />
+                            <Setter Property="Padding" Value="12" />
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontFamily" Value="Segoe UI" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
         
     </Application.Resources>

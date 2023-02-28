@@ -338,6 +338,7 @@
     <Compile Include="Ui\ColorDisplay.xaml.cs">
       <DependentUpon>ColorDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\DataGridExtensions.cs" />
     <Compile Include="Ui\HatchControl.xaml.cs">
       <DependentUpon>HatchControl.xaml</DependentUpon>
     </Compile>
@@ -355,6 +356,9 @@
     </Compile>
     <Compile Include="Ui\OffDaysList.xaml.cs">
       <DependentUpon>OffDaysList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\ReplayControl.xaml.cs">
+      <DependentUpon>ReplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\Routine.xaml.cs">
       <DependentUpon>Routine.xaml</DependentUpon>
@@ -572,6 +576,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\OffDaysList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\ReplayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

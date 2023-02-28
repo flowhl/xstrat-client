@@ -32,6 +32,13 @@ namespace xstrat.MVVM.View
         public ReplayView()
         {
             InitializeComponent();
+            Loaded += ReplayView_Loaded;
+        }
+
+        private void ReplayView_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadReplays();
+            myDataGrid.ItemsSource = ReplayFolders;
         }
 
         public void LoadReplays()
@@ -46,7 +53,7 @@ namespace xstrat.MVVM.View
         #region FileHandling
 
         public void GenerateFolderList()
-        {
+         {
             var list = new List<MatchReplayFolder>();
 
             string xstratpath = SettingsHandler.XStratReplayPath;
@@ -74,7 +81,7 @@ namespace xstrat.MVVM.View
 
                 var rep = new MatchReplayFolder();
 
-                string foldername = Path.GetDirectoryName(xreplay);
+                string foldername = Path.GetFileName(xreplay);
 
                 rep.FolderName = foldername;
                 rep.IsXStratPath = true;
@@ -86,12 +93,12 @@ namespace xstrat.MVVM.View
 
             //Get Game Folder Replays
             var gamereplays = Directory.GetDirectories(gamepath, "*", SearchOption.AllDirectories);
-            foreach (var greplay in xstratreplays)
+            foreach (var greplay in gamereplays)
             {
                 //has rounds in it
                 if (!hasRounds(greplay)) continue;
 
-                string foldername = Path.GetDirectoryName(greplay);
+                string foldername = Path.GetFileName(greplay);
                 
                 MatchReplayFolder rep;
 
@@ -116,7 +123,8 @@ namespace xstrat.MVVM.View
 
             //Get Titles from XML
             var titles = GetTitleDict();
-            if (GetTitleDict() == null) return;
+            if(titles != null)
+            {
 
             foreach (var title in titles)
             {
@@ -124,7 +132,8 @@ namespace xstrat.MVVM.View
                 foreach (var item in listItems)
                 {
                     item.Title = title.Value;
-                }
+                }            
+            }
             }
 
             ReplayFolders = list;
@@ -132,6 +141,7 @@ namespace xstrat.MVVM.View
 
         public void ImportAll()
         {
+            LoadReplays();
             if(ReplayFolders == null) return;
 
             var toImport = ReplayFolders.Where(x => !x.IsXStratPath && x.IsInGameFolder).AsEnumerable();
@@ -148,8 +158,8 @@ namespace xstrat.MVVM.View
             string xstratpath = SettingsHandler.XStratReplayPath;
             string gamepath = SettingsHandler.GameReplayPath;
 
-            string sourceDirectory = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
-            string targetDirectory = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string sourceDirectory = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string targetDirectory = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
 
             if (gamepath.IsNullOrEmpty() || !Directory.Exists(gamepath))
             {
@@ -165,9 +175,18 @@ namespace xstrat.MVVM.View
             if(!Directory.Exists(sourceDirectory)) return;
             if (Directory.Exists(targetDirectory)) return;
 
-            Globals.CopyFilesRecursively(sourceDirectory, targetDirectory);
+            Globals.CopyFolder(sourceDirectory, targetDirectory);
         }
 
+        public void CreateJson(string folderName)
+        {
+            if(folderName.IsNullOrEmpty()) return;
+        }
+
+        public void DeleteMatch(string folderName)
+        {
+            if (folderName.IsNullOrEmpty()) return;
+        }
         #endregion
 
         #region FileHelpers
@@ -223,6 +242,26 @@ namespace xstrat.MVVM.View
             File.WriteAllText(xmlFile, xml);
         }
         #endregion
+
+        private void ImportAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ImportAll();
+        }
+
+        private void LoadBtn_Click(object sender, RoutedEventArgs e)
+        {
+            LoadReplays();
+        }
+
+        private void CreateAllJsonBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
+        {
+            CreateJson((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
     }
     public class MatchReplayFolder
     {

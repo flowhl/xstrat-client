@@ -262,5 +262,19 @@ namespace xstrat.MVVM.View
         {
             Process.Start("https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-");
         }
+
+        private void ReplayPickPathBtn_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = @"C:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\Tom Clancy's Rainbow Six Siege\MatchReplay";
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var path = dialog.FileName;
+                SettingsHandler.GameReplayPath = path;
+                ReplayPathDisplay.Text = path;
+                SettingsHandler.Save();
+            }
+        }
     }
 }

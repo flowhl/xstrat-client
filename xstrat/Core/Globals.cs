@@ -1188,18 +1188,23 @@ namespace xstrat.Core
             return difference < threshold;
         }
 
-        public static void CopyFilesRecursively(string sourcePath, string targetPath)
+        static public void CopyFolder(string sourceFolder, string destFolder)
         {
-            //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            if (!Directory.Exists(destFolder))
+                Directory.CreateDirectory(destFolder);
+            string[] files = Directory.GetFiles(sourceFolder);
+            foreach (string file in files)
             {
-                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+                string name = Path.GetFileName(file);
+                string dest = Path.Combine(destFolder, name);
+                File.Copy(file, dest);
             }
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            string[] folders = Directory.GetDirectories(sourceFolder);
+            foreach (string folder in folders)
             {
-                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                string name = Path.GetFileName(folder);
+                string dest = Path.Combine(destFolder, name);
+                CopyFolder(folder, dest);
             }
         }
     }

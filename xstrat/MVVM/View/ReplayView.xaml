@@ -3,10 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:xstrat.MVVM.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:ui="clr-namespace:xstrat.Ui" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150">
     <Grid>
-            
+        <StackPanel Orientation="Vertical">
+            <Border Background="#202020" CornerRadius="10" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Import All" Margin="5" Click="ImportAllBtn_Click">
+                        <materialDesign:PackIcon Height="30" Width="30" Kind="Import" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="CreateAllJsonBtn" ToolTip="Analyse All" Margin="5" Click="CreateAllJsonBtn_Click">
+                        <materialDesign:PackIcon Height="30" Width="30" Kind="Search" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="LoadBtn" ToolTip="Reload" Margin="5" Click="LoadBtn_Click">
+                        <materialDesign:PackIcon Height="30" Width="30" Kind="Reload" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+                
+            </Border>
+            <DataGrid Height="200" Name="myDataGrid" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>                    
+                    <DataGridTextColumn Header="Folder Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
+
+                    <ui:DataGridIndicatorColumn Header="Imported" BindingPath="IsXStratPath" IsReadOnly="True"></ui:DataGridIndicatorColumn>
+                    <ui:DataGridIndicatorColumn Header="Exported" BindingPath="IsInGameFolder" IsReadOnly="True"></ui:DataGridIndicatorColumn>
+
+                    <ui:DataGridIndicatorColumn Header="Analyzed" BindingPath="JsonCreated" IsReadOnly="True"></ui:DataGridIndicatorColumn>
+                    <ui:DataGridButtonColumn Header="" Width="100" Title="Analyze" Click="AnalyzeButtonColumn_Click"></ui:DataGridButtonColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </StackPanel>
     </Grid>
 </UserControl>

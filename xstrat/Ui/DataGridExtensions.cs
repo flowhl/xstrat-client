@@ -9,14 +9,68 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Data;
 using System.Globalization;
+using MaterialDesignThemes.Wpf;
+using System.Runtime.CompilerServices;
 
-namespace xstrat.Ui
+namespace xstrat
 {
+    #region Converter
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class NotConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return !boolValue;
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    // Value converter to convert the bound value to a Brush for the Ellipse Fill property
+    public class IndicatorValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // If the value is true, return a green Brush, else return a red Brush
+            if (value is bool indicatorValue && indicatorValue)
+            {
+                return new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                return new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    #endregion
+
     public class DataGridButtonColumn : DataGridBoundColumn
     {
         public event RoutedEventHandler Click;
 
         public string Title { get; set; }
+
+        public static readonly DependencyProperty IsEnabledProperty =
+            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(DataGridButtonColumn), new PropertyMetadata(true));
+
+        public bool IsEnabled
+        {
+            get { return (bool)GetValue(IsEnabledProperty); }
+            set { SetValue(IsEnabledProperty, value); }
+        }
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
@@ -27,6 +81,12 @@ namespace xstrat.Ui
                 Tag = dataItem,
                 Style = (Style)Application.Current.Resources["DataGridSmall"]
             };
+
+            // Bind the IsEnabled property to the dependency property
+            button.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabled))
+            {
+                Source = this
+            });
 
             // Attach the Click event handler
             button.Click += OnClick;
@@ -47,6 +107,67 @@ namespace xstrat.Ui
             Click?.Invoke(sender, e);
         }
     }
+    public class DataGridIconColumn : DataGridBoundColumn
+    {
+        public event RoutedEventHandler Click;
+
+        public PackIconKind Kind { get; set; }
+        public string ButtonToolTip { get; set; }
+
+        public static readonly DependencyProperty IsEnabledProperty =
+            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(DataGridIconColumn), new PropertyMetadata(true));
+
+        public bool IsEnabled
+        {
+            get { return (bool)GetValue(IsEnabledProperty); }
+            set { SetValue(IsEnabledProperty, value); }
+        }
+
+        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        {
+            var icon = new PackIcon();
+            icon.Kind = Kind;
+            icon.Height = 15;
+            icon.Width = 15;
+
+            // Create a button control
+            var button = new Button()
+            {
+                Content = icon,
+                Tag = dataItem,
+                Style = (Style)Application.Current.Resources["DataGridSmall"],
+                ToolTip = ButtonToolTip
+            };
+
+            // Bind the IsEnabled property to the dependency property
+            button.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabled))
+            {
+                Source = this
+            });
+
+            // Set the IsEnabled property of the button
+            button.IsEnabled = IsEnabled;
+            
+            // Attach the Click event handler
+            button.Click += OnClick;
+
+            // Return the button control as the element for the cell
+            return button;
+        }
+
+        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
+        {
+            // Editing is not supported for this column
+            return null;
+        }
+
+        private void OnClick(object sender, RoutedEventArgs e)
+        {
+            // Raise the Click event
+            Click?.Invoke(sender, e);
+        }
+    }
+
     public class DataGridIndicatorColumn : DataGridBoundColumn
     {
         public string BindingPath { get; set; }
@@ -79,27 +200,7 @@ namespace xstrat.Ui
         }
     }
 
-    // Value converter to convert the bound value to a Brush for the Ellipse Fill property
-    public class IndicatorValueConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // If the value is true, return a green Brush, else return a red Brush
-            if (value is bool indicatorValue && indicatorValue)
-            {
-                return new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                return new SolidColorBrush(Colors.Red);
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    
 
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -84,7 +85,7 @@ namespace xstrat.MVVM.View
                 string foldername = Path.GetFileName(xreplay);
 
                 rep.FolderName = foldername;
-                rep.IsXStratPath = true;
+                rep.IsXStratFolder = true;
 
                 rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
 
@@ -144,7 +145,7 @@ namespace xstrat.MVVM.View
             LoadReplays();
             if(ReplayFolders == null) return;
 
-            var toImport = ReplayFolders.Where(x => !x.IsXStratPath && x.IsInGameFolder).AsEnumerable();
+            var toImport = ReplayFolders.Where(x => !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
 
             foreach (var item in toImport)
             {
@@ -187,6 +188,40 @@ namespace xstrat.MVVM.View
         {
             if (folderName.IsNullOrEmpty()) return;
         }
+
+        private void AnalyzeAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Delete(string folderName)
+        {
+            if (folderName.IsNullOrEmpty()) return;
+            throw new NotImplementedException();
+        }
+
+        private void Export(string folderName)
+        {
+            if (folderName.IsNullOrEmpty()) return;
+            throw new NotImplementedException();
+        }
+
+        private void RemoveFromGameFolder(string folderName)
+        {
+            if (folderName.IsNullOrEmpty()) return;
+            throw new NotImplementedException();
+        }
+
+        private void ShowInExplorer(string folderName)
+        {
+            if (folderName.IsNullOrEmpty()) return;
+            var replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault();
+            if (replay == null || !replay.IsXStratFolder) return;
+            string xstratpath = SettingsHandler.XStratReplayPath;
+            string path = Path.Combine(xstratpath, folderName);
+            Process.Start(path);
+        }
+
         #endregion
 
         #region FileHelpers
@@ -243,6 +278,8 @@ namespace xstrat.MVVM.View
         }
         #endregion
 
+        #region Click Events
+
         private void ImportAllBtn_Click(object sender, RoutedEventArgs e)
         {
             ImportAll();
@@ -255,20 +292,49 @@ namespace xstrat.MVVM.View
 
         private void CreateAllJsonBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            AnalyzeAll();
         }
 
         private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
         {
             CreateJson((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
         }
+
+        private void DeleteButtonColumn_Click(object sender, RoutedEventArgs e)
+        {
+            Delete((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
+
+        private void CopyToGameButtonColumn_Click(object sender, RoutedEventArgs e)
+        {
+            Export((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
+
+        private void RemoveFromGameFolderButtonColumn_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromGameFolder((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
+
+        private void ShowInExplorerColumn_Click(object sender, RoutedEventArgs e)
+        {
+
+            ShowInExplorer((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
+
+        private void ImportColumn_Click(object sender, RoutedEventArgs e)
+        {
+            Import((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+        }
+
+        #endregion
+        
     }
     public class MatchReplayFolder
     {
         public string FolderName { get; set; }
         public string Title { get; set; }
         public bool IsInGameFolder{ get; set; }
-        public bool IsXStratPath { get; set; }
+        public bool IsXStratFolder { get; set; }
         public bool JsonCreated { get; set; }
     }
 }

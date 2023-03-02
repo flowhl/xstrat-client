@@ -185,11 +185,18 @@
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Background" Value="#336cb5" />
                 <Setter Property="Margin" Value="2" />
+                <Setter Property="IsEnabled" Value="True" />
+                <!-- add new setter for IsEnabled -->
                 <Style.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="5"></Setter>
                     </Style>
                 </Style.Resources>
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background" Value="#202020" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!--Menu item-->

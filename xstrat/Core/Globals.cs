@@ -358,7 +358,8 @@ namespace xstrat.Core
             "High Calibre", // November 30, 2021
             "Demon Veil", // March 15, 2022
             "Vector Glare", // June 14, 2022
-            "Brutal Swarm" // September 6, 2022
+            "Brutal Swarm", // September 6, 2022
+            "Solar Raid", //Y7S4 2022-12-06 id=28
             };
 
         public static string[] IconPaths = new string[]{

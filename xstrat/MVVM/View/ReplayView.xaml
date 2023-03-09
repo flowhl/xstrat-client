@@ -18,28 +18,34 @@
                 </StackPanel>
 
             </Border>
-            <DataGrid Name="myDataGrid" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <!--Text-->
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Folder Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
 
-                    <!--Inidcators-->
-                    <xstrat:DataGridIndicatorColumn Header="Imported" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
-                    <xstrat:DataGridIndicatorColumn Header="Exported" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
-                    <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="JsonCreated" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+            <Border Background="#202020" CornerRadius="10" Margin="5" Height="35">
+                <Label Name="StatusText" Style="{StaticResource PS}" VerticalAlignment="Center"></Label>
+            </Border>
 
-                    <!--Buttons-->
-                    <xstrat:DataGridIconColumn Width="60" Kind="Import" ButtonToolTip="Import" Click="ImportColumn_Click" IsEnabled="{Binding IsXStratFolder, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
-                    <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Analyze Replay" Click="AnalyzeButtonColumn_Click" IsEnabled="{Binding JsonCreated, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
-                    <xstrat:DataGridIconColumn Width="60" Kind="GoogleController" ButtonToolTip="Copy to game folder" Click="CopyToGameButtonColumn_Click" IsEnabled="{Binding IsInGameFolder, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
-                    <xstrat:DataGridIconColumn Width="60" Kind="GoogleControllerOff" ButtonToolTip="Remove from game folder" Click="RemoveFromGameFolderButtonColumn_Click" IsEnabled="{Binding IsInGameFolder}"></xstrat:DataGridIconColumn>
-                    <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click" IsEnabled="{Binding IsXStratFolder}"></xstrat:DataGridIconColumn>
+            <Border Background="#202020" CornerRadius="10" Margin="5" MinHeight="500">
+                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5">
+                    <DataGrid.Columns>
+                        <!--Text-->
+                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Folder Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
 
-                    <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                        <!--Inidcators-->
+                        <xstrat:DataGridIndicatorColumn Header="Backed Up" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="In Game Folder" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="JsonCreated" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
 
+                        <!--Buttons-->
+                        <xstrat:DataGridIconColumn Width="60" Kind="Import" ButtonToolTip="Import" Click="ImportColumn_Click" IsEnabled="{Binding IsXStratFolder, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
+                        <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Analyze Replay" Click="AnalyzeButtonColumn_Click" IsEnabled="{Binding JsonCreated, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
+                        <xstrat:DataGridIconColumn Width="60" Kind="GoogleController" ButtonToolTip="Copy to game folder" Click="CopyToGameButtonColumn_Click" IsEnabled="{Binding IsInGameFolder, Converter={StaticResource notConverter}}"></xstrat:DataGridIconColumn>
+                        <xstrat:DataGridIconColumn Width="60" Kind="GoogleControllerOff" ButtonToolTip="Remove from game folder" Click="RemoveFromGameFolderButtonColumn_Click" IsEnabled="{Binding IsInGameFolder}"></xstrat:DataGridIconColumn>
+                        <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click" IsEnabled="{Binding IsXStratFolder}"></xstrat:DataGridIconColumn>
+
+                        <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

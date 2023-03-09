@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using System;
 
-namespace xstrat.Core
+public static class Logger
 {
-    public static class Logger
+    private static readonly object lockObject = new object();
+    private static readonly string LogFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/logs.txt";
+    private static readonly string LogFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat";
+
+    public static void Log(string message)
     {
-        static readonly string LogFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/logs.txt";
-        static readonly string LogFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat";
-        public static void Log(string Message)
+        lock (lockObject)
         {
             if (!Directory.Exists(LogFolder))
             {
@@ -21,9 +19,10 @@ namespace xstrat.Core
             {
                 File.Create(LogFile);
             }
-            TextWriter tw = new StreamWriter(LogFile, true);
-            tw.WriteLine(DateTime.Now.ToString() + " | " + Message);
-            tw.Close();
+            using (TextWriter tw = new StreamWriter(LogFile, true))
+            {
+                tw.WriteLine(DateTime.Now.ToString() + " | " + message);
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -28,7 +30,7 @@ namespace xstrat.MVVM.View
     public partial class ReplayView : UserControl
     {
 
-        public List<MatchReplayFolder> ReplayFolders { get; set; }
+        public ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
 
         public ReplayView()
         {
@@ -39,7 +41,7 @@ namespace xstrat.MVVM.View
         private void ReplayView_Loaded(object sender, RoutedEventArgs e)
         {
             LoadReplays();
-            myDataGrid.ItemsSource = ReplayFolders;
+            ReplayDG.ItemsSource = ReplayFolders;
         }
 
         public void LoadReplays()
@@ -51,11 +53,21 @@ namespace xstrat.MVVM.View
             //Update UI
         }
 
+        public void SetStatus(string message)
+        {
+            if (message.IsNullOrEmpty()) return;
+            this.Dispatcher.Invoke(() =>
+            {
+                StatusText.Content = message;
+            });
+        }
+
         #region FileHandling
 
         public void GenerateFolderList()
          {
-            var list = new List<MatchReplayFolder>();
+            SetStatus("Loading Folders");
+            var list = new ObservableCollection<MatchReplayFolder>();
 
             string xstratpath = SettingsHandler.XStratReplayPath;
             string gamepath = SettingsHandler.GameReplayPath;
@@ -90,6 +102,7 @@ namespace xstrat.MVVM.View
                 rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
 
                 list.Add(rep);
+                SetStatus($"Loaded: {xreplay}");
             }
 
             //Get Game Folder Replays
@@ -120,21 +133,21 @@ namespace xstrat.MVVM.View
                 rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
 
                 if (needsAdd) list.Add(rep);
+                SetStatus($"Loaded: {greplay}");
             }
 
             //Get Titles from XML
             var titles = GetTitleDict();
             if(titles != null)
             {
-
-            foreach (var title in titles)
-            {
-                var listItems = list.Where(x => x.Title == title.Key);
-                foreach (var item in listItems)
+                foreach (var title in titles)
                 {
-                    item.Title = title.Value;
-                }            
-            }
+                    var listItems = list.Where(x => x.Title == title.Key);
+                    foreach (var item in listItems)
+                    {
+                        item.Title = title.Value;
+                    }            
+                }
             }
 
             ReplayFolders = list;
@@ -156,6 +169,7 @@ namespace xstrat.MVVM.View
 
         public void Import(string folderName)
         {
+            SetStatus($"Importing: {folderName}");
             string xstratpath = SettingsHandler.XStratReplayPath;
             string gamepath = SettingsHandler.GameReplayPath;
 
@@ -179,19 +193,57 @@ namespace xstrat.MVVM.View
             Globals.CopyFolder(sourceDirectory, targetDirectory);
         }
 
-        public void CreateJson(string folderName)
+        public async void CreateJson(string folderName, bool refeshAfter = false)
         {
-            if(folderName.IsNullOrEmpty()) return;
+            SetStatus($"Analyzing: {folderName}");
+            if (folderName.IsNullOrEmpty()) return;
+
+            string exe = Path.Combine(Globals.XStratInstallPath, "External/r6-dissect.exe");
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = exe,
+                Arguments = $"{folderName} -x {folderName}.json",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                WorkingDirectory = SettingsHandler.XStratReplayPath,
+                CreateNoWindow = true
+            };
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.OutputDataReceived += Process_OutputDataReceived;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+            process.OutputDataReceived -= Process_OutputDataReceived;
+            SetStatus($"Analyzed Successfully: {folderName}");
+            if (refeshAfter) ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated = true;
+        }
+
+        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(e.Data))
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    SetStatus(e.Data);
+                });
+            }
         }
 
         public void DeleteMatch(string folderName)
         {
+            SetStatus($"Deleting: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
         }
 
         private void AnalyzeAll()
         {
-            throw new NotImplementedException();
+            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && !x.JsonCreated).AsEnumerable();
+
+            foreach (var item in toAnalyze)
+            {
+                Task.Run(() => CreateJson(item.FolderName, true));
+            }
         }
 
         private void Delete(string folderName)
@@ -297,44 +349,116 @@ namespace xstrat.MVVM.View
 
         private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            CreateJson((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            string replayName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
+            Task.Run(() => CreateJson(replayName, true));
         }
 
         private void DeleteButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            Delete((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            Delete((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void CopyToGameButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            Export((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            Export((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void RemoveFromGameFolderButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            RemoveFromGameFolder((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            RemoveFromGameFolder((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void ShowInExplorerColumn_Click(object sender, RoutedEventArgs e)
         {
 
-            ShowInExplorer((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            ShowInExplorer((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void ImportColumn_Click(object sender, RoutedEventArgs e)
         {
-            Import((myDataGrid.SelectedItem as MatchReplayFolder).FolderName);
+            Import((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         #endregion
         
     }
-    public class MatchReplayFolder
+    public class MatchReplayFolder : INotifyPropertyChanged
     {
-        public string FolderName { get; set; }
-        public string Title { get; set; }
-        public bool IsInGameFolder{ get; set; }
-        public bool IsXStratFolder { get; set; }
-        public bool JsonCreated { get; set; }
+        private string folderName;
+        public string FolderName
+        {
+            get { return folderName; }
+            set
+            {
+                if (folderName != value)
+                {
+                    folderName = value;
+                    OnPropertyChanged(nameof(FolderName));
+                }
+            }
+        }
+
+        private string title;
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                if (title != value)
+                {
+                    title = value;
+                    OnPropertyChanged(nameof(Title));
+                }
+            }
+        }
+
+        private bool isInGameFolder;
+        public bool IsInGameFolder
+        {
+            get { return isInGameFolder; }
+            set
+            {
+                if (isInGameFolder != value)
+                {
+                    isInGameFolder = value;
+                    OnPropertyChanged(nameof(IsInGameFolder));
+                }
+            }
+        }
+
+        private bool isXStratFolder;
+        public bool IsXStratFolder
+        {
+            get { return isXStratFolder; }
+            set
+            {
+                if (isXStratFolder != value)
+                {
+                    isXStratFolder = value;
+                    OnPropertyChanged(nameof(IsXStratFolder));
+                }
+            }
+        }
+
+        private bool jsonCreated;
+        public bool JsonCreated
+        {
+            get { return jsonCreated; }
+            set
+            {
+                if (jsonCreated != value)
+                {
+                    jsonCreated = value;
+                    OnPropertyChanged(nameof(JsonCreated));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

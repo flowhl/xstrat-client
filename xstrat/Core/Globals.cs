@@ -51,6 +51,25 @@ namespace xstrat.Core
             result[array.Length] = item;
             return result;
         }
+        public static T FindVisualParent<T>(this DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+            {
+                return null;
+            }
+
+            T parent = parentObject as T;
+            if (parent != null)
+            {
+                return parent;
+            }
+            else
+            {
+                return FindVisualParent<T>(parentObject);
+            }
+        }
     }
 
     public class Response

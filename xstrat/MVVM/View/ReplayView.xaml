@@ -6,7 +6,7 @@
         <StackPanel Orientation="Vertical">
             <Border Background="#202020" CornerRadius="10" Margin="5">
                 <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Import All" Margin="5" Click="ImportAllBtn_Click">
+                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Backup All" Margin="5" Click="ImportAllBtn_Click">
                         <materialDesign:PackIcon Height="30" Width="30" Kind="Import" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </Button>
                     <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="CreateAllJsonBtn" ToolTip="Analyse All" Margin="5" Click="CreateAllJsonBtn_Click">
@@ -14,6 +14,9 @@
                     </Button>
                     <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="LoadBtn" ToolTip="Reload" Margin="5" Click="LoadBtn_Click">
                         <materialDesign:PackIcon Height="30" Width="30" Kind="Reload" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="SaveBtn" ToolTip="Save All" Margin="5" Click="SaveBtn_Click">
+                        <materialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </Button>
                 </StackPanel>
 
@@ -23,16 +26,16 @@
                 <Label Name="StatusText" Style="{StaticResource PS}" VerticalAlignment="Center"></Label>
             </Border>
 
-            <Border Background="#202020" CornerRadius="10" Margin="5" MinHeight="500">
-                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5">
+            <Border Background="#202020" CornerRadius="10" Margin="5" Height="600">
+                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <!--Text-->
                         <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
                         <DataGridTextColumn Header="Folder Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
 
                         <!--Inidcators-->
-                        <xstrat:DataGridIndicatorColumn Header="Backed Up" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
-                        <xstrat:DataGridIndicatorColumn Header="In Game Folder" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="Backup" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="In Gamefolder" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
                         <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="JsonCreated" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
 
                         <!--Buttons-->

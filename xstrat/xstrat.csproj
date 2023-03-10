@@ -367,9 +367,6 @@
     <Compile Include="Ui\OffDaysList.xaml.cs">
       <DependentUpon>OffDaysList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\ReplayControl.xaml.cs">
-      <DependentUpon>ReplayControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Ui\Routine.xaml.cs">
       <DependentUpon>Routine.xaml</DependentUpon>
     </Compile>
@@ -586,10 +583,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\OffDaysList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Ui\ReplayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

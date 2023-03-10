@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Globalization;
 using MaterialDesignThemes.Wpf;
 using System.Runtime.CompilerServices;
+using xstrat.Core;
 
 namespace xstrat
 {
@@ -168,6 +169,7 @@ namespace xstrat
         }
     }
 
+
     public class DataGridIndicatorColumn : DataGridBoundColumn
     {
         public string BindingPath { get; set; }
@@ -189,6 +191,25 @@ namespace xstrat
                 Converter = new IndicatorValueConverter()
             });
 
+            // Subscribe to the DataContextChanged event to update the Fill property
+            var row = cell.FindVisualParent<DataGridRow>();
+            if (row != null)
+            {
+                row.DataContextChanged += (sender, e) =>
+                {
+                    // Get the current value of the bound property
+                    var propInfo = e.NewValue.GetType().GetProperty(BindingPath);
+                    var value = propInfo.GetValue(e.NewValue);
+
+                    // Convert the value to a Brush using the value converter
+                    var converter = new IndicatorValueConverter();
+                    var brush = (Brush)converter.Convert(value, typeof(Brush), null, CultureInfo.CurrentCulture);
+
+                    // Update the Fill property of the Ellipse control
+                    ellipse.Fill = brush;
+                };
+            }
+
             // Return the Ellipse control as the element for the cell
             return ellipse;
         }
@@ -199,8 +220,8 @@ namespace xstrat
             return null;
         }
     }
-
     
+
 
 
 }

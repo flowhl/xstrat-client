@@ -31,6 +31,7 @@ namespace xstrat.MVVM.View
     {
 
         public ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
+        
 
         public ReplayView()
         {
@@ -65,7 +66,7 @@ namespace xstrat.MVVM.View
         #region FileHandling
 
         public void GenerateFolderList()
-         {
+        {
             SetStatus("Loading Folders");
             var list = new ObservableCollection<MatchReplayFolder>();
 
@@ -113,7 +114,7 @@ namespace xstrat.MVVM.View
                 if (!hasRounds(greplay)) continue;
 
                 string foldername = Path.GetFileName(greplay);
-                
+
                 MatchReplayFolder rep;
 
                 rep = list.Where(x => x.FolderName == foldername).FirstOrDefault();
@@ -138,25 +139,28 @@ namespace xstrat.MVVM.View
 
             //Get Titles from XML
             var titles = GetTitleDict();
-            if(titles != null)
+            if (titles != null)
             {
                 foreach (var title in titles)
                 {
-                    var listItems = list.Where(x => x.Title == title.Key);
+                    var listItems = list.Where(x => x.FolderName == title.FolderName);
                     foreach (var item in listItems)
                     {
-                        item.Title = title.Value;
-                    }            
+                        item.Title = title.Title;
+                    }
                 }
             }
 
+            
             ReplayFolders = list;
+            ReplayDG.ItemsSource = null;
+            ReplayDG.ItemsSource = ReplayFolders;
         }
 
         public void ImportAll()
         {
             LoadReplays();
-            if(ReplayFolders == null) return;
+            if (ReplayFolders == null) return;
 
             var toImport = ReplayFolders.Where(x => !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
 
@@ -186,8 +190,8 @@ namespace xstrat.MVVM.View
                 Notify.sendWarn("Could not find XStrat Replay Folder: " + xstratpath);
                 return;
             }
-            
-            if(!Directory.Exists(sourceDirectory)) return;
+
+            if (!Directory.Exists(sourceDirectory)) return;
             if (Directory.Exists(targetDirectory)) return;
 
             Globals.CopyFolder(sourceDirectory, targetDirectory);
@@ -230,12 +234,6 @@ namespace xstrat.MVVM.View
             }
         }
 
-        public void DeleteMatch(string folderName)
-        {
-            SetStatus($"Deleting: {folderName}");
-            if (folderName.IsNullOrEmpty()) return;
-        }
-
         private void AnalyzeAll()
         {
             var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && !x.JsonCreated).AsEnumerable();
@@ -248,20 +246,39 @@ namespace xstrat.MVVM.View
 
         private void Delete(string folderName)
         {
+            SetStatus($"Deleting: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
-            throw new NotImplementedException();
+            string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
+            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
+            if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
+            LoadReplays();
         }
 
         private void Export(string folderName)
         {
+            SetStatus($"Copying to Game: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
-            throw new NotImplementedException();
+            string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
+            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+
+            if(Directory.Exists(dirXStrat) && !Directory.Exists(dirGame))
+            {
+                Globals.CopyFolder(dirXStrat, dirGame);
+            }
+            else
+            {
+                SetStatus("Could not copy to game folder:");
+            }
+            LoadReplays();
         }
 
         private void RemoveFromGameFolder(string folderName)
         {
             if (folderName.IsNullOrEmpty()) return;
-            throw new NotImplementedException();
+            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
+            LoadReplays();
         }
 
         private void ShowInExplorer(string folderName)
@@ -285,7 +302,7 @@ namespace xstrat.MVVM.View
             return files.Length > 0;
         }
 
-        public Dictionary<string, string> GetTitleDict()
+        public List<MatchReplayTitle> GetTitleDict()
         {
             string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
 
@@ -294,28 +311,28 @@ namespace xstrat.MVVM.View
                 Logger.Log("Could not find existing replay file in: " + xmlFile);
                 return null;
             }
-            XmlSerializer deserializer = new XmlSerializer(typeof(Dictionary<string, string>));
+            XmlSerializer deserializer = new XmlSerializer(typeof(List<MatchReplayTitle>));
             using (StringReader stringReader = new StringReader(xmlFile))
             {
-                return (Dictionary<string, string>)deserializer.Deserialize(stringReader);                
+                return (List<MatchReplayTitle>)deserializer.Deserialize(stringReader);
             }
         }
 
         public void SaveTitleDict()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            List<MatchReplayTitle> dict = new List<MatchReplayTitle>();
 
             if (ReplayFolders == null || ReplayFolders.Count == 0) return;
 
-            foreach (var folder in ReplayFolders)
+            foreach (var folder in ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty()))
             {
-                dict.Add(folder.FolderName, folder.Title);
+                dict.Add(new MatchReplayTitle { FolderName = folder.FolderName, Title = folder.Title });
             }
 
             SerializeTitleDict(dict);
         }
 
-        public void SerializeTitleDict(Dictionary<string, string> dict)
+        public void SerializeTitleDict(List<MatchReplayTitle> dict)
         {
             string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
 
@@ -379,8 +396,14 @@ namespace xstrat.MVVM.View
             Import((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveTitleDict();
+        }
+
         #endregion
-        
+
+
     }
     public class MatchReplayFolder : INotifyPropertyChanged
     {
@@ -459,6 +482,15 @@ namespace xstrat.MVVM.View
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public class MatchReplayTitle
+    {
+        public string FolderName { get; set; }
+        public string Title { get; set; }
+
+        public MatchReplayTitle()
+        {
         }
     }
 }

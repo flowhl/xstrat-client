@@ -73,12 +73,24 @@ namespace xstrat.MVVM.View
             //Update UI
         }
 
+        private System.Timers.Timer statusTimer;
+
         public void SetStatus(string message)
         {
             if (message.IsNullOrEmpty()) return;
             this.Dispatcher.Invoke(() =>
             {
                 StatusText.Content = message;
+                // Reset the timer when the status is set again
+                if (statusTimer != null) statusTimer.Stop();
+                statusTimer = new System.Timers.Timer(10000);
+                statusTimer.Elapsed += (sender, e) => {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        StatusText.Content = "";
+                    });
+                };
+                statusTimer.Start();
             });
         }
 

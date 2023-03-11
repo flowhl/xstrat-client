@@ -10,266 +10,221 @@ using System.Threading.Tasks;
 namespace xstrat.Dissect
 {
 
-    public class ActivityFeed
-    {
-        [JsonProperty("type")]
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
 
-        [JsonProperty("username")]
-        [JsonPropertyName("username")]
-        public string Username { get; set; }
-
-        [JsonProperty("time")]
-        [JsonPropertyName("time")]
-        public string Time { get; set; }
-
-        [JsonProperty("timeInSeconds")]
-        [JsonPropertyName("timeInSeconds")]
-        public int? TimeInSeconds { get; set; }
-
-        [JsonProperty("target")]
-        [JsonPropertyName("target")]
-        public string Target { get; set; }
-
-        [JsonProperty("headshot")]
-        [JsonPropertyName("headshot")]
-        public bool? Headshot { get; set; }
-    }
-
+    #region Dissect
     public class Gamemode
     {
         [JsonProperty("name")]
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name;
 
         [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public int? Id { get; set; }
-    }
-
-    public class Header
-    {
-        [JsonProperty("gameVersion")]
-        [JsonPropertyName("gameVersion")]
-        public string GameVersion { get; set; }
-
-        [JsonProperty("codeVersion")]
-        [JsonPropertyName("codeVersion")]
-        public int? CodeVersion { get; set; }
-
-        [JsonProperty("timestamp")]
-        [JsonPropertyName("timestamp")]
-        public DateTime? Timestamp { get; set; }
-
-        [JsonProperty("matchType")]
-        [JsonPropertyName("matchType")]
-        public MatchType MatchType { get; set; }
-
-        [JsonProperty("map")]
-        [JsonPropertyName("map")]
-        public Map Map { get; set; }
-
-        [JsonProperty("recordingPlayerID")]
-        [JsonPropertyName("recordingPlayerID")]
-        public object RecordingPlayerID { get; set; }
-
-        [JsonProperty("recordingProfileID")]
-        [JsonPropertyName("recordingProfileID")]
-        public string RecordingProfileID { get; set; }
-
-        [JsonProperty("additionalTags")]
-        [JsonPropertyName("additionalTags")]
-        public string AdditionalTags { get; set; }
-
-        [JsonProperty("gamemode")]
-        [JsonPropertyName("gamemode")]
-        public Gamemode Gamemode { get; set; }
-
-        [JsonProperty("roundsPerMatch")]
-        [JsonPropertyName("roundsPerMatch")]
-        public int? RoundsPerMatch { get; set; }
-
-        [JsonProperty("roundsPerMatchOvertime")]
-        [JsonPropertyName("roundsPerMatchOvertime")]
-        public int? RoundsPerMatchOvertime { get; set; }
-
-        [JsonProperty("roundNumber")]
-        [JsonPropertyName("roundNumber")]
-        public int? RoundNumber { get; set; }
-
-        [JsonProperty("overtimeRoundNumber")]
-        [JsonPropertyName("overtimeRoundNumber")]
-        public int? OvertimeRoundNumber { get; set; }
-
-        [JsonProperty("teams")]
-        [JsonPropertyName("teams")]
-        public List<Team> Teams { get; set; }
-
-        [JsonProperty("players")]
-        [JsonPropertyName("players")]
-        public List<Player> Players { get; set; }
-
-        [JsonProperty("gmSettings")]
-        [JsonPropertyName("gmSettings")]
-        public List<object> GmSettings { get; set; }
-
-        [JsonProperty("playlistCategory")]
-        [JsonPropertyName("playlistCategory")]
-        public object PlaylistCategory { get; set; }
-
-        [JsonProperty("matchID")]
-        [JsonPropertyName("matchID")]
-        public string MatchID { get; set; }
+        public int? Id;
     }
 
     public class Map
     {
         [JsonProperty("name")]
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name;
 
         [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public int? Id { get; set; }
+        public string Id;
     }
 
-    public class Match
+    public class MatchFeedback
+    {
+        [JsonProperty("type")]
+        public string Type;
+
+        [JsonProperty("time")]
+        public string Time;
+
+        [JsonProperty("timeInSeconds")]
+        public double? TimeInSeconds;
+
+        [JsonProperty("message")]
+        public string Message;
+
+        [JsonProperty("username")]
+        public string Username;
+
+        [JsonProperty("target")]
+        public string Target;
+
+        [JsonProperty("headshot")]
+        public bool? Headshot;
+    }
+
+    public class MatchReplay
     {
         [JsonProperty("rounds")]
-        [JsonPropertyName("rounds")]
-        public List<Round> Rounds { get; set; }
+        public List<Round> Rounds;
 
-        [JsonProperty("playerStats")]
-        [JsonPropertyName("playerStats")]
-        public List<PlayerStat> PlayerStats { get; set; }
+        [JsonProperty("stats")]
+        public List<Stat> Stats;
     }
 
     public class MatchType
     {
         [JsonProperty("name")]
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name;
 
         [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public int? Id { get; set; }
+        public int? Id;
     }
 
     public class Player
     {
         [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public object Id { get; set; }
+        public object Id;
 
         [JsonProperty("profileID")]
-        [JsonPropertyName("profileID")]
-        public string ProfileID { get; set; }
+        public string ProfileID;
 
         [JsonProperty("username")]
-        [JsonPropertyName("username")]
-        public string Username { get; set; }
+        public string Username;
 
         [JsonProperty("teamIndex")]
-        [JsonPropertyName("teamIndex")]
-        public int? TeamIndex { get; set; }
+        public int? TeamIndex;
 
         [JsonProperty("heroName")]
-        [JsonPropertyName("heroName")]
-        public object HeroName { get; set; }
+        public object HeroName;
 
         [JsonProperty("alliance")]
-        [JsonPropertyName("alliance")]
-        public int? Alliance { get; set; }
+        public int? Alliance;
 
         [JsonProperty("roleImage")]
-        [JsonPropertyName("roleImage")]
-        public object RoleImage { get; set; }
+        public object RoleImage;
 
         [JsonProperty("roleName")]
-        [JsonPropertyName("roleName")]
-        public string RoleName { get; set; }
+        public string RoleName;
 
         [JsonProperty("rolePortrait")]
-        [JsonPropertyName("rolePortrait")]
-        public object RolePortrait { get; set; }
-    }
+        public object RolePortrait;
 
-    public class PlayerStat
-    {
-        [JsonProperty("username")]
-        [JsonPropertyName("username")]
-        public string Username { get; set; }
-
-        [JsonProperty("teamIndex")]
-        [JsonPropertyName("teamIndex")]
-        public int? TeamIndex { get; set; }
-
-        [JsonProperty("operator")]
-        [JsonPropertyName("operator")]
-        public string Operator { get; set; }
-
-        [JsonProperty("kills")]
-        [JsonPropertyName("kills")]
-        public int? Kills { get; set; }
-
-        [JsonProperty("died")]
-        [JsonPropertyName("died")]
-        public bool? Died { get; set; }
-
-        [JsonProperty("assists")]
-        [JsonPropertyName("assists")]
-        public int? Assists { get; set; }
-
-        [JsonProperty("headshots")]
-        [JsonPropertyName("headshots")]
-        public int? Headshots { get; set; }
-
-        [JsonProperty("headshotPercentage")]
-        [JsonPropertyName("headshotPercentage")]
-        public double? HeadshotPercentage { get; set; }
-
-        [JsonProperty("rounds")]
-        [JsonPropertyName("rounds")]
-        public int? Rounds { get; set; }
-
-        [JsonProperty("deaths")]
-        [JsonPropertyName("deaths")]
-        public int? Deaths { get; set; }
+        [JsonProperty("spawn")]
+        public string Spawn;
     }
 
     public class Root
     {
-        [JsonProperty("Match")]
-        [JsonPropertyName("Match")]
-        public Match Match { get; set; }
+        [JsonProperty("MatchReplay")]
+        public MatchReplay MatchReplay;
     }
 
     public class Round
     {
-        [JsonProperty("header")]
-        [JsonPropertyName("header")]
-        public Header Header { get; set; }
+        [JsonProperty("gameVersion")]
+        public string GameVersion;
 
-        [JsonProperty("activityFeed")]
-        [JsonPropertyName("activityFeed")]
-        public List<ActivityFeed> ActivityFeed { get; set; }
+        [JsonProperty("codeVersion")]
+        public int? CodeVersion;
 
-        [JsonProperty("playerStats")]
-        [JsonPropertyName("playerStats")]
-        public List<PlayerStat> PlayerStats { get; set; }
+        [JsonProperty("timestamp")]
+        public DateTime? Timestamp;
+
+        [JsonProperty("matchType")]
+        public MatchType MatchType;
+
+        [JsonProperty("map")]
+        public Map Map;
+
+        [JsonProperty("recordingPlayerID")]
+        public object RecordingPlayerID;
+
+        [JsonProperty("recordingProfileID")]
+        public string RecordingProfileID;
+
+        [JsonProperty("additionalTags")]
+        public string AdditionalTags;
+
+        [JsonProperty("gamemode")]
+        public Gamemode Gamemode;
+
+        [JsonProperty("roundsPerMatch")]
+        public int? RoundsPerMatch;
+
+        [JsonProperty("roundsPerMatchOvertime")]
+        public int? RoundsPerMatchOvertime;
+
+        [JsonProperty("roundNumber")]
+        public int? RoundNumber;
+
+        [JsonProperty("overtimeRoundNumber")]
+        public int? OvertimeRoundNumber;
+
+        [JsonProperty("teams")]
+        public List<Team> Teams;
+
+        [JsonProperty("players")]
+        public List<Player> Players;
+
+        [JsonProperty("gmSettings")]
+        public List<object> GmSettings;
+
+        [JsonProperty("playlistCategory")]
+        public object PlaylistCategory;
+
+        [JsonProperty("matchID")]
+        public string MatchID;
+
+        [JsonProperty("matchFeedback")]
+        public List<MatchFeedback> MatchFeedback;
+
+        [JsonProperty("stats")]
+        public List<Stat> Stats;
+
+        [JsonProperty("site")]
+        public string Site;
+    }
+
+    public class Stat
+    {
+        [JsonProperty("username")]
+        public string Username;
+
+        [JsonProperty("kills")]
+        public int? Kills;
+
+        [JsonProperty("died")]
+        public bool? Died;
+
+        [JsonProperty("assists")]
+        public int? Assists;
+
+        [JsonProperty("headshots")]
+        public int? Headshots;
+
+        [JsonProperty("headshotPercentage")]
+        public double? HeadshotPercentage;
+
+        [JsonProperty("1vX")]
+        public int? _1vX;
+
+        [JsonProperty("rounds")]
+        public int? Rounds;
+
+        [JsonProperty("deaths")]
+        public int? Deaths;
     }
 
     public class Team
     {
         [JsonProperty("name")]
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name;
 
         [JsonProperty("score")]
-        [JsonPropertyName("score")]
-        public int? Score { get; set; }
+        public int? Score;
+
+        [JsonProperty("won")]
+        public bool? Won;
+
+        [JsonProperty("role")]
+        public string Role;
+
+        [JsonProperty("winCondition")]
+        public string WinCondition;
     }
 
+    #endregion
 
 }

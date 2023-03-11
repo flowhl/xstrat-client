@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Configuration;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +45,7 @@ namespace xstrat.MVVM.View
         {
             LoadReplays();
             ReplayDG.ItemsSource = ReplayFolders;
+            ReplayDG.DataContext = ReplayFolders;
         }
 
         public void LoadReplays()
@@ -255,7 +258,7 @@ namespace xstrat.MVVM.View
             LoadReplays();
         }
 
-        private void Export(string folderName)
+        private void AddToGameFolder(string folderName)
         {
             SetStatus($"Copying to Game: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
@@ -291,6 +294,14 @@ namespace xstrat.MVVM.View
             Process.Start(path);
         }
 
+        private void ShowTimeLine(string folderName)
+        {
+            string jsonPath = Path.Combine(SettingsHandler.XStratReplayPath, $"{folderName}.json");
+            string json = File.ReadAllText(jsonPath);
+
+            Dissect.MatchReplay replay = JsonConvert.DeserializeObject<Dissect.MatchReplay>(json);
+        }
+
         #endregion
 
         #region FileHelpers
@@ -311,10 +322,13 @@ namespace xstrat.MVVM.View
                 Logger.Log("Could not find existing replay file in: " + xmlFile);
                 return null;
             }
-            XmlSerializer deserializer = new XmlSerializer(typeof(List<MatchReplayTitle>));
-            using (StringReader stringReader = new StringReader(xmlFile))
+
+            string xmlContent = File.ReadAllText(xmlFile);
+
+            XmlSerializer deserializer = new XmlSerializer(typeof(MatchReplayTitle[]));
+            using (StringReader stringReader = new StringReader(xmlContent))
             {
-                return (List<MatchReplayTitle>)deserializer.Deserialize(stringReader);
+                return ((MatchReplayTitle[])deserializer.Deserialize(stringReader)).ToList();
             }
         }
 
@@ -329,10 +343,10 @@ namespace xstrat.MVVM.View
                 dict.Add(new MatchReplayTitle { FolderName = folder.FolderName, Title = folder.Title });
             }
 
-            SerializeTitleDict(dict);
+            SerializeTitleDict(dict.ToArray());
         }
 
-        public void SerializeTitleDict(List<MatchReplayTitle> dict)
+        public void SerializeTitleDict(MatchReplayTitle[] dict)
         {
             string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
 
@@ -366,8 +380,18 @@ namespace xstrat.MVVM.View
 
         private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            string replayName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
-            Task.Run(() => CreateJson(replayName, true));
+            string folderName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
+            if (folderName.IsNullOrEmpty()) return;
+
+            if (ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated == false)
+            {
+                Task.Run(() => CreateJson(folderName, true));
+            }
+            else
+            {
+                ShowTimeLine(folderName);
+            }
+
         }
 
         private void DeleteButtonColumn_Click(object sender, RoutedEventArgs e)
@@ -377,7 +401,17 @@ namespace xstrat.MVVM.View
 
         private void CopyToGameButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            Export((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
+            string folderName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
+            if (folderName.IsNullOrEmpty()) return;
+
+            if(ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.IsInGameFolder ?? false)
+            {
+                RemoveFromGameFolder(folderName);
+            }
+            else
+            {
+                AddToGameFolder(folderName);
+            }
         }
 
         private void RemoveFromGameFolderButtonColumn_Click(object sender, RoutedEventArgs e)

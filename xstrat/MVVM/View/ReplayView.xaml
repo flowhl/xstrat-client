@@ -30,7 +30,7 @@
                 <Label Name="StatusText" Style="{StaticResource PS}" VerticalAlignment="Center"></Label>
             </Border>
 
-            <Border Background="#202020" CornerRadius="10" Margin="5" Height="600">
+            <Border Background="#202020" CornerRadius="10" Margin="5" Height="400">
                 <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <!--Text-->
@@ -49,6 +49,23 @@
                         <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click"></xstrat:DataGridIconColumn>
 
                         <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <Border Background="#202020" CornerRadius="10" Margin="5" Height="230">
+                <DataGrid Name="StatsDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="200"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Kills" Binding="{Binding Kills}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Assists" Binding="{Binding Assists}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="KD" Binding="{Binding KDString}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Rounds Played" Binding="{Binding Rounds}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="1vX" Binding="{Binding _1vX}"></DataGridTextColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

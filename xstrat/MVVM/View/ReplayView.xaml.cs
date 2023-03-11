@@ -337,7 +337,9 @@ namespace xstrat.MVVM.View
 
             Dissect.MatchReplay replay = JsonConvert.DeserializeObject<Dissect.MatchReplay>(json);
 
-
+            StatsDG.ItemsSource = null;
+            StatsDG.ItemsSource = replay.Stats.ToList();
+            StatsDG.DataContext = replay.Stats;
         }
 
         private void ClearGameBtn_Click(object sender, RoutedEventArgs e)

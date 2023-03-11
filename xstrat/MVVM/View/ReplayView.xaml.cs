@@ -46,6 +46,22 @@ namespace xstrat.MVVM.View
             LoadReplays();
             ReplayDG.ItemsSource = ReplayFolders;
             ReplayDG.DataContext = ReplayFolders;
+            Globals.wnd.KeyUp += Wnd_KeyDown;
+        }
+
+        private void Wnd_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if (e.Key == Key.S)
+                {
+                    SaveTitleDict();
+                }
+                if (e.Key == Key.R)
+                {
+                    LoadReplays();
+                }
+            }
         }
 
         public void LoadReplays()
@@ -236,7 +252,7 @@ namespace xstrat.MVVM.View
                 });
             }
         }
-
+            
         private void AnalyzeAll()
         {
             var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && !x.JsonCreated).AsEnumerable();
@@ -253,17 +269,25 @@ namespace xstrat.MVVM.View
             if (folderName.IsNullOrEmpty()) return;
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
             string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string jsonFile = Path.Combine(SettingsHandler.GameReplayPath,$"{folderName}.json");
             if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
+            if (File.Exists(jsonFile)) File.Delete(jsonFile);
             LoadReplays();
         }
 
-        private void AddToGameFolder(string folderName)
+        private void CopyToGameFolder(string folderName)
         {
             SetStatus($"Copying to Game: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
             string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+
+            if(ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
+            {
+                MessageBox.Show("Cannot have more than 12 replays in folder as they wont be loaded in the game");
+                return;
+            }
 
             if(Directory.Exists(dirXStrat) && !Directory.Exists(dirGame))
             {
@@ -300,6 +324,17 @@ namespace xstrat.MVVM.View
             string json = File.ReadAllText(jsonPath);
 
             Dissect.MatchReplay replay = JsonConvert.DeserializeObject<Dissect.MatchReplay>(json);
+
+
+        }
+
+        private void ClearGameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var replaysToDelete = ReplayFolders.Where(x => x.IsInGameFolder);
+            foreach (var replay in replaysToDelete)
+            {
+                RemoveFromGameFolder(replay.FolderName);
+            }
         }
 
         #endregion
@@ -344,6 +379,7 @@ namespace xstrat.MVVM.View
             }
 
             SerializeTitleDict(dict.ToArray());
+            Notify.sendSuccess("Saved titles sucessfully");
         }
 
         public void SerializeTitleDict(MatchReplayTitle[] dict)
@@ -359,6 +395,7 @@ namespace xstrat.MVVM.View
 
             File.WriteAllText(xmlFile, xml);
         }
+
         #endregion
 
         #region Click Events
@@ -410,13 +447,8 @@ namespace xstrat.MVVM.View
             }
             else
             {
-                AddToGameFolder(folderName);
+                CopyToGameFolder(folderName);
             }
-        }
-
-        private void RemoveFromGameFolderButtonColumn_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveFromGameFolder((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void ShowInExplorerColumn_Click(object sender, RoutedEventArgs e)
@@ -435,8 +467,8 @@ namespace xstrat.MVVM.View
             SaveTitleDict();
         }
 
-        #endregion
 
+        #endregion
 
     }
     public class MatchReplayFolder : INotifyPropertyChanged

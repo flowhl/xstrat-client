@@ -4,9 +4,9 @@
         <viewModel:MainViewModel />
     </Window.DataContext>
 
-    <Border Background="#131313" CornerRadius="20">
+    <Border Background="#131313" CornerRadius="20" Margin="5">
 
-        <Grid>
+        <Grid WindowChrome.IsHitTestVisibleInChrome="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
                 <ColumnDefinition />
@@ -18,14 +18,16 @@
             </Grid.RowDefinitions>
 
 
-            <Border Grid.ColumnSpan="2" Background="#303030" MouseDown="Border_MouseDown">
+            <Border Grid.ColumnSpan="2" Background="#303030" MouseDown="Border_MouseDown" Height="25">
+                <Grid Height="25">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="./Images/topbar.png" HorizontalAlignment="Left" Grid.Column="1" Height="25" VerticalAlignment="Center" />
 
-
-                <Grid HorizontalAlignment="Stretch">
-
-                    <Image Source="./Images/topbar.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0" PreviewMouseLeftButtonDown="Image_MouseLeftButtonUp" />
-
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="2" Height="25" VerticalAlignment="Center">
 
                         <Button Name="ButtonMinimize" Width="30" Height="25" BorderThickness="0" Foreground="Gray" FontWeight="Bold" Click="ButtonMinimize_Click" VerticalAlignment="Bottom">
                             <Button.Content>

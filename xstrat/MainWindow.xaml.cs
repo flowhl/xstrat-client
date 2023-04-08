@@ -114,6 +114,26 @@ namespace xstrat
         {
             if(e.LeftButton == MouseButtonState.Pressed)
             {
+                if (this.WindowState == WindowState.Maximized)
+                {
+                    // Store the current window position and size
+                    double left = this.Left;
+                    double top = this.Top;
+                    double width = this.Width;
+                    double height = this.Height;
+
+                    this.WindowState = WindowState.Normal;
+
+                    // Calculate the new window position based on mouse position
+                    double mouseX = e.GetPosition(this).X;
+                    double mouseY = e.GetPosition(this).Y;
+                    double newLeft = mouseX - (width * mouseX / this.ActualWidth);
+                    double newTop = mouseY - (height * mouseY / this.ActualHeight);
+
+                    // Set the new window position
+                    this.Left = newLeft;
+                    this.Top = newTop;
+                }
                 DragMove();
             }
         }

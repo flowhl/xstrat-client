@@ -28,6 +28,7 @@ namespace xstrat.MVVM.ViewModel
         public RelayCommand LoadingViewCommand { get; set; }
         public RelayCommand WallEditorViewCommand { get; set; }
         public RelayCommand ReplayViewCommand { get; set; }
+        public RelayCommand OffdayViewCommand { get; set; }
 
 
         public HomeViewModel HomeVM { get; set; }
@@ -46,6 +47,8 @@ namespace xstrat.MVVM.ViewModel
         public LoadingViewModel LoadingVM { get; set; }
         public WallEditorViewModel WallEditorVM { get; set; }
         public ReplayViewModel ReplayVM { get; set; }
+        public OffdayViewModel OffdayVM { get; set; }
+
         public object _currentView;
 
         public object CurrentView
@@ -75,6 +78,7 @@ namespace xstrat.MVVM.ViewModel
             LoadingVM = new LoadingViewModel();
             WallEditorVM = new WallEditorViewModel();
             ReplayVM = new ReplayViewModel();
+            OffdayVM = new OffdayViewModel();
 
             CurrentView = HomeVM;
 
@@ -93,7 +97,8 @@ namespace xstrat.MVVM.ViewModel
             LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = LicenseVM; });
             LoadingViewCommand = new RelayCommand(o => { CurrentView = LoadingVM; });
             WallEditorViewCommand = new RelayCommand(o => { CurrentView = WallEditorVM; });
-            ReplayViewCommand = new RelayCommand(o => { CurrentView = ReplayVM; });
+            ReplayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = ReplayVM; });
+            OffdayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = OffdayVM; });
         }
     }
 }

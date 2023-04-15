@@ -20,17 +20,10 @@
                 HorizontalAlignment="Left"
                 Foreground="White"
                 Text="{Binding Date, StringFormat='{}{0:dd}'}" />
-            <Grid x:Name="Events" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                    <RowDefinition Height="17" />
-                </Grid.RowDefinitions>
-            </Grid>
+            <ScrollViewer Grid.Row="1" MaxHeight="119" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical" x:Name="Events">
+                </StackPanel>
+            </ScrollViewer>            
         </Grid>
     </Border>
 </UserControl>

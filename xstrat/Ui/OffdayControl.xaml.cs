@@ -115,7 +115,7 @@ namespace xstrat.Ui
                 }
                 var tv = ucParent as OffDaysList;
                 var index = tv.ODList.Children.IndexOf(this);
-                tv.DeleteOffDay(tv.offDays[index - 1].Id);
+                tv.DeleteOffDay(tv.offDays[index].Id);
             }
         }
     }

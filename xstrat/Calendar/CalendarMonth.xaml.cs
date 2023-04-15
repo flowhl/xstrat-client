@@ -378,7 +378,8 @@ namespace xstrat.Calendar
                         CalendarEventView calendarEventView = new CalendarEventView(colors[accentColorIndex], this);
 
                         calendarEventView.DataContext = e;
-                        Grid.SetRow(calendarEventView, eventRow);
+                        //Grid.SetRow(calendarEventView, eventRow);
+                        calendarEventView.Height = 17;
                         day.Events.Children.Add(calendarEventView);
                     }
                 }

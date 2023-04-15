@@ -60,6 +60,9 @@
             <DataTemplate DataType="{x:Type viewModel:ReplayViewModel}">
                 <view:ReplayView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:OffdayViewModel}">
+                <view:OffdayView />
+            </DataTemplate>
 
             
             <!--XStrat Design Concept-->

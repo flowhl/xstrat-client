@@ -5,17 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui"
              mc:Ignorable="d" 
-             d:DesignHeight="620" d:DesignWidth="1000">
+             d:DesignHeight="700" d:DesignWidth="600">
     <Grid>
-        <Border Style="{StaticResource Area}" Width="820" Height="620" HorizontalAlignment="Left">
-            <StackPanel Orientation="Vertical" Height="600">
-                <Label Foreground="White" FontSize="34" FontWeight="SemiBold" Margin="0,10,0,0" HorizontalAlignment="Center" Name="TxtTitle"></Label>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500" VerticalAlignment="Top">
-                    <StackPanel Name="ODList" VerticalAlignment="Top">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Style="{StaticResource Primary}" Height="40" Width="70" Name="NewOffDay" Margin="0,20,10,10" Click="NewOffDay_Click" Content="New" />
-                            <Button Style="{StaticResource Primary}" Height="40" Width="70" Name="SaveOffDays" Margin="0,20,10,10"  Click="SaveOffDays_Click" Content="Save" />
-                        </StackPanel>
+        <Border Style="{StaticResource Area}" Width="600" Height="700" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <StackPanel Orientation="Vertical" Height="680" VerticalAlignment="Top">
+                <Label Style="{StaticResource PH1}" Name="TxtTitle" Margin="0,10,0,0">Your Offdays:</Label>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource Primary}" Height="40" Width="70" Name="NewOffDay" Margin="0,10,10,10" Click="NewOffDay_Click" Content="New" />
+                    <Button Style="{StaticResource Primary}" Height="40" Width="70" Name="SaveOffDays" Margin="0,10,10,10" Click="SaveOffDays_Click" Content="Save" />
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="570" VerticalAlignment="Top">
+                    <StackPanel Name="ODList" VerticalAlignment="Top">                        
                     </StackPanel>
                 </ScrollViewer>
             </StackPanel>

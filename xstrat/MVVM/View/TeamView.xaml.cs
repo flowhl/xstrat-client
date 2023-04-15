@@ -43,13 +43,11 @@ namespace xstrat.MVVM.View
             {
                 JoinCreatePanel.Visibility = Visibility.Collapsed;
                 TeamDashboard.Visibility = Visibility.Visible;
-                offDayPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 JoinCreatePanel.Visibility = Visibility.Visible;
                 TeamDashboard.Visibility = Visibility.Collapsed;
-                offDayPanel.Visibility = Visibility.Collapsed;
             }
         }
 

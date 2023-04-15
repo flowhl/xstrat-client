@@ -15,7 +15,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="30"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -23,10 +23,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!--Title Row-->
-                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" Background="Transparent" BorderThickness="0" TabIndex="1" Text="Title" Name="TitleText" FontSize="16" VerticalContentAlignment="Center" />
-                <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Foreground="#AAAAAA" FontSize="13" Name="CreationDate" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Created on: 01.01.2022</TextBox>
-                <local:DataSelector Margin="10,0,10,0" Grid.Row="0" Grid.Column="3" Type="Offdaytype" TabIndex="2" Width="130" Height="25" x:Name="TypeSelector" HorizontalAlignment="Right" />
-                <Button Grid.Row="0" Grid.Column="4" Margin="2" Background="Transparent" Foreground="White" BorderThickness="0" Name="DeleteButton" Click="DeleteButton_Click">
+                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Foreground="White" Background="Transparent" BorderThickness="0" TabIndex="1" Text="Title" Name="TitleText" FontSize="16" VerticalContentAlignment="Center" />
+                <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Right" Foreground="#AAAAAA" FontSize="13" Name="CreationDate" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0,0,0">Created on: 01.01.2022</TextBox>
+                <local:DataSelector Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Type="Offdaytype" TabIndex="2" Width="130" Height="25" x:Name="TypeSelector" HorizontalAlignment="Right" />
+                <Button Grid.Row="0" Grid.Column="4" Margin="2" HorizontalAlignment="Right" Background="Transparent" Foreground="White" BorderThickness="0" Name="DeleteButton" Click="DeleteButton_Click">
                     <Button.Content>
                         <MaterialDesign:PackIcon Height="20" Width="20" Kind="DeleteOutline" />
                     </Button.Content>

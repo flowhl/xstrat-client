@@ -22,7 +22,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Vertical">
-                <Border Style="{StaticResource Control}" Width="350" Height="480" HorizontalAlignment="Left" Name="ControlPanel">
+                <Border Style="{StaticResource Control}" Width="250" Height="480" HorizontalAlignment="Left" Name="ControlPanel">
                     <StackPanel Orientation="Vertical" Margin="5,5,5,5">
                         <Button Style="{StaticResource Secondary}" HorizontalAlignment="Right" Height="30" Width="30" Name="ReloadBtn" Margin="5" Click="ReloadBtn_Click">
                             <Button.Content>
@@ -32,14 +32,14 @@
                         <Label Style="{StaticResource PH1}" Margin="0,5,0,0">Your Color:</Label>
 
                         <colorpicker:SquarePicker x:Name="ColorPickerUI" />
-                        <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="SaveColor" Content="Save Color" Margin="0,10,0,0" Click="SaveColor_Click" />
+                        <Button Style="{StaticResource Primary}" Height="40" Width="200" Name="SaveColor" Content="Save Color" Margin="0,10,0,0" Click="SaveColor_Click" />
 
-                        <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="Leave" Content="Leave" Margin="0,10,0,0" Click="LeaveBtn_Click" />
+                        <Button Style="{StaticResource Primary}" Height="40" Width="200" Name="Leave" Content="Leave" Margin="0,10,0,0" Click="LeaveBtn_Click" />
 
                         <StackPanel Orientation="Vertical" Name="AdminButtons">
-                            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="JoinPWAdminBtn" Content="Get join password" Margin="0,10,0,0" Click="JoinPWAdminBtn_Click" />
-                            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="RenameAdminBtn" Content="Rename" Margin="0,10,0,0" Click="RenameAdminBtn_Click" />
-                            <Button Style="{StaticResource Primary}" Height="40" Width="250" Name="DeleteAdminBtn" Content="Delete" Margin="0,10,0,0" Click="DeleteAdminBtn_Click" />
+                            <Button Style="{StaticResource Primary}" Height="40" Width="200" Name="JoinPWAdminBtn" Content="Get join password" Margin="0,10,0,0" Click="JoinPWAdminBtn_Click" />
+                            <Button Style="{StaticResource Primary}" Height="40" Width="200" Name="RenameAdminBtn" Content="Rename" Margin="0,10,0,0" Click="RenameAdminBtn_Click" />
+                            <Button Style="{StaticResource Primary}" Height="40" Width="200" Name="DeleteAdminBtn" Content="Delete" Margin="0,10,0,0" Click="DeleteAdminBtn_Click" />
                         </StackPanel>
                     </StackPanel>
                 </Border>

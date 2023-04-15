@@ -105,9 +105,7 @@ namespace xstrat.Ui
 
         private void LoadOffDaysFromList()
         {
-            var buttons = ODList.Children[0];
             ODList.Children.Clear();
-            ODList.Children.Add(buttons);
             foreach (var offday in offDays)
             {
                 var od = new OffdayControl();

@@ -114,6 +114,7 @@
 
                     <RadioButton Content="Dashboard" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" IsChecked="True" Command="{Binding HomeViewCommand}" />
                     <RadioButton Content="Team Info" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding TeamViewCommand}" />
+                    <RadioButton Content="Availability" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding OffdayViewCommand}" />
                     <RadioButton Content="Event Planner" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ScrimViewCommand}" />
                     <RadioButton Content="Calendar" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding CalendarViewCommand}" />
                     <RadioButton Content="Strat Maker" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StratMakerViewCommand}" />

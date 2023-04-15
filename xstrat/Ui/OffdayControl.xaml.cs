@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngleSharp.Html;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -42,11 +43,13 @@ namespace xstrat.Ui
         {
             if (TypeSelector.selectedOffDayType.id == 1)
             {
-                TimeControl.Visibility = Visibility.Hidden;
+                FromTimeSelector.Visibility = Visibility.Hidden;
+                ToTimeSelector.Visibility = Visibility.Hidden;
             }
             else
             {
-                TimeControl.Visibility = Visibility.Visible;
+                FromTimeSelector.Visibility = Visibility.Visible;
+                ToTimeSelector.Visibility = Visibility.Visible;
             }
         }
 
@@ -57,20 +60,24 @@ namespace xstrat.Ui
             //YYYY-MM-DD hh:mm:ss
             TitleText.Text = offDay.title;
 
-            CreationDate.Content = offDay.creation_date.Split('T').First() ;
+            CreationDate.Text = "Created on: " + offDay.creation_date.Split('T').First() ;
             
             FromDatePicker.Text = offDay.start.Split(' ').First();
             
-            FromHour.Value = int.Parse(offDay.start.Split(' ')[1].Split(':').First());
-            FromMinute.Value = int.Parse(offDay.start.Split(' ')[1].Split(':')[1]);
+            int fromHour = int.Parse(offDay.start.Split(' ')[1].Split(':').First());
+            int fromMinute = int.Parse(offDay.start.Split(' ')[1].Split(':')[1]);
             
-            ToHour.Value = int.Parse(offDay.end.Split(' ')[1].Split(':').First());
-            ToMinute.Value = int.Parse(offDay.end.Split(' ')[1].Split(':')[1]);
+            int toHour = int.Parse(offDay.end.Split(' ')[1].Split(':').First());
+            int toMinute = int.Parse(offDay.end.Split(' ')[1].Split(':')[1]);
+
+            FromTimeSelector.SetTime(fromHour, fromMinute);
+            ToTimeSelector.SetTime(toHour, toMinute);
             
             TypeSelector.SelectIndexWhenLoaded(offDay.typ);
             if(offDay.typ == 1)
             {
-                TimeControl.Visibility = Visibility.Hidden;
+                FromTimeSelector.Visibility = Visibility.Hidden;
+                ToTimeSelector.Visibility = Visibility.Hidden;
             }
 
         }
@@ -85,8 +92,14 @@ namespace xstrat.Ui
 
             string datestring = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
 
-            string start = datestring.Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-            string end = datestring.Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
+            string startDate = datestring.Split(' ')[0];
+            string endDate = datestring.Split(' ')[0];
+            string startTime = FromTimeSelector.GetTimeString();
+            string endTime = ToTimeSelector.GetTimeString();
+            endTime = endTime.Replace("00:00:00", "23:59:59");
+
+            string start = startDate + " " + startTime;
+            string end = endDate + " " + endTime;
             OffDay offDay = new OffDay(id.GetValueOrDefault(), user_id.GetValueOrDefault(), null, TypeSelector.selectedOffDayType.id, TitleText.Text, start, end);
             return offDay;
         }

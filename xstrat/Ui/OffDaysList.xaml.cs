@@ -111,7 +111,7 @@ namespace xstrat.Ui
             foreach (var offday in offDays)
             {
                 var od = new OffdayControl();
-                od.Width = 700;
+                //od.Width = 700;
                 od.LoadOffDay(offday);
                 od.Margin = new Thickness(0, 10, 0, 0);
                 ODList.Children.Add(od);

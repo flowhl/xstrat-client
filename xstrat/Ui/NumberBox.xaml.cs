@@ -29,6 +29,24 @@ namespace xstrat.Ui
             ValueChanged?.Invoke(this, e);
         }
 
+        // ValueIncreasedToLimit event
+        public event EventHandler ValueIncreasedToLimit;
+
+        // Invoke ValueIncreasedToLimit event
+        protected virtual void OnValueIncreasedToLimit(EventArgs e)
+        {
+            ValueIncreasedToLimit?.Invoke(this, e);
+        }
+
+        // ValueIncreasedToLimit event
+        public event EventHandler ValueDecreasedToLimit;
+
+        // Invoke ValueDecreasedToLimit event
+        protected virtual void OnValueDecreasedToLimit(EventArgs e)
+        {
+            ValueDecreasedToLimit?.Invoke(this, e);
+        }
+
         private int _value = 0;
         public int Value { 
             get { return _value; } 
@@ -43,12 +61,14 @@ namespace xstrat.Ui
                 {
                     _value = 0;
                     Number.Text = _value.ToString();
+                    OnValueDecreasedToLimit(new EventArgs());
                     return;
                 }
                 if(_value == Limit && value > Limit)
                 {
                     _value = 0;
                     Number.Text = _value.ToString();
+                    OnValueIncreasedToLimit(new EventArgs());
                     return;
                 }
                 if (value > Limit)

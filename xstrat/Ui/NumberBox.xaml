@@ -10,10 +10,10 @@
         <StackPanel Orientation="Horizontal">
             <TextBox Width="70" Background="Transparent" BorderThickness="0" Foreground="White" FontSize="35" Name="Number" TextChanged="Number_TextChanged" HorizontalContentAlignment="Right">0</TextBox>
             <StackPanel Orientation="Vertical">
-                <Button Width="30" Background="Transparent" Height="25" Name="UpBtn" Click="UpBtn_Click" BorderThickness="0">
+                <Button Width="30" Background="Transparent" IsTabStop="False" Height="25" Name="UpBtn" Click="UpBtn_Click" BorderThickness="0">
                     <MaterialDesign:PackIcon Foreground="#336cb5" Kind="ArrowUp" Width="30" Height="25"></MaterialDesign:PackIcon>
                 </Button>
-                <Button Width="30" Background="Transparent" Height="25" Name="DownBtn" Click="DownBtn_Click"  BorderThickness="0">
+                <Button Width="30" Background="Transparent" IsTabStop="False" Height="25" Name="DownBtn" Click="DownBtn_Click"  BorderThickness="0">
                     <MaterialDesign:PackIcon Foreground="#336cb5" Kind="ArrowDown" Width="30" Height="25"></MaterialDesign:PackIcon>
                 </Button>
             </StackPanel>

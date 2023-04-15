@@ -5,67 +5,73 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="70" d:DesignWidth="720"
+             d:DesignHeight="100" d:DesignWidth="550"
              >
-    <Grid Height="60" Width="700" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Style="{StaticResource Control}" Margin="0" Height="60" Width="700">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Height="30" HorizontalAlignment="Left">
-                    <Button Width="30" Height="30" Background="Transparent" Foreground="White" BorderThickness="0" Margin="0,0,70,0" Name="DeleteButton" Click="DeleteButton_Click">
-                        <Button.Content>
-                            <MaterialDesign:PackIcon Height="20" Width="20" Kind="DeleteOutline"></MaterialDesign:PackIcon>
-                        </Button.Content>
-                    </Button>
-                    <TextBox Width="200" Foreground="White" Background="Transparent" BorderThickness="0" Text="Title" VerticalAlignment="Center" Name="TitleText" FontSize="18" Margin="0,0,10,0"/>
-                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15">Created on</Label>
-                    <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Name="CreationDate" Margin="0,0,80,0">01.01.2022</Label>
-                    <local:DataSelector Type="Offdaytype" Width="130" Height="25" x:Name="TypeSelector" Margin="5,0,0,0"></local:DataSelector>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Height="30" HorizontalAlignment="Center">
-                    <DatePicker Background="Transparent" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="FromDatePicker">
-                        <DatePicker.CalendarStyle>
-                            <Style TargetType="{x:Type Calendar}">
-                                <Setter Property="Background" Value="Black" />
-                                <Setter Property="BorderThickness" Value="0"/>
-                            </Style>
-                        </DatePicker.CalendarStyle>
-                        <DatePicker.Resources>
-                            <Style TargetType="DatePickerTextBox">
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="#336cb5" />
-                            </Style>
-                        </DatePicker.Resources>
-                    </DatePicker>
-                    <StackPanel Orientation="Horizontal" Name="TimeControl">
-                        <Label Foreground="#336cb5" VerticalAlignment="Center" FontSize="15" Margin="20,0,10,0" >From</Label>
+    <Grid Height="90" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Style="{StaticResource Control}" Margin="0" Height="90">
+            <Grid Margin="5,0,5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!--Title Row-->
+                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" Background="Transparent" BorderThickness="0" TabIndex="1" Text="Title" Name="TitleText" FontSize="16" VerticalContentAlignment="Center" />
+                <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Foreground="#AAAAAA" FontSize="13" Name="CreationDate" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Created on: 01.01.2022</TextBox>
+                <local:DataSelector Margin="10,0,10,0" Grid.Row="0" Grid.Column="3" Type="Offdaytype" TabIndex="2" Width="130" Height="25" x:Name="TypeSelector" HorizontalAlignment="Right" />
+                <Button Grid.Row="0" Grid.Column="4" Margin="2" Background="Transparent" Foreground="White" BorderThickness="0" Name="DeleteButton" Click="DeleteButton_Click">
+                    <Button.Content>
+                        <MaterialDesign:PackIcon Height="20" Width="20" Kind="DeleteOutline" />
+                    </Button.Content>
+                </Button>
+                
+                <!--From Row-->
+                <TextBox IsReadOnly="True" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="0" Foreground="#AAAAAA" FontSize="13" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">From:</TextBox>
+                <DatePicker Background="Transparent" Grid.Row="1" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="FromDatePicker">
+                    <DatePicker.CalendarStyle>
+                        <Style TargetType="{x:Type Calendar}">
+                            <Setter Property="Background" Value="Black" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Style>
+                    </DatePicker.CalendarStyle>
+                    <DatePicker.Resources>
+                        <Style TargetType="DatePickerTextBox">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Foreground" Value="#336cb5" />
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+                <local:TimeSelector Grid.Row="1" Grid.Column="2" x:Name="FromTimeSelector"/>
 
-                        <MaterialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
-                        <Viewbox Height="20">
-                            <local:NumberBox x:Name="FromHour" AllowNegative="False" Limit="23"/>
-                        </Viewbox>
-                        <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
-                        <Viewbox Height="20">
-                            <local:NumberBox x:Name="FromMinute" AllowNegative="False" Limit="59"/>
-                        </Viewbox>
-                        <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
+                <!--From Row-->
+                <TextBox IsReadOnly="True" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Grid.Row="2" Grid.Column="0" Foreground="#AAAAAA" FontSize="13" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">To:</TextBox>
+                <DatePicker Background="Transparent" Grid.Row="2" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="ToDatePicker">
+                    <DatePicker.CalendarStyle>
+                        <Style TargetType="{x:Type Calendar}">
+                            <Setter Property="Background" Value="Black" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Style>
+                    </DatePicker.CalendarStyle>
+                    <DatePicker.Resources>
+                        <Style TargetType="DatePickerTextBox">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Foreground" Value="#336cb5" />
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+                <local:TimeSelector Grid.Row="2" Grid.Column="2" x:Name="ToTimeSelector" />
 
-                        <Label Foreground="#336cb5" VerticalAlignment="Center" FontSize="15" Margin="10,0,10,0" >to</Label>
 
-                        <MaterialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
-                        <Viewbox Height="20">
-                            <local:NumberBox x:Name="ToHour" AllowNegative="False" Limit="23"/>
-                        </Viewbox>
-                        <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
-                        <Viewbox Height="20">
-                            <local:NumberBox x:Name="ToMinute" AllowNegative="False" Limit="59"/>
-                        </Viewbox>
-                        <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
-                    </StackPanel>
-
-                </StackPanel>
-            </StackPanel>
-
+            </Grid>          
         </Border>       
     </Grid>
 </UserControl>

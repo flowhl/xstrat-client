@@ -50,7 +50,7 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
-                <local1:OffDaysList HorizontalAlignment="Left" x:Name="offDayPanel" Height="620" Width="820" Visibility="Hidden"></local1:OffDaysList>
+                <local1:OffDaysList HorizontalAlignment="Left" x:Name="offDayPanel" Height="620" Width="900" Visibility="Hidden"></local1:OffDaysList>
             </StackPanel>
         </ScrollViewer>        
     </Grid>

@@ -34,7 +34,7 @@ namespace xstrat.Ui
         private void OffDaysList_Loaded(object sender, RoutedEventArgs e)
         {
             RetrieveOffDays();
-            if(Globals.teamInfo.use_on_days == 0)
+            if (Globals.teamInfo.use_on_days == 0)
             {
                 TxtTitle.Content = "Your off days:";
             }
@@ -63,19 +63,20 @@ namespace xstrat.Ui
             bool success = true;
             foreach (UIElement offday in ODList.Children)
             {
-                if (ODList.Children.IndexOf(offday) != 0)
+                var odc = offday as OffdayControl;
+                var od = odc.GetOffDay();
+                if (od?.Id != null)
                 {
-                    var odc = offday as OffdayControl;
-                    var od = odc.GetOffDay();
-                    if (od.Id != null)
+                    (bool, string) result = await ApiHandler.SaveOffDay(od.Id.GetValueOrDefault(), od.typ, od.title, od.start, od.end);
+                    if (result.Item1 == false)
                     {
-                        (bool, string) result = await ApiHandler.SaveOffDay(od.Id.GetValueOrDefault(), od.typ, od.title, od.start, od.end);
-                        if (result.Item1 == false)
-                        {
-                            success = false;
-                            Notify.sendError("Could not save off days: " + result.Item2);
-                        }
+                        success = false;
+                        Notify.sendError("Could not save off days: " + result.Item2);
                     }
+                }
+                else
+                {
+                    success = false;
                 }
 
             }
@@ -94,7 +95,7 @@ namespace xstrat.Ui
                 if (result.Item1)
                 {
                     RetrieveOffDays();
-                    Notify.sendSuccess("Deleted successfully");
+                    //Notify.sendSuccess("Deleted successfully");
                 }
                 else
                 {

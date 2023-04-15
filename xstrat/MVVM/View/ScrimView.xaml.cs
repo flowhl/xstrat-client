@@ -383,19 +383,37 @@ namespace xstrat.MVVM.View
                 stitle = od.title;
             }
 
-            string sstart = "";
-            string send = "";
+            if (od.typ == 1)
+            {
+                return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | entire day";
+            }
+
+            string stringStartTime = "";
+            string stringEndTime = "";
             try
             {
-                sstart = od.start.Split(' ')[1].Replace(":00", "");
-                send = od.end.Split(' ')[1].Replace(":00", "");
+                stringStartTime = od.start.Split(' ')[1].Replace(":00", "");
+                stringEndTime = od.end.Split(' ')[1].Replace(":00", "");
             }
             catch (Exception ex)
             {
                 Notify.sendError(ex.Message);
             }
+
+            string stringStartDay = "";
+            string stringEndDay = "";
+            if (od.start.Split(' ')[0].Trim().ToLower() != od.end.Split(' ')[0].Trim().ToLower())
+            {
+                DateTime from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+                stringStartDay = from.ToString("ddd") + " ";
+                stringEndDay = to.ToString("ddd") + " ";
+            }
+
+
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + sstart + "-" + send;
+            return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
 
         }
 

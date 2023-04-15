@@ -83,17 +83,24 @@ namespace xstrat.Ui
         }
         public OffDay GetOffDay()
         {
-            DateTime tempdate = FromDatePicker.SelectedDate.GetValueOrDefault();
-            if (tempdate == null)
+            if (FromDatePicker.SelectedDate == null)
+            {
+                Notify.sendError("No date selected or wrong format");
+                return null;
+            }
+            if (ToDatePicker.SelectedDate == null)
             {
                 Notify.sendError("No date selected or wrong format");
                 return null;
             }
 
-            string datestring = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
 
-            string startDate = datestring.Split(' ')[0];
-            string endDate = datestring.Split(' ')[0];
+
+            string fromDate = FromDatePicker.SelectedDate.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
+            string toDate = ToDatePicker.SelectedDate.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
+
+            string startDate = fromDate.Split(' ')[0];
+            string endDate = toDate.Split(' ')[0];
             string startTime = FromTimeSelector.GetTimeString();
             string endTime = ToTimeSelector.GetTimeString();
             endTime = endTime.Replace("00:00:00", "23:59:59");

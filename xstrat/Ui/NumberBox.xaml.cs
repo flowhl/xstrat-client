@@ -20,36 +20,49 @@ namespace xstrat.Ui
     /// </summary>
     public partial class NumberBox : UserControl
     {
+        // ValueChanged event
+        public event EventHandler ValueChanged;
+
+        // Invoke ValueChanged event
+        protected virtual void OnValueChanged(EventArgs e)
+        {
+            ValueChanged?.Invoke(this, e);
+        }
+
         private int _value = 0;
         public int Value { 
             get { return _value; } 
             set {
-                if(!allowNegative && value < 0 && _value == 0)
+                if(!AllowNegative && value < 0 && _value == 0)
                 {
-                    _value = limit;
+                    _value = Limit;
+                    Number.Text = _value.ToString();
                     return;
                 }
-                if (!allowNegative && value < 0)
+                if (!AllowNegative && value < 0)
                 {
                     _value = 0;
+                    Number.Text = _value.ToString();
                     return;
                 }
-                if(_value == limit && value > limit)
+                if(_value == Limit && value > Limit)
                 {
                     _value = 0;
+                    Number.Text = _value.ToString();
                     return;
                 }
-                if (value > limit)
+                if (value > Limit)
                 {
-                    _value = limit;
+                    _value = Limit;
+                    Number.Text = _value.ToString();
                     return;
                 }
                 _value = value;
 
                 Number.Text = _value.ToString();
             } }
-        public bool allowNegative { get; set; } 
-        public int limit { get; set; }
+        public bool AllowNegative { get; set; } 
+        public int Limit { get; set; }
         public NumberBox()
         {
             InitializeComponent();
@@ -64,11 +77,15 @@ namespace xstrat.Ui
         private void UpBtn_Click(object sender, RoutedEventArgs e)
         {
             Value++;
+            // Raise ValueChanged event
+            OnValueChanged(new EventArgs());
         }
 
         private void DownBtn_Click(object sender, RoutedEventArgs e)
         {
             Value--;
+            // Raise ValueChanged event
+            OnValueChanged(new EventArgs());
         }
 
         private void Number_TextChanged(object sender, TextChangedEventArgs e)
@@ -76,10 +93,15 @@ namespace xstrat.Ui
             try
             {
                 Value = Convert.ToInt32(Number.Text);
+                // Raise ValueChanged event
+                OnValueChanged(new EventArgs());
             }
             catch (Exception ex)
             {
                 Value = 0;
+                Number.SelectAll();
+                // Raise ValueChanged event
+                OnValueChanged(new EventArgs());
             }
         }
     }

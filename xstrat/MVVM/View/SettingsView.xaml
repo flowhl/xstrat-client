@@ -62,7 +62,7 @@
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify5">
                                 <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Starting soon time (in minutes):</Label>
                                 <Viewbox Height="20" Width="30">
-                                <local1:NumberBox x:Name="ScrimTimeDelay" allowNegative="False" Value="60" limit="300"></local1:NumberBox>                                    
+                                    <local1:NumberBox x:Name="ScrimTimeDelay" AllowNegative="False" Value="60" Limit="300"></local1:NumberBox>                                    
                                 </Viewbox>
                             </StackPanel>
                         </StackPanel>

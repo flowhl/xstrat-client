@@ -23,11 +23,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="DurHour" allowNegative="False" limit="23"/>
+                        <local:NumberBox x:Name="DurHour" AllowNegative="False" Limit="23"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="DurMinute" allowNegative="False" limit="59"/>
+                        <local:NumberBox x:Name="DurMinute" AllowNegative="False" Limit="59"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
                 </StackPanel>
@@ -105,11 +105,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="FromHour" allowNegative="False" limit="23"/>
+                        <local:NumberBox x:Name="FromHour" AllowNegative="False" Limit="23"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="FromMinute" allowNegative="False" limit="59"/>
+                        <local:NumberBox x:Name="FromMinute" AllowNegative="False" Limit="59"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
                 </StackPanel>
@@ -123,11 +123,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="Clock" Foreground="#AAAAAA" Height="20" Width="20" VerticalAlignment="Center"/>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="ToHour" allowNegative="False" limit="23"/>
+                        <local:NumberBox x:Name="ToHour" AllowNegative="False" Limit="23"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">h</Label>
                     <Viewbox Height="20">
-                        <local:NumberBox x:Name="ToMinute" allowNegative="False" limit="59"/>
+                        <local:NumberBox x:Name="ToMinute" AllowNegative="False" Limit="59"/>
                     </Viewbox>
                     <Label Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="15" Margin="-5,0,0,0">min</Label>
                 </StackPanel>
@@ -145,7 +145,7 @@
                 </ScrollViewer>
                 <!--Counter-->
                 <Viewbox Height="30" Name="MinPlayers">
-                    <local:NumberBox x:Name="PlayerAmount" allowNegative="False" limit="100"></local:NumberBox>
+                    <local:NumberBox x:Name="PlayerAmount" AllowNegative="False" Limit="100"></local:NumberBox>
                 </Viewbox>
 
                 <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">

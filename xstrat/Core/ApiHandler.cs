@@ -35,9 +35,9 @@ namespace xstrat
             if(client == null)
             {
 
-                if (SettingsHandler.APIURL != null)
+                if (SettingsHandler.Settings.APIURL != null)
                 {
-                    client = new RestClient(SettingsHandler.APIURL);
+                    client = new RestClient(SettingsHandler.Settings.APIURL);
                 }
                 else
                 {

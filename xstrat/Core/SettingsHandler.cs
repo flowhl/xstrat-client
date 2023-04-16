@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NuGet;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,23 +20,16 @@ namespace xstrat.Core
          */
 
 
-        public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
+        public static readonly string OldSettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
+        public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.xml";
         public static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
         public static readonly string MapsFolder = Globals.XStratInstallPath + @"/Images/Maps/";
         public static readonly string XStratReplayPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/replays";
 
-        //settings propeties:
-        public static bool StayLoggedin { get; set; }
-        public static string token { get; set; }
-        public static string SkinSwitcherPath { get; set; }
-        public static bool SkinSwitcherStatus { get; set; }
-        public static string APIURL { get; set; }
-        public static string LastLoginMail { get; set; }
-        public static int current_user_id { get; set; }
-        public static string GameReplayPath { get; set; }
+        public static SettingsModel Settings { get; private set; }
 
-
-        public static async void Initialize()
+       
+        public static void Initialize()
         {
             if (!Directory.Exists(SettingsFolder))
             {
@@ -44,6 +38,10 @@ namespace xstrat.Core
             if (!Directory.Exists(MapsFolder))
             {
                 Directory.CreateDirectory(MapsFolder);
+            }
+            if (File.Exists(OldSettingsFile) && !File.Exists(SettingsFile))
+            {
+                Migrate(OldSettingsFile);
             }
             if (!File.Exists(SettingsFile))
             {
@@ -54,64 +52,56 @@ namespace xstrat.Core
 
         public static void Load()
         {
-            string[] lines = File.ReadAllLines(Path.Combine(SettingsFile));
-            try
-            {
-                StayLoggedin = Convert.ToBoolean(lines[0]);
-                token = lines[1];
-                SkinSwitcherPath = lines[2];
-                SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
-                APIURL = lines[4];
-                LastLoginMail = lines[5];
-                current_user_id = Convert.ToInt32(lines[6]);
-                GameReplayPath = lines[7];
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Error when loading settings:" + ex.Message);
-                Notify.sendError("Error when loading settings:" + ex.Message);
-                Notify.EndLogging();
-            }
-
+            Settings = Globals.DeserializeFromFile<SettingsModel>(SettingsFile);
         }
 
         public static void Save()
         {
-            string[] newlines = {
-            StayLoggedin.ToString(),
-            token,
-            SkinSwitcherPath,
-            SkinSwitcherStatus.ToString(),
-            APIURL,
-            LastLoginMail,
-            current_user_id.ToString(),
-            GameReplayPath
-            };
-
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))
-            {
-                foreach (string line in newlines)
-                    outputFile.WriteLine(line);
-            }
+            Globals.SerializeToFile<SettingsModel>(Settings, SettingsFile);
         }
         private static void Create()
         {
-            string[] newlines = {
-            false.ToString(),
-            "",
-            "",
-            false.ToString(),
-            "https://api.xstrat.app/api",
-            "",
-            "-1",
-            "",
-            };
+            var newSettings = new SettingsModel();
+            Globals.SerializeToFile<SettingsModel>(newSettings, SettingsFile);
+        }
 
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(SettingsFile)))
+        public static void Migrate(string txtPath)
+        {
+            Notify.sendInfo("Migrating settings...");
+            var newSettings = new SettingsModel();
+            string[] lines = File.ReadAllLines(Path.Combine(txtPath));
+            try
             {
-                foreach (string line in newlines)
-                    outputFile.WriteLine(line);
+                newSettings.StayLoggedin = Convert.ToBoolean(lines[0]);
+                newSettings.Token = lines[1];
+                newSettings.SkinSwitcherPath = lines[2];
+                newSettings.SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
+                newSettings.APIURL = lines[4];
+                newSettings.LastLoginMail = lines[5];
+                newSettings.CurrentUserId = Convert.ToInt32(lines[6]);
+                newSettings.GameReplayPath = lines[7];
             }
+            catch (Exception ex)
+            {
+                Logger.Log("Error when migrating settings:" + ex.Message);
+            }
+            Settings = newSettings;
+            Save();
+            Notify.sendSuccess("Migrated successfully");
         }
     }
+
+    public class SettingsModel
+    {
+        //settings propeties:
+        public bool StayLoggedin { get; set; }
+        public string Token { get; set; }
+        public string SkinSwitcherPath { get; set; }
+        public bool SkinSwitcherStatus { get; set; }
+        public string APIURL { get; set; }
+        public string LastLoginMail { get; set; }
+        public int CurrentUserId { get; set; }
+        public string GameReplayPath { get; set; }
+    }
+
 }

@@ -30,13 +30,13 @@ namespace xstrat.MVVM.View
 
         private void SettingsView_Loaded(object sender, RoutedEventArgs e)
         {
-            SkinSwitcherPathDisplay.Text = SettingsHandler.SkinSwitcherPath;
-            RememberMeSettings.setStatus(SettingsHandler.StayLoggedin);
+            SkinSwitcherPathDisplay.Text = SettingsHandler.Settings.SkinSwitcherPath;
+            RememberMeSettings.setStatus(SettingsHandler.Settings.StayLoggedin);
             RetrieveDiscordIDAsync();
             RetrieveUbisoftIDAsync();
-            if (SettingsHandler.APIURL != null)
+            if (SettingsHandler.Settings.APIURL != null)
             {
-                APIText.Text = SettingsHandler.APIURL;
+                APIText.Text = SettingsHandler.Settings.APIURL;
             }
             if (!Globals.AdminUser)
             {
@@ -120,7 +120,7 @@ namespace xstrat.MVVM.View
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var path = dialog.FileName;
-                SettingsHandler.SkinSwitcherPath = path;
+                SettingsHandler.Settings.SkinSwitcherPath = path;
                 SkinSwitcherPathDisplay.Text = path;
                 SettingsHandler.Save();
             }
@@ -128,8 +128,8 @@ namespace xstrat.MVVM.View
 
         private void Save_BtnClick(object sender, RoutedEventArgs e)
         {
-            SettingsHandler.StayLoggedin = RememberMeSettings.getStatus();
-            SettingsHandler.APIURL = APIText.Text;
+            SettingsHandler.Settings.StayLoggedin = RememberMeSettings.getStatus();
+            SettingsHandler.Settings.APIURL = APIText.Text;
             SettingsHandler.Save();
             SaveDiscordIDAsync();
             SaveUbisoftIDAsync();
@@ -271,7 +271,7 @@ namespace xstrat.MVVM.View
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var path = dialog.FileName;
-                SettingsHandler.GameReplayPath = path;
+                SettingsHandler.Settings.GameReplayPath = path;
                 ReplayPathDisplay.Text = path;
                 SettingsHandler.Save();
             }

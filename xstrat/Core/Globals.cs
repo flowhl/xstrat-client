@@ -629,7 +629,7 @@ namespace xstrat.Core
         }
         public static void RetrieveCurrentUser()
         {
-            currentUser = getUserFromId(SettingsHandler.current_user_id);
+            currentUser = getUserFromId(SettingsHandler.Settings.CurrentUserId);
         }
         public static async Task RetrieveTeamInfoAsync()
         {
@@ -1099,7 +1099,7 @@ namespace xstrat.Core
             public DateTime Date { get; set; }
         }
 
-        public static string SerializeObject<T>(this T toSerialize)
+        public static string SerializeToString<T>(this T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
@@ -1107,6 +1107,26 @@ namespace xstrat.Core
             {
                 xmlSerializer.Serialize(textWriter, toSerialize);
                 return textWriter.ToString();
+            }
+        }
+
+        // Serialize an object to XML and save it to a file
+        public static void SerializeToFile<T>(this T obj, string path)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (TextWriter writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, obj);
+            }
+        }
+
+        // Deserialize an object from an XML file
+        public static T DeserializeFromFile<T>(string path)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (TextReader reader = new StreamReader(path))
+            {
+                return (T)serializer.Deserialize(reader);
             }
         }
 

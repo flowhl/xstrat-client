@@ -889,7 +889,7 @@ namespace xstrat.MVVM.View
             content.banAtt = AttBanSelector.selectedOperator;
             content.assignmentTable = GetAssignmentTable();
 
-            string scontent = content.SerializeObject();
+            string scontent = content.SerializeToString();
 
             if (string.IsNullOrEmpty(scontent))
             {

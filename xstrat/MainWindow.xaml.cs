@@ -165,9 +165,9 @@ namespace xstrat
         /// <returns></returns>
         private async Task LoginWindowAsync()
         {
-            if(SettingsHandler.StayLoggedin == true && SettingsHandler.token != null && SettingsHandler.token != "")
+            if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.Token != null && SettingsHandler.Settings.Token != "")
             {
-                bool verified = await ApiHandler.VerifyToken(SettingsHandler.token);
+                bool verified = await ApiHandler.VerifyToken(SettingsHandler.Settings.Token);
                 if(verified)
                 {
                     Notify.ResumeLogging();
@@ -189,9 +189,9 @@ namespace xstrat
 
         public void LoginComplete(string token)
         {
-            if (SettingsHandler.StayLoggedin)
+            if (SettingsHandler.Settings.StayLoggedin)
             {
-                SettingsHandler.token = token;
+                SettingsHandler.Settings.Token = token;
                 SettingsHandler.Save();
             }
             ApiHandler.AddBearer(token);

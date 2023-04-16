@@ -37,7 +37,7 @@ namespace xstrat.Ui
             Directory.CreateDirectory(docPath);
             Directory.CreateDirectory(normalPath);
             Directory.CreateDirectory(noSkinPath);
-            TS.setStatus(SettingsHandler.SkinSwitcherStatus);
+            TS.setStatus(SettingsHandler.Settings.SkinSwitcherStatus);
 
         }
 
@@ -45,11 +45,11 @@ namespace xstrat.Ui
         {
             DirectoryInfo dir1 = new DirectoryInfo(noSkinPath);
             DirectoryInfo dir2 = new DirectoryInfo(normalPath);
-            DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
-            if (SettingsHandler.SkinSwitcherPath != null && SettingsHandler.SkinSwitcherPath != "")
+            DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.Settings.SkinSwitcherPath);
+            if (SettingsHandler.Settings.SkinSwitcherPath != null && SettingsHandler.Settings.SkinSwitcherPath != "")
             {
                 Error.Content = null;
-                if (SettingsHandler.SkinSwitcherStatus)
+                if (SettingsHandler.Settings.SkinSwitcherStatus)
                 {
                     UbiClear();
                     CopyFiles(dir2, ubidir); //disable skins
@@ -73,11 +73,11 @@ namespace xstrat.Ui
         {
             if (TS.Toggled1 == true)
             {
-                SettingsHandler.SkinSwitcherStatus = true;
+                SettingsHandler.Settings.SkinSwitcherStatus = true;
             }
             else
             {
-                SettingsHandler.SkinSwitcherStatus = false;
+                SettingsHandler.Settings.SkinSwitcherStatus = false;
             }
             SettingsHandler.Save();
         }
@@ -88,7 +88,7 @@ namespace xstrat.Ui
             if (result == MessageBoxResult.OK)
             {
                 DirectoryInfo dir1 = new DirectoryInfo(noSkinPath);
-                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.Settings.SkinSwitcherPath);
                 CopyFiles(ubidir, dir1);
                 Notify.sendSuccess("Copied files");
             }
@@ -100,7 +100,7 @@ namespace xstrat.Ui
             if (result == MessageBoxResult.OK)
             {
                 DirectoryInfo dir2 = new DirectoryInfo(normalPath);
-                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+                DirectoryInfo ubidir = new DirectoryInfo(SettingsHandler.Settings.SkinSwitcherPath);
                 CopyFiles(ubidir, dir2);
                 Notify.sendSuccess("Copied files");
             }
@@ -110,7 +110,7 @@ namespace xstrat.Ui
         {
             try
             {
-                DirectoryInfo directory = new DirectoryInfo(SettingsHandler.SkinSwitcherPath);
+                DirectoryInfo directory = new DirectoryInfo(SettingsHandler.Settings.SkinSwitcherPath);
 
                 foreach (FileInfo file in directory.GetFiles())
                 {

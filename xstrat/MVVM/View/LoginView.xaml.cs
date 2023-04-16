@@ -35,8 +35,8 @@ namespace xstrat.MVVM.View
             {
                 Error.Content = null;
             }
-            RememberMe.setStatus(SettingsHandler.StayLoggedin);
-            email.Text = SettingsHandler.LastLoginMail;
+            RememberMe.setStatus(SettingsHandler.Settings.StayLoggedin);
+            email.Text = SettingsHandler.Settings.LastLoginMail;
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -70,11 +70,11 @@ namespace xstrat.MVVM.View
                     int.TryParse(json.SelectToken("user_id").ToString(), out user_id);
                     if(user_id != -1)
                     {
-                        SettingsHandler.current_user_id = user_id;
+                        SettingsHandler.Settings.CurrentUserId = user_id;
                         Globals.currentUser = Globals.getUserFromId(user_id);
                     }
-                    SettingsHandler.StayLoggedin = RememberMe.getStatus();
-                    SettingsHandler.LastLoginMail = email.Text.Trim();
+                    SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
+                    SettingsHandler.Settings.LastLoginMail = email.Text.Trim();
                     SettingsHandler.Save();
                     wnd.LoginComplete(baerer);
                 }

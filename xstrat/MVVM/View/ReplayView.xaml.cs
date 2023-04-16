@@ -102,7 +102,7 @@ namespace xstrat.MVVM.View
             var list = new ObservableCollection<MatchReplayFolder>();
 
             string xstratpath = SettingsHandler.XStratReplayPath;
-            string gamepath = SettingsHandler.GameReplayPath;
+            string gamepath = SettingsHandler.Settings.GameReplayPath;
 
             if (gamepath.IsNullOrEmpty() || !Directory.Exists(gamepath))
             {
@@ -206,9 +206,9 @@ namespace xstrat.MVVM.View
         {
             SetStatus($"Importing: {folderName}");
             string xstratpath = SettingsHandler.XStratReplayPath;
-            string gamepath = SettingsHandler.GameReplayPath;
+            string gamepath = SettingsHandler.Settings.GameReplayPath;
 
-            string sourceDirectory = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string sourceDirectory = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
             string targetDirectory = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
 
             if (gamepath.IsNullOrEmpty() || !Directory.Exists(gamepath))
@@ -280,8 +280,8 @@ namespace xstrat.MVVM.View
             SetStatus($"Deleting: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
-            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
-            string jsonFile = Path.Combine(SettingsHandler.GameReplayPath,$"{folderName}.json");
+            string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
+            string jsonFile = Path.Combine(SettingsHandler.Settings.GameReplayPath,$"{folderName}.json");
             if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
             if (File.Exists(jsonFile)) File.Delete(jsonFile);
@@ -293,7 +293,7 @@ namespace xstrat.MVVM.View
             SetStatus($"Copying to Game: {folderName}");
             if (folderName.IsNullOrEmpty()) return;
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
-            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
 
             if(ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
             {
@@ -315,7 +315,7 @@ namespace xstrat.MVVM.View
         private void RemoveFromGameFolder(string folderName)
         {
             if (folderName.IsNullOrEmpty()) return;
-            string dirGame = Path.Combine(SettingsHandler.GameReplayPath, folderName);
+            string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
             LoadReplays();
         }
@@ -405,7 +405,7 @@ namespace xstrat.MVVM.View
                 Logger.Log("XML Path is empty - could not save dictionary: " + xmlFile);
                 return;
             }
-            string xml = dict.SerializeObject();
+            string xml = dict.SerializeToString();
 
             File.WriteAllText(xmlFile, xml);
         }

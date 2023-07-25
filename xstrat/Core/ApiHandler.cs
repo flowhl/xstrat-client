@@ -16,6 +16,11 @@ using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using System.Xml;
 using System.IO;
+using xstrat.Models.API;
+using Newtonsoft.Json;
+using XStrat_Api.Models.Supabase;
+using NuGet;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace xstrat
 {
@@ -26,13 +31,14 @@ namespace xstrat
 
         public static List<ApiResponse> Cache = new List<ApiResponse>();
 
+        public static Session CurrentSession;
 
         /// <summary>
         /// creates restclient instance
         /// </summary>
         public async static void Initialize()
         {
-            if(client == null)
+            if (client == null)
             {
 
                 if (SettingsHandler.Settings.APIURL != null)
@@ -41,7 +47,7 @@ namespace xstrat
                 }
                 else
                 {
-                    Notify.sendError("Please enter a proper url to reach the server. Use https://app.xstrat.app/api as default");
+                    Notify.sendError("Please enter a proper url to reach the server. Use https://app.xstrat.app/ as default");
                 }
             }
             var request = new RestRequest("/", Method.Get);
@@ -56,6 +62,31 @@ namespace xstrat
                 ////MessageBox.Show("Api could not be reached. Please check your connection");
                 //App.Current.Shutdown();
             }
+            RenewSessionQueue();
+        }
+
+        public static async void RenewSessionQueue()
+        {
+            while (true)
+            {
+                if (CurrentSession != null)
+                {
+                    if (CurrentSession.ExpiresIn <= 600)
+                    {
+                        var newSession = await RenewSession();
+                        if(newSession != null)
+                        {
+                            CurrentSession = newSession;
+                            client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
+                        }
+                        else
+                        {
+                            Notify.sendError("Could not renew session token");
+                        }
+                    }
+                }
+                await Task.Delay(1000);
+            }
         }
 
         /// <summary>
@@ -67,6 +98,11 @@ namespace xstrat
             if (client.Authenticator == null)
             {
                 client.Authenticator = new JwtAuthenticator(token);
+                CurrentSession = new Session { AccessToken = token };
+                var task = RenewSession();
+                task.Wait();
+                CurrentSession = task.Result;
+                client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
             }
         }
 
@@ -85,9 +121,9 @@ namespace xstrat
         public static async Task<(bool, string)> RegisterAsync(string _name, string _email, string _pw)
         {
             Waiting();
-            var request = new RestRequest("register", Method.Post);
+            var request = new RestRequest("user/signup", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { name = _name, email = _email, password = _pw });
+            request.AddJsonBody(new { email = _email, password = _pw });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -110,22 +146,64 @@ namespace xstrat
         /// <param name="_email"></param>
         /// <param name="_pw"></param>
         /// <returns></returns>
-        public static async Task<(bool, string)> LoginAsync(string _email, string _pw)
+        public static async Task<Session> LoginAsync(string _email, string _pw)
         {
             Waiting();
-            var request = new RestRequest("login", Method.Post);
+            var request = new RestRequest("user/signin", Method.Post);
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new { email = _email, password = _pw });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                var session = JsonConvert.DeserializeObject<Session>(response.Content);
+                CurrentSession = session;
+                client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
+                EndWaiting();
+                return session;
+            }
+            EndWaiting();
+            Notify.sendError("Error logging in: " + response.Content);
+            return null;
+        }
+
+        public static async Task<UserData> GetUserDataAsync()
+        {
+            Waiting();
+            var request = new RestRequest("user/data", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+
+            var userData = JsonConvert.DeserializeObject<UserData>(response.Content);
+
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return userData;
             }
             EndWaiting();
-            return (false, "db error");
+            Notify.sendError("Error getting user data in: " + response.Content);
+            return null;
         }
+
+        public static async Task<Session> RenewSession()
+        {
+            if (CurrentSession == null) return null;
+            var request = new RestRequest("user/refresh", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+
+            var response = await client.ExecuteAsync<RestResponse>(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            {
+                var session = JsonConvert.DeserializeObject<Session>(response.Content);
+                return session;
+            }
+            return null;
+        }
+
 
         /// <summary>
         /// verifies the api token by api call
@@ -289,7 +367,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/join", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { join_password = pw, team_id = id});
+            request.AddJsonBody(new { join_password = pw, team_id = id });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
@@ -350,23 +428,23 @@ namespace xstrat
             RemoveFromCache("TeamInfo");
             RemoveFromCache("TeamMembers");
             Waiting();
-                if (name == null || name == "")
-                {
-                    return(false, "invalid input");
-                }
-                var request = new RestRequest("team/new", Method.Post);
-                request.RequestFormat = DataFormat.Json;
-                var param = new NewParams { name = name, game_id = igame_id };
-                request.AddJsonBody(param);
+            if (name == null || name == "")
+            {
+                return (false, "invalid input");
+            }
+            var request = new RestRequest("team/new", Method.Post);
+            request.RequestFormat = DataFormat.Json;
+            var param = new NewParams { name = name, game_id = igame_id };
+            request.AddJsonBody(param);
 
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
-                {
-                    EndWaiting();
-                    return (true, response.Content);
-                }
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
+            {
                 EndWaiting();
-                return (false, response.Content);
+                return (true, response.Content);
+            }
+            EndWaiting();
+            return (false, response.Content);
         }
         public static async Task<(bool, string)> TeamJoinpassword()
         {
@@ -480,7 +558,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/rename ", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new {newname = newname});
+            request.AddJsonBody(new { newname = newname });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
@@ -522,7 +600,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/setcolor", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new {color = color.Replace("#FF", "#")});
+            request.AddJsonBody(new { color = color.Replace("#FF", "#") });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
@@ -565,7 +643,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/setdiscord", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { discord = discord});
+            request.AddJsonBody(new { discord = discord });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
@@ -657,7 +735,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("routines/delete", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { routine_id = id});
+            request.AddJsonBody(new { routine_id = id });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -676,7 +754,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> GetRoutineContent(int id)
         {
-            var CacheResponse = GetCachedResponse( id.ToString());
+            var CacheResponse = GetCachedResponse(id.ToString());
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -692,7 +770,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( id.ToString(), (true, response.Content), 20);
+                    AddToCache(id.ToString(), (true, response.Content), 20);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -743,7 +821,7 @@ namespace xstrat
             RemoveFromCache("GetAllRoutines");
             var request = new RestRequest("routines/save", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { title = ntitle, content = ncontent, routine_id = n_id});
+            request.AddJsonBody(new { title = ntitle, content = ncontent, routine_id = n_id });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -792,7 +870,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("event/new", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { typ = typ, title = title, start = start, end = end});
+            request.AddJsonBody(new { typ = typ, title = title, start = start, end = end });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -828,7 +906,7 @@ namespace xstrat
             return (false, "db error");
         }
 
-        
+
         /// <summary>
         /// Loads all routines by api call
         /// </summary>
@@ -902,13 +980,13 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("event/save", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            if(typ == 1)
+            if (typ == 1)
             {
                 start = start.Split(' ')[0] + " 00:00:00";
                 end = start.Split(' ')[0] + " 23:59:59";
             }
 
-            request.AddJsonBody(new {id = id, typ = typ, title = title, start = start, end = end });
+            request.AddJsonBody(new { id = id, typ = typ, title = title, start = start, end = end });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -928,7 +1006,7 @@ namespace xstrat
         /// time = timestringfrom + | + timestringto
         /// </summary>
         /// <returns></returns>
-        public static async Task<(bool, string)> NewScrim(int typ, string title,string opponent_name, string time_start, string time_end, int event_type)
+        public static async Task<(bool, string)> NewScrim(int typ, string title, string opponent_name, string time_start, string time_end, int event_type)
         {
             Waiting();
             var request = new RestRequest("scrim/new", Method.Post);
@@ -966,7 +1044,7 @@ namespace xstrat
             EndWaiting();
             return (false, "db error");
         }
-        
+
 
         /// <summary>
         /// Loads all routines by api call
@@ -995,7 +1073,7 @@ namespace xstrat
         /// <param name="ncontent"></param>
         /// <param name="n_id"></param>
         /// <returns></returns>
-        public static async Task<(bool, string)> SaveScrim(int id,string title, string comment, string time_start, string time_end, string opponent_name, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int event_type)
+        public static async Task<(bool, string)> SaveScrim(int id, string title, string comment, string time_start, string time_end, string opponent_name, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int event_type)
         {
             Waiting();
             var request = new RestRequest("scrim/save", Method.Post);
@@ -1026,7 +1104,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("scrim/setresponse", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { scrim_id = scrim_id, typ = typ});
+            request.AddJsonBody(new { scrim_id = scrim_id, typ = typ });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -1080,7 +1158,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("user/setubisoftid", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { ubisoft_id = ubisoft_id});
+            request.AddJsonBody(new { ubisoft_id = ubisoft_id });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -1101,7 +1179,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> GetUbisoftID()
         {
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1116,7 +1194,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( "", (true, response.Content), 5);
+                    AddToCache("", (true, response.Content), 5);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1137,7 +1215,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetStats(string username, string region = "emea")
         {
 
-            var CacheResponse = GetCachedResponse( username);
+            var CacheResponse = GetCachedResponse(username);
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1153,7 +1231,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( username, (true, response.Content), 20);
+                    AddToCache(username, (true, response.Content), 20);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1164,7 +1242,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetScrimParticipation(int user_id)
         {
 
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1180,7 +1258,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( user_id.ToString(), (true, response.Content), 10);
+                    AddToCache(user_id.ToString(), (true, response.Content), 10);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1195,10 +1273,10 @@ namespace xstrat
         /// <param name="season"></param>
         /// <param name="region"></param>
         /// <returns></returns>
-        public static async Task<(bool, string)> GetStatsByAllSeason(string username , string region = "emea")
+        public static async Task<(bool, string)> GetStatsByAllSeason(string username, string region = "emea")
         {
 
-            var CacheResponse = GetCachedResponse( username);
+            var CacheResponse = GetCachedResponse(username);
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1214,7 +1292,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( username, (true, response.Content), 20);
+                    AddToCache(username, (true, response.Content), 20);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1230,7 +1308,7 @@ namespace xstrat
         public static async Task<(bool, string)> GetStatsByOperator(string username)
         {
 
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1246,7 +1324,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( username, (true, response.Content), 20);
+                    AddToCache(username, (true, response.Content), 20);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1264,7 +1342,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> GetLicenseStatus()
         {
-            var CacheResponse = GetCachedResponse( "");
+            var CacheResponse = GetCachedResponse("");
             if (!string.IsNullOrEmpty(CacheResponse.Item2))
             {
                 return CacheResponse;
@@ -1279,7 +1357,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    AddToCache( "", (true, response.Content), 1);
+                    AddToCache("", (true, response.Content), 1);
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1298,7 +1376,7 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("/license/activate", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { key = key});
+            request.AddJsonBody(new { key = key });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -1448,7 +1526,7 @@ namespace xstrat
         {
             CleanUpCache();
             var CacheRow = Cache.Where(x => x.Method == method && x.Parameters == parameters).FirstOrDefault();
-            if(CacheRow != null && method != "") return CacheRow.Response;
+            if (CacheRow != null && method != "") return CacheRow.Response;
             return (false, null);
         }
 
@@ -1460,7 +1538,7 @@ namespace xstrat
         private static void CleanUpCache()
         {
             if (DateTime.Now.Subtract(last_cleanup).TotalMinutes < 3) return;
-            if(Cache != null)
+            if (Cache != null)
             {
                 Cache = Cache.Where(x => x.Expiry > DateTime.Now).OrderByDescending(x => x.Expiry).ToList();
             }
@@ -1473,7 +1551,7 @@ namespace xstrat
         private static void AddToCache(string parameters, (bool, string) response, int expiryMinutes, [CallerMemberName] string method = "")
         {
             if (method == "") return;
-            Cache.Add(new ApiResponse(method,parameters,response,expiryMinutes));
+            Cache.Add(new ApiResponse(method, parameters, response, expiryMinutes));
         }
 
         //public static void ReadCacheFile()

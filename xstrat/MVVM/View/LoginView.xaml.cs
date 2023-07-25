@@ -59,30 +59,28 @@ namespace xstrat.MVVM.View
             var _password = password.Password;
             if(_email != null && _password != null && _email != "" && _password != "")
             {
-                (bool, string) result = await ApiHandler.LoginAsync(_email, _password);
-                if (result.Item1)
+                var session = await ApiHandler.LoginAsync(_email, _password);
+                if (session == null)
                 {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    string baerer = json.SelectToken("token").ToString();
-                    int user_id = -1;
-                    int.TryParse(json.SelectToken("user_id").ToString(), out user_id);
-                    if(user_id != -1)
-                    {
-                        SettingsHandler.Settings.CurrentUserId = user_id;
-                        Globals.currentUser = Globals.getUserFromId(user_id);
-                    }
-                    SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
-                    SettingsHandler.Settings.LastLoginMail = email.Text.Trim();
-                    SettingsHandler.Save();
-                    wnd.LoginComplete(baerer);
-                }
-                else
-                {
-                    Error.Content = "invalid user or password: " + result.Item2;
                     return;
                 }
+
+                ApiHandler.CurrentSession = session;
+
+                string baerer = session.AccessToken;
+                string user_id = session.User.Id;
+
+                var userData = await ApiHandler.GetUserDataAsync();
+                if(user_id.IsNotNullOrEmpty())
+                {
+                    SettingsHandler.Settings.CurrentUserId = user_id;
+                    Globals.CurrentUserData = userData;
+                }
+                SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
+                SettingsHandler.Settings.LastLoginMail = email.Text.Trim();
+                SettingsHandler.Save();
+                wnd.LoginComplete(baerer);
+                
             }
             else
             {

@@ -29,6 +29,7 @@ using File = System.IO.File;
 using System.Xml.Linq;
 using SkiaSharp.Views.WPF;
 using NuGet;
+using XStrat_Api.Models.Supabase;
 
 namespace xstrat.Core
 {
@@ -329,6 +330,7 @@ namespace xstrat.Core
         public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
         public static User currentUser { get; set; }
+        public static UserData CurrentUserData { get; set; }
         public static TeamInfo teamInfo { get; set; }
         public static List<Strat> strats { get; set; } = new List<Strat>();
 
@@ -627,10 +629,6 @@ namespace xstrat.Core
         {
 
         }
-        public static void RetrieveCurrentUser()
-        {
-            currentUser = getUserFromId(SettingsHandler.Settings.CurrentUserId);
-        }
         public static async Task RetrieveTeamInfoAsync()
         {
             var result = await ApiHandler.TeamInfo();
@@ -689,7 +687,6 @@ namespace xstrat.Core
                     Notify.sendError("Teammates could not be loaded");
                     throw new Exception("Teammates could not be loaded");
                 }
-                RetrieveCurrentUser();
                 StatsDataSource.Init();
                 int max_id = 0;
                 foreach (var mate in teammates)

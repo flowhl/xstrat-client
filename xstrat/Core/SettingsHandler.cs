@@ -10,16 +10,6 @@ namespace xstrat.Core
 {
     public static class SettingsHandler
     {
-        //path: documents/xstrat/settings
-
-        /*FILE:
-         * Stay logged in
-         * SkinswitcherUbiFolder
-         * API domain
-         * Last Login Mail
-         */
-
-
         public static readonly string OldSettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.txt";
         public static readonly string SettingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings/settings.xml";
         public static readonly string SettingsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/xstrat/settings";
@@ -78,7 +68,7 @@ namespace xstrat.Core
                 newSettings.SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
                 newSettings.APIURL = lines[4];
                 newSettings.LastLoginMail = lines[5];
-                newSettings.CurrentUserId = Convert.ToInt32(lines[6]);
+                newSettings.CurrentUserId = lines[6];
                 newSettings.GameReplayPath = lines[7];
             }
             catch (Exception ex)
@@ -100,7 +90,7 @@ namespace xstrat.Core
         public bool SkinSwitcherStatus { get; set; }
         public string APIURL { get; set; }
         public string LastLoginMail { get; set; }
-        public int CurrentUserId { get; set; }
+        public string CurrentUserId { get; set; }
         public string GameReplayPath { get; set; }
     }
 

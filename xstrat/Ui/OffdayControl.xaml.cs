@@ -63,6 +63,7 @@ namespace xstrat.Ui
             CreationDate.Text = "Created on: " + offDay.creation_date.Split('T').First() ;
             
             FromDatePicker.Text = offDay.start.Split(' ').First();
+            ToDatePicker.Text = offDay.end.Split(' ').First();
             
             int fromHour = int.Parse(offDay.start.Split(' ')[1].Split(':').First());
             int fromMinute = int.Parse(offDay.start.Split(' ')[1].Split(':')[1]);

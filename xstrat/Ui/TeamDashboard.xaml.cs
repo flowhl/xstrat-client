@@ -28,7 +28,7 @@ namespace xstrat.Ui
     public partial class TeamDashboard : UserControl
     {
         public List<User> teammates { get; set; } = new List<User>();
-        public TeamInfo TeamInfo;
+        public Models.Supabase.Team TeamInfo;
         public TeamDashboard()
         {
             InitializeComponent();
@@ -45,7 +45,7 @@ namespace xstrat.Ui
             TeamName.Content = "Create or join a team";
             AdminName.Content = "Admin: ";
             GameName.Content = "Game: ";
-            TeamInfo = Globals.teamInfo;
+            TeamInfo = Globals.CurrentTeam;
             await CheckAdmin();
             await RetrieveColorAsync();
             DependencyObject ucParent = this.Parent;
@@ -61,9 +61,9 @@ namespace xstrat.Ui
             }
             if (TeamInfo != null)
             {
-                TeamName.Content = TeamInfo.team_name;
-                AdminName.Content = "Admin: " + TeamInfo.admin_name;
-                GameName.Content = "Game: " + TeamInfo.game_name;
+                TeamName.Content = TeamInfo.Name;
+                AdminName.Content = "Admin: " + TeamInfo.AdminUserID;
+                GameName.Content = "Game: " + TeamInfo.GameID;
             }
 
         }

@@ -110,9 +110,9 @@ namespace xstrat.MVVM.View
         {
             InitializeComponent();
             PlayerList.Children.Clear();
-            foreach (var user in Globals.teammates)
+            foreach (var user in Globals.Teammates)
             {
-                ColorDisplay newCD = new ColorDisplay(user.color.Replace("#", "#80").ToSolidColorBrush(), user.name, true);
+                ColorDisplay newCD = new ColorDisplay(user.Color.Replace("#", "#80").ToSolidColorBrush(), user.Name, true);
                 PlayerList.Children.Add(newCD);
                 newCD.ColorDisplayCheckstatusChanged += NewCD_ColorDisplayCheckstatusChanged;
             }
@@ -693,7 +693,7 @@ namespace xstrat.MVVM.View
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             string inputString = Microsoft.VisualBasic.Interaction.InputBox("Add Name", "Add player to track", "");
-            if(!Globals.teammates.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
+            if(!Globals.Teammates.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
             {
                 if(!customUsers.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
                 {

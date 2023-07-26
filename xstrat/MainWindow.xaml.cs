@@ -167,7 +167,8 @@ namespace xstrat
         {
             if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.Token != null && SettingsHandler.Settings.Token != "")
             {
-                bool verified = await ApiHandler.VerifyToken(SettingsHandler.Settings.Token);
+                ApiHandler.AddBearer(SettingsHandler.Settings.Token);
+                bool verified = await ApiHandler.VerifyTokenAsync();
                 if(verified)
                 {
                     Notify.ResumeLogging();

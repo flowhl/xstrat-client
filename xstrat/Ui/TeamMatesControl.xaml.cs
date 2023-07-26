@@ -28,13 +28,13 @@ namespace xstrat.Ui
         }
         public async Task RetrieveTeamMatesAsync()
         {
-            if (Globals.teammates != null)
+            if (Globals.Teammates != null)
             {
 
                 MemberSP.Children.Clear();
-                foreach (var user in Globals.teammates)
+                foreach (var user in Globals.Teammates)
                 {
-                    var newItem = new Teammate(user.name, user.id, user.color);
+                    var newItem = new TeammateControl(user.Name, user.Id, user.Color);
                     newItem.Height = 30;
                     newItem.Width = 250;
                     MemberSP.Children.Add(newItem);

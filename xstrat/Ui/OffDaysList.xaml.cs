@@ -34,7 +34,7 @@ namespace xstrat.Ui
         private void OffDaysList_Loaded(object sender, RoutedEventArgs e)
         {
             RetrieveOffDays();
-            if (Globals.teamInfo.use_on_days == 0)
+            if (Globals.CurrentTeam.UseOnDays == 0)
             {
                 TxtTitle.Content = "Your off days:";
             }

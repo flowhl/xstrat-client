@@ -56,7 +56,7 @@ namespace xstrat.Ui
             DurHour.Value = 2;
             ToHour.Value = 23;
             FromHour.Value = 20;
-            if (Globals.teamInfo.use_on_days == 0)
+            if (Globals.CurrentTeam.UseOnDays == 0)
             {
                 OffdayDisplay.NameInput= "Off-days";
             }
@@ -65,7 +65,7 @@ namespace xstrat.Ui
                 OffdayDisplay.NameInput = "Available days";
             }
             //Fill Player selection list for Calendar filter
-            foreach (var user in Globals.teammates)
+            foreach (var user in Globals.Teammates)
             {
                 UserCheckbox userCheckbox = new UserCheckbox(user);
                 Playerlist.Children.Add(userCheckbox);

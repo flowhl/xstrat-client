@@ -69,7 +69,7 @@ namespace xstrat.MVVM.View
 
         private void CalendarView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Globals.teamInfo.use_on_days == 0)
+            if (Globals.CurrentTeam.UseOnDays == 0)
             {
                 OffDayChecks.Content = "Your off days";
             }
@@ -272,7 +272,7 @@ namespace xstrat.MVVM.View
         public void CreateUserCheckbox()
         {
             int counter = 0;
-            foreach (var user in Globals.teammates)
+            foreach (var user in Globals.Teammates)
             {
                 if (user != null)
                 {

@@ -18,9 +18,9 @@ namespace xstrat.Ui
     /// <summary>
     /// Interaction logic for Teammate.xaml
     /// </summary>
-    public partial class Teammate : UserControl
+    public partial class TeammateControl : UserControl
     {
-        public Teammate(string name, int ID, string color)
+        public TeammateControl(string name, string ID, string color)
         {
             InitializeComponent();
             UserName.Text = name;

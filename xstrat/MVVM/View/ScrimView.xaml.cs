@@ -489,11 +489,11 @@ namespace xstrat.MVVM.View
 
             foreach (var date in dates)
             {
-                foreach (var user in Globals.teammates)
+                foreach (var user in Globals.Teammates)
                 {
                     var newPlayer = new Player();
                     newPlayer.Responses = GetTimespans(date, user.name, SelectedPlayerNumbers, calendarFilterType.id, ScrimDuration);
-                    newPlayer.ID = user.id;
+                    newPlayer.Id = user.id;
                     players.Add(newPlayer);
                 }
             }
@@ -517,12 +517,12 @@ namespace xstrat.MVVM.View
                     List<int> AvailablePlayerNumbers = new List<int>();
                     foreach (var player in window.AvailablePlayers)
                     {
-                        AvailablePlayerNumbers.Add(player.ID);
+                        AvailablePlayerNumbers.Add(player.Id);
                     }
 
                     if (SelectedPlayerNumbers.All(i => AvailablePlayerNumbers.Contains(i)))
                     {
-                        window.AvailablePlayers = window.AvailablePlayers.Where(x => SelectedPlayerNumbers.Contains(x.ID));
+                        window.AvailablePlayers = window.AvailablePlayers.Where(x => SelectedPlayerNumbers.Contains(x.Id));
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
                         Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2, args = newargs });
@@ -534,7 +534,7 @@ namespace xstrat.MVVM.View
                     List<int> AvailablePlayerNumbers = new List<int>();
                     foreach (var player in window.AvailablePlayers)
                     {
-                        AvailablePlayerNumbers.Add(player.ID);
+                        AvailablePlayerNumbers.Add(player.Id);
                     }
 
                     bool hasMinPlayers = true;
@@ -554,7 +554,7 @@ namespace xstrat.MVVM.View
 
                 if (calendarFilterType.id == 3) //all
                 {
-                    if (window.AvailablePlayers.Count() >= Globals.teammates.Count)
+                    if (window.AvailablePlayers.Count() >= Globals.Teammates.Count)
                     {
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
@@ -648,7 +648,7 @@ namespace xstrat.MVVM.View
 
             //offday regelung
 
-            if(Globals.teamInfo.use_on_days == 0)
+            if(Globals.CurrentTeam.UseOnDays == 0)
             {
                 times.Add(DateTime.ParseExact( (sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
                 times.Add(DateTime.ParseExact((sDate + " 23:59:59"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));

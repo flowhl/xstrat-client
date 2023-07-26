@@ -127,9 +127,9 @@ namespace xstrat.MVVM.View
 
         private void SelectMap()
         {
-            if (MapSelector.selectedMap != null)
+            if (MapSelector.SelectedMap != null)
             {
-                map_id = MapSelector.selectedMap.id;
+                map_id = MapSelector.SelectedMap.id;
             }
             else
             {
@@ -145,7 +145,7 @@ namespace xstrat.MVVM.View
 
             if (floor_id < 0) return;
             if (map_id < 0) return;
-            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
+            string game_id = Globals.CurrentTeam.GameID;
 
             XmlDocument svgFile;
 

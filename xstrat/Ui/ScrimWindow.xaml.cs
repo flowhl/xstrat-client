@@ -100,7 +100,7 @@ namespace xstrat.Ui
                     label.Foreground = Brushes.White;
                     label.Background = Brushes.Transparent;
                     label.Margin = new Thickness(5, 0, 5, 0);
-                    label.Content = Globals.getUserFromId(user.ID).name;
+                    label.Content = Globals.getUserFromId(user.Id).name;
                     PlayerStack.Children.Add(label);
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
@@ -120,9 +120,9 @@ namespace xstrat.Ui
                 FromMinute.Value = start.Minute;
                 ToHour.Value = end.Hour;
                 ToMinute.Value = end.Minute;
-                MapSelector1.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_1_id).FirstOrDefault()));
-                MapSelector2.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_2_id).FirstOrDefault()));
-                MapSelector3.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.id == scrim.map_3_id).FirstOrDefault()));
+                MapSelector1.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_1_id).FirstOrDefault()));
+                MapSelector2.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_2_id).FirstOrDefault()));
+                MapSelector3.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_3_id).FirstOrDefault()));
                 CreatorLabel.Content = Globals.getUserFromId(scrim.creator_id).name;
                 CreationDateLabel.Content = scrim.creation_date.Replace("T", " ").Replace("Z", "");
                 if (!Globals.AdminUser)
@@ -159,20 +159,20 @@ namespace xstrat.Ui
                 start = start.Replace(".", "/").Replace("-", "/");
                 end = end.Replace(".", "/").Replace("-", "/");
 
-                int map1 = -1;
-                if (MapSelector1.selectedMap != null)
+                string map1;
+                if (MapSelector1.SelectedMap != null)
                 {
-                    map1 = MapSelector1.selectedMap.id;
+                    map1 = MapSelector1.SelectedMap.Id;
                 }
-                int map2 = -1;
-                if (MapSelector2.selectedMap != null)
+                string map2;
+                if (MapSelector2.SelectedMap != null)
                 {
-                    map2 = MapSelector2.selectedMap.id;
+                    map2 = MapSelector2.SelectedMap.Id;
                 }
-                int map3 = -1;
-                if (MapSelector3.selectedMap != null)
+                string map3;
+                if (MapSelector3.SelectedMap != null)
                 {
-                    map3 = MapSelector3.selectedMap.id;
+                    map3 = MapSelector3.SelectedMap.Id;
                 }
                 int event_type = EventTypeSelector.selectedEventType.id;
                 var result = await ApiHandler.SaveScrim(scrim.id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
@@ -222,20 +222,20 @@ namespace xstrat.Ui
                     }
                     if(scrim_id != null)
                     {
-                        int map1 = -1;
-                        if(MapSelector1.selectedMap != null)
+                        string map1 = null;
+                        if(MapSelector1.SelectedMap != null)
                         {
-                            map1 = MapSelector1.selectedMap.id;
+                            map1 = MapSelector1.SelectedMap.Id;
                         }
-                        int map2 = -1;
-                        if (MapSelector2.selectedMap != null)
+                        string map2 = null;
+                        if (MapSelector2.SelectedMap != null)
                         {
-                            map2 = MapSelector2.selectedMap.id;
+                            map2 = MapSelector2.SelectedMap.Id;
                         }
-                        int map3 = -1;
-                        if (MapSelector3.selectedMap != null)
+                        string map3 = null;
+                        if (MapSelector3.SelectedMap != null)
                         {
-                            map3 = MapSelector3.selectedMap.id;
+                            map3 = MapSelector3.SelectedMap.Id;
                         }
                         int event_type = EventTypeSelector.selectedEventType.id;
                         var result2 = await ApiHandler.SaveScrim(scrim_id.GetValueOrDefault(), TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);

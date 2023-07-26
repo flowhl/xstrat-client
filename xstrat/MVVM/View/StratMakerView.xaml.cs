@@ -51,7 +51,7 @@ namespace xstrat.MVVM.View
     {
         private List<XMap> maps = new List<XMap>();
 
-        public Strat currentStrat { get; set; }
+        public Models.Supabase.Strat currentStrat { get; set; }
 
         Image draggedItem;
 
@@ -299,7 +299,7 @@ namespace xstrat.MVVM.View
             if (Floor2) floors.Add(2);
             if (Floor3) floors.Add(3);
 
-            int game_id = Globals.games.Where(x => x.name == Globals.teamInfo.game_name).FirstOrDefault().id;
+            string game_id = Globals.CurrentTeam.GameID;
 
             double offset = 0;
 
@@ -471,7 +471,7 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if (Globals.teamInfo.game_name == "R6 Siege")
+            if (Globals.CurrentTeam.GameID == "R6 Siege")
             {
                 IconsSP.Children.Clear();
                 string folder = Globals.XStratInstallPath + @"/Images/Icons/";
@@ -587,12 +587,12 @@ namespace xstrat.MVVM.View
 
         private void LoadColorButtons()
         {
-            foreach (var user in Globals.teammates)
+            foreach (var teamMate in Globals.Teammates)
             {
                 Button newBtn = new Button();
-                newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(user.name);
-                newBtn.Tag = user;
-                newBtn.Background = user.color.ToSolidColorBrush();
+                newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(teamMate.Name);
+                newBtn.Tag = teamMate;
+                newBtn.Background = teamMate.Color.ToSolidColorBrush();
                 newBtn.BorderThickness = new Thickness(0);
                 newBtn.BorderBrush = "#336CB5".ToSolidColorBrush();
                 newBtn.Height = 25;
@@ -808,8 +808,8 @@ namespace xstrat.MVVM.View
             //body
 
             map_id = currentStrat.map_id;
-            TxtMapName.Content = Globals.Maps.Where(x => x.id == currentStrat.map_id).FirstOrDefault()?.name;
-            TxtCreatedBy.Content = Globals.teammates.Where(x => x.id == currentStrat.created_by).FirstOrDefault()?.name;
+            TxtMapName.Content = Globals.Maps.Where(x => x.Id == currentStrat.map_id).FirstOrDefault()?.name;
+            TxtCreatedBy.Content = Globals.Teammates.Where(x => x.Id == currentStrat.created_by).FirstOrDefault()?.name;
             TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-", "/").Replace("T", " ");
             TxtLastEdit.Content = currentStrat.last_edit_time?.ToString().Replace("-", "/").Replace("T", " ");
             TxtVersion.Content = currentStrat.version;
@@ -925,27 +925,27 @@ namespace xstrat.MVVM.View
 
         public void LoadAssignmentTable(AssignmentTable table)
         {
-            Player1.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
+            Player1.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
             Gadget1.Text = table.Rows[0].gadgets;
             Loadout1.Text = table.Rows[0].loadout;
             Position1.Text = table.Rows[0].position;
 
-            Player2.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
+            Player2.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
             Gadget2.Text = table.Rows[1].gadgets;
             Loadout2.Text = table.Rows[1].loadout;
             Position2.Text = table.Rows[1].position;
 
-            Player3.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
+            Player3.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
             Gadget3.Text = table.Rows[2].gadgets;
             Loadout3.Text = table.Rows[2].loadout;
             Position3.Text = table.Rows[2].position;
 
-            Player4.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
+            Player4.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
             Gadget4.Text = table.Rows[3].gadgets;
             Loadout4.Text = table.Rows[3].loadout;
             Position4.Text = table.Rows[3].position;
 
-            Player5.SelectValue(Globals.teammates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
+            Player5.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
             Gadget5.Text = table.Rows[4].gadgets;
             Loadout5.Text = table.Rows[4].loadout;
             Position5.Text = table.Rows[4].position;
@@ -1137,14 +1137,14 @@ namespace xstrat.MVVM.View
             {
                 var mapItem = new MenuItem();
                 //mapItem.Name = map.name + "_MapItem";
-                mapItem.Header = map.name;
+                mapItem.Header = map.Name;
                 mapItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
                 List<MenuItem> subitems = new List<MenuItem>();
-                foreach (var pos in Globals.xPositions.Where(x => x.map_id == map.id))
+                foreach (var pos in Globals.XPositions.Where(x => x.MapId == map.Id))
                 {
                     var posItem = new MenuItem();
                     //posItem.Name = pos.name + "PositionItem";
-                    posItem.Header = pos.name;
+                    posItem.Header = pos.Name;
                     posItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
                     foreach (var strat in Globals.strats.Where(x => x.position_id == pos.id))
                     {
@@ -1199,7 +1199,7 @@ namespace xstrat.MVVM.View
             }
 
             //create scrim here
-            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.Game_id(), map, pos, 1, "");
+            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.GetTeamGameID(), map, pos, 1, "");
             if (result.Item1)
             {
                 Notify.sendSuccess("Strat created successfully");

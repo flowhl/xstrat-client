@@ -53,7 +53,7 @@ namespace xstrat.Ui
                         {
                             Label newlabel = new Label();
                             newlabel.Foreground = Brushes.White;
-                            newlabel.Content = Globals.getUserFromId(item.ID).name;
+                            newlabel.Content = Globals.getUserFromId(item.Id).Name;
                             newlabel.FontSize = 14;
                             PlayerList.Children.Add(newlabel);
                         }                    

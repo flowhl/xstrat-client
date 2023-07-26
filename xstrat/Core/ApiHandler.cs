@@ -18,9 +18,9 @@ using System.Xml;
 using System.IO;
 using xstrat.Models.API;
 using Newtonsoft.Json;
-using XStrat_Api.Models.Supabase;
 using NuGet;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using xstrat.Models.Supabase;
 
 namespace xstrat
 {
@@ -73,8 +73,8 @@ namespace xstrat
                 {
                     if (CurrentSession.ExpiresIn <= 600)
                     {
-                        var newSession = await RenewSession();
-                        if(newSession != null)
+                        var newSession = await RenewSessionAsync();
+                        if (newSession != null)
                         {
                             CurrentSession = newSession;
                             client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
@@ -99,7 +99,7 @@ namespace xstrat
             {
                 client.Authenticator = new JwtAuthenticator(token);
                 CurrentSession = new Session { AccessToken = token };
-                var task = RenewSession();
+                var task = RenewSessionAsync();
                 task.Wait();
                 CurrentSession = task.Result;
                 client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
@@ -168,7 +168,7 @@ namespace xstrat
             return null;
         }
 
-        public static async Task<UserData> GetUserDataAsync()
+        public static async Task<Models.Supabase.UserData> GetUserDataAsync()
         {
             Waiting();
             var request = new RestRequest("user/data", Method.Post);
@@ -176,7 +176,7 @@ namespace xstrat
 
             var response = await client.ExecuteAsync<RestResponse>(request);
 
-            var userData = JsonConvert.DeserializeObject<UserData>(response.Content);
+            var userData = JsonConvert.DeserializeObject<Models.Supabase.UserData>(response.Content);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
@@ -188,7 +188,7 @@ namespace xstrat
             return null;
         }
 
-        public static async Task<Session> RenewSession()
+        public static async Task<Session> RenewSessionAsync()
         {
             if (CurrentSession == null) return null;
             var request = new RestRequest("user/refresh", Method.Post);
@@ -210,94 +210,63 @@ namespace xstrat
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<bool> VerifyToken(string token)
+        public static async Task<bool> VerifyTokenAsync()
         {
             Waiting();
-            var request = new RestRequest("verify", Method.Post);
-            client.Authenticator = new JwtAuthenticator(token);
-            request.RequestFormat = DataFormat.Json;
+            var userData = await GetUserDataAsync();
+            EndWaiting();
+            return userData != null;
+        }
 
+        public static async Task<List<Models.Supabase.Map>> GetMaps()
+        {
+            Waiting();
+            var request = new RestRequest("maps", Method.Get);
+            request.RequestFormat = DataFormat.Json;
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
+                var maps = JsonConvert.DeserializeObject<List<Models.Supabase.Map>>(response.Content);
+
                 EndWaiting();
-                return (true);
+                return maps;
             }
-            client.Authenticator = null;
             EndWaiting();
-            return (false);
+            return null;
         }
 
-        public static async Task<(bool, string)> GetMaps()
+        public static async Task<List<Models.Supabase.Operator>> GetOperators()
         {
-            var CacheResponse = GetCachedResponse("GetMaps");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("operators", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("maps", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("GetMaps", (true, response.Content), 120);
-                    return (true, response.Content);
-                }
+                var operators = JsonConvert.DeserializeObject<List<Models.Supabase.Operator>>(response.Content);
+
                 EndWaiting();
-                return (false, "db error");
+                return operators;
             }
+            EndWaiting();
+            return null;
         }
 
-        public static async Task<(bool, string)> GetOperators()
+        public static async Task<List<Models.Supabase.Position>> GetPositions()
         {
-            var CacheResponse = GetCachedResponse("GetOperators");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("position", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("operators", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("GetOperators", (true, response.Content), 120);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, "db error");
-            }
-        }
+                var positions = JsonConvert.DeserializeObject<List<Models.Supabase.Position>>(response.Content);
 
-        public static async Task<(bool, string)> GetxPositions()
-        {
-            var CacheResponse = GetCachedResponse("GetxPositions");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("positions", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("GetxPositions", (true, response.Content), 120);
-                    return (true, response.Content);
-                }
                 EndWaiting();
-                return (false, "db error");
+                return positions;
             }
+            EndWaiting();
+            return null;
         }
 
         /// <summary>
@@ -313,52 +282,38 @@ namespace xstrat
         }
         #endregion
         #region Client requests
-        public static async Task<(bool, string)> Games()
+        public static async Task<List<Models.Supabase.Game>> GetGameAsync()
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("game", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("games", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 20);
-                    return (true, response.Content);
-                }
+                var game = JsonConvert.DeserializeObject<List<Models.Supabase.Game>>(response.Content);
+
                 EndWaiting();
-                return (false, "db error");
+                return game;
             }
+            EndWaiting();
+            return null;
         }
 
-        public static async Task<(bool, string)> GetAdminStatus()
+        public static async Task<bool> GetAdminStatus()
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("user/teamadminstatus", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/verifyadmin", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 20);
-                    return (true, response.Content);
-                }
+                var isAdmin = JsonConvert.DeserializeObject<bool>(response.Content);
+
                 EndWaiting();
-                return (false, "db error");
+                return isAdmin;
             }
+            EndWaiting();
+            return false;
         }
         #endregion
         #region team
@@ -487,53 +442,38 @@ namespace xstrat
             EndWaiting();
             return (false, "db error");
         }
-        public static async Task<(bool, string)> TeamMembers()
+        public static async Task<List<Models.Supabase.UserData>> TeamMembers()
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("team/members", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/members", Method.Get);
-                request.RequestFormat = DataFormat.Json;
+                var members = JsonConvert.DeserializeObject<List<UserData>>(response.Content);
 
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 5);
-                    return (true, response.Content);
-                }
                 EndWaiting();
-                return (false, "db error");
+                return members;
             }
+            EndWaiting();
+            return null;
         }
-        public static async Task<(bool, string)> TeamInfo()
+        public static async Task<Models.Supabase.Team> GetTeamInfoAsync()
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
+            Waiting();
+            var request = new RestRequest("team", Method.Get);
+            request.RequestFormat = DataFormat.Json;
+            var response = await client.ExecuteAsync<RestResponse>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/info", Method.Get);
-                request.RequestFormat = DataFormat.Json;
+                var team = JsonConvert.DeserializeObject<Models.Supabase.Team>(response.Content);
 
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 5);
-                    return (true, response.Content);
-                }
                 EndWaiting();
-                return (false, "db error");
+                return team;
             }
+            EndWaiting();
+            return null;
+
         }
         public static async Task<(bool, string)> DeleteTeam()
         {
@@ -1073,7 +1013,7 @@ namespace xstrat
         /// <param name="ncontent"></param>
         /// <param name="n_id"></param>
         /// <returns></returns>
-        public static async Task<(bool, string)> SaveScrim(int id, string title, string comment, string time_start, string time_end, string opponent_name, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int event_type)
+        public static async Task<(bool, string)> SaveScrim(int id, string title, string comment, string time_start, string time_end, string opponent_name, string map_1_id, string map_2_id, string map_3_id, int typ, int event_type)
         {
             Waiting();
             var request = new RestRequest("scrim/save", Method.Post);

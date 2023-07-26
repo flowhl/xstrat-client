@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XStrat_Api.Models.Supabase
+namespace xstrat.Models.Supabase
 {
     public class UserData
     {

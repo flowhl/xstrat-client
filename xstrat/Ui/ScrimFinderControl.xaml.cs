@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 using xstrat.MVVM.View;
 
 namespace xstrat.Ui
@@ -37,7 +38,7 @@ namespace xstrat.Ui
 
         #endregion
 
-        public List<User> Users { get; set; } = new List<User>();
+        public List<UserData> Users { get; set; } = new List<UserData>();
         public CalendarFilterType FilterType { get; set; }
         public int PlayerCount { get; set; } = 5;
 
@@ -56,7 +57,7 @@ namespace xstrat.Ui
             DurHour.Value = 2;
             ToHour.Value = 23;
             FromHour.Value = 20;
-            if (Globals.CurrentTeam.UseOnDays == 0)
+            if (DataCache.CurrentTeam.UseOnDays == 0)
             {
                 OffdayDisplay.NameInput= "Off-days";
             }
@@ -65,7 +66,7 @@ namespace xstrat.Ui
                 OffdayDisplay.NameInput = "Available days";
             }
             //Fill Player selection list for Calendar filter
-            foreach (var user in Globals.Teammates)
+            foreach (var user in DataCache.CurrentTeamMates)
             {
                 UserCheckbox userCheckbox = new UserCheckbox(user);
                 Playerlist.Children.Add(userCheckbox);

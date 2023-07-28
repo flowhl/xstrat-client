@@ -28,11 +28,11 @@ namespace xstrat.Ui
         }
         public async Task RetrieveTeamMatesAsync()
         {
-            if (Globals.Teammates != null)
+            if (DataCache.CurrentTeamMates != null)
             {
 
                 MemberSP.Children.Clear();
-                foreach (var user in Globals.Teammates)
+                foreach (var user in DataCache.CurrentTeamMates)
                 {
                     var newItem = new TeammateControl(user.Name, user.Id, user.Color);
                     newItem.Height = 30;

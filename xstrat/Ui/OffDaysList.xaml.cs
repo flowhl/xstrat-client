@@ -34,7 +34,7 @@ namespace xstrat.Ui
         private void OffDaysList_Loaded(object sender, RoutedEventArgs e)
         {
             RetrieveOffDays();
-            if (Globals.CurrentTeam.UseOnDays == 0)
+            if (DataCache.CurrentTeam.UseOnDays == 0)
             {
                 TxtTitle.Content = "Your off days:";
             }
@@ -67,7 +67,7 @@ namespace xstrat.Ui
                 var od = odc.GetOffDay();
                 if (od?.Id != null)
                 {
-                    (bool, string) result = await ApiHandler.SaveOffDay(od.Id.GetValueOrDefault(), od.typ, od.title, od.start, od.end);
+                    (bool, string) result = await ApiHandler.SaveOffDay(od.Id.GetValueOrDefault(), od.Typ, od.Title, od.Start, od.End);
                     if (result.Item1 == false)
                     {
                         success = false;

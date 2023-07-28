@@ -218,7 +218,7 @@ namespace xstrat
             return userData != null;
         }
 
-        public static async Task<List<Models.Supabase.Map>> GetMaps()
+        public static async Task<List<Models.Supabase.Map>> GetMapsAsync()
         {
             Waiting();
             var request = new RestRequest("maps", Method.Get);
@@ -235,7 +235,7 @@ namespace xstrat
             return null;
         }
 
-        public static async Task<List<Models.Supabase.Operator>> GetOperators()
+        public static async Task<List<Models.Supabase.Operator>> GetOperatorsAsync()
         {
             Waiting();
             var request = new RestRequest("operators", Method.Get);
@@ -252,7 +252,7 @@ namespace xstrat
             return null;
         }
 
-        public static async Task<List<Models.Supabase.Position>> GetPositions()
+        public static async Task<List<Models.Supabase.Position>> GetPositionsAsync()
         {
             Waiting();
             var request = new RestRequest("position", Method.Get);
@@ -282,7 +282,7 @@ namespace xstrat
         }
         #endregion
         #region Client requests
-        public static async Task<List<Models.Supabase.Game>> GetGameAsync()
+        public static async Task<List<Models.Supabase.Game>> GetGamesAsync()
         {
             Waiting();
             var request = new RestRequest("game", Method.Get);
@@ -322,10 +322,10 @@ namespace xstrat
             Waiting();
             var request = new RestRequest("team/join", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { join_password = pw, team_id = id });
+            request.AddJsonBody(new { password = pw, team_id = id });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
                 return (true, response.Content);
@@ -339,54 +339,26 @@ namespace xstrat
             return (false, response.Content);
         }
 
-        public static async Task<(bool, string)> LeaveTeam()
+        public static async Task LeaveTeam()
         {
             Waiting();
             var request = new RestRequest("team/leave", Method.Get);
             request.RequestFormat = DataFormat.Json;
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
-                EndWaiting();
-                return (true, response.Content);
+                Notify.sendSuccess("Team left sucessfully");
+            }
+            if(response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                Notify.sendError("You cannot leave the team as you are the team admin");
             }
             EndWaiting();
-            return (false, response.Content);
         }
-        public static async Task<(bool, string)> VerifyAdmin()
-        {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/verifyadmin", Method.Get);
-                request.RequestFormat = DataFormat.Json;
 
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 1);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, response.Content);
-            }
-        }
-        public static async Task<(bool, string)> NewTeam(string name, int igame_id)
+        public static async Task<bool> NewTeam(string name, int igame_id)
         {
-            RemoveFromCache("TeamInfo");
-            RemoveFromCache("TeamMembers");
-            Waiting();
-            if (name == null || name == "")
-            {
-                return (false, "invalid input");
-            }
             var request = new RestRequest("team/new", Method.Post);
             request.RequestFormat = DataFormat.Json;
             var param = new NewParams { name = name, game_id = igame_id };
@@ -396,53 +368,27 @@ namespace xstrat
             if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, response.Content);
+            return false;
         }
-        public static async Task<(bool, string)> TeamJoinpassword()
+        public static async Task<bool> RenameTeamAsync(string _newname)
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/joinpassword", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 5);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, "db error");
-            }
-        }
-        public static async Task<(bool, string)> UpdateNameTeam(string _newname)
-        {
-            RemoveFromCache("TeamInfo");
-            Waiting();
-            var request = new RestRequest("team/new", Method.Post);
+            var request = new RestRequest("team/rename", Method.Post);
             request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { newname = _newname });
+            request.AddJsonBody(new { name = _newname });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, "db error");
+            return false;
         }
-        public static async Task<List<Models.Supabase.UserData>> TeamMembers()
+        public static async Task<List<Models.Supabase.UserData>> GetTeamMembersAsync()
         {
             Waiting();
             var request = new RestRequest("team/members", Method.Get);
@@ -475,22 +421,20 @@ namespace xstrat
             return null;
 
         }
-        public static async Task<(bool, string)> DeleteTeam()
+        public static async Task<bool> DeleteTeam()
         {
-            RemoveFromCache("TeamInfo");
-            RemoveFromCache("TeamMembers");
             Waiting();
             var request = new RestRequest("team/delete", Method.Post);
             request.RequestFormat = DataFormat.Json;
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, response.Content);
+            return false;
         }
         public static async Task<(bool, string)> RenameTeam(string newname)
         {
@@ -501,7 +445,7 @@ namespace xstrat
             request.AddJsonBody(new { newname = newname });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
                 return (true, response.Content);
@@ -509,132 +453,56 @@ namespace xstrat
             EndWaiting();
             return (false, response.Content);
         }
-        public static async Task<(bool, string)> GetColor()
-        {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/getcolor", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-
-                    AddToCache("", (true, response.Content), 20);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, response.Content);
-            }
-        }
-        public static async Task<(bool, string)> SetColor(string color)
+        public static async Task<bool> SetColor(string color)
         {
             RemoveFromCache("GetColor");
             Waiting();
-            var request = new RestRequest("team/setcolor", Method.Post);
+            var request = new RestRequest("user/color", Method.Post);
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new { color = color.Replace("#FF", "#") });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, response.Content);
+            return false;
         }
 
-        public static async Task<(bool, string)> GetDiscordId()
+        public static async Task<bool> SetDiscordId(string discord)
         {
-            var CacheResponse = GetCachedResponse("");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/getdiscord", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-
-                    AddToCache("", (true, response.Content), 20);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, response.Content);
-            }
-        }
-        public static async Task<(bool, string)> SetDiscordId(string discord)
-        {
-            RemoveFromCache("GetTeamSettings");
             Waiting();
-            var request = new RestRequest("team/setdiscord", Method.Post);
+            var request = new RestRequest("user/discord", Method.Post);
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new { discord = discord });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, response.Content);
+            return false;
         }
 
-        public static async Task<(bool, string)> GetTeamSettings()
+        public static async Task<bool> SetDiscordAdminSettings(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay, int use_on_days)
         {
-            var CacheResponse = GetCachedResponse("GetTeamSettings");
-            if (!string.IsNullOrEmpty(CacheResponse.Item2))
-            {
-                return CacheResponse;
-            }
-            else
-            {
-                Waiting();
-                var request = new RestRequest("team/getdiscordata", Method.Get);
-                request.RequestFormat = DataFormat.Json;
-
-                var response = await client.ExecuteAsync<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    EndWaiting();
-                    AddToCache("", (true, response.Content), 20);
-                    return (true, response.Content);
-                }
-                EndWaiting();
-                return (false, response.Content);
-            }
-        }
-        public static async Task<(bool, string)> SetDiscordWebhook(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay, int use_on_days)
-        {
-            RemoveFromCache("GetDiscordData");
             Waiting();
-            var request = new RestRequest("team/setdiscorddata", Method.Post);
+            var request = new RestRequest("team/adminsettings", Method.Post);
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(new { webhook = webhook, sn_created = sn_created, sn_changed = sn_changed, sn_weekly = sn_weekly, sn_soon = sn_soon, sn_delay = sn_delay, use_on_days = use_on_days });
 
             var response = await client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Accepted) //success
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
-                return (true, response.Content);
+                return true;
             }
             EndWaiting();
-            return (false, response.Content);
+            return false;
         }
 
         #endregion
@@ -1179,7 +1047,7 @@ namespace xstrat
             }
         }
 
-        public static async Task<(bool, string)> GetScrimParticipation(int user_id)
+        public static async Task<(bool, string)> GetScrimParticipation(string user_id)
         {
 
             var CacheResponse = GetCachedResponse("");

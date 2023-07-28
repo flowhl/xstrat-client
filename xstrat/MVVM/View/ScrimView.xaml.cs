@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using xstrat.Calendar;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 using xstrat.Ui;
 using UserControl = System.Windows.Controls.UserControl;
 using Window = xstrat.Core.Window;
@@ -104,23 +105,23 @@ namespace xstrat.MVVM.View
         {
             if (e.DataContext is ICalendarEvent calendarEvent)
             {
-                if (calendarEvent.typ == 0) //scrim
+                if (calendarEvent.Typ == 0) //scrim
                 {
-                    var responseWindow = new ScrimWindow(calendarEvent.scrim);
+                    var responseWindow = new ScrimWindow(calendarEvent.Scrim);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
 
-                if (calendarEvent.typ == 1) //offday
+                if (calendarEvent.Typ == 1) //offday
                 {
                     var responseWindow = new CalendarEventInfo(calendarEvent as CalendarEntry);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
 
-                if (calendarEvent.typ == 2) //recommendation
+                if (calendarEvent.Typ == 2) //recommendation
                 {
-                    var responseWindow = new ScrimWindow(calendarEvent.args.First() as Core.Window);
+                    var responseWindow = new ScrimWindow(calendarEvent.Args.First() as Core.Window);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
@@ -225,7 +226,7 @@ namespace xstrat.MVVM.View
                     {
                         List<xstrat.Json.Scrim> scList = JsonConvert.DeserializeObject<List<Json.Scrim>>(data);
                         scrims.Clear();
-                        Events = Events.Where(x => x.typ != 0).ToList();
+                        Events = Events.Where(x => x.Typ != 0).ToList();
                         foreach (var sc in scList)
                         {
                             scrims.Add(sc);
@@ -262,83 +263,83 @@ namespace xstrat.MVVM.View
             {
                 DateTime? from = null;
                 DateTime? to = null;
-                if (od.typ == 0) // exact
+                if (od.Typ == 0) // exact
                 {
-                    from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     if (from != null && to != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.typ == 1) //entire day
+                else if (od.Typ == 1) //entire day
                 {
-                    string sfrom = od.start.Split(' ').First() + " 00:00:00";
-                    string sto = od.end.Split(' ').First() + " 23:59:59";
-                    from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    string sfrom = od.Start.Split(' ').First() + " 00:00:00";
+                    string sto = od.End.Split(' ').First() + " 23:59:59";
+                    from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     if (from != null && to != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1,User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.typ == 2) //weekly
+                else if (od.Typ == 2) //weekly
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 7;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 7;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 24; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1,User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 3) // every second week
+                else if (od.Typ == 3) // every second week
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 14;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 14;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 12; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1,User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 4) // monthly
+                else if (od.Typ == 4) // monthly
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 30;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 30;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 6; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1,User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 5) // daily
+                else if (od.Typ == 5) // daily
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 365; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1,User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
@@ -362,7 +363,7 @@ namespace xstrat.MVVM.View
                 to = DateTime.ParseExact(sc.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 if (from != null && to != null)
                 {
-                    Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(sc), typ = 0, scrim = sc });
+                    Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(sc), Typ = 0, Scrim = sc });
                 }
             }
             catch (Exception ex)
@@ -374,26 +375,26 @@ namespace xstrat.MVVM.View
         private string GetLabel(OffDay od)
         {
             string stitle = "";
-            if (od.title.Length > 30)
+            if (od.Title.Length > 30)
             {
-                stitle = od.title.Substring(0, 30) + "...";
+                stitle = od.Title.Substring(0, 30) + "...";
             }
             else
             {
-                stitle = od.title;
+                stitle = od.Title;
             }
 
-            if (od.typ == 1)
+            if (od.Typ == 1)
             {
-                return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | entire day";
+                return Globals.UserIdToName(od.UserId) + " | entire day";
             }
 
             string stringStartTime = "";
             string stringEndTime = "";
             try
             {
-                stringStartTime = od.start.Split(' ')[1].Replace(":00", "");
-                stringEndTime = od.end.Split(' ')[1].Replace(":00", "");
+                stringStartTime = od.Start.Split(' ')[1].Replace(":00", "");
+                stringEndTime = od.End.Split(' ')[1].Replace(":00", "");
             }
             catch (Exception ex)
             {
@@ -402,10 +403,10 @@ namespace xstrat.MVVM.View
 
             string stringStartDay = "";
             string stringEndDay = "";
-            if (od.start.Split(' ')[0].Trim().ToLower() != od.end.Split(' ')[0].Trim().ToLower())
+            if (od.Start.Split(' ')[0].Trim().ToLower() != od.End.Split(' ')[0].Trim().ToLower())
             {
-                DateTime from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                DateTime to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 stringStartDay = from.ToString("ddd") + " ";
                 stringEndDay = to.ToString("ddd") + " ";
@@ -413,7 +414,7 @@ namespace xstrat.MVVM.View
 
 
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
+            return Globals.UserIdToName(od.UserId) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
 
         }
 
@@ -459,11 +460,11 @@ namespace xstrat.MVVM.View
         {
             CalendarFilterType calendarFilterType = SFControl.FilterType;
             int playeramount = SFControl.PlayerCount;
-            List<User> users = SFControl.Users;
-            List<int> SelectedPlayerNumbers = new List<int>();
+            List<UserData> users = SFControl.Users;
+            List<string> SelectedPlayerIDs = new List<string>();
             foreach (var player in users)
             {
-                SelectedPlayerNumbers.Add(player.id);
+                SelectedPlayerIDs.Add(player.Id);
             }
 
             ScrimDuration = new TimeSpan(SFControl.DurHour.Value, SFControl.DurMinute.Value, 0);
@@ -474,7 +475,7 @@ namespace xstrat.MVVM.View
             ScrimEndMin = SFControl.ToMinute.Value;
 
 
-            Events = Events.Where(x => x.typ != 2).ToList();
+            Events = Events.Where(x => x.Typ != 2).ToList();
             List<DateTime> dates = new List<DateTime>();
 
             var now = DateTime.Now;
@@ -489,11 +490,11 @@ namespace xstrat.MVVM.View
 
             foreach (var date in dates)
             {
-                foreach (var user in Globals.Teammates)
+                foreach (var user in DataCache.CurrentTeamMates)
                 {
                     var newPlayer = new Player();
-                    newPlayer.Responses = GetTimespans(date, user.name, SelectedPlayerNumbers, calendarFilterType.id, ScrimDuration);
-                    newPlayer.Id = user.id;
+                    newPlayer.Responses = GetTimespans(date, user.Name, SelectedPlayerIDs, calendarFilterType.id, ScrimDuration);
+                    newPlayer.Id = user.Id;
                     players.Add(newPlayer);
                 }
             }
@@ -508,38 +509,38 @@ namespace xstrat.MVVM.View
                         //results += String.Format("Start: {0:yyyy-MM-dd HH:mm}, End: {1:yyyy-MM-dd HH:mm}, Player count: {2}", window.StartDateTime, window.EndDateTime, window.AvailableAttendees.Count()) + "\n";
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2, args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
                 if (calendarFilterType.id == 1) //specific
                 {
-                    List<int> AvailablePlayerNumbers = new List<int>();
+                    List<string> AvailablePlayerIDs = new List<string>();
                     foreach (var player in window.AvailablePlayers)
                     {
-                        AvailablePlayerNumbers.Add(player.Id);
+                        AvailablePlayerIDs.Add(player.Id);
                     }
 
-                    if (SelectedPlayerNumbers.All(i => AvailablePlayerNumbers.Contains(i)))
+                    if (SelectedPlayerIDs.All(i => AvailablePlayerIDs.Contains(i)))
                     {
-                        window.AvailablePlayers = window.AvailablePlayers.Where(x => SelectedPlayerNumbers.Contains(x.Id));
+                        window.AvailablePlayers = window.AvailablePlayers.Where(x => SelectedPlayerIDs.Contains(x.Id));
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2, args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
                 if (calendarFilterType.id == 2) //specific min
                 {
-                    List<int> AvailablePlayerNumbers = new List<int>();
+                    List<string> AvailablePlayerIDs = new List<string>();
                     foreach (var player in window.AvailablePlayers)
                     {
-                        AvailablePlayerNumbers.Add(player.Id);
+                        AvailablePlayerIDs.Add(player.Id);
                     }
 
                     bool hasMinPlayers = true;
 
-                    if(SelectedPlayerNumbers.Where(x => !AvailablePlayerNumbers.Contains(x)).Any())
+                    if(SelectedPlayerIDs.Where(x => !AvailablePlayerIDs.Contains(x)).Any())
                     {
                         hasMinPlayers = false;
                     };
@@ -548,17 +549,17 @@ namespace xstrat.MVVM.View
                     {
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2, args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
                 if (calendarFilterType.id == 3) //all
                 {
-                    if (window.AvailablePlayers.Count() >= Globals.Teammates.Count)
+                    if (window.AvailablePlayers.Count() >= DataCache.CurrentTeamMates.Count)
                     {
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2, args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
@@ -574,13 +575,13 @@ namespace xstrat.MVVM.View
         }
 
         //Gets Free Timespans for day and player
-        private List<Response> GetTimespans(DateTime date, string user_name, List<int> SelectedPlayerNumbers, int filtertype, TimeSpan duration)
+        private List<Response> GetTimespans(DateTime date, string user_name, List<string> SelectedPlayerNumbers, int filtertype, TimeSpan duration)
         {
             List<Response> timespans = new List<Response>();
 
             int day = (int)date.DayOfWeek;
 
-            if ( filtertype == 1 &&  !SelectedPlayerNumbers.Contains(Globals.getUserIdFromName(user_name)))
+            if ( filtertype == 1 &&  !SelectedPlayerNumbers.Contains(Globals.GetUserIdFromName(user_name)))
             {
                 return timespans;
             }
@@ -636,7 +637,7 @@ namespace xstrat.MVVM.View
             }
 
 
-            var events = _events.Where(x => x.typ == 1 && x.Label.StartsWith(user_name)).Where(x => x.DateFrom.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd") && x.DateTo.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd")); //all events of given date
+            var events = _events.Where(x => x.Typ == 1 && x.Label.StartsWith(user_name)).Where(x => x.DateFrom.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd") && x.DateTo.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd")); //all events of given date
 
             List<DateTime> times = new List<DateTime>();
 
@@ -648,7 +649,7 @@ namespace xstrat.MVVM.View
 
             //offday regelung
 
-            if(Globals.CurrentTeam.UseOnDays == 0)
+            if(DataCache.CurrentTeam.UseOnDays == 0)
             {
                 times.Add(DateTime.ParseExact( (sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
                 times.Add(DateTime.ParseExact((sDate + " 23:59:59"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));

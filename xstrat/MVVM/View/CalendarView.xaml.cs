@@ -69,7 +69,7 @@ namespace xstrat.MVVM.View
 
         private void CalendarView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Globals.CurrentTeam.UseOnDays == 0)
+            if (DataCache.CurrentTeam.UseOnDays == 0)
             {
                 OffDayChecks.Content = "Your off days";
             }
@@ -105,23 +105,23 @@ namespace xstrat.MVVM.View
         {
             if (e.DataContext is ICalendarEvent calendarEvent)
             {
-                if (calendarEvent.typ == 0) //scrim
+                if (calendarEvent.Typ == 0) //scrim
                 {
-                    var responseWindow = new ScrimWindow(calendarEvent.scrim);
+                    var responseWindow = new ScrimWindow(calendarEvent.Scrim);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
 
-                if (calendarEvent.typ == 1) //offday
+                if (calendarEvent.Typ == 1) //offday
                 {
                     var responseWindow = new CalendarEventInfo(calendarEvent as CalendarEntry);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
 
-                if (calendarEvent.typ == 2) //recommendation
+                if (calendarEvent.Typ == 2) //recommendation
                 {
-                    var responseWindow = new ScrimWindow(calendarEvent.args.First() as Core.Window);
+                    var responseWindow = new ScrimWindow(calendarEvent.Args.First() as Core.Window);
                     responseWindow.Show();
                     responseWindow.Closing += ResponseWindow_Closing;
                 }
@@ -259,11 +259,11 @@ namespace xstrat.MVVM.View
             }
             foreach (var userCheckbox in checkboxes)
             {
-                var events = Events.Where(x => x.user != null && x.user.id == userCheckbox.User.id);
+                var events = Events.Where(x => x.User != null && x.User.Id == userCheckbox.User.Id);
 
                 foreach (var _event in events)
                 {
-                    _event.visible = userCheckbox.UserCheckboxItem.IsChecked.GetValueOrDefault(true);
+                    _event.Visible = userCheckbox.UserCheckboxItem.IsChecked.GetValueOrDefault(true);
                 }
             }
             CalendarMonthUI.DrawDays();
@@ -272,7 +272,7 @@ namespace xstrat.MVVM.View
         public void CreateUserCheckbox()
         {
             int counter = 0;
-            foreach (var user in Globals.Teammates)
+            foreach (var user in DataCache.CurrentTeamMates)
             {
                 if (user != null)
                 {
@@ -321,83 +321,83 @@ namespace xstrat.MVVM.View
             {
                 DateTime? from = null;
                 DateTime? to = null;
-                if (od.typ == 0) // exact
+                if (od.Typ == 0) // exact
                 {
-                    from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     if (from != null && to != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.typ == 1) //entire day
+                else if (od.Typ == 1) //entire day
                 {
-                    string sfrom = od.start.Split(' ').First() + " 00:00:00";
-                    string sto = od.end.Split(' ').First() + " 23:59:59";
-                    from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    string sfrom = od.Start.Split(' ').First() + " 00:00:00";
+                    string sto = od.End.Split(' ').First() + " 23:59:59";
+                    from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     if (from != null && to != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                        Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.typ == 2) //weekly
+                else if (od.Typ == 2) //weekly
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 7;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 7;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 24; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(7 * i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 3) // every second week
+                else if (od.Typ == 3) // every second week
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 14;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 14;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 12; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(14 * i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 4) // monthly
+                else if (od.Typ == 4) // monthly
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 30;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays / 30;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 6; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddMonths(i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
-                else if (od.typ == 5) // daily
+                else if (od.Typ == 5) // daily
                 {
-                    int offset = (int)(DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays;
+                    int offset = (int)(DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) - DateTime.Now.Date).TotalDays;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 365; i++)
                     {
-                        from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
-                        to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
+                        to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).AddDays(i);
                         if (from != null && to != null)
                         {
-                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), typ = 1, user = Globals.getUserFromId(od.user_id.GetValueOrDefault()) });
+                            Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
                         }
                     }
                 }
@@ -421,7 +421,7 @@ namespace xstrat.MVVM.View
                 to = DateTime.ParseExact(sc.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 if (from != null && to != null)
                 {
-                    Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(sc), typ = 0, scrim = sc });
+                    Events.Add(new CalendarEntry() { DateFrom = from, DateTo = to, Label = GetLabel(sc), Typ = 0, Scrim = sc });
                 }
             }
             catch (Exception ex)
@@ -433,26 +433,26 @@ namespace xstrat.MVVM.View
         private string GetLabel(OffDay od)
         {
             string stitle = "";
-            if (od.title.Length > 30)
+            if (od.Title.Length > 30)
             {
-                stitle = od.title.Substring(0, 30) + "...";
+                stitle = od.Title.Substring(0, 30) + "...";
             }
             else
             {
-                stitle = od.title;
+                stitle = od.Title;
             }
 
-            if (od.typ == 1)
+            if (od.Typ == 1)
             {
-                return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | entire day";
+                return Globals.UserIdToName(od.UserId) + " | entire day";
             }
 
             string stringStartTime = "";
             string stringEndTime = "";
             try
             {
-                stringStartTime = od.start.Split(' ')[1].Replace(":00", "");
-                stringEndTime = od.end.Split(' ')[1].Replace(":00", "");
+                stringStartTime = od.Start.Split(' ')[1].Replace(":00", "");
+                stringEndTime = od.End.Split(' ')[1].Replace(":00", "");
             }
             catch (Exception ex)
             {
@@ -461,10 +461,10 @@ namespace xstrat.MVVM.View
 
             string stringStartDay = "";
             string stringEndDay = "";
-            if (od.start.Split(' ')[0].Trim().ToLower() != od.end.Split(' ')[0].Trim().ToLower())
+            if (od.Start.Split(' ')[0].Trim().ToLower() != od.End.Split(' ')[0].Trim().ToLower())
             {
-                DateTime from = DateTime.ParseExact(od.start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                DateTime to = DateTime.ParseExact(od.end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime from = DateTime.ParseExact(od.Start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime to = DateTime.ParseExact(od.End, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
                 stringStartDay = from.ToString("ddd") + " ";
                 stringEndDay = to.ToString("ddd") + " ";
@@ -472,7 +472,7 @@ namespace xstrat.MVVM.View
 
 
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
+            return Globals.UserIdToName(od.UserId) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
 
         }
 
@@ -509,18 +509,18 @@ namespace xstrat.MVVM.View
         {
             if (Events != null)
             {
-                var sevents = Events.Where(x => x.typ == 0);
+                var sevents = Events.Where(x => x.Typ == 0);
 
                 foreach (var _event in sevents)
                 {
-                    _event.visible = ScrimChecks.IsChecked.GetValueOrDefault(true);
+                    _event.Visible = ScrimChecks.IsChecked.GetValueOrDefault(true);
                 }
 
-                var odevents = Events.Where(x => x.typ == 1);
+                var odevents = Events.Where(x => x.Typ == 1);
 
                 foreach (var _event in odevents)
                 {
-                    _event.visible = OffDayChecks.IsChecked.GetValueOrDefault(true);
+                    _event.Visible = OffDayChecks.IsChecked.GetValueOrDefault(true);
                 }
 
                 CalendarMonthUI.DrawDays();

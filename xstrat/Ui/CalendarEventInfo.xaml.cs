@@ -31,21 +31,21 @@ namespace xstrat.Ui
 
         private void CalendarEventInfo_Loaded(object sender, RoutedEventArgs e)
         {
-            if(calendarEntry.typ == 0)
+            if(calendarEntry.Typ == 0)
             {
                 TypeLabel.Content = "Scrim";
             }
-            if (calendarEntry.typ == 1)
+            if (calendarEntry.Typ == 1)
             {
                 TypeLabel.Content = "Off day";
             }
-            if (calendarEntry.typ == 2)
+            if (calendarEntry.Typ == 2)
             {
                 TypeLabel.Content = "Recommended scrim time";
                 PlayerlistSP.Visibility = Visibility.Visible;
-                if(calendarEntry.args != null && calendarEntry.args.FirstOrDefault() != null && calendarEntry.args.FirstOrDefault() is xstrat.Core.Window)
+                if(calendarEntry.Args != null && calendarEntry.Args.FirstOrDefault() != null && calendarEntry.Args.FirstOrDefault() is xstrat.Core.Window)
                 {
-                    var list = (calendarEntry.args.FirstOrDefault() as xstrat.Core.Window).AvailablePlayers;
+                    var list = (calendarEntry.Args.FirstOrDefault() as xstrat.Core.Window).AvailablePlayers;
 
                     if (list != null && list.Count() > 0) 
                     {
@@ -53,7 +53,7 @@ namespace xstrat.Ui
                         {
                             Label newlabel = new Label();
                             newlabel.Foreground = Brushes.White;
-                            newlabel.Content = Globals.getUserFromId(item.Id).Name;
+                            newlabel.Content = DataCache.CurrentTeamMates.Where(x => x.Id == item.Id).FirstOrDefault().Name;
                             newlabel.FontSize = 14;
                             PlayerList.Children.Add(newlabel);
                         }                    
@@ -64,9 +64,9 @@ namespace xstrat.Ui
             {
                 FromLabel.Content = calendarEntry.DateFrom.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss");
                 ToLabel.Content = calendarEntry.DateTo.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss");
-                if(calendarEntry.user != null)
+                if(calendarEntry.User != null)
                 {
-                    UserLabel.Content = calendarEntry.user.name ?? "";
+                    UserLabel.Content = calendarEntry.User.Name ?? "";
                 }
                 else
                 {

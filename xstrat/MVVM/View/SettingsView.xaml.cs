@@ -32,7 +32,7 @@ namespace xstrat.MVVM.View
         {
             SkinSwitcherPathDisplay.Text = SettingsHandler.Settings.SkinSwitcherPath;
             RememberMeSettings.setStatus(SettingsHandler.Settings.StayLoggedin);
-            RetrieveDiscordIDAsync();
+            RetrieveDiscordID();
             RetrieveUbisoftIDAsync();
             if (SettingsHandler.Settings.APIURL != null)
             {
@@ -139,102 +139,53 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private async Task RetrieveDiscordIDAsync()
+        private void RetrieveDiscordID()
         {
-            var result = await ApiHandler.GetDiscordId();
-            if (result.Item1)
-            {
-                JObject json = JObject.Parse(result.Item2);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        DiscordID discord = JsonConvert.DeserializeObject<List<DiscordID>>(data).First();
-                        if(discord.discord != null && discord.discord != string.Empty)
-                        {
-                            DCId.Text = discord.discord;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError( "No discord found!");
-                        Logger.Log("No discord found! " + ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
-            }
+            DCId.Text = DataCache.CurrentUser.DiscordId;
         }
         private async Task SaveDiscordIDAsync()
         {
             if(DCId.Text != null && DCId.Text != string.Empty && IsDigitsOnly(DCId.Text))
             {
                 var result = await ApiHandler.SetDiscordId(DCId.Text);
-                if (result.Item1)
+                if (result)
                 {
-                    Notify.sendSuccess("Changed discord successfully");
+                    Notify.sendSuccess("Changed Discord-ID successfully");
                 }
                 else
                 {
-                    Notify.sendError(result.Item2);
+                    Notify.sendError("Could not update Discord-ID");
                 }
             }
             else
             {
-                Notify.sendWarn("Discord ID cannot be empty and has to be digits only");
+                Notify.sendWarn("Discord-ID cannot be empty and has to be digits only");
             }
         }
 
-        private async Task RetrieveTeamSettingsData()
+        private void RetrieveTeamSettingsData()
         {
-            var result = await ApiHandler.GetTeamSettings();
-            if (result.Item1)
-            {
-                JObject json = JObject.Parse(result.Item2);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        TeamSettingsData dcData = JsonConvert.DeserializeObject<List<TeamSettingsData>>(data).First();
-                        if (dcData.webhook != null && dcData.webhook != string.Empty)
-                        {
-                            DCWebhook.Text = dcData.webhook;
-                        }
-                        SwNew.setStatus(StringToBool(dcData.sn_created.ToString()));
-                        SwTimeChanged.setStatus(StringToBool(dcData.sn_changed.ToString()));
-                        SwWeeklySummary.setStatus(StringToBool(dcData.sn_weekly.ToString()));
-                        SwStartingSoon.setStatus(StringToBool(dcData.sn_soon.ToString()));
-                        SWUseOnDays.setStatus(StringToBool(dcData.use_on_days.ToString()));
-                        ScrimTimeDelay.Value = dcData.sn_delay;
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError("No Discord admin settings found!");
-                        Logger.Log("No admin settings found! " + ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
-            }
+            
+            DCWebhook.Text = DataCache.CurrentTeam.Webhook;
+            SwNew.setStatus(StringToBool(DataCache.CurrentTeam.NotifyCreated.ToString()));
+            SwTimeChanged.setStatus(StringToBool(DataCache.CurrentTeam.NotifyChanged.ToString()));
+            SwWeeklySummary.setStatus(StringToBool(DataCache.CurrentTeam.NotifyWeekly.ToString()));
+            SwStartingSoon.setStatus(StringToBool(DataCache.CurrentTeam.NotifySoon.ToString()));
+            SWUseOnDays.setStatus(StringToBool(DataCache.CurrentTeam.UseOnDays.ToString()));
+            ScrimTimeDelay.Value = DataCache.CurrentTeam.NotifyDelay;
         }
         private async Task SaveDiscordData()
         {
             if (DCWebhook.Text != null && DCWebhook.Text != string.Empty)
             {
-                var result = await ApiHandler.SetDiscordWebhook(DCWebhook.Text, Convert.ToInt32(SwNew.getStatus()), Convert.ToInt32(SwTimeChanged.getStatus()), Convert.ToInt32(SwWeeklySummary.getStatus()), Convert.ToInt32(SwStartingSoon.getStatus()), ScrimTimeDelay.Value, Convert.ToInt32(SWUseOnDays.getStatus()));
-                if (result.Item1)
+                var result = await ApiHandler.SetDiscordAdminSettings(DCWebhook.Text, Convert.ToInt32(SwNew.getStatus()), Convert.ToInt32(SwTimeChanged.getStatus()), Convert.ToInt32(SwWeeklySummary.getStatus()), Convert.ToInt32(SwStartingSoon.getStatus()), ScrimTimeDelay.Value, Convert.ToInt32(SWUseOnDays.getStatus()));
+                if (result)
                 {
                     Notify.sendSuccess("Changed Discord admin settings successfully");
                 }
                 else
                 {
-                    Notify.sendError(result.Item2);
+                    Notify.sendError(result);
                 }
             }
             else

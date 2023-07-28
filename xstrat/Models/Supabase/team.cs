@@ -29,5 +29,7 @@ namespace xstrat.Models.Supabase
         public int UseOnDays { get; set; }
         
         public DateTime? CreatedAt { get; set; }
+
+        public string Password { get; set; }
     }
 }

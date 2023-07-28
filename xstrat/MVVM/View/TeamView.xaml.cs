@@ -80,10 +80,10 @@ namespace xstrat.MVVM.View
             string name = team_name.Text.ToString();
             if(GameSelector.selectedGame != null)
             {
-                int game_id = GameSelector.selectedGame.id;
+                string game_id = GameSelector.selectedGame.Id;
 
                 var result = await ApiHandler.NewTeam(name, game_id);
-                if (result.Item1)
+                if (result)
                 {
                     Notify.sendSuccess("Created successfully");
                     TDashboard.Retrieve();
@@ -91,7 +91,7 @@ namespace xstrat.MVVM.View
                 }
                 else
                 {
-                    Notify.sendError(result.Item2);
+                    Notify.sendError("Could not create Team");
                 }
             }
             else

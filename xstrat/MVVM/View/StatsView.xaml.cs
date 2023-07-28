@@ -24,6 +24,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using LiveChartsCore.Measure;
+using xstrat.Models.Supabase;
 
 namespace xstrat.MVVM.View
 {
@@ -102,15 +103,15 @@ namespace xstrat.MVVM.View
 
         #endregion
 
-        public List<User> users = new List<User>();
+        public List<UserData> users = new List<UserData>();
 
-        private List<User> customUsers = new List<User>();
+        private List<UserData> customUsers = new List<UserData>();
 
         public StatsView()
         {
             InitializeComponent();
             PlayerList.Children.Clear();
-            foreach (var user in Globals.Teammates)
+            foreach (var user in DataCache.CurrentTeamMates)
             {
                 ColorDisplay newCD = new ColorDisplay(user.Color.Replace("#", "#80").ToSolidColorBrush(), user.Name, true);
                 PlayerList.Children.Add(newCD);
@@ -148,8 +149,8 @@ namespace xstrat.MVVM.View
                 newcd.ColorDisplayCheckstatusChanged += NewCD_ColorDisplayCheckstatusChanged;
                 if (needretrieve)
                 {
-                    await StatsDataSource.RetrieveStatsAllSeasons(newuser.ubisoft_id, newuser.id);
-                    await StatsDataSource.RetrieveStatsDataAsync(newuser.ubisoft_id, newuser.id);
+                    await StatsDataSource.RetrieveStatsAllSeasons(newuser.ubisoft_id, newuser.Id);
+                    await StatsDataSource.RetrieveStatsDataAsync(newuser.ubisoft_id, newuser.Id);
                 }
                 UpdateUsers();
                 newcd.SetStatus(true);
@@ -166,10 +167,10 @@ namespace xstrat.MVVM.View
                     ColorDisplay cd = plc as ColorDisplay;
                     if (cd.Status)
                     {
-                        int uid = Globals.getUserIdFromName(cd.NameInput);
-                        if (uid >= 0) 
+                        string uid = Globals.GetUserIdFromName(cd.NameInput);
+                        if (uid.IsNotNullOrEmpty()) 
                         {
-                            users.Add(Globals.getUserFromId(uid)); 
+                            users.Add(DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault()); 
                         }
                         else
                         {
@@ -191,11 +192,11 @@ namespace xstrat.MVVM.View
             }
             else
             {
-                users.Add(Globals.currentUser);
+                users.Add(DataCache.CurrentUser);
                 foreach (var plc in PlayerList.Children)
                 {
                     ColorDisplay cd = plc as ColorDisplay;
-                    if(cd.NameInput == Globals.currentUser.name)
+                    if(cd.NameInput == DataCache.CurrentUser.name)
                     {
                         cd.SetStatus(true);
                     }
@@ -677,7 +678,7 @@ namespace xstrat.MVVM.View
                 foreach (var plc in PlayerList.Children)
                 {
                     ColorDisplay cd = plc as ColorDisplay;
-                    if (cd.NameInput == Globals.currentUser.name)
+                    if (cd.NameInput == DataCache.CurrentUser.name)
                     {
                         cd.SetStatus(true);
                     }
@@ -693,7 +694,7 @@ namespace xstrat.MVVM.View
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             string inputString = Microsoft.VisualBasic.Interaction.InputBox("Add Name", "Add player to track", "");
-            if(!Globals.Teammates.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
+            if(!DataCache.CurrentTeamMates.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
             {
                 if(!customUsers.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
                 {

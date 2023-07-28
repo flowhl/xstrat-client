@@ -65,15 +65,15 @@ namespace xstrat.Ui
                 TxtMode.Content = Globals.ScrimModes.Where(x => x.id == Scrim.typ).FirstOrDefault().name;
                 if(Scrim.map_3_id >= 0)
                 {
-                    TxtMap3.Content = Globals.Maps.Where(x => x.Id == Scrim.map_3_id).FirstOrDefault().name;
+                    TxtMap3.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_3_id).FirstOrDefault().name;
                 }
                 if (Scrim.map_2_id >= 0)
                 {
-                    TxtMap2.Content = Globals.Maps.Where(x => x.Id == Scrim.map_2_id).FirstOrDefault().name;
+                    TxtMap2.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_2_id).FirstOrDefault().name;
                 }
                 if (Scrim.map_1_id >= 0)
                 {
-                    TxtMap1.Content = Globals.Maps.Where(x => x.Id == Scrim.map_1_id).FirstOrDefault().name;
+                    TxtMap1.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_1_id).FirstOrDefault().name;
                 }
                 TxtEnemyName.Content = "Against: " + Scrim.opponent_name;
                 TxtDescription.Text = Scrim.comment;

@@ -100,7 +100,7 @@ namespace xstrat.Ui
                     label.Foreground = Brushes.White;
                     label.Background = Brushes.Transparent;
                     label.Margin = new Thickness(5, 0, 5, 0);
-                    label.Content = Globals.getUserFromId(user.Id).name;
+                    label.Content = Globals.GetUserFromId(user.Id).name;
                     PlayerStack.Children.Add(label);
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
@@ -120,9 +120,9 @@ namespace xstrat.Ui
                 FromMinute.Value = start.Minute;
                 ToHour.Value = end.Hour;
                 ToMinute.Value = end.Minute;
-                MapSelector1.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_1_id).FirstOrDefault()));
-                MapSelector2.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_2_id).FirstOrDefault()));
-                MapSelector3.SelectIndexWhenLoaded(Globals.Maps.IndexOf(Globals.Maps.Where(x => x.Id == scrim.map_3_id).FirstOrDefault()));
+                MapSelector1.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_1_id).FirstOrDefault()));
+                MapSelector2.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_2_id).FirstOrDefault()));
+                MapSelector3.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_3_id).FirstOrDefault()));
                 CreatorLabel.Content = Globals.getUserFromId(scrim.creator_id).name;
                 CreationDateLabel.Content = scrim.creation_date.Replace("T", " ").Replace("Z", "");
                 if (!Globals.AdminUser)

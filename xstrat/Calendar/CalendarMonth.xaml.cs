@@ -337,7 +337,7 @@ namespace xstrat.Calendar
                 // loop all events
                 foreach (var e in events.OrderBy(e => e.DateFrom))
                 {
-                    if (!e.DateFrom.HasValue || !e.DateTo.HasValue || !e.visible)
+                    if (!e.DateFrom.HasValue || !e.DateTo.HasValue || !e.Visible)
                     {
                         continue;
                     }
@@ -373,7 +373,7 @@ namespace xstrat.Calendar
                         }
 
                         // get color for event
-                        int accentColorIndex = e.typ;
+                        int accentColorIndex = e.Typ;
 
                         CalendarEventView calendarEventView = new CalendarEventView(colors[accentColorIndex], this);
 

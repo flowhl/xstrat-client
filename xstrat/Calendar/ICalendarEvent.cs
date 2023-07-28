@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 
 namespace xstrat.Calendar
 {
@@ -15,11 +16,11 @@ namespace xstrat.Calendar
         /// 1 = offday / red
         /// 2 = ??? / purple
         /// </summary>
-        int typ { get; set; }
+        int Typ { get; set; }
 
-        List<Object> args { get; set; }
-        bool visible { get; set; }
-        User user { get; set; }
-        Scrim scrim { get; set; }
+        List<Object> Args { get; set; }
+        bool Visible { get; set; }
+        UserData User { get; set; }
+        Scrim Scrim { get; set; }
     }
 }

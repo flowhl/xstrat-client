@@ -45,7 +45,7 @@ namespace xstrat.Ui
             TeamName.Content = "Create or join a team";
             AdminName.Content = "Admin: ";
             GameName.Content = "Game: ";
-            TeamInfo = Globals.CurrentTeam;
+            TeamInfo = DataCache.CurrentTeam;
             await CheckAdmin();
             await RetrieveColorAsync();
             DependencyObject ucParent = this.Parent;
@@ -54,7 +54,7 @@ namespace xstrat.Ui
             {
                 ucParent = LogicalTreeHelper.GetParent(ucParent);
             }
-            if(ucParent is UserControl)
+            if (ucParent is UserControl)
             {
                 var uc = (TeamView)ucParent;
                 await uc.WaitForAPIAsync();
@@ -70,8 +70,8 @@ namespace xstrat.Ui
 
         private async Task CheckAdmin()
         {
-            (bool, string) result = await ApiHandler.VerifyAdmin();
-            if (result.Item1)
+            bool admin = await ApiHandler.GetAdminStatus();
+            if (admin)
             {
                 AdminButtons.Visibility = Visibility.Visible;
             }
@@ -83,20 +83,7 @@ namespace xstrat.Ui
 
         private async void LeaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            (bool, string) result = await ApiHandler.LeaveTeam();
-            if (result.Item1)
-            {
-                Notify.sendSuccess("Left successfully");
-                ApiHandler.RemoveFromCache("TeamInfo");
-                ApiHandler.RemoveFromCache("TeamMembers");
-                Globals.RetrieveTeamInfoAsync();
-                Globals.RetrieveTeamName();
-                Retrieve();
-            }
-            else
-            {
-                Notify.sendError( result.Item2);
-            }
+            await ApiHandler.LeaveTeam();
         }
 
         private void JoinPWAdminBtn_Click(object sender, RoutedEventArgs e)
@@ -113,90 +100,58 @@ namespace xstrat.Ui
         {
             DeleteAdminBtn_ClickAsync();
         }
-        
+
         private async Task RetrieveColorAsync()
         {
-            var result = await ApiHandler.GetColor();
-            if (result.Item1)
-            {
-                JObject json = JObject.Parse(result.Item2);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        JColor color = JsonConvert.DeserializeObject<List<JColor>>(data).First();
-                        ColorPickerUI.SelectedColor = (Color)ColorConverter.ConvertFromString(color.color);
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError("No Color found!");
-                        Logger.Log("No Color found! " + ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
-            }
+
+            ColorPickerUI.SelectedColor = (Color)ColorConverter.ConvertFromString(DataCache.CurrentUser.Color);
         }
         private async Task SaveColorAsync()
         {
             var result = await ApiHandler.SetColor(HexConverter(ColorPickerUI.SelectedColor));
-            if (result.Item1)
+            if (result)
             {
                 Notify.sendSuccess("Changed color successfully");
                 ApiHandler.RemoveFromCache("TeamMembers");
-                Globals.RetrieveTeamMates();
-                await Task.Delay(1000);
-                TMControl.RetrieveTeamMatesAsync();
             }
             else
             {
-                Notify.sendError(result.Item2);
+                Notify.sendError("Could not set color");
             }
         }
 
         private async Task DeleteAdminBtn_ClickAsync()
         {
             var result = await ApiHandler.DeleteTeam();
-            if (result.Item1)
+            if (result)
             {
                 Notify.sendSuccess("Deleted successfully");
                 Retrieve();
             }
             else
             {
-                Notify.sendError(result.Item2);
+                Notify.sendError("Could not delete team. Make sure to be team admin.");
             }
         }
         private async Task JoinPWAdminBtn_ClickAsync()
         {
-            var result = await ApiHandler.TeamJoinpassword();
-            if (result.Item1)
+            if(DataCache.CurrentTeam == null || DataCache.CurrentTeam.Password.IsNotNullOrEmpty())
             {
-                JObject json = JObject.Parse(result.Item2);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        JoinPw joinPw = JsonConvert.DeserializeObject<List<JoinPw>>(data).First();
-                        MessageBox.Show("Team ID: " + joinPw.id.ToString() + "\nJoin password: " + joinPw.join_password , "Your teams' join credentials:");
-                        Notify.sendSuccess("Copied the join password to your clipboard");
-                        Clipboard.SetText(joinPw.join_password);
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError("No JoinPW found!");
-                        Logger.Log("No JoinPW found! " + ex.Message);
-                    }
-                }
+                Notify.sendError("No Team or Join Password found!");
+                Logger.Log("No Team or Join Password found!");
+                return;
             }
-            else
+
+            if(!await ApiHandler.GetAdminStatus())
             {
-                Notify.sendError(result.Item2);
+                Notify.sendError("You have to be teamadmin to use this feature");
+                Logger.Log("You have to be teamadmin to use this feature");
+                return;
             }
+
+            MessageBox.Show("Team ID: " + DataCache.CurrentTeam.Id + "\nJoin password: " + DataCache.CurrentTeam.Password, "Your teams' join credentials:");
+            Notify.sendSuccess("Copied the join password to your clipboard");
+            Clipboard.SetText(DataCache.CurrentTeam.Password);
         }
         private async Task RenameAdminBtn_ClickAsync(string newname)
         {
@@ -208,7 +163,7 @@ namespace xstrat.Ui
             }
             else
             {
-                Notify.sendError( result.Item2);
+                Notify.sendError(result.Item2);
             }
         }
 
@@ -227,11 +182,8 @@ namespace xstrat.Ui
         }
         public void Reload()
         {
-            ApiHandler.RemoveFromCache("TeamInfo");
-            ApiHandler.RemoveFromCache("TeamMembers");
-            Globals.RetrieveTeamInfoAsync();
-            Globals.RetrieveTeamMates();
-            Globals.RetrieveTeamName();
+            DataCache.RetrieveTeam();
+            DataCache.RetrieveTeamMates();
         }
     }
 }

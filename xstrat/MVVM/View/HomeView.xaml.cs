@@ -36,7 +36,7 @@ namespace xstrat.MVVM.View
 
         public string GetGreeting()
         {
-            string name = Globals.currentUser?.name;
+            string name = DataCache.CurrentUser?.Name;
 
             if (string.IsNullOrEmpty(name)) return "";
 

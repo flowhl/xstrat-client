@@ -274,6 +274,7 @@
     <Compile Include="Calendar\MonthNumberToNameConverter.cs" />
     <Compile Include="Core\ApiHandler.cs" />
     <Compile Include="Core\CSVHelper.cs" />
+    <Compile Include="Core\DataCache.cs" />
     <Compile Include="Core\DissectDataModels.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\Globals.cs" />

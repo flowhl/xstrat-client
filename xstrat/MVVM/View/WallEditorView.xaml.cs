@@ -40,7 +40,7 @@ namespace xstrat.MVVM.View
         public bool Floor2 { get; set; }
         public bool Floor3 { get; set; }
 
-        public int map_id;
+        public string map_id;
         public int floor_id;
 
         public List<string> Walls { get; set; }
@@ -129,11 +129,11 @@ namespace xstrat.MVVM.View
         {
             if (MapSelector.SelectedMap != null)
             {
-                map_id = MapSelector.SelectedMap.id;
+                map_id = MapSelector.SelectedMap.Id;
             }
             else
             {
-                map_id = -1;
+                map_id = null;
             }
             LoadMapImages();
         }
@@ -144,8 +144,8 @@ namespace xstrat.MVVM.View
             WallsLayer.Children.Clear();
 
             if (floor_id < 0) return;
-            if (map_id < 0) return;
-            string game_id = Globals.CurrentTeam.GameID;
+            if (map_id.IsNullOrEmpty()) return;
+            string game_id = DataCache.CurrentTeam.GameID;
 
             XmlDocument svgFile;
 

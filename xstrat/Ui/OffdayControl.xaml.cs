@@ -27,7 +27,7 @@ namespace xstrat.Ui
     public partial class OffdayControl : UserControl
     {
         public int? id { get; set; }
-        public int? user_id { get; set; }
+        public string user_id { get; set; }
         public OffdayControl()
         {
             //fix datetime
@@ -56,26 +56,26 @@ namespace xstrat.Ui
         public void LoadOffDay(OffDay offDay)
         {
             id = offDay.Id;
-            user_id = offDay.user_id;
+            user_id = offDay.UserId;
             //YYYY-MM-DD hh:mm:ss
-            TitleText.Text = offDay.title;
+            TitleText.Text = offDay.Title;
 
             CreationDate.Text = "Created on: " + offDay.creation_date.Split('T').First() ;
             
-            FromDatePicker.Text = offDay.start.Split(' ').First();
-            ToDatePicker.Text = offDay.end.Split(' ').First();
+            FromDatePicker.Text = offDay.Start.Split(' ').First();
+            ToDatePicker.Text = offDay.End.Split(' ').First();
             
-            int fromHour = int.Parse(offDay.start.Split(' ')[1].Split(':').First());
-            int fromMinute = int.Parse(offDay.start.Split(' ')[1].Split(':')[1]);
+            int fromHour = int.Parse(offDay.Start.Split(' ')[1].Split(':').First());
+            int fromMinute = int.Parse(offDay.Start.Split(' ')[1].Split(':')[1]);
             
-            int toHour = int.Parse(offDay.end.Split(' ')[1].Split(':').First());
-            int toMinute = int.Parse(offDay.end.Split(' ')[1].Split(':')[1]);
+            int toHour = int.Parse(offDay.End.Split(' ')[1].Split(':').First());
+            int toMinute = int.Parse(offDay.End.Split(' ')[1].Split(':')[1]);
 
             FromTimeSelector.SetTime(fromHour, fromMinute);
             ToTimeSelector.SetTime(toHour, toMinute);
             
-            TypeSelector.SelectIndexWhenLoaded(offDay.typ);
-            if(offDay.typ == 1)
+            TypeSelector.SelectIndexWhenLoaded(offDay.Typ);
+            if(offDay.Typ == 1)
             {
                 FromTimeSelector.Visibility = Visibility.Hidden;
                 ToTimeSelector.Visibility = Visibility.Hidden;
@@ -108,7 +108,7 @@ namespace xstrat.Ui
 
             string start = startDate + " " + startTime;
             string end = endDate + " " + endTime;
-            OffDay offDay = new OffDay(id.GetValueOrDefault(), user_id.GetValueOrDefault(), null, TypeSelector.selectedOffDayType.id, TitleText.Text, start, end);
+            OffDay offDay = new OffDay(id.GetValueOrDefault(), user_id, null, TypeSelector.selectedOffDayType.id, TitleText.Text, start, end);
             return offDay;
         }
 

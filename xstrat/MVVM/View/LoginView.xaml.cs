@@ -70,11 +70,9 @@ namespace xstrat.MVVM.View
                 string baerer = session.AccessToken;
                 string user_id = session.User.Id;
 
-                var userData = await ApiHandler.GetUserDataAsync();
                 if(user_id.IsNotNullOrEmpty())
                 {
                     SettingsHandler.Settings.CurrentUserId = user_id;
-                    Globals.CurrentUserData = userData;
                 }
                 SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
                 SettingsHandler.Settings.LastLoginMail = email.Text.Trim();

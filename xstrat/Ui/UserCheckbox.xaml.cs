@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 
 namespace xstrat.Ui
 {
@@ -21,12 +22,12 @@ namespace xstrat.Ui
     /// </summary>
     public partial class UserCheckbox : UserControl
     {
-        public User User { get; set; }
-        public UserCheckbox(User user)
+        public UserData User { get; set; }
+        public UserCheckbox(UserData user)
         {
             InitializeComponent();
             User = user;
-            UserCheckboxItem.Content = User.name;
+            UserCheckboxItem.Content = User.Name;
             UserCheckboxItem.IsChecked = true;
         }
     }

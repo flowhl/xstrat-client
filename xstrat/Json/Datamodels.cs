@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using xstrat.Calendar;
+using xstrat.Models.Supabase;
 
 namespace xstrat.Json
 {
@@ -19,13 +20,13 @@ namespace xstrat.Json
         /// 1 = offday / red
         /// 2 = ??? / purple
         /// </summary>
-        public int typ { get; set; }
+        public int Typ { get; set; }
 
-        public List<Object> args { get; set; }
+        public List<Object> Args { get; set; }
 
-        public bool visible { get; set; } = true;
-        public User user { get; set; }
-        public Scrim scrim { get; set; }
+        public bool Visible { get; set; } = true;
+        public UserData User { get; set; }
+        public Scrim Scrim { get; set; }
     }
 
     public class CalendarFilterType
@@ -153,14 +154,14 @@ namespace xstrat.Json
     public class NewParams
     {
         public string name { get; set; }
-        public int game_id { get; set; }
+        public string game_id { get; set; }
 
     }
 
     public class OffDay
     {
         public int? Id { get; set; }
-        public int? user_id { get; set; }
+        public string UserId { get; set; }
         public string creation_date { get; set; }
 
         /// <summary>
@@ -171,20 +172,20 @@ namespace xstrat.Json
         /// 3 every second week
         /// 4 monthly
         /// </summary>
-        public int typ { get; set; }
-        public string title { get; set; }
-        public string start { get; set; }
-        public string end { get; set; }
+        public int Typ { get; set; }
+        public string Title { get; set; }
+        public string Start { get; set; }
+        public string End { get; set; }
 
-        public OffDay(int id, int user_id, string creation_date, int typ, string title, string start, string end)
+        public OffDay(int id, string user_id, string creation_date, int typ, string title, string start, string end)
         {
             Id = id;
-            this.user_id = user_id;
+            this.UserId = user_id;
             this.creation_date = creation_date;
-            this.typ = typ;
-            this.title = title;
-            this.start = start;
-            this.end = end;
+            this.Typ = typ;
+            this.Title = title;
+            this.Start = start;
+            this.End = end;
         }
     }
 
@@ -465,7 +466,7 @@ namespace xstrat.Json
     }
     public class StatsResponseDetail
     {
-        public int xstrat_user_id { get; set; }
+        public string xstrat_user_id { get; set; }
         public double? max_mmr { get; set; }
         public double? skill_mean { get; set; }
         public int? deaths { get; set; }
@@ -532,7 +533,7 @@ namespace xstrat.Json
     /// </summary>
     public class StatsBySeasonDetail
     {
-        public int? xstrat_user_id { get; set; }
+        public string xstrat_user_id { get; set; }
         public double? max_mmr { get; set; }
         public double? skill_mean { get; set; }
         public int? deaths { get; set; }

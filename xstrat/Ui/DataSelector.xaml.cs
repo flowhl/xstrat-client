@@ -85,7 +85,7 @@ namespace xstrat.Ui
         public void SelectUserID(string id)
         {
             if (Type != DataSelectorTypes.Teammates) return;
-            indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == Globals.Teammates.Where(x => x.Id == id).FirstOrDefault()?.Name));
+            indexToSelect = CBox.Items.IndexOf(CBox.Items.OfType<ListBoxItem>().Where(x => x.Name == DataCache.CurrentTeamMates.Where(x => x.Id == id).FirstOrDefault()?.Name));
             SelectIndex(indexToSelect);
         }
         public void SelectOperator(string val)
@@ -104,7 +104,7 @@ namespace xstrat.Ui
             if(Type == DataSelectorTypes.Teammates)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Teammates)
+                foreach (var item in DataCache.CurrentTeamMates)
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -112,7 +112,7 @@ namespace xstrat.Ui
             else if (Type == DataSelectorTypes.Game)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Games)
+                foreach (var item in DataCache.CurrentGames)
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -136,7 +136,7 @@ namespace xstrat.Ui
             else if (Type == DataSelectorTypes.Map)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Maps)
+                foreach (var item in DataCache.CurrentMaps)
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -160,7 +160,7 @@ namespace xstrat.Ui
             else if (Type == DataSelectorTypes.AllOperators)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Operators)
+                foreach (var item in DataCache.CurrentOperators)
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -168,7 +168,7 @@ namespace xstrat.Ui
             else if (Type == DataSelectorTypes.DefenseOperators)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Operators.Where(x => x.Typ == 0))
+                foreach (var item in DataCache.CurrentOperators.Where(x => x.Typ == 0))
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -176,7 +176,7 @@ namespace xstrat.Ui
             else if (Type == DataSelectorTypes.AttackOperators)
             {
                 CBox.Items.Clear();
-                foreach (var item in Globals.Operators.Where(x => x.Typ == 1))
+                foreach (var item in DataCache.CurrentOperators.Where(x => x.Typ == 1))
                 {
                     CBox.Items.Add(item.Name);
                 }
@@ -191,11 +191,11 @@ namespace xstrat.Ui
             if (CBox.SelectedIndex < 0) return;
             if(Type == DataSelectorTypes.Teammates)
             {
-                selectedUser = Globals.Teammates[CBox.SelectedIndex];
+                selectedUser = DataCache.CurrentTeamMates[CBox.SelectedIndex];
             }
             else if(Type == DataSelectorTypes.Game)
             {
-                selectedGame = Globals.Games[CBox.SelectedIndex];
+                selectedGame = DataCache.CurrentGames[CBox.SelectedIndex];
             }
             else if(Type == DataSelectorTypes.OffdayType)
             {
@@ -207,7 +207,7 @@ namespace xstrat.Ui
             }
             else if (Type == DataSelectorTypes.Map)
             {
-                SelectedMap = Globals.Maps[CBox.SelectedIndex];
+                SelectedMap = DataCache.CurrentMaps[CBox.SelectedIndex];
             }
             else if (Type == DataSelectorTypes.ScrimMode)
             {
@@ -219,15 +219,15 @@ namespace xstrat.Ui
             }
             else if (Type == DataSelectorTypes.AllOperators)
             {
-                selectedOperator = Globals.Operators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
+                selectedOperator = DataCache.CurrentOperators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
             }
             else if (Type == DataSelectorTypes.DefenseOperators)
             {
-                selectedOperator = Globals.Operators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
+                selectedOperator = DataCache.CurrentOperators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
             }
             else if (Type == DataSelectorTypes.AttackOperators)
             {
-                selectedOperator = Globals.Operators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
+                selectedOperator = DataCache.CurrentOperators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
             }
         }
     }

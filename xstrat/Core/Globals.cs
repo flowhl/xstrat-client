@@ -166,9 +166,9 @@ namespace xstrat.Core
 
             }
         }
-        public static async Task RetrieveStatsDataAsync(string ubisoft_id, int user_id = -1)
+        public static async Task RetrieveStatsDataAsync(string ubisoft_id, string user_id)
         {
-            if (!string.IsNullOrEmpty(ubisoft_id) && user_id >= 0)
+            if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
             {
                 try
                 {
@@ -205,7 +205,7 @@ namespace xstrat.Core
                 }
 
                 //scrim stats
-                if (user_id >= 0)
+                if (user_id.IsNotNullOrEmpty())
                 {
                     try
                     {
@@ -244,9 +244,9 @@ namespace xstrat.Core
             }
             return;
         }
-        public static async Task RetrieveStatsAllSeasons(string ubisoft_id, int user_id = -1)
+        public static async Task RetrieveStatsAllSeasons(string ubisoft_id, string user_id)
         {
-            if (!string.IsNullOrEmpty(ubisoft_id) && user_id >= 0)
+            if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
             {
                 try
                 {
@@ -291,7 +291,7 @@ namespace xstrat.Core
         {
             PlayerStats.Clear();
             PlayerScrimParticipation.Clear();
-            foreach (var user in Globals.Teammates)
+            foreach (var user in DataCache.CurrentTeamMates)
             {
                 //playerstats
                 if (user.UbisoftId != null && user.UbisoftId != "")
@@ -304,7 +304,7 @@ namespace xstrat.Core
         public static async Task StartRetrieveStatsAllSeasons()
         {
             PlayerAllSeasonStats.Clear();
-            foreach (var user in Globals.Teammates)
+            foreach (var user in DataCache.CurrentTeamMates)
             {
                 if (user.UbisoftId != null && user.UbisoftId != "")
                 {
@@ -317,22 +317,12 @@ namespace xstrat.Core
     public static class Globals
     {
         public static MainWindow wnd = (MainWindow)Application.Current.MainWindow;
-        public static string TeamName { get; set; }
-        public static List<Models.Supabase.UserData> Teammates { get; set; } = new List<Models.Supabase.UserData>();
-        public static List<Models.Supabase.Game> Games { get; set; } = new List<Models.Supabase.Game>();
         public static List<OffDayType> OffDayTypes = new List<OffDayType>();
         public static List<CalendarFilterType> CalendarFilterTypes = new List<CalendarFilterType>();
-        public static List<Models.Supabase.Map> Maps = new List<Models.Supabase.Map>();
-        public static List<Models.Supabase.Operator> Operators = new List<Models.Supabase.Operator>();
-        public static List<Models.Supabase.Position> XPositions = new List<Models.Supabase.Position>();
 
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
         public static List<EventType> EventTypes = new List<EventType>();
         public static bool AdminUser = false;
-        public static User currentUser { get; set; }
-        public static UserData CurrentUserData { get; set; }
-        public static Models.Supabase.Team CurrentTeam { get; set; }
-        public static List<Models.Supabase.Strat> strats { get; set; } = new List<Models.Supabase.Strat>();
 
         public static DateTime lastEventClicked { get; set; }
 
@@ -581,7 +571,7 @@ namespace xstrat.Core
 
         public static string UserIdToName(string id)
         {
-            var teammate = Teammates.Where(x => x.Id == id).FirstOrDefault();
+            var teammate = DataCache.CurrentTeamMates.Where(x => x.Id == id).FirstOrDefault();
             if (teammate == null) return null;
             return teammate.Name;
         }
@@ -591,91 +581,18 @@ namespace xstrat.Core
             if (wnd.IsLoggedIn)
             {
                 wnd.SetLoadingStatus("Retrieving team mates");
-                await RetrieveTeamMates();
-                await RetrieveGames();
-                wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveOffDayTypes();
                 wnd.SetLoadingStatus("Retrieving team mates");
                 RetrieveCalendarFilterTypes();
-                wnd.SetLoadingStatus("Retrieving maps");
-                await RetrieveMaps();
-                wnd.SetLoadingStatus("Retrieving operators");
-                await RetrieveOperators();
-                wnd.SetLoadingStatus("Retrieving positions");
-                await RetrievexPositions();
                 RetrieveScrimModes();
                 wnd.SetLoadingStatus("Retrieving scrimmodes");
                 RetrieveEventTypes();
-                wnd.SetLoadingStatus("Retrieving team");
-                await RetrieveTeamName();
-                wnd.SetLoadingStatus("Retrieving admin status");
-                await RetrieveAdminStatusAsync();
-                wnd.SetLoadingStatus("Retrieving team info");
-                await RetrieveTeamInfoAsync();
                 wnd.SetLoadingStatus("Retrieving strats");
                 await RetrieveStrats();
                 wnd.SetLoadingStatus("");
                 CallOnDataRetrieved();
             }
         }
-
-
-        public static async Task RetrieveAdminStatusAsync()
-        {
-            AdminUser = await ApiHandler.GetAdminStatus();
-        }
-        public static async Task RetrieveTeamName()
-        {
-
-        }
-        public static async Task RetrieveTeamInfoAsync()
-        {
-            var team = await ApiHandler.GetTeamInfoAsync();
-            if (CurrentTeam != null)
-            {
-                CurrentTeam.AdminUserID = null;
-                CurrentTeam.GameID = null;
-                CurrentTeam.Name = "Create or join a team";
-            }
-            CurrentTeam = team;
-            if (CurrentTeam == null)
-            {
-
-                Logger.Log("Could not load team");
-                Notify.sendError("Could not load team");
-            }
-        }
-        public static async Task RetrieveTeamMates()
-        {
-            var members = await ApiHandler.TeamMembers();
-            if (members == null)
-            {
-                Notify.sendError("Teammates could not be loaded");
-                throw new Exception("Teammates could not be loaded");
-            }
-            Teammates = members;
-            StatsDataSource.Init();
-            //TODO:
-            //int max_id = 0;
-            //foreach (var mate in Teammates)
-            //{
-            //    if (mate.Id > max_id) max_id = mate.id;
-            //}
-            //lastcustomuserid = max_id;
-        }
-    
-    public static async Task RetrieveGames()
-    {
-        var games = await ApiHandler.GetGameAsync();
-        if (games == null)
-        {
-            Notify.sendError("Games could not be loaded");
-            return;
-        }
-        Games.Clear();
-        Games = games;
-
-    }
     private static void RetrieveOffDayTypes()
     {
         OffDayTypes.Clear();
@@ -693,31 +610,6 @@ namespace xstrat.Core
         CalendarFilterTypes.Add(new CalendarFilterType(1, "specific players"));
         CalendarFilterTypes.Add(new CalendarFilterType(2, "min specific players"));
         CalendarFilterTypes.Add(new CalendarFilterType(3, "everyone"));
-    }
-    private static async Task RetrieveMaps()
-    {
-        var maps = await ApiHandler.GetMaps();
-        Maps.Clear();
-        Maps = maps;
-        if (maps == null)
-            Notify.sendError("Maps could not be loaded");
-    }
-
-    private static async Task RetrieveOperators()
-    {
-        var operators = await ApiHandler.GetOperators();
-        if (operators == null)
-        {
-            Notify.sendError("Operators could not be loaded");
-            return;
-        }
-        Operators = operators;
-    }
-
-    private static async Task RetrievexPositions()
-    {
-        XPositions.Clear();
-        XPositions = await ApiHandler.GetPositions();
     }
     private static void RetrieveScrimModes()
     {
@@ -764,15 +656,9 @@ namespace xstrat.Core
         }
     }
 
-    public static UserData getUserFromId(string id)
+    public static string GetUserIdFromName(string name)
     {
-        var rows = Teammates.Where(x => x.Id == id);
-        if (rows.Any()) return rows.FirstOrDefault();
-        return null;
-    }
-    public static string getUserIdFromName(string name)
-    {
-        var rows = Teammates.Where(x => x.Name.ToUpper().StartsWith(name.ToUpper()));
+        var rows = DataCache.CurrentTeamMates.Where(x => x.Name.ToUpper().StartsWith(name.ToUpper()));
         if (rows.Any()) return rows.First().Id;
         return null;
     }
@@ -793,7 +679,7 @@ namespace xstrat.Core
 
     public static XmlDocument GetSCVDocumentForMapAndFloor(string map_id, int floor_id = 0)
     {
-        var map = Globals.Maps.Where(x => x.Id == map_id).FirstOrDefault();
+        var map = DataCache.CurrentMaps.Where(x => x.Id == map_id).FirstOrDefault();
         if (map == null) return null;
         if (floor_id < 0 || floor_id > 4) return null;
 
@@ -979,13 +865,6 @@ namespace xstrat.Core
     }
 
     #endregion
-
-    public static string GetTeamGameID()
-    {
-        var g = Games.Where(x => x.Name == CurrentTeam.GameID).First();
-        if (g == null) return null;
-        return g.Id;
-    }
 
     public class CalendarEventCreatedArgs : EventArgs
     {

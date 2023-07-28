@@ -299,7 +299,7 @@ namespace xstrat.MVVM.View
             if (Floor2) floors.Add(2);
             if (Floor3) floors.Add(3);
 
-            string game_id = Globals.CurrentTeam.GameID;
+            string game_id = DataCache.CurrentTeam.GameID;
 
             double offset = 0;
 
@@ -471,7 +471,7 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if (Globals.CurrentTeam.GameID == "R6 Siege")
+            if (DataCache.CurrentTeam.GameID == "R6 Siege")
             {
                 IconsSP.Children.Clear();
                 string folder = Globals.XStratInstallPath + @"/Images/Icons/";
@@ -587,7 +587,7 @@ namespace xstrat.MVVM.View
 
         private void LoadColorButtons()
         {
-            foreach (var teamMate in Globals.Teammates)
+            foreach (var teamMate in DataCache.CurrentTeamMates)
             {
                 Button newBtn = new Button();
                 newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(teamMate.Name);
@@ -616,7 +616,7 @@ namespace xstrat.MVVM.View
         private void ColorBtnClicked(object sender, RoutedEventArgs e)
         {
             string user = (sender as Button).Name.Replace("Color_", "");
-            User teammate = Globals.getUserFromId(Globals.getUserIdFromName(user));
+            User teammate = Globals.GetUserFromId(Globals.GetUserIdFromName(user));
             CurrentBrush = teammate.color.ToSolidColorBrush();
             DeselectAllColors();
             (sender as Button).BorderThickness = new Thickness(2);
@@ -808,8 +808,8 @@ namespace xstrat.MVVM.View
             //body
 
             map_id = currentStrat.map_id;
-            TxtMapName.Content = Globals.Maps.Where(x => x.Id == currentStrat.map_id).FirstOrDefault()?.name;
-            TxtCreatedBy.Content = Globals.Teammates.Where(x => x.Id == currentStrat.created_by).FirstOrDefault()?.name;
+            TxtMapName.Content = DataCache.CurrentMaps.Where(x => x.Id == currentStrat.map_id).FirstOrDefault()?.name;
+            TxtCreatedBy.Content = DataCache.CurrentTeamMates.Where(x => x.Id == currentStrat.created_by).FirstOrDefault()?.name;
             TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-", "/").Replace("T", " ");
             TxtLastEdit.Content = currentStrat.last_edit_time?.ToString().Replace("-", "/").Replace("T", " ");
             TxtVersion.Content = currentStrat.version;
@@ -925,27 +925,27 @@ namespace xstrat.MVVM.View
 
         public void LoadAssignmentTable(AssignmentTable table)
         {
-            Player1.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
+            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
             Gadget1.Text = table.Rows[0].gadgets;
             Loadout1.Text = table.Rows[0].loadout;
             Position1.Text = table.Rows[0].position;
 
-            Player2.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
+            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
             Gadget2.Text = table.Rows[1].gadgets;
             Loadout2.Text = table.Rows[1].loadout;
             Position2.Text = table.Rows[1].position;
 
-            Player3.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
+            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
             Gadget3.Text = table.Rows[2].gadgets;
             Loadout3.Text = table.Rows[2].loadout;
             Position3.Text = table.Rows[2].position;
 
-            Player4.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
+            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
             Gadget4.Text = table.Rows[3].gadgets;
             Loadout4.Text = table.Rows[3].loadout;
             Position4.Text = table.Rows[3].position;
 
-            Player5.SelectValue(Globals.Teammates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
+            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
             Gadget5.Text = table.Rows[4].gadgets;
             Loadout5.Text = table.Rows[4].loadout;
             Position5.Text = table.Rows[4].position;
@@ -1133,7 +1133,7 @@ namespace xstrat.MVVM.View
         {
             Menu.Items.Clear();
             var thickness = new Thickness(0, 0, 0, 0);
-            foreach (var map in Globals.Maps)
+            foreach (var map in DataCache.CurrentMaps)
             {
                 var mapItem = new MenuItem();
                 //mapItem.Name = map.name + "_MapItem";

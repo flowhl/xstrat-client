@@ -256,7 +256,7 @@ namespace xstrat.Ui
         {
             if(type == 1)
             {
-                var result = await ApiHandler.DeleteScrim(scrim.id);
+                var result = await ApiHandler.DeleteScrim(scrim.Id);
                 if (result)
                 {
                     Notify.sendSuccess("Deleted successfully");

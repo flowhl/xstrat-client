@@ -44,22 +44,23 @@ namespace xstrat.Ui
 
         private async void RetrieveStatus()
         {
-            (bool, string) result = await ApiHandler.GetLicenseStatus();
-            if (result.Item1)
-            {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                xstrat.Json.LicenseStatus _content = JsonConvert.DeserializeObject<List<xstrat.Json.LicenseStatus>>(data).FirstOrDefault();
-                Subscribed = _content.subscribed;
-                if(_content.subscription_end != null && _content.subscription_end != string.Empty) End = DateTime.Parse(_content.subscription_end);
-                else
-                {
-                    End = null;
-                }
-                UpdateUI();
-            }
+            //TODO Implement:
+            //(bool, string) result = await ApiHandler.GetLicenseStatus();
+            //if (result.Item1)
+            //{
+            //    string response = result.Item2;
+            //    //convert to json instance
+            //    JObject json = JObject.Parse(response);
+            //    var data = json.SelectToken("data").ToString();
+            //    xstrat.Json.LicenseStatus _content = JsonConvert.DeserializeObject<List<xstrat.Json.LicenseStatus>>(data).FirstOrDefault();
+            //    Subscribed = _content.subscribed;
+            //    if(_content.subscription_end != null && _content.subscription_end != string.Empty) End = DateTime.Parse(_content.subscription_end);
+            //    else
+            //    {
+            //        End = null;
+            //    }
+            //    UpdateUI();
+            //}
         }
 
         private void UpdateUI()
@@ -85,17 +86,17 @@ namespace xstrat.Ui
 
         private async void ActivateLicense()
         {
-            string key = SearchTermTextBox.Text.Trim();
-            (bool, string) result = await ApiHandler.ActivateLicense(key);
-            if (result.Item1)
-            {
-                Notify.sendSuccess(result.Item2);
-                RetrieveStatus();
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
-            }
+            //string key = SearchTermTextBox.Text.Trim();
+            //(bool, string) result = await ApiHandler.ActivateLicense(key);
+            //if (result.Item1)
+            //{
+            //    Notify.sendSuccess(result.Item2);
+            //    RetrieveStatus();
+            //}
+            //else
+            //{
+            //    Notify.sendError(result.Item2);
+            //}
         }
 
         private void GetLicenseBtn_Click(object sender, RoutedEventArgs e)

@@ -142,15 +142,15 @@ namespace xstrat.MVVM.View
             }
             if(id != null)
             {
-                User newuser = new User { id = id.GetValueOrDefault(), color = "#336cb5", name = name, ubisoft_id = name };
+                UserData newuser = new UserData { Id = id.ToString(), Color = "#336cb5", Name = name, UbisoftId = name };
                 customUsers.Add(newuser);
-                ColorDisplay newcd = new ColorDisplay(newuser.color.Replace("#", "#80").ToSolidColorBrush(), newuser.name, true);
+                ColorDisplay newcd = new ColorDisplay(newuser.Color.Replace("#", "#80").ToSolidColorBrush(), newuser.Name, true);
                 PlayerList.Children.Add(newcd);
                 newcd.ColorDisplayCheckstatusChanged += NewCD_ColorDisplayCheckstatusChanged;
                 if (needretrieve)
                 {
-                    await StatsDataSource.RetrieveStatsAllSeasons(newuser.ubisoft_id, newuser.Id);
-                    await StatsDataSource.RetrieveStatsDataAsync(newuser.ubisoft_id, newuser.Id);
+                    await StatsDataSource.RetrieveStatsAllSeasons(newuser.UbisoftId, newuser.Id);
+                    await StatsDataSource.RetrieveStatsDataAsync(newuser.UbisoftId, newuser.Id);
                 }
                 UpdateUsers();
                 newcd.SetStatus(true);
@@ -176,10 +176,10 @@ namespace xstrat.MVVM.View
                         {
                             if (customUsers.Any())
                             {
-                                var crows = customUsers.Where(x => x.name == cd.NameInput);
+                                var crows = customUsers.Where(x => x.Name == cd.NameInput);
                                 if (!crows.Any())
                                 {
-                                    users.Add(new User { id = -1, name = cd.NameInput, color = "#336cb5" });
+                                    users.Add(new UserData { Id = "-1", Name = cd.NameInput, Color = "#336cb5" });
                                 }
                                 else
                                 {
@@ -196,7 +196,7 @@ namespace xstrat.MVVM.View
                 foreach (var plc in PlayerList.Children)
                 {
                     ColorDisplay cd = plc as ColorDisplay;
-                    if(cd.NameInput == DataCache.CurrentUser.name)
+                    if(cd.NameInput == DataCache.CurrentUser.Name)
                     {
                         cd.SetStatus(true);
                     }
@@ -257,13 +257,13 @@ namespace xstrat.MVVM.View
                 int kd = 0;
                 int mmrchange = 0;
                 int winrate = 0;
-                var percRow = ScrimPercentage.Where(x => x.user_id == user.id);
+                var percRow = ScrimPercentage.Where(x => x.user_id == user.Id);
                 if (percRow.Any())
                 {
                     userscrimpercentage = (int)(percRow.FirstOrDefault().type1ratio * 100);
                 }
 
-                var seasonsrow = allSeasons.Where(x => x.First().xstrat_user_id == user.id);
+                var seasonsrow = allSeasons.Where(x => x.First().xstrat_user_id == user.Id);
 
                 if (seasonsrow.Any())
                 {
@@ -284,7 +284,7 @@ namespace xstrat.MVVM.View
                 }
 
                 SKColor ucolor = SKColors.DarkGray;
-                if(user.color != null && user.color != string.Empty) SKColor.TryParse(user.color.Replace("#", "#4A"), out ucolor);
+                if(user.Color != null && user.Color != string.Empty) SKColor.TryParse(user.Color.Replace("#", "#4A"), out ucolor);
 
                 PolarLineSeries<int> entry = new PolarLineSeries<int>
                 {
@@ -293,7 +293,7 @@ namespace xstrat.MVVM.View
                     GeometrySize = 0,
                     Fill = new SolidColorPaint(ucolor),
                     Stroke = new SolidColorPaint(SKColor.Empty),
-                    Name = user.name,
+                    Name = user.Name,
                 };
 
 
@@ -366,9 +366,9 @@ namespace xstrat.MVVM.View
             List<string> categories = new List<string>();
             foreach (var user in users)
             {
-                categories.Add(user.name);
+                categories.Add(user.Name);
 
-                var seasonsrow = allSeasons.Where(x => x.First().xstrat_user_id == user.id);
+                var seasonsrow = allSeasons.Where(x => x.First().xstrat_user_id == user.Id);
                 if (seasonsrow.Any())
                 {
                     var currentseason = seasonsrow.First().First();
@@ -430,7 +430,7 @@ namespace xstrat.MVVM.View
 
             foreach (var user in users)
             {
-                var scrimpercrow = ScrimPercentage.Where(x => x.user_id == user.id);
+                var scrimpercrow = ScrimPercentage.Where(x => x.user_id == user.Id);
                 if (scrimpercrow.Any())
                 {
                     l_ignore.Add(scrimpercrow.FirstOrDefault().type0count);
@@ -483,10 +483,10 @@ namespace xstrat.MVVM.View
             #region ScrimHistory
             ScrimHistorySeries.Clear();
             List<string> historylabels = new List<string>();
-            List<Tuple<int, List<int>>> ScrimHistoryData = new List<Tuple<int, List<int>>>();
+            List<Tuple<string, List<int>>> ScrimHistoryData = new List<Tuple<string, List<int>>>();
             foreach (var user in users)
             {
-                ScrimHistoryData.Add(new Tuple<int, List<int>>(user.id, new List<int>()));
+                ScrimHistoryData.Add(new Tuple<string, List<int>>(user.Id, new List<int>()));
             }
 
             DateTime time = DateTime.Now.AddDays(-100);
@@ -518,7 +518,7 @@ namespace xstrat.MVVM.View
                         Name = name,
                         Values = data.Item2,
                         Fill = null,
-                        Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),
+                        Stroke = new SolidColorPaint(SKColor.Parse(DataCache.CurrentTeamMates.Where(x => x.Id == data.Item1).FirstOrDefault().Color)),
                         GeometrySize = 0,
                     });
                 }
@@ -542,13 +542,13 @@ namespace xstrat.MVVM.View
             RankedKDXAxes.Clear();
 
             List<string> RankedKDlabels = new List<string>();
-            List<Tuple<int, List<double>>> RankedKDData = new List<Tuple<int, List<double>>>();
+            List<Tuple<string, List<double>>> RankedKDData = new List<Tuple<string, List<double>>>();
 
             bool first = true;
 
             foreach (var user in users)
             {
-                RankedKDData.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
+                RankedKDData.Add(new Tuple<string, List<double>>(user.Id, new List<double>()));
             }
 
             foreach (var user in allSeasons)
@@ -590,7 +590,7 @@ namespace xstrat.MVVM.View
                     Name = name,
                     Values = data.Item2,
                     Fill = null,
-                    Stroke = new SolidColorPaint(SKColor.Parse(Globals.getUserFromId(data.Item1).color)),
+                    Stroke = new SolidColorPaint(SKColor.Parse(DataCache.CurrentTeamMates.Where(x => x.Id == data.Item1).FirstOrDefault().Color)),
                     GeometrySize = 0,
                 });
             }
@@ -606,29 +606,29 @@ namespace xstrat.MVVM.View
             #region RankedBalken
             RankedBalkenSeries.Clear();
 
-            List<Tuple<int, List<double>>> RankedBarsKD = new List<Tuple<int, List<double>>>();
-            List<Tuple<int, List<double>>> RankedBarsWinrate = new List<Tuple<int, List<double>>>();
-            List<Tuple<int, List<double>>> RankedBarsAbandonrate = new List<Tuple<int, List<double>>>();
-            List<Tuple<int, List<double>>> RankedBarsKillsPerMatch = new List<Tuple<int, List<double>>>();
+            List<Tuple<string, List<double>>> RankedBarsKD = new List<Tuple<string, List<double>>>();
+            List<Tuple<string, List<double>>> RankedBarsWinrate = new List<Tuple<string, List<double>>>();
+            List<Tuple<string, List<double>>> RankedBarsAbandonrate = new List<Tuple<string, List<double>>>();
+            List<Tuple<string, List<double>>> RankedBarsKillsPerMatch = new List<Tuple<string, List<double>>>();
 
             List<string> Names = new List<string>();
             List<string> UColors = new List<string>();
 
             foreach (var user in users)
             {
-                RankedBarsKD.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
-                RankedBarsWinrate.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
-                RankedBarsAbandonrate.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
-                RankedBarsKillsPerMatch.Add(new Tuple<int, List<double>>(user.id, new List<double>()));
-                Names.Add(user.name);
-                UColors.Add(user.color);
+                RankedBarsKD.Add(new Tuple<string, List<double>>(user.Id, new List<double>()));
+                RankedBarsWinrate.Add(new Tuple<string, List<double>>(user.Id, new List<double>()));
+                RankedBarsAbandonrate.Add(new Tuple<string, List<double>>(user.Id, new List<double>()));
+                RankedBarsKillsPerMatch.Add(new Tuple<string, List<double>>(user.Id, new List<double>()));
+                Names.Add(user.Name);
+                UColors.Add(user.Color);
             }
 
             foreach (var player in allSeasons)
             {
-                int uid = player.First().xstrat_user_id.GetValueOrDefault(-1);
-                if(users.Where(x => x.id == uid).Any()){
-                    if (uid >= 0)
+                string uid = player.First().xstrat_user_id;
+                if(users.Where(x => x.Id == uid).Any()){
+                    if (uid.IsNotNullOrEmpty())
                     {
                         var season = player.First();
                         double k = season.kills.GetValueOrDefault(0);
@@ -678,7 +678,7 @@ namespace xstrat.MVVM.View
                 foreach (var plc in PlayerList.Children)
                 {
                     ColorDisplay cd = plc as ColorDisplay;
-                    if (cd.NameInput == DataCache.CurrentUser.name)
+                    if (cd.NameInput == DataCache.CurrentUser.Name)
                     {
                         cd.SetStatus(true);
                     }
@@ -694,9 +694,9 @@ namespace xstrat.MVVM.View
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             string inputString = Microsoft.VisualBasic.Interaction.InputBox("Add Name", "Add player to track", "");
-            if(!DataCache.CurrentTeamMates.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
+            if(!DataCache.CurrentTeamMates.Where(x => x.Name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
             {
-                if(!customUsers.Where(x => x.name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
+                if(!customUsers.Where(x => x.Name.ToUpper().Trim() == inputString.ToUpper().Trim()).Any())
                 {
                     AddCustomUser(inputString);
                 }

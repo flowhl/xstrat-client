@@ -130,22 +130,14 @@ namespace xstrat.MVVM.View
 
         public void UpdateScrimList()
         {
-            if(scrims != null && scrims.Count > 0)
+            if (scrims != null && scrims.Count > 0)
             {
                 ScrimListPanel.Children.Clear();
                 foreach (var scrim in scrims)
                 {
-                    try
+                    if (scrim.End > DateTime.Now)
                     {
-                        DateTime enddate = DateTime.ParseExact(scrim.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                        if (enddate >= DateTime.Now)
-                        {
-                            ScrimListPanel.Children.Add(new ScrimControl(scrim));
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        Notify.sendWarn("Could not parse datetime for: " + scrim.time_end);
+                        ScrimListPanel.Children.Add(new ScrimControl(scrim));
                     }
                 }
             }
@@ -166,39 +158,7 @@ namespace xstrat.MVVM.View
         }
         private async void RetrieveCalendarBlocks()
         {
-            try
-            {
-                (bool, string) result = await ApiHandler.GetTeamCalendarBlocks();
-                if (result.Item1)
-                {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    var data = json.SelectToken("data").ToString();
-                    if (data != null && data != "")
-                    {
-                        List<xstrat.Json.CalendarBlock> odList = JsonConvert.DeserializeObject<List<Json.CalendarBlock>>(data);
-                        CalendarBlocks.Clear();
-                        foreach (var od in odList)
-                        {
-                            CalendarBlocks.Add(od);
-                        }
-                    }
-                    else
-                    {
-                        Notify.sendError("Events could not be created");
-                        throw new Exception("Events could not be created");
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError(ex.Message);
-            }
+            CalendarBlocks = DataCache.CurrentCalendarBlocks;
 
             foreach (var od in CalendarBlocks)
             {
@@ -213,40 +173,7 @@ namespace xstrat.MVVM.View
 
         public async void RetrieveScrims()
         {
-            try
-            {
-                (bool, string) result = await ApiHandler.GetTeamScrims();
-                if (result.Item1)
-                {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    var data = json.SelectToken("data").ToString();
-                    if (data != null && data != "")
-                    {
-                        List<xstrat.Json.Scrim> scList = JsonConvert.DeserializeObject<List<Json.Scrim>>(data);
-                        scrims.Clear();
-                        Events = Events.Where(x => x.Typ != 0).ToList();
-                        foreach (var sc in scList)
-                        {
-                            scrims.Add(sc);
-                        }
-                    }
-                    else
-                    {
-                        Notify.sendError("Scrim could not be created");
-                        throw new Exception("Scrim could not be created");
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError( ex.Message);
-            }
+            scrims = DataCache.CurrentCalendarEvents;
 
             foreach (var sc in scrims)
             {
@@ -470,7 +397,7 @@ namespace xstrat.MVVM.View
             var windows = GetMeetingWindows(players, TimeSpan.FromMinutes(60));
             foreach (var window in windows)
             {
-                if(calendarFilterType.id == 0) //min
+                if (calendarFilterType.id == 0) //min
                 {
                     if (window.AvailablePlayers.Count() >= playeramount)
                     {
@@ -508,7 +435,7 @@ namespace xstrat.MVVM.View
 
                     bool hasMinPlayers = true;
 
-                    if(SelectedPlayerIDs.Where(x => !AvailablePlayerIDs.Contains(x)).Any())
+                    if (SelectedPlayerIDs.Where(x => !AvailablePlayerIDs.Contains(x)).Any())
                     {
                         hasMinPlayers = false;
                     };
@@ -549,19 +476,19 @@ namespace xstrat.MVVM.View
 
             int day = (int)date.DayOfWeek;
 
-            if ( filtertype == 1 &&  !SelectedPlayerNumbers.Contains(Globals.GetUserIdFromName(user_name)))
+            if (filtertype == 1 && !SelectedPlayerNumbers.Contains(Globals.GetUserIdFromName(user_name)))
             {
                 return timespans;
             }
 
-            if(day == 0)
+            if (day == 0)
             {
                 if (!SFControl.subtn)
                 {
                     return timespans;
                 }
             }
-            if(day == 1)
+            if (day == 1)
             {
                 if (!SFControl.mobtn)
                 {
@@ -617,9 +544,9 @@ namespace xstrat.MVVM.View
 
             //CalendarBlock regelung
 
-            if(DataCache.CurrentTeam.UseOnDays == 0)
+            if (DataCache.CurrentTeam.UseOnDays == 0)
             {
-                times.Add(DateTime.ParseExact( (sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                times.Add(DateTime.ParseExact((sDate + " 00:00:00"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
                 times.Add(DateTime.ParseExact((sDate + " 23:59:59"), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
 
                 foreach (var ev in events)
@@ -639,11 +566,11 @@ namespace xstrat.MVVM.View
                         var t1 = times[i];
                         var t2 = times[i + 1];
 
-                        if(t1 < ScrimStartTime)
+                        if (t1 < ScrimStartTime)
                         {
                             t1 = ScrimStartTime;
                         }
-                        if(t2 > ScrimEndTime)
+                        if (t2 > ScrimEndTime)
                         {
                             t2 = ScrimEndTime;
                         }
@@ -661,7 +588,7 @@ namespace xstrat.MVVM.View
                 var fittingevents = events.Where(x => x.DateTo - x.DateFrom >= duration);
 
                 foreach (var item in fittingevents)
-                { 
+                {
                     timespans.Add(new Response { StartDateTime = item.DateFrom.GetValueOrDefault(), EndDateTime = item.DateTo.GetValueOrDefault() });
                 }
             }
@@ -669,7 +596,7 @@ namespace xstrat.MVVM.View
             return timespans;
         }
 
-       
+
 
         public IEnumerable<Window> GetMeetingWindows(IEnumerable<Player> players, TimeSpan meetingDuration)
         {
@@ -678,7 +605,8 @@ namespace xstrat.MVVM.View
 
             foreach (var time in (responses.Select(x => x.StartDateTime)).Distinct())
             {
-                var matches = players.Select(x => new {
+                var matches = players.Select(x => new
+                {
                     Attendee = x,
                     MatchingAvailabilities = x.Responses.Where(y => y.StartDateTime <= time && y.EndDateTime >= time.Add(meetingDuration))
                 });
@@ -693,7 +621,8 @@ namespace xstrat.MVVM.View
 
             foreach (var time in (responses.Select(x => x.EndDateTime)).Distinct())
             {
-                var matches = players.Select(x => new {
+                var matches = players.Select(x => new
+                {
                     Attendee = x,
                     MatchingAvailabilities = x.Responses.Where(y => y.EndDateTime >= time && y.StartDateTime <= time.Add(-meetingDuration))
                 });

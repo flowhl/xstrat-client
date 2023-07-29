@@ -31,7 +31,7 @@ namespace xstrat.MVVM.View
 
         private void HomeView_Loaded(object sender, RoutedEventArgs e)
         {
-            txtGreeting.Content = GetGreeting();
+            //txtGreeting.Content = GetGreeting();
         }
 
         public string GetGreeting()

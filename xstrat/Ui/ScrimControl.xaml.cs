@@ -81,85 +81,87 @@ namespace xstrat.Ui
 
                 ParticipantsSP.Children.Clear();
 
-                string acc_users = Scrim.acc_user_list;
-                if(acc_users != null && acc_users != "")
-                {
-                    var ulist = acc_users.Split(';');
-                    foreach (var item in ulist)
-                    {
-                        string uid = null;
-                        try
-                        {
-                            uid = item.ToString();
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        if (uid.IsNullOrEmpty()) continue;
+                //TODO UserList
+                //string acc_users = Scrim.acc_user_list;
+                //if(acc_users != null && acc_users != "")
+                //{
+                //    var ulist = acc_users.Split(';');
+                //    foreach (var item in ulist)
+                //    {
+                //        string uid = null;
+                //        try
+                //        {
+                //            uid = item.ToString();
+                //        }
+                //        catch
+                //        {
+                //            continue;
+                //        }
+                //        if (uid.IsNullOrEmpty()) continue;
 
-                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                        if (user == null) continue;
-                        var control = new ScrimParticipationControl(1, user.Name);
-                        control.Margin = new Thickness(5, 0, 0, 0);
-                        ParticipantsSP.Children.Add(control);
-                    }
-                }
-
-
-                string deny_users = Scrim.deny_user_list;
-                if (deny_users != null && deny_users != "")
-                {
-                    var ulist = deny_users.Split(';');
-                    foreach (var item in ulist)
-                    {
-                        string uid = null;
-                        try
-                        {
-                            uid = item.ToString();
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        if (uid.IsNullOrEmpty()) continue;
-
-                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                        if (user == null) continue;
-                        var control = new ScrimParticipationControl(2, user.Name);
-                        control.Margin = new Thickness(5, 0, 0, 0);
-                        ParticipantsSP.Children.Add(control);
-                    }
-                }
+                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
+                //        if (user == null) continue;
+                //        var control = new ScrimParticipationControl(1, user.Name);
+                //        control.Margin = new Thickness(5, 0, 0, 0);
+                //        ParticipantsSP.Children.Add(control);
+                //    }
+                //}
 
 
-                string ign_users = Scrim.ign_user_list;
-                if (ign_users != null && ign_users != "")
-                {
-                    var ulist = ign_users.Split(';');
-                    foreach (var item in ulist)
-                    {
-                        string uid = null;
-                        try
-                        {
-                            uid = item.ToString();
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                        if (uid.IsNullOrEmpty()) continue;
+                //string deny_users = Scrim.deny_user_list;
+                //if (deny_users != null && deny_users != "")
+                //{
+                //    var ulist = deny_users.Split(';');
+                //    foreach (var item in ulist)
+                //    {
+                //        string uid = null;
+                //        try
+                //        {
+                //            uid = item.ToString();
+                //        }
+                //        catch
+                //        {
+                //            continue;
+                //        }
+                //        if (uid.IsNullOrEmpty()) continue;
 
-                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                        if (user == null) continue;
-                        var control = new ScrimParticipationControl(0, user.Name);
-                        control.Margin = new Thickness(5, 0, 0, 0);
-                        ParticipantsSP.Children.Add(control);
-                    }
-                }
+                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
+                //        if (user == null) continue;
+                //        var control = new ScrimParticipationControl(2, user.Name);
+                //        control.Margin = new Thickness(5, 0, 0, 0);
+                //        ParticipantsSP.Children.Add(control);
+                //    }
+                //}
+
+
+                //string ign_users = Scrim.ign_user_list;
+                //if (ign_users != null && ign_users != "")
+                //{
+                //    var ulist = ign_users.Split(';');
+                //    foreach (var item in ulist)
+                //    {
+                //        string uid = null;
+                //        try
+                //        {
+                //            uid = item.ToString();
+                //        }
+                //        catch
+                //        {
+                //            continue;
+                //        }
+                //        if (uid.IsNullOrEmpty()) continue;
+
+                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
+                //        if (user == null) continue;
+                //        var control = new ScrimParticipationControl(0, user.Name);
+                //        control.Margin = new Thickness(5, 0, 0, 0);
+                //        ParticipantsSP.Children.Add(control);
+                //    }
+                //}
 
             }
-            Status = scrim.response_typ.GetValueOrDefault(0);
+            //TODO: Fix
+            //Status = scrim.response_typ.GetValueOrDefault(0);
             StatusChanged();
         }
 
@@ -245,23 +247,22 @@ namespace xstrat.Ui
                 default:
                     break;
             }
-            var result = await ApiHandler.SetScrimResponse(Scrim.id, Status);
-            if (result.Item1)
+            var result = await ApiHandler.SetScrimResponse(Scrim.Id, Status);
+            if (result)
             {
-                Logger.Log(result.Item2);
+                Logger.Log("Set Response");
             }
             else
             {
-                Notify.sendError("Scrim status could not be loaded: " + result.Item2);
-                throw new Exception("Scrim status could not be loaded: " + result.Item2);
+                Notify.sendError("Scrim status could not be loaded");
+                throw new Exception("Scrim status could not be loaded");
             }
 
         }
         private string TimeLeft()
         {
             string result = string.Empty;
-            DateTime start = DateTime.ParseExact((Scrim.time_start), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-            var left = start - DateTime.Now;
+            var left = (Scrim.Start ?? DateTime.Now) - DateTime.Now;
             if (left.Days > 0) result += left.Days + "D ";
             if (left.Hours > 0) result += left.Hours + "H ";
             if (left.Minutes > 0) result += left.Minutes + "M";

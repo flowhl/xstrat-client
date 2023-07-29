@@ -41,7 +41,12 @@ namespace xstrat
 
                 if (SettingsHandler.Settings.APIURL != null)
                 {
-                    Client = new RestClient(SettingsHandler.Settings.APIURL);
+                    var options = new RestClientOptions
+                    {
+                        MaxTimeout = 10000,
+                        BaseUrl = new Uri( SettingsHandler.Settings.APIURL),
+                    };
+                    Client = new RestClient(options );
                 }
                 else
                 {
@@ -60,7 +65,7 @@ namespace xstrat
                 ////MessageBox.Show("Api could not be reached. Please check your connection");
                 //App.Current.Shutdown();
             }
-            RenewSessionQueue();
+            //RenewSessionQueue();
         }
 
         public static async void RenewSessionQueue()
@@ -75,7 +80,7 @@ namespace xstrat
                         if (newSession != null)
                         {
                             CurrentSession = newSession;
-                            Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
+                            //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
                         }
                         else
                         {
@@ -91,16 +96,14 @@ namespace xstrat
         /// adds baerer_token to client if not allready
         /// </summary>
         /// <param name="token"></param>
-        public static void AddBearer(string token)
+        public static async void AddBearer(string token)
         {
             if (Client.Authenticator == null)
             {
-                Client.Authenticator = new JwtAuthenticator(token);
+                //Client.Authenticator = new JwtAuthenticator(token);
                 CurrentSession = new Session { AccessToken = token };
-                var task = RenewSessionAsync();
-                task.Wait();
-                CurrentSession = task.Result;
-                Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
+                CurrentSession = await RenewSessionAsync();
+                //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
             }
         }
 
@@ -157,7 +160,7 @@ namespace xstrat
             {
                 var session = JsonConvert.DeserializeObject<Session>(response.Content);
                 CurrentSession = session;
-                Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
+                //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
                 DataCache.RetrieveUser();
                 EndWaiting();
                 return session;
@@ -470,18 +473,23 @@ namespace xstrat
         public static async Task<List<Models.Supabase.UserData>> GetTeamMembersAsync()
         {
             Waiting();
-            var request = new RestRequest("team/members", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-            {
-                var members = JsonConvert.DeserializeObject<List<UserData>>(response.Content);
+            using(RestClient client = new RestClient("https://localhost:44322")) {
 
+                var request = new RestRequest("team/members", Method.Get);
+                request.Timeout = 1000;
+                request.RequestFormat = DataFormat.Json;
+                var response = client.Execute(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var members = JsonConvert.DeserializeObject<List<UserData>>(response.Content);
+
+                    EndWaiting();
+                    return members;
+                }
                 EndWaiting();
-                return members;
+                return null;
             }
-            EndWaiting();
-            return null;
+            
         }
 
         public static async Task<Models.Supabase.Team> GetTeamInfoAsync()
@@ -794,7 +802,7 @@ namespace xstrat
         /// Loads all routines by api call
         /// </summary>
         /// <returns></returns>
-        public static async Task<bool> GetTeamScrims()
+        public static async Task<List<CalendarEvent>> GetTeamScrims()
         {
             Waiting();
             var request = new RestRequest("calendarevent", Method.Get);
@@ -803,11 +811,12 @@ namespace xstrat
             var response = await Client.ExecuteAsync<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
+                var cal = JsonConvert.DeserializeObject<List<CalendarEvent>>(response.Content);
                 EndWaiting();
-                return true;
+                return cal;
             }
             EndWaiting();
-            return false;
+            return null;
         }
 
         /// <summary>
@@ -843,7 +852,7 @@ namespace xstrat
         /// <param name="scrim_id"></param>
         /// <param name="typ"></param>
         /// <returns></returns>
-        public static async Task<bool> SetScrimResponse(int scrim_id, int typ)
+        public static async Task<bool> SetScrimResponse(string scrim_id, int typ)
         {
             Waiting();
             var request = new RestRequest("calendarevent/response", Method.Post);
@@ -1152,7 +1161,7 @@ namespace xstrat
         /// <param name="ncontent"></param>
         /// <param name="n_id"></param>
         /// <returns></returns>
-        public static async Task<bool> SaveStrat(int strat_id, string name, int map_id, int position_id, int version, string content)
+        public static async Task<bool> SaveStrat(string strat_id, string name, string map_id, string position_id, int version, string content)
         {
             //compress
             content = Globals.CompressString(content);

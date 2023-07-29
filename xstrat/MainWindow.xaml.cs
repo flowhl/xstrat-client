@@ -34,6 +34,8 @@ namespace xstrat
 
         public MainWindow()
         {
+            SettingsHandler.Initialize();
+            ApiHandler.Initialize();
             InitializeComponent();
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
@@ -75,8 +77,7 @@ namespace xstrat
             Globals.OnDataRetrieved += Globals_OnDataRetrieved;
             mv = (MainViewModel)DataContext;
             mv.CurrentView = mv.LoadingVM;
-            SettingsHandler.Initialize();
-            ApiHandler.Initialize();
+            
             Task loginTask = LoginWindowAsync();
 
             try

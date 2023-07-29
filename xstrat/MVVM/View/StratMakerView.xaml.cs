@@ -796,13 +796,13 @@ namespace xstrat.MVVM.View
             SaveStratAsync();
         }
 
-        public void LoadStrat(int id)
+        public void LoadStrat(string id)
         {
             DrawingLayer.Children.Clear();
             WallsLayer.Children.Clear();
             MapStack.Children.Clear();
 
-            currentStrat = Globals.strats.Where(x => x.id == id).FirstOrDefault();
+            currentStrat = DataCache.CurrentStrats.Where(x => x.Id == id).FirstOrDefault();
             if (currentStrat == null) return;
 
             map_id = currentStrat.MapId;
@@ -900,14 +900,14 @@ namespace xstrat.MVVM.View
             else
             {
 
-                (bool, string) result = await ApiHandler.SaveStrat(currentStrat.Id, currentStrat.Name, map_id, pos_id, currentStrat.Version + 1, scontent);
-                if (result.Item1)
+                var result = await ApiHandler.SaveStrat(currentStrat.Id, currentStrat.Name, map_id, pos_id, currentStrat.Version + 1, scontent);
+                if (result)
                 {
                     Notify.sendSuccess("Strat saved successfully");
                 }
                 else
                 {
-                    Notify.sendError("Could not save strat: " + result.Item2);
+                    Notify.sendError("Could not save strat");
                 }
             }
         }
@@ -1148,10 +1148,10 @@ namespace xstrat.MVVM.View
                     //posItem.Name = pos.name + "PositionItem";
                     posItem.Header = pos.Name;
                     posItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
-                    foreach (var strat in Globals.strats.Where(x => x.position_id == pos.id))
+                    foreach (var strat in DataCache.CurrentStrats.Where(x => x.PositionId == pos.Id))
                     {
                         var stratItem = new MenuItem();
-                        stratItem.Header = strat.name;
+                        stratItem.Header = strat.Name;
                         stratItem.Tag = strat;
                         stratItem.Template = Application.Current.Resources["Item_Template"] as ControlTemplate;
                         stratItem.Click += StratItem_Click;
@@ -1159,7 +1159,7 @@ namespace xstrat.MVVM.View
                     }
                     var addItem = new MenuItem();
                     addItem.Header = "New Strat";
-                    addItem.Tag = string.Format("create_{0}_{1}", map.id, pos.id);
+                    addItem.Tag = string.Format("create_{0}_{1}", map.Id, pos.Id);
                     addItem.Template = Application.Current.Resources["Item_Template"] as ControlTemplate;
                     addItem.Click += StratItem_Click;
                     posItem.Items.Add(addItem);
@@ -1178,10 +1178,8 @@ namespace xstrat.MVVM.View
             if (sendObj.Tag.ToString().StartsWith("create_"))
             {
                 var split = sendObj.Tag.ToString().Split('_');
-                int map_id = -1;
-                int pos_id = -1;
-                int.TryParse(split[1], out map_id);
-                int.TryParse(split[2], out pos_id);
+                string map_id = split[1];
+                string pos_id = split[2];
                 CreateStrat(map_id, pos_id);
             }
             else
@@ -1218,12 +1216,12 @@ namespace xstrat.MVVM.View
         public async void Refresh()
         {
             ApiHandler.Waiting();
-            await Globals.RetrieveStrats();
+            DataCache.RetrieveStrats();
             await Task.Delay(1000);
             UpdateTopBar();
             if (currentStrat != null)
             {
-                LoadStrat(currentStrat.id);
+                LoadStrat(currentStrat.Id);
             }
             ApiHandler.EndWaiting();
         }

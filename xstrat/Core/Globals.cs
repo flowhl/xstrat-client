@@ -126,7 +126,7 @@ namespace xstrat.Core
             {
                 if (player.Count > 0)
                 {
-                    int? user_id = player.FirstOrDefault().user_id;
+                    string user_id = player.FirstOrDefault().user_id;
                     int type0 = 0;
                     int type1 = 0;
                     int type2 = 0;
@@ -152,7 +152,7 @@ namespace xstrat.Core
                     {
                         PlayerScrimParticipationPercentages.Add(new PlayerScrimParticipationPercentage
                         (
-                            user_id.GetValueOrDefault(0),
+                            user_id,
                             count,
                             (double)type0 / count,
                             (double)type1 / count,
@@ -168,124 +168,125 @@ namespace xstrat.Core
         }
         public static async Task RetrieveStatsDataAsync(string ubisoft_id, string user_id)
         {
-            if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
-            {
-                try
-                {
-                    (bool, string) result = await ApiHandler.GetStats(ubisoft_id);
-                    if (result.Item1)
-                    {
-                        string response = result.Item2;
-                        //convert to json instance
-                        JObject json = JObject.Parse(response);
-                        var data = json.SelectToken("data").ToString();
-                        if (data != null && data != "")
-                        {
-                            StatsResponse sr = JsonConvert.DeserializeObject<StatsResponse>(data);
-                            sr.StatsResponseDetails.Values.First().xstrat_user_id = user_id;
-                            if (sr != null)
-                            {
-                                PlayerStats.Add(sr);
-                            }
-                        }
-                        else
-                        {
-                            Notify.sendError("Playerstats could not be loaded");
-                            throw new Exception("Playerstats could not be loaded");
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Notify.sendError(ex.Message);
-                }
+            //TODO: Implement tracker
+            //if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
+            //{
+            //    try
+            //    {
+            //        (bool, string) result = await ApiHandler.GetStats(ubisoft_id);
+            //        if (result.Item1)
+            //        {
+            //            string response = result.Item2;
+            //            //convert to json instance
+            //            JObject json = JObject.Parse(response);
+            //            var data = json.SelectToken("data").ToString();
+            //            if (data != null && data != "")
+            //            {
+            //                StatsResponse sr = JsonConvert.DeserializeObject<StatsResponse>(data);
+            //                sr.StatsResponseDetails.Values.First().xstrat_user_id = user_id;
+            //                if (sr != null)
+            //                {
+            //                    PlayerStats.Add(sr);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Notify.sendError("Playerstats could not be loaded");
+            //                throw new Exception("Playerstats could not be loaded");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Notify.sendError(ex.Message);
+            //    }
 
-                //scrim stats
-                if (user_id.IsNotNullOrEmpty())
-                {
-                    try
-                    {
-                        (bool, string) result = await ApiHandler.GetScrimParticipation(user_id);
-                        if (result.Item1)
-                        {
-                            string response = result.Item2;
-                            //convert to json instance
-                            JObject json = JObject.Parse(response);
-                            var data = json.SelectToken("data").ToString();
-                            if (data != null && data != "")
-                            {
-                                List<ScrimParticipationResult> sr = JsonConvert.DeserializeObject<List<ScrimParticipationResult>>(data);
-                                if (sr != null)
-                                {
-                                    PlayerScrimParticipation.Add(sr);
-                                }
-                            }
-                            else
-                            {
-                                Notify.sendError("Playerstats could not be loaded");
-                                throw new Exception("Playerstats could not be loaded");
-                            }
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError(ex.Message);
-                    }
-                }
+            //    //scrim stats
+            //    if (user_id.IsNotNullOrEmpty())
+            //    {
+            //        try
+            //        {
+            //            (bool, string) result = await ApiHandler.GetScrimParticipation(user_id);
+            //            if (result.Item1)
+            //            {
+            //                string response = result.Item2;
+            //                //convert to json instance
+            //                JObject json = JObject.Parse(response);
+            //                var data = json.SelectToken("data").ToString();
+            //                if (data != null && data != "")
+            //                {
+            //                    List<ScrimParticipationResult> sr = JsonConvert.DeserializeObject<List<ScrimParticipationResult>>(data);
+            //                    if (sr != null)
+            //                    {
+            //                        PlayerScrimParticipation.Add(sr);
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    Notify.sendError("Playerstats could not be loaded");
+            //                    throw new Exception("Playerstats could not be loaded");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                return;
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Notify.sendError(ex.Message);
+            //        }
+            //    }
 
-            }
-            return;
+            //}
+            //return;
         }
         public static async Task RetrieveStatsAllSeasons(string ubisoft_id, string user_id)
         {
-            if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
-            {
-                try
-                {
-                    (bool, string) result = await ApiHandler.GetStatsByAllSeason(ubisoft_id);
-                    if (result.Item1)
-                    {
-                        string response = result.Item2;
-                        //convert to json instance
-                        JObject json = JObject.Parse(response);
-                        var data = "[ \n\r " + json.SelectToken("data").ToString().Replace("[", "").Replace("]", "") + "\n\r ]";
-                        if (data != null && data != "")
-                        {
-                            var sr = JsonConvert.DeserializeObject<List<StatsBySeasonDetail>>(data);
+            //if (!string.IsNullOrEmpty(ubisoft_id) && user_id.IsNotNullOrEmpty())
+            //{
+            //    try
+            //    {
+            //        (bool, string) result = await ApiHandler.GetStatsByAllSeason(ubisoft_id);
+            //        if (result.Item1)
+            //        {
+            //            string response = result.Item2;
+            //            //convert to json instance
+            //            JObject json = JObject.Parse(response);
+            //            var data = "[ \n\r " + json.SelectToken("data").ToString().Replace("[", "").Replace("]", "") + "\n\r ]";
+            //            if (data != null && data != "")
+            //            {
+            //                var sr = JsonConvert.DeserializeObject<List<StatsBySeasonDetail>>(data);
 
-                            sr.ForEach(x => x.xstrat_user_id = user_id);
+            //                sr.ForEach(x => x.xstrat_user_id = user_id);
 
-                            if (sr.Count > 0)
-                            {
-                                PlayerAllSeasonStats.Add(sr);
-                            }
-                        }
-                        else
-                        {
-                            Notify.sendError("Playerstats could not be loaded");
-                            throw new Exception("Playerstats could not be loaded");
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Notify.sendError(ex.Message);
-                }
+            //                if (sr.Count > 0)
+            //                {
+            //                    PlayerAllSeasonStats.Add(sr);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Notify.sendError("Playerstats could not be loaded");
+            //                throw new Exception("Playerstats could not be loaded");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Notify.sendError(ex.Message);
+            //    }
 
-            }
-            return;
+            //}
+            //return;
         }
         public static async Task StartRetrieveStatsData()
         {
@@ -587,8 +588,6 @@ namespace xstrat.Core
                 RetrieveScrimModes();
                 wnd.SetLoadingStatus("Retrieving scrimmodes");
                 RetrieveEventTypes();
-                wnd.SetLoadingStatus("Retrieving strats");
-                await RetrieveStrats();
                 wnd.SetLoadingStatus("");
                 CallOnDataRetrieved();
             }
@@ -630,32 +629,7 @@ namespace xstrat.Core
         EventTypes.Add(new EventType(5, "Match"));
         EventTypes.Add(new EventType(6, "Cup"));
     }
-    public static async Task RetrieveStrats()
-    {
-        var result = await ApiHandler.GetStrats();
-        if (result.Item1)
-        {
-            string response = result.Item2;
-            //convert to json instance
-            JObject json = JObject.Parse(response);
-            var data = json.SelectToken("data").ToString();
-            if (data != null && data != "")
-            {
-                List<xstrat.Json.Strat> rList = JsonConvert.DeserializeObject<List<Json.Strat>>(data);
-                strats.Clear();
-                strats = rList;
-            }
-            else
-            {
-                Notify.sendError("Strats could not be loaded");
-            }
-        }
-        else
-        {
-            Notify.sendError("Strats could not be loaded");
-        }
-    }
-
+    
     public static string GetUserIdFromName(string name)
     {
         var rows = DataCache.CurrentTeamMates.Where(x => x.Name.ToUpper().StartsWith(name.ToUpper()));

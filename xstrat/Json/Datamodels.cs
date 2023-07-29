@@ -119,16 +119,17 @@ namespace xstrat.Json
             this.positions = positions;
         }
 
+        //TODO: Fix XMap
         public XMap()
         {
-            floors.Add(new Floor(0, "basement", @"https://xstrat.app/wp-content/uploads/2022/03/DZ-consulate-basement.png", 0, 0));
-            floors.Add(new Floor(1, "first floor", @"https://xstrat.app/wp-content/uploads/2022/03/DZ-consulate-groundfloor.png", 0, 1));
-            var stratlist = new List<Strat>();
-            stratlist.Add(new Strat());
-            positions.Add(new Models.Supabase.Position(0, 0, "1", stratlist));
-            positions.Add(new Models.Supabase.Position(1, 0, "2", stratlist));
-            Name = "Bank";
-            game_id = 0;
+            //floors.Add(new Floor(0, "basement", @"https://xstrat.app/wp-content/uploads/2022/03/DZ-consulate-basement.png", 0, 0));
+            //floors.Add(new Floor(1, "first floor", @"https://xstrat.app/wp-content/uploads/2022/03/DZ-consulate-groundfloor.png", 0, 1));
+            //var stratlist = new List<Strat>();
+            //stratlist.Add(new Strat());
+            //positions.Add(new Models.Supabase.Position(0, 0, "1", stratlist));
+            //positions.Add(new Models.Supabase.Position(1, 0, "2", stratlist));
+            //Name = "Bank";
+            //game_id = 0;
         }
 
 
@@ -410,15 +411,15 @@ namespace xstrat.Json
 
     public class ScrimParticipationResult
     {
-        public int? user_id { get; set; }
-        public int? response_id { get; set; }
+        public string user_id { get; set; }
+        public string response_id { get; set; }
         public int? response_typ { get; set; }
         public int? typ { get; set; }
         public string time_start { get; set; }
     }
     public class PlayerScrimParticipationPercentage
     {
-        public int user_id { get; set; }
+        public string user_id { get; set; }
         public int total_scrims { get; set; }
         public double type0ratio { get; set; }
         public double type1ratio { get; set; }
@@ -427,7 +428,7 @@ namespace xstrat.Json
         public int type1count{ get; set; }
         public int type2count{ get; set; }
 
-        public PlayerScrimParticipationPercentage(int user_id, int total_scrims, double type0ratio, double type1ratio, double type2ratio, int type0count, int type1count, int type2count)
+        public PlayerScrimParticipationPercentage(string user_id, int total_scrims, double type0ratio, double type1ratio, double type2ratio, int type0count, int type1count, int type2count)
         {
             this.user_id = user_id;
             this.total_scrims = total_scrims;

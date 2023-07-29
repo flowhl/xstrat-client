@@ -70,7 +70,7 @@ namespace xstrat.Core
             {
                 if (_currentTeamMates == null)
                 {
-                    RetrieveTeamMates();
+                    RetrieveTeamMates().Wait();
                 }
                 return _currentTeamMates;
             }
@@ -80,11 +80,9 @@ namespace xstrat.Core
             }
         }
 
-        public static void RetrieveTeamMates()
+        public static async Task RetrieveTeamMates()
         {
-            var task = ApiHandler.GetTeamMembersAsync();
-            task.Wait();
-            CurrentTeamMates = task.Result;
+            CurrentTeamMates = await ApiHandler.GetTeamMembersAsync();
         }
         #endregion
 
@@ -264,9 +262,35 @@ namespace xstrat.Core
 
         public static void RetrieveCalendarEvents()
         {
-            var task = ApiHandler.GetTeamOffDays();
+            var task = ApiHandler.GetTeamScrims();
             task.Wait();
             CurrentCalendarEvents = task.Result;
+        }
+        #endregion
+
+        #region Strats
+        public static List<Strat> _currentStrats;
+        public static List<Strat> CurrentStrats
+        {
+            get
+            {
+                if (_currentStrats == null)
+                {
+                    RetrieveStrats();
+                }
+                return _currentStrats;
+            }
+            set
+            {
+                _currentStrats = value;
+            }
+        }
+
+        public static void RetrieveStrats()
+        {
+            var task = ApiHandler.GetStrats();
+            task.Wait();
+            CurrentStrats = task.Result;
         }
         #endregion
     }

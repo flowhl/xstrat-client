@@ -151,39 +151,7 @@ namespace xstrat.MVVM.View
         }
         private async void RetrieveOffDays()
         {
-            try
-            {
-                (bool, string) result = await ApiHandler.GetTeamOffDays();
-                if (result.Item1)
-                {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    var data = json.SelectToken("data").ToString();
-                    if (data != null && data != "")
-                    {
-                        List<Models.Supabase.CalendarBlock> odList = JsonConvert.DeserializeObject<List<Models.Supabase.CalendarBlock>>(data);
-                        offDays.Clear();
-                        foreach (var od in odList)
-                        {
-                            offDays.Add(od);
-                        }
-                    }
-                    else
-                    {
-                        Notify.sendError("Event could not be created");
-                        throw new Exception("Event could not be created");
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError(ex.Message);
-            }
+            offDays = DataCache.CurrentCalendarBlocks;
 
             foreach (var od in offDays)
             {
@@ -197,39 +165,7 @@ namespace xstrat.MVVM.View
 
         private async void RetrieveScrims()
         {
-            try
-            {
-                (bool, string) result = await ApiHandler.GetTeamScrims();
-                if (result.Item1)
-                {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    var data = json.SelectToken("data").ToString();
-                    if (data != null && data != "")
-                    {
-                        List<xstrat.Json.Scrim> scList = JsonConvert.DeserializeObject<List<Json.Scrim>>(data);
-                        scrims.Clear();
-                        foreach (var sc in scList)
-                        {
-                            scrims.Add(sc);
-                        }
-                    }
-                    else
-                    {
-                        Notify.sendError("Scrim could not be created");
-                        throw new Exception("Scrim could not be created");
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError(ex.Message);
-            }
+            scrims = DataCache.CurrentCalendarEvents;
 
             foreach (var sc in scrims)
             {

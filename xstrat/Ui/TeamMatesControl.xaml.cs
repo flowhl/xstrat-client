@@ -24,8 +24,14 @@ namespace xstrat.Ui
         public TeamMatesControl()
         {
             InitializeComponent();
+            Loaded += TeamMatesControl_Loaded;
+        }
+
+        private void TeamMatesControl_Loaded(object sender, RoutedEventArgs e)
+        {
             RetrieveTeamMatesAsync();
         }
+
         public async Task RetrieveTeamMatesAsync()
         {
             if (DataCache.CurrentTeamMates != null)

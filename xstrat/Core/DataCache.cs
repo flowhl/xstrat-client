@@ -62,7 +62,6 @@ namespace xstrat.Core
         }
         #endregion
 
-
         #region Teammates
         public static List<UserData> _currentTeamMates;
         public static List<UserData> CurrentTeamMates
@@ -88,7 +87,6 @@ namespace xstrat.Core
             CurrentTeamMates = task.Result;
         }
         #endregion
-
 
         #region Maps
         public static List<Map> _currentMaps;
@@ -116,7 +114,6 @@ namespace xstrat.Core
         }
         #endregion
 
-
         #region Operators
         public static List<Operator> _currentOperators;
         public static List<Operator> CurrentOperators
@@ -142,7 +139,6 @@ namespace xstrat.Core
             CurrentOperators = task.Result;
         }
         #endregion
-
 
         #region Games
         public static List<Game> _currentGames;
@@ -193,6 +189,84 @@ namespace xstrat.Core
             var task = ApiHandler.GetPositionsAsync();
             task.Wait();
             CurrentPositions = task.Result;
+        }
+        #endregion
+
+        #region Routines
+        public static List<Routine> _currentRoutines;
+        public static List<Routine> CurrentRoutines
+        {
+            get
+            {
+                if (_currentRoutines == null)
+                {
+                    RetrieveRoutines();
+                }
+                return _currentRoutines;
+            }
+            set
+            {
+                _currentRoutines = value;
+            }
+        }
+
+        public static void RetrieveRoutines()
+        {
+            var task = ApiHandler.GetRoutinesAsync();
+            task.Wait();
+            CurrentRoutines = task.Result;
+        }
+        #endregion
+
+        #region CalendarBlocks
+        public static List<CalendarBlock> _currentCalendarBlocks;
+        public static List<CalendarBlock> CurrentCalendarBlocks
+        {
+            get
+            {
+                if (_currentCalendarBlocks == null)
+                {
+                    RetrieveCalendarBlocks();
+                }
+                return _currentCalendarBlocks;
+            }
+            set
+            {
+                _currentCalendarBlocks = value;
+            }
+        }
+
+        public static void RetrieveCalendarBlocks()
+        {
+            var task = ApiHandler.GetTeamOffDays();
+            task.Wait();
+            CurrentCalendarBlocks = task.Result;
+        }
+        #endregion
+
+        #region CalendarEvents
+        public static List<CalendarEvent> _currentCalendarEvents;
+        public static List<CalendarEvent> CurrentCalendarEvents
+        {
+            get
+            {
+                if (_currentCalendarEvents == null)
+                {
+                    RetrieveCalendarEvents();
+                }
+                return _currentCalendarEvents;
+            }
+            set
+            {
+                _currentCalendarEvents = value;
+            }
+        }
+
+        public static void RetrieveCalendarEvents()
+        {
+            var task = ApiHandler.GetTeamOffDays();
+            task.Wait();
+            CurrentCalendarEvents = task.Result;
         }
         #endregion
     }

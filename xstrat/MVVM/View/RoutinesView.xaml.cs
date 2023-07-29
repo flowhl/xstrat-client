@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Ui;
 using xstrat.Overlay;
+using xstrat.Models.Supabase;
 
 namespace xstrat.MVVM.View
 {
@@ -26,29 +27,33 @@ namespace xstrat.MVVM.View
     /// </summary>
     public partial class RoutinesView : UserControl
     {
-        private List<Routine> routines = new List<Routine>();
+        List<Models.Supabase.Routine> Routines = new List<Models.Supabase.Routine>();
         private List<RoutineStep> routineSteps = new List<RoutineStep>();
         string trennzeichen_step = "#%&#";
         string trennzeichen_para = "#§$#";
-        private int currentRoutine_id;
+        private string currentRoutine_id;
         private string currentRoutine_title;
         private RoutineOverlay overlay;
         public RoutinesView()
         {
             InitializeComponent();
-            Retrieve();
             UpdateUI();
+        }
+
+        public void Retrieve()
+        {
+            Routines = DataCache.CurrentRoutines.ToList();
         }
 
         private void addRoutines()
         {
             for (int i = 0; i < 5; i++)
             {
-                routineSteps.Add( newRoutineStep("Title", "Description", 1, 60));
+                routineSteps.Add(newRoutineStep("Title", "Description", 1, 60));
             }
             for (int i = 0; i < 5; i++)
             {
-                routines.Add(newRoutine("Title", "", 123));
+                Routines.Add(NewRoutine("Title"));
             }
         }
 
@@ -59,9 +64,9 @@ namespace xstrat.MVVM.View
         /// <param name="createdDate"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        private Routine newRoutine(string header, string createdDate, int id)
+        private Models.Supabase.Routine NewRoutine(string header)
         {
-            var newRoutine = new Routine(header, createdDate, id);
+            var newRoutine = new Models.Supabase.Routine { Title = header, CreatedAt = DateTime.Now };
             newRoutine.MoveButtonEvent += new EventHandler<RoutineButtonClicked>(MoveButtonEvent);
             return newRoutine;
         }
@@ -97,11 +102,11 @@ namespace xstrat.MVVM.View
         {
             _isDown = false;
             _isDragging = false;
-            if(_realDragSource != null)
+            if (_realDragSource != null)
             {
                 _realDragSource.ReleaseMouseCapture();
             }
-            
+
         }
 
         private void sp_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -161,7 +166,7 @@ namespace xstrat.MVVM.View
             routineSteps.Clear();
             foreach (var item in sp.Children)
             {
-                if(item.GetType() == typeof(RoutineStep))
+                if (item.GetType() == typeof(RoutineStep))
                 {
                     routineSteps.Add((RoutineStep)item);
                 }
@@ -177,7 +182,7 @@ namespace xstrat.MVVM.View
             /// 1 - move up
             /// 2 - remove
             /// 3 - add
-            
+
             int Type = e.Type;
             RoutineStep routine = e.Instance;
             int currentIndex = routineSteps.IndexOf(routine);
@@ -194,11 +199,11 @@ namespace xstrat.MVVM.View
             {
                 routineSteps.RemoveAt(currentIndex);
             }
-            if(Type == 3)
+            if (Type == 3)
             {
-                routineSteps.Add( newRoutineStep("Title", "Description", 1, 60));
+                routineSteps.Add(newRoutineStep("Title", "Description", 1, 60));
             }
-            
+
             UpdateUI();
         }
 
@@ -211,72 +216,29 @@ namespace xstrat.MVVM.View
                 System.Windows.Forms.DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Do you really want to delete this Routine? This cannot be reverted", "Delete Routine?", System.Windows.Forms.MessageBoxButtons.YesNo);
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    int index = routines.IndexOf(e.Instance);
-                    APIdeleteRoutineAsync(routines[index].ID);
-                    routines.RemoveAt(index);
+                    int index = Routines.IndexOf(e.Instance);
+                    DeleteRoutineAsync(Routines[index].Id).Wait();
+                    Routines.RemoveAt(index);
                 }
-                Retrieve();
                 UpdateUI();
             }
             if (e.Type == 0)
             {
-                RetrieveSteps(e.Instance.ID, e.Instance.Head);
+                RetrieveSteps(e.Instance);
             }
-            
+
         }
 
-        private async void Retrieve()
+        private async void RetrieveSteps(Models.Supabase.Routine routine)
         {
-            (bool, string) result = await ApiHandler.GetAllRoutines();
-            if (result.Item1)
+            currentRoutine_id = routine.Id;
+            currentRoutine_title = routine.Title;            
+            contentToList(routine.Content);
+            if (routineSteps.Count < 1)
             {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                if(data != null && data != "")
-                {
-                    List<xstrat.Json.Routine> rList = JsonConvert.DeserializeObject<List<Json.Routine>>(data);
-                    routines.Clear();
-                    foreach (var r in rList)
-                    {
-                        routines.Add(newRoutine(r.title, r.created_date, r.id));
-                    }
-                }
-                else
-                {
-                    Notify.sendError("Routines could not be created");
-                    throw new Exception("Routines could not be created");
-                }
-                UpdateUI();
+                routineSteps.Add(newRoutineStep("Title", "Description", 1, 60));
             }
-            else
-            {
-                return;
-            }
-        }
-
-        private async void RetrieveSteps(int r_id, string r_title)
-        {
-            currentRoutine_id = r_id;
-            currentRoutine_title = r_title;
-            (bool, string) result = await ApiHandler.GetRoutineContent(r_id);
-            if (result.Item1)
-            {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                List<xstrat.Json.Content> _content = JsonConvert.DeserializeObject<List<xstrat.Json.Content>>(data);
-                string content = _content[0].content;
-                contentToList(content);
-                if(routineSteps.Count < 1)
-                {
-                    routineSteps.Add(newRoutineStep("Title", "Description", 1, 60));
-                }
-                UpdateUI();
-            }
-
+            UpdateUI();
         }
 
         private void UpdateUI()
@@ -287,32 +249,25 @@ namespace xstrat.MVVM.View
             {
                 sp.Children.Add(item);
             }
-            foreach (var item in routines)
+            foreach (var item in Routines)
             {
-                RoutinesSP.Children.Add(item);
+                RoutinesSP.Children.Add(new xstrat.Ui.Routine(item){ });
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var r in routines)
+            foreach (var routine in Routines)
             {
-                APIrenameRoutine(r.Head, r.ID);
+                var content = routine.Id == currentRoutine_id ? listToContent() : routine.Id;
+                UpdateRoutineAsync(routine.Title, content, routine.Id);
             }
-            if(routines.Count > 0 && routines.Where(x => x.ID == currentRoutine_id).Any())
-            {
-                var routine = routines.Where(x => x.ID == currentRoutine_id).First();
-                if (routine != null)
-                {
-                    APIsaveRoutine(routine.Head, listToContent(), currentRoutine_id);
-                }
-            }
-            
+
         }
 
         private void OpenOverlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if(overlay != null)
+            if (overlay != null)
             {
                 overlay.Close();
             }
@@ -323,7 +278,7 @@ namespace xstrat.MVVM.View
                 OverlayStep newstep = new OverlayStep(step.Duration, step.Count, step.Header, false, false);
                 overlaySteps.Add(newstep);
             }
-            if(overlaySteps.Count > 0)
+            if (overlaySteps.Count > 0)
             {
                 overlaySteps[0].IsSelected = true;
                 overlay.Initialize(overlaySteps);
@@ -335,7 +290,7 @@ namespace xstrat.MVVM.View
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            APInewRoutineAsync();
+            CreateNewRoutineAsync();
         }
 
         private void contentToList(string content)
@@ -343,10 +298,10 @@ namespace xstrat.MVVM.View
             routineSteps.Clear();
             if (content != null && content != "")
             {
-                var steps = content.Split( new string[] { trennzeichen_step }, StringSplitOptions.None);
+                var steps = content.Split(new string[] { trennzeichen_step }, StringSplitOptions.None);
                 foreach (var step in steps)
                 {
-                    if(step != null && step != "")
+                    if (step != null && step != "")
                     {
                         var stepparts = step.Split(new string[] { trennzeichen_para }, StringSplitOptions.None);
                         routineSteps.Add(newRoutineStep(stepparts[0], stepparts[1], int.Parse(stepparts[2]), int.Parse(stepparts[3])));
@@ -373,82 +328,52 @@ namespace xstrat.MVVM.View
         }
 
 
-        private async Task APInewRoutineAsync()
+        private async Task CreateNewRoutineAsync()
         {
-            (bool, string) result = await ApiHandler.NewRoutine();
-            if (result.Item1)
+            var result = await ApiHandler.NewRoutine();
+            if (result)
             {
                 Retrieve();
             }
             else
             {
-                Notify.sendError("Could not save new routine: " + result.Item2);
-                //MessageBox.Show("Could not save Routine: " + result.Item2);
+                Notify.sendError("Could not save new routine");
             }
         }
-        private async Task APIdeleteRoutineAsync(int id)
+        private async Task DeleteRoutineAsync(string id)
         {
-            if(id >= 0)
+            if (id.IsNotNullOrEmpty())
             {
-                (bool, string) result = await ApiHandler.DeleteRoutine(id);
-                if (result.Item1)
+                var result = await ApiHandler.DeleteRoutine(id);
+                if (result)
                 {
                     Notify.sendSuccess("Successfully saved");
                     return;
                 }
                 else
                 {
-                    Notify.sendError("Could not delete routine: " + result.Item2);
-                    //MessageBox.Show("Could not delete Routine: " + result.Item2);
+                    Notify.sendError("Could not delete routine");
                 }
             }
         }
-        private async void APIsaveRoutine(string title, string content, int routine_id)
+        private async void UpdateRoutineAsync(string title, string content, string routine_id)
         {
-            if(title != null && content != null && title != "" && content != "")
+            if (title != null && content != null && title != "" && content != "")
             {
-                (bool, string) result = await ApiHandler.SaveRoutine(title, content, routine_id);
-                if (result.Item1)
+                var result = await ApiHandler.UpdateRoutineAsync(title, content, routine_id);
+                if (result)
                 {
                     Notify.sendSuccess("Successfully saved");
-                    Retrieve();
                 }
                 else
                 {
-                    Notify.sendError("Could not save routine: " + result.Item2);
-                    //MessageBox.Show("Could not save Routine: " + result.Item2);
+                    Notify.sendError("Could not save routine: " + routine_id);
                 }
             }
             else
             {
-                Notify.sendError( "Could not save Routine: Content or title is empty");
-                //MessageBox.Show("Could not save Routine. content or title is empty");
-            }
-        }
-
-        private async void APIrenameRoutine(string title, int routine_id)
-        {
-            if (title != null && title != "")
-            {
-                (bool, string) result = await ApiHandler.RenameRoutine(title, routine_id);
-                if (result.Item1)
-                {
-                    //Notify.sendSuccess("Success", "Successfully saved");
-                    return;
-                }
-                else
-                {
-                    Notify.sendError("Could not rename routine: " + result.Item2);
-                    //MessageBox.Show("Could not rename Routine: " + result.Item2);
-                }
-            }
-            else
-            {
-
                 Notify.sendError("Could not save Routine: Content or title is empty");
-                //MessageBox.Show("Could not save Routine. content or title is empty");
             }
         }
-
     }
 }

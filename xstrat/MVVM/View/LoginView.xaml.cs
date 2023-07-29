@@ -59,7 +59,7 @@ namespace xstrat.MVVM.View
             var _password = password.Password;
             if(_email != null && _password != null && _email != "" && _password != "")
             {
-                var session = await ApiHandler.LoginAsync(_email, _password);
+                var session = await ApiHandler.SignInAsync(_email, _password);
                 if (session == null)
                 {
                     return;

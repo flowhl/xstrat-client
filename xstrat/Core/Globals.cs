@@ -718,7 +718,7 @@ namespace xstrat.Core
         return svgDocument;
     }
 
-    public static SvgContent GetSvgContent(XmlDocument svgDocument, int game_id, int map_id, int floor_id)
+    public static SvgContent GetSvgContent(XmlDocument svgDocument, string game_id, string map_id, int floor_id)
     {
         #region Generate svgContent
         SvgContent svgContent = new SvgContent();

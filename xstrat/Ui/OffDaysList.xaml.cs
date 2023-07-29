@@ -24,7 +24,7 @@ namespace xstrat.Ui
     /// </summary>
     public partial class OffDaysList : UserControl
     {
-        public List<OffDay> offDays = new List<OffDay>();
+        public List<Models.Supabase.CalendarBlock> offDays = new List<Models.Supabase.CalendarBlock>();
         public OffDaysList()
         {
             InitializeComponent();
@@ -67,11 +67,11 @@ namespace xstrat.Ui
                 var od = odc.GetOffDay();
                 if (od?.Id != null)
                 {
-                    (bool, string) result = await ApiHandler.SaveOffDay(od.Id.GetValueOrDefault(), od.Typ, od.Title, od.Start, od.End);
-                    if (result.Item1 == false)
+                    var result = await ApiHandler.SaveOffDay(od.Id, od.Typ, od.Title, od.Start.GetValueOrDefault(), od.End.GetValueOrDefault());
+                    if (result == false)
                     {
                         success = false;
-                        Notify.sendError("Could not save off days: " + result.Item2);
+                        Notify.sendError("Could not save off days");
                     }
                 }
                 else
@@ -86,22 +86,23 @@ namespace xstrat.Ui
             }
         }
 
-        public async void DeleteOffDay(int? id)
+        public async void DeleteOffDay(string id)
         {
-            if (id != null)
-            {
+            if (id.IsNullOrEmpty())
+            { return; }
 
-                (bool, string) result = await ApiHandler.DeleteOffDay(id.GetValueOrDefault());
-                if (result.Item1)
-                {
-                    RetrieveOffDays();
-                    //Notify.sendSuccess("Deleted successfully");
-                }
-                else
-                {
-                    Notify.sendError("Could not delete off day: " + result.Item2);
-                }
+
+            (bool, string) result = await ApiHandler.DeleteOffDay(id);
+            if (result.Item1)
+            {
+                RetrieveOffDays();
+                //Notify.sendSuccess("Deleted successfully");
             }
+            else
+            {
+                Notify.sendError("Could not delete off day: " + result.Item2);
+            }
+
         }
 
         private void LoadOffDaysFromList()
@@ -118,33 +119,12 @@ namespace xstrat.Ui
         }
         private async void RetrieveOffDays()
         {
-            (bool, string) result = await ApiHandler.GetUserOffDays();
-            if (result.Item1)
-            {
-                string response = result.Item2;
-                //convert to json instance
-                JObject json = JObject.Parse(response);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    List<xstrat.Json.OffDay> odList = JsonConvert.DeserializeObject<List<Json.OffDay>>(data);
-                    offDays.Clear();
-                    foreach (var od in odList)
-                    {
-                        offDays.Add(od);
-                    }
-                }
-                else
-                {
-                    Notify.sendError("Offdays could not be created");
-                    throw new Exception("Offdays could not be created");
-                }
-                LoadOffDaysFromList();
-            }
-            else
-            {
-                return;
-            }
+            var result = await ApiHandler.GetUserOffDays();
+
+            offDays = result;
+
+            LoadOffDaysFromList();
+
         }
 
     }

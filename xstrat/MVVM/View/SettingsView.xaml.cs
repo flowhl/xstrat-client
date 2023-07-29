@@ -33,7 +33,7 @@ namespace xstrat.MVVM.View
             SkinSwitcherPathDisplay.Text = SettingsHandler.Settings.SkinSwitcherPath;
             RememberMeSettings.setStatus(SettingsHandler.Settings.StayLoggedin);
             RetrieveDiscordID();
-            RetrieveUbisoftIDAsync();
+            RetrieveUbisoftID();
             if (SettingsHandler.Settings.APIURL != null)
             {
                 APIText.Text = SettingsHandler.Settings.APIURL;
@@ -62,34 +62,10 @@ namespace xstrat.MVVM.View
 
         
 
-        private async Task RetrieveUbisoftIDAsync()
-        {            
-            var result = await ApiHandler.GetUbisoftID();
-            if (result.Item1)
-            {
-                JObject json = JObject.Parse(result.Item2);
-                var data = json.SelectToken("data").ToString();
-                if (data != null && data != "")
-                {
-                    try
-                    {
-                        UbisoftID ubi = JsonConvert.DeserializeObject<List<UbisoftID>>(data).First();
-                        if (ubi.ubisoft_id != null && ubi.ubisoft_id != string.Empty)
-                        {
-                            UbiIDText.Text = ubi.ubisoft_id;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Notify.sendError("No discord found!");
-                        Logger.Log("No discord found! " + ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
-            }
+        private void RetrieveUbisoftID()
+        {
+
+            UbiIDText.Text = DataCache.CurrentUser.UbisoftId;
         }
 
         private async Task SaveUbisoftIDAsync()
@@ -97,13 +73,13 @@ namespace xstrat.MVVM.View
             if (UbiIDText.Text != null && UbiIDText.Text != string.Empty)
             {
                 var result = await ApiHandler.SetUbisoftID(UbiIDText.Text);
-                if (result.Item1)
+                if (result)
                 {
-                    Notify.sendSuccess("Changed Ubisoft ID successfully");
+                    Notify.sendSuccess("Changed Ubisoft-ID successfully");
                 }
                 else
                 {
-                    Notify.sendError(result.Item2);
+                    Notify.sendSuccess("Could not update Ubisoft-ID");
                 }
             }
             else
@@ -185,7 +161,7 @@ namespace xstrat.MVVM.View
                 }
                 else
                 {
-                    Notify.sendError(result);
+                    Notify.sendError("Could not change Discord Admin Settings");
                 }
             }
             else

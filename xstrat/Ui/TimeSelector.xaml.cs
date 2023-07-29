@@ -81,5 +81,8 @@ namespace xstrat.Ui
             HourBox.Value = hour;
             MinuteBox.Value = minute;
         }
+
+        public int GetHour() {  return HourBox.Value; }
+        public int GetMinute() {  return MinuteBox.Value; }
     }
 }

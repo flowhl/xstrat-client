@@ -55,23 +55,14 @@ namespace xstrat.MVVM.View
         {
             string id = team_id.Text;
             string pw = password.Text;
-            (bool, string) result = await ApiHandler.JoinTeam(id, pw);
-            if (result.Item1)
+            bool result = await ApiHandler.JoinTeam(id, pw);
+            if (result)
             {
-                Notify.sendSuccess("Joint successfully");
-                ApiHandler.RemoveFromCache("TeamInfo");
-                ApiHandler.RemoveFromCache("TeamMembers");
-                Globals.RetrieveTeamInfoAsync();
-                Globals.RetrieveTeamMates();
-                Globals.RetrieveTeamName();
+                Notify.sendSuccess("Joined successfully");
                 TDashboard.Reload();
                 TDashboard.Retrieve(); // fix stuff not loading here
                 await Task.Delay(500);
                 WaitForAPIAsync();
-            }
-            else
-            {
-                Notify.sendError(result.Item2);
             }
         }
 

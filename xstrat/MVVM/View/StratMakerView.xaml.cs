@@ -41,6 +41,8 @@ using Image = System.Windows.Controls.Image;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Windows.Shapes.Rectangle;
+using xstrat.Models.Supabase;
+using Newtonsoft.Json;
 
 namespace xstrat.MVVM.View
 {
@@ -65,8 +67,8 @@ namespace xstrat.MVVM.View
         public bool Floor2 { get; set; }
         public bool Floor3 { get; set; }
 
-        public int map_id;
-        public int pos_id;
+        public string map_id;
+        public string pos_id;
 
         public double TranslateXLast { get; set; }
         public double TranslateYLast { get; set; }
@@ -291,7 +293,7 @@ namespace xstrat.MVVM.View
             WallsLayer.Children.Clear();
             DrawingLayer.Children.Clear();
 
-            if (map_id < 0) return;
+            if (map_id.IsNullOrEmpty()) return;
 
             List<int> floors = new List<int>();
             if (Floor0) floors.Add(0);
@@ -616,8 +618,8 @@ namespace xstrat.MVVM.View
         private void ColorBtnClicked(object sender, RoutedEventArgs e)
         {
             string user = (sender as Button).Name.Replace("Color_", "");
-            User teammate = Globals.GetUserFromId(Globals.GetUserIdFromName(user));
-            CurrentBrush = teammate.color.ToSolidColorBrush();
+            UserData teammate = DataCache.CurrentTeamMates.Where(x => x.Id == Globals.GetUserIdFromName(user)).FirstOrDefault();
+            CurrentBrush = teammate.Color.ToSolidColorBrush();
             DeselectAllColors();
             (sender as Button).BorderThickness = new Thickness(2);
             SetBrushToItem();
@@ -803,22 +805,22 @@ namespace xstrat.MVVM.View
             currentStrat = Globals.strats.Where(x => x.id == id).FirstOrDefault();
             if (currentStrat == null) return;
 
-            map_id = currentStrat.map_id;
+            map_id = currentStrat.MapId;
 
             //body
 
-            map_id = currentStrat.map_id;
-            TxtMapName.Content = DataCache.CurrentMaps.Where(x => x.Id == currentStrat.map_id).FirstOrDefault()?.name;
-            TxtCreatedBy.Content = DataCache.CurrentTeamMates.Where(x => x.Id == currentStrat.created_by).FirstOrDefault()?.name;
-            TxtCreatedOn.Content = currentStrat.created_date.ToString().Replace("-", "/").Replace("T", " ");
-            TxtLastEdit.Content = currentStrat.last_edit_time?.ToString().Replace("-", "/").Replace("T", " ");
-            TxtVersion.Content = currentStrat.version;
+            map_id = currentStrat.MapId;
+            TxtMapName.Content = DataCache.CurrentMaps.Where(x => x.Id == currentStrat.MapId).FirstOrDefault()?.Name;
+            TxtCreatedBy.Content = DataCache.CurrentTeamMates.Where(x => x.Id == currentStrat.CreatedUser).FirstOrDefault()?.Name;
+            TxtCreatedOn.Content = currentStrat.CreatedAt.ToString().Replace("-", "/").Replace("T", " ");
+            TxtLastEdit.Content = currentStrat.LastEdit?.ToString().Replace("-", "/").Replace("T", " ");
+            TxtVersion.Content = currentStrat.Version;
 
             //content
 
-            if (string.IsNullOrEmpty(currentStrat.content)) return;
+            if (string.IsNullOrEmpty(currentStrat.Content)) return;
 
-            StratContent content = GetStratContentFromString(currentStrat.content);
+            StratContent content = GetStratContentFromString(currentStrat.Content);
 
             Floor0 = content.floors.Contains(0);
             Floor1 = content.floors.Contains(1);
@@ -826,8 +828,8 @@ namespace xstrat.MVVM.View
             Floor3 = content.floors.Contains(3);
             UpdateFloorButtons();
 
-            AttBanSelector.SelectValue(content?.banAtt?.name ?? "");
-            DefBanSelector.SelectValue(content?.banDef?.name ?? "");
+            AttBanSelector.SelectValue(content?.banAtt?.Name ?? "");
+            DefBanSelector.SelectValue(content?.banDef?.Name ?? "");
 
             LoadMapImages();
 
@@ -898,7 +900,7 @@ namespace xstrat.MVVM.View
             else
             {
 
-                (bool, string) result = await ApiHandler.SaveStrat(currentStrat.id, currentStrat.name, map_id, pos_id, currentStrat.version + 1, scontent);
+                (bool, string) result = await ApiHandler.SaveStrat(currentStrat.Id, currentStrat.Name, map_id, pos_id, currentStrat.Version + 1, scontent);
                 if (result.Item1)
                 {
                     Notify.sendSuccess("Strat saved successfully");
@@ -914,38 +916,38 @@ namespace xstrat.MVVM.View
         {
             var table = new AssignmentTable();
 
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.id ?? -1, gadgets = Gadget1.Text, loadout = Loadout1.Text, position = Position1.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.id ?? -1, gadgets = Gadget2.Text, loadout = Loadout2.Text, position = Position2.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.id ?? -1, gadgets = Gadget3.Text, loadout = Loadout3.Text, position = Position3.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.id ?? -1, gadgets = Gadget4.Text, loadout = Loadout4.Text, position = Position4.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.id ?? -1, gadgets = Gadget5.Text, loadout = Loadout5.Text, position = Position5.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.Id, gadgets = Gadget1.Text, loadout = Loadout1.Text, position = Position1.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.Id, gadgets = Gadget2.Text, loadout = Loadout2.Text, position = Position2.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.Id, gadgets = Gadget3.Text, loadout = Loadout3.Text, position = Position3.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.Id, gadgets = Gadget4.Text, loadout = Loadout4.Text, position = Position4.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.Id, gadgets = Gadget5.Text, loadout = Loadout5.Text, position = Position5.Text });
 
             return table;
         }
 
         public void LoadAssignmentTable(AssignmentTable table)
         {
-            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[0].User_id).FirstOrDefault()?.name ?? "");
+            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[0].User_id).FirstOrDefault()?.Name ?? "");
             Gadget1.Text = table.Rows[0].gadgets;
             Loadout1.Text = table.Rows[0].loadout;
             Position1.Text = table.Rows[0].position;
 
-            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[1].User_id).FirstOrDefault()?.name ?? "");
+            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[1].User_id).FirstOrDefault()?.Name ?? "");
             Gadget2.Text = table.Rows[1].gadgets;
             Loadout2.Text = table.Rows[1].loadout;
             Position2.Text = table.Rows[1].position;
 
-            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[2].User_id).FirstOrDefault()?.name ?? "");
+            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[2].User_id).FirstOrDefault()?.Name ?? "");
             Gadget3.Text = table.Rows[2].gadgets;
             Loadout3.Text = table.Rows[2].loadout;
             Position3.Text = table.Rows[2].position;
 
-            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[3].User_id).FirstOrDefault()?.name ?? "");
+            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[3].User_id).FirstOrDefault()?.Name ?? "");
             Gadget4.Text = table.Rows[3].gadgets;
             Loadout4.Text = table.Rows[3].loadout;
             Position4.Text = table.Rows[3].position;
 
-            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.id == table.Rows[4].User_id).FirstOrDefault()?.name ?? "");
+            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[4].User_id).FirstOrDefault()?.Name ?? "");
             Gadget5.Text = table.Rows[4].gadgets;
             Loadout5.Text = table.Rows[4].loadout;
             Position5.Text = table.Rows[4].position;
@@ -1140,7 +1142,7 @@ namespace xstrat.MVVM.View
                 mapItem.Header = map.Name;
                 mapItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
                 List<MenuItem> subitems = new List<MenuItem>();
-                foreach (var pos in Globals.XPositions.Where(x => x.MapId == map.Id))
+                foreach (var pos in DataCache.CurrentPositions.Where(x => x.MapId == map.Id))
                 {
                     var posItem = new MenuItem();
                     //posItem.Name = pos.name + "PositionItem";
@@ -1185,11 +1187,11 @@ namespace xstrat.MVVM.View
             else
             {
                 Strat strat = sendObj.Tag as Strat;
-                LoadStrat(strat.id);
+                LoadStrat(strat.Id);
             }
         }
 
-        private async void CreateStrat(int map, int pos)
+        private async void CreateStrat(string map, string pos)
         {
             string inputString = Microsoft.VisualBasic.Interaction.InputBox("Name", "Name your strat", "");
             if (string.IsNullOrEmpty(inputString))
@@ -1199,12 +1201,11 @@ namespace xstrat.MVVM.View
             }
 
             //create scrim here
-            (bool, string) result = await ApiHandler.NewStrat(inputString, Globals.GetTeamGameID(), map, pos, 1, "");
+            (bool, string) result = await ApiHandler.NewStrat(inputString, DataCache.CurrentTeam.GameID, map, pos, 1, "");
             if (result.Item1)
             {
                 Notify.sendSuccess("Strat created successfully");
-                JObject json = JObject.Parse(result.Item2);
-                int strat_id = json.SelectToken("data").SelectToken("insertId").Value<int>();
+                Strat newStrat = JsonConvert.DeserializeObject<Strat>(result.Item2);
                 Refresh();
             }
             else
@@ -1756,7 +1757,7 @@ namespace xstrat.MVVM.View
 
     public class AssignmentTableDataRow
     {
-        public int User_id { get; set; }
+        public string User_id { get; set; }
         public string loadout { get; set; }
         public string gadgets { get; set; }
         public string position { get; set; }

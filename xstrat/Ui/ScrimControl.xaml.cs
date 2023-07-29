@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 using xstrat.MVVM.View;
 
 namespace xstrat.Ui
@@ -31,7 +32,7 @@ namespace xstrat.Ui
         private SolidColorBrush _acceptedBorderBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#2F7538");
         private SolidColorBrush _deniedBorderBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#882933");
 
-        public Scrim Scrim { get; set; }
+        public CalendarEvent Scrim { get; set; }
 
         /// <summary>
         /// 0 neutral
@@ -45,38 +46,38 @@ namespace xstrat.Ui
             InitializeComponent();
         }
 
-        public ScrimControl(Scrim scrim)
+        public ScrimControl(CalendarEvent scrim)
         {
             InitializeComponent();
             LoadScrim(scrim);
         }
         
-        public void LoadScrim(Scrim scrim)
+        public void LoadScrim(CalendarEvent scrim)
         {
             this.Scrim = scrim;
             if(Scrim != null)
             {
-                EventTypeLabel.Content = Globals.EventTypes[scrim.event_type].name + ":";
-                TxtTitle.Content = Scrim.title;
-                TxtStart.Content = Scrim.time_start.Split(' ')[1];
-                TxtEnd.Content = Scrim.time_end.Split(' ')[1];
-                TxtDate.Content = Scrim.time_start.Split(' ')[0]; ;
+                EventTypeLabel.Content = Globals.EventTypes[scrim.EventType].name + ":";
+                TxtTitle.Content = Scrim.Title;
+                TxtStart.Content = Scrim.Start.ToString().Split(' ')[1];
+                TxtEnd.Content = Scrim.End.ToString().Split(' ')[1];
+                TxtDate.Content = Scrim.Start.ToString().Split(' ')[0]; ;
                 TxtTimeLeft.Content = TimeLeft();
-                TxtMode.Content = Globals.ScrimModes.Where(x => x.id == Scrim.typ).FirstOrDefault().name;
-                if(Scrim.map_3_id >= 0)
+                TxtMode.Content = Globals.ScrimModes.Where(x => x.id == Scrim.Typ).FirstOrDefault().name;
+                if(Scrim.Map3Id.IsNotNullOrEmpty())
                 {
-                    TxtMap3.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_3_id).FirstOrDefault().name;
+                    TxtMap3.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.Map3Id).FirstOrDefault().Name;
                 }
-                if (Scrim.map_2_id >= 0)
+                if (Scrim.Map2Id.IsNotNullOrEmpty())
                 {
-                    TxtMap2.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_2_id).FirstOrDefault().name;
+                    TxtMap2.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.Map2Id).FirstOrDefault().Name;
                 }
-                if (Scrim.map_1_id >= 0)
+                if (Scrim.Map1Id.IsNotNullOrEmpty())
                 {
-                    TxtMap1.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.map_1_id).FirstOrDefault().name;
+                    TxtMap1.Content = DataCache.CurrentMaps.Where(x => x.Id == Scrim.Map1Id).FirstOrDefault().Name;
                 }
-                TxtEnemyName.Content = "Against: " + Scrim.opponent_name;
-                TxtDescription.Text = Scrim.comment;
+                TxtEnemyName.Content = "Against: " + Scrim.OpponentName;
+                TxtDescription.Text = Scrim.Comment;
 
                 ParticipantsSP.Children.Clear();
 
@@ -86,20 +87,20 @@ namespace xstrat.Ui
                     var ulist = acc_users.Split(';');
                     foreach (var item in ulist)
                     {
-                        int uid = -1;
+                        string uid = null;
                         try
                         {
-                            uid = int.Parse(item);
+                            uid = item.ToString();
                         }
                         catch
                         {
                             continue;
                         }
-                        if (uid == -1) continue;
+                        if (uid.IsNullOrEmpty()) continue;
 
-                        User user = Globals.getUserFromId(uid);
+                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
                         if (user == null) continue;
-                        var control = new ScrimParticipationControl(1, user.name);
+                        var control = new ScrimParticipationControl(1, user.Name);
                         control.Margin = new Thickness(5, 0, 0, 0);
                         ParticipantsSP.Children.Add(control);
                     }
@@ -112,20 +113,20 @@ namespace xstrat.Ui
                     var ulist = deny_users.Split(';');
                     foreach (var item in ulist)
                     {
-                        int uid = -1;
+                        string uid = null;
                         try
                         {
-                            uid = int.Parse(item);
+                            uid = item.ToString();
                         }
                         catch
                         {
                             continue;
                         }
-                        if (uid == -1) continue;
+                        if (uid.IsNullOrEmpty()) continue;
 
-                        User user = Globals.getUserFromId(uid);
+                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
                         if (user == null) continue;
-                        var control = new ScrimParticipationControl(2, user.name);
+                        var control = new ScrimParticipationControl(2, user.Name);
                         control.Margin = new Thickness(5, 0, 0, 0);
                         ParticipantsSP.Children.Add(control);
                     }
@@ -138,21 +139,20 @@ namespace xstrat.Ui
                     var ulist = ign_users.Split(';');
                     foreach (var item in ulist)
                     {
-                        int uid = -1;
+                        string uid = null;
                         try
                         {
-                            uid = int.Parse(item);
+                            uid = item.ToString();
                         }
                         catch
                         {
                             continue;
                         }
-                        if (uid == -1) continue;
+                        if (uid.IsNullOrEmpty()) continue;
 
-
-                        User user = Globals.getUserFromId(uid);
+                        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
                         if (user == null) continue;
-                        var control = new ScrimParticipationControl(0, user.name);
+                        var control = new ScrimParticipationControl(0, user.Name);
                         control.Margin = new Thickness(5, 0, 0, 0);
                         ParticipantsSP.Children.Add(control);
                     }

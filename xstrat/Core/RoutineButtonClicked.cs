@@ -14,8 +14,8 @@ namespace xstrat.Core
         {
             get { return type; }
         }
-        private Routine instance;
-        public Routine Instance
+        private Models.Supabase.Routine instance;
+        public Models.Supabase.Routine Instance
         {
             get { return instance; }
         }
@@ -27,7 +27,7 @@ namespace xstrat.Core
         /// </summary>
         /// <param name="type"></param>
         /// <param name="instance"></param>
-        public RoutineButtonClicked(int type, Routine instance)
+        public RoutineButtonClicked(int type, Models.Supabase.Routine instance)
         {
             this.type = type;
             this.instance = instance;

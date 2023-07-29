@@ -34,7 +34,7 @@ namespace xstrat.Ui
 
         private bool opened = false;
         public int type { get; set; }
-        public Scrim scrim { get; set; }
+        public Models.Supabase.CalendarEvent scrim { get; set; }
         public Core.Window window { get; set; }
 
 
@@ -69,7 +69,7 @@ namespace xstrat.Ui
             UpdateUI();
         }
 
-        public ScrimWindow(Scrim scrim)
+        public ScrimWindow(Models.Supabase.CalendarEvent  scrim)
         {
             this.scrim = scrim;
             type = 1;
@@ -100,7 +100,7 @@ namespace xstrat.Ui
                     label.Foreground = Brushes.White;
                     label.Background = Brushes.Transparent;
                     label.Margin = new Thickness(5, 0, 5, 0);
-                    label.Content = Globals.GetUserFromId(user.Id).name;
+                    label.Content = DataCache.CurrentTeamMates.Where(x => x.Id == user.Id).FirstOrDefault().Name;
                     PlayerStack.Children.Add(label);
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
@@ -108,23 +108,21 @@ namespace xstrat.Ui
             }
             else if(type == 1)
             {
-                DateTime start = DateTime.ParseExact(scrim.time_start, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                DateTime end = DateTime.ParseExact(scrim.time_end, "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 TypeLabel.Content = "Edit Scrim";
                 Title = "Edit Scrim";
-                OpponentNameBox.Text = scrim.opponent_name;
-                TitleBox.Text = scrim.title;
-                CommentBox.Text = scrim.comment;
-                CalendarDatePicker.SelectedDate = start.Date;
-                FromHour.Value = start.Hour;
-                FromMinute.Value = start.Minute;
-                ToHour.Value = end.Hour;
-                ToMinute.Value = end.Minute;
-                MapSelector1.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_1_id).FirstOrDefault()));
-                MapSelector2.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_2_id).FirstOrDefault()));
-                MapSelector3.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.map_3_id).FirstOrDefault()));
-                CreatorLabel.Content = Globals.getUserFromId(scrim.creator_id).name;
-                CreationDateLabel.Content = scrim.creation_date.Replace("T", " ").Replace("Z", "");
+                OpponentNameBox.Text = scrim.OpponentName;
+                TitleBox.Text = scrim.Title;
+                CommentBox.Text = scrim.Comment;
+                CalendarDatePicker.SelectedDate = scrim.Start.GetValueOrDefault().Date;
+                FromHour.Value = scrim.Start.GetValueOrDefault().Hour;
+                FromMinute.Value = scrim.Start.GetValueOrDefault().Minute;
+                ToHour.Value = scrim.End.GetValueOrDefault().Hour;
+                ToMinute.Value = scrim.End.GetValueOrDefault().Minute;
+                MapSelector1.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.Map1Id).FirstOrDefault()));
+                MapSelector2.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.Map2Id).FirstOrDefault()));
+                MapSelector3.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.Map3Id).FirstOrDefault()));
+                CreatorLabel.Content = DataCache.CurrentTeamMates.Where(x => x.Id == scrim.CreatedUser).FirstOrDefault().Name;
+                CreationDateLabel.Content = scrim.CreatedAt.ToString().Replace("T", " ").Replace("Z", "");
                 if (!Globals.AdminUser)
                 {
                     DeleteBtn.Visibility = Visibility.Collapsed;
@@ -140,7 +138,7 @@ namespace xstrat.Ui
         private void EventTypeSelector_Loaded(object sender, RoutedEventArgs e)
         {
             EventTypeSelector.Loaded -= EventTypeSelector_Loaded;
-            EventTypeSelector.SelectIndexWhenLoaded(scrim.event_type);
+            EventTypeSelector.SelectIndexWhenLoaded(scrim.EventType);
         }
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -159,24 +157,24 @@ namespace xstrat.Ui
                 start = start.Replace(".", "/").Replace("-", "/");
                 end = end.Replace(".", "/").Replace("-", "/");
 
-                string map1;
+                string map1 = null;
                 if (MapSelector1.SelectedMap != null)
                 {
                     map1 = MapSelector1.SelectedMap.Id;
                 }
-                string map2;
+                string map2 = null;
                 if (MapSelector2.SelectedMap != null)
                 {
                     map2 = MapSelector2.SelectedMap.Id;
                 }
-                string map3;
+                string map3 = null;
                 if (MapSelector3.SelectedMap != null)
                 {
                     map3 = MapSelector3.SelectedMap.Id;
                 }
                 int event_type = EventTypeSelector.selectedEventType.id;
-                var result = await ApiHandler.SaveScrim(scrim.id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
-                if (result.Item1)
+                var result = await ApiHandler.SaveScrim(scrim.Id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
+                if (result)
                 {
                     Notify.sendSuccess("Saved successfully");
                     opened = false;
@@ -184,7 +182,7 @@ namespace xstrat.Ui
                 }
                 else
                 {
-                    Notify.sendError(result.Item2);
+                    Notify.sendError("Could not safe scrim");
                 }
             }
             else if(type == 0)
@@ -202,28 +200,15 @@ namespace xstrat.Ui
                 end = end.Replace(".", "/").Replace("-", "/");
 
 
-                int? scrim_id = null;
+                string scrim_id = null;
                 var result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end, EventTypeSelector.selectedEventType.id);
-                if (result.Item1)
+                if (result != null)
                 {
-                    string response = result.Item2;
-                    //convert to json instance
-                    JObject json = JObject.Parse(response);
-                    var data = json.SelectToken("data").ToString();
-                    if (data != null && data != "")
-                    {
-                        xstrat.Json.Data dresult = JsonConvert.DeserializeObject<Json.Data>(data);
-                        scrim_id = dresult.insertId;
-                    }
-                    else
-                    {
-                        Notify.sendError("insertId could not be loaded");
-                        throw new Exception("insertId could not be loaded");
-                    }
-                    if(scrim_id != null)
+                    scrim_id = result.Id;
+                    if (scrim_id != null)
                     {
                         string map1 = null;
-                        if(MapSelector1.SelectedMap != null)
+                        if (MapSelector1.SelectedMap != null)
                         {
                             map1 = MapSelector1.SelectedMap.Id;
                         }
@@ -238,8 +223,8 @@ namespace xstrat.Ui
                             map3 = MapSelector3.SelectedMap.Id;
                         }
                         int event_type = EventTypeSelector.selectedEventType.id;
-                        var result2 = await ApiHandler.SaveScrim(scrim_id.GetValueOrDefault(), TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
-                        if (result2.Item1)
+                        var result2 = await ApiHandler.SaveScrim(scrim_id, TitleBox.Text, CommentBox.Text, start, end, OpponentNameBox.Text, map1, map2, map3, ScrimModeSelector.selectedScrimMode.id, event_type);
+                        if (result2)
                         {
                             Notify.sendSuccess("Saved successfully");
                             opened = false;
@@ -247,20 +232,16 @@ namespace xstrat.Ui
                         }
                         else
                         {
-                            Notify.sendError("Error when modifying scrim data " + result2.Item2);
+                            Notify.sendError("Error when modifying scrim data");
                         }
                     }
-                    else
-                    {
-                        Notify.sendError("insertId could not be loaded");
-                        throw new Exception("insertId could not be loaded");
-                    }
-                   
                 }
                 else
                 {
-                    Notify.sendError( result.Item2);
+                    Notify.sendError("insertId could not be loaded");
+                    throw new Exception("insertId could not be loaded");
                 }
+
                 CalendarEventUpdated?.Invoke(this, e);
             }
             
@@ -276,7 +257,7 @@ namespace xstrat.Ui
             if(type == 1)
             {
                 var result = await ApiHandler.DeleteScrim(scrim.id);
-                if (result.Item1)
+                if (result)
                 {
                     Notify.sendSuccess("Deleted successfully");
                     opened = false;
@@ -284,8 +265,8 @@ namespace xstrat.Ui
                 }
                 else
                 {
-                    Notify.sendError("Scrim could not be delted: " + result.Item2);
-                    throw new Exception("Scrim could not be delted: " + result.Item2);
+                    Notify.sendError("Scrim could not be delted");
+                    throw new Exception("Scrim could not be delted");
 
                 }
             }

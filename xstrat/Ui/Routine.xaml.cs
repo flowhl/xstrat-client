@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
+using xstrat.Models.Supabase;
 
 namespace xstrat.Ui
 {
@@ -21,22 +22,13 @@ namespace xstrat.Ui
     /// </summary>
     public partial class Routine : UserControl
     {
-        public string Head { get; set; }
-        public string createdDate;
-        public int ID;
+        public Models.Supabase.Routine routine { get; set; }
         public EventHandler<RoutineButtonClicked> MoveButtonEvent;
 
-        public Routine(string header, string createdDate, int id)
+        public Routine(Models.Supabase.Routine _routine)
         {
             InitializeComponent();
-            Head = header;
-            this.createdDate = createdDate.Replace("T", " ");
-            var charsToRemove = new string[] { "T", "Z"};
-            foreach (var c in charsToRemove)
-            {
-                this.createdDate = this.createdDate.Replace(c, string.Empty);
-            }
-            ID = id;
+            routine = _routine;
             UpdateUI();
         }
 
@@ -44,26 +36,26 @@ namespace xstrat.Ui
         {
             if (MoveButtonEvent != null)
             {
-                MoveButtonEvent(sender, new RoutineButtonClicked(0, this));
+                MoveButtonEvent(sender, new RoutineButtonClicked(0, routine));
             }
         }
 
         private void UpdateUI()
         {
-            Header_Textbox.Text = Head;
-            CreatedOnLabel.Content = "Created on: " + createdDate;
+            Header_Textbox.Text = routine.Title;
+            CreatedOnLabel.Content = "Created on: " + routine.CreatedAt.ToString();
         }
 
         private void Header_Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Head = Header_Textbox.Text;
+            routine.Title = Header_Textbox.Text;
         }
 
         private void AddBelowButton_Click(object sender, RoutedEventArgs e)
         {
             if (MoveButtonEvent != null)
             {
-                MoveButtonEvent(sender, new RoutineButtonClicked(1, this));
+                MoveButtonEvent(sender, new RoutineButtonClicked(1, routine));
             }
         }
 
@@ -71,7 +63,7 @@ namespace xstrat.Ui
         {
             if (MoveButtonEvent != null)
             {
-                MoveButtonEvent(sender, new RoutineButtonClicked(-1, this));
+                MoveButtonEvent(sender, new RoutineButtonClicked(-1, routine));
             }
         }
     }

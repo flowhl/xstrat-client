@@ -26,7 +26,7 @@ namespace xstrat.Json
 
         public bool Visible { get; set; } = true;
         public UserData User { get; set; }
-        public Scrim Scrim { get; set; }
+        public Models.Supabase.CalendarEvent Scrim { get; set; }
     }
 
     public class CalendarFilterType
@@ -39,45 +39,6 @@ namespace xstrat.Json
             this.name = name;
             this.id = id;
         }
-    }
-
-    public class Content
-    {
-        public string content { get; set; }
-    }
-
-    public class Data
-    {
-        public int fieldCount { get; set; }
-        public int affectedRows { get; set; }
-        public int insertId { get; set; }
-        public int serverStatus { get; set; }
-        public int warningCount { get; set; }
-        public string message { get; set; }
-        public bool protocol41 { get; set; }
-        public int changedRows { get; set; }
-    }
-
-    public class TeamSettingsData
-    {
-        public string webhook { get; set; }
-        public int sn_created { get; set; }
-        public int sn_changed { get; set; }
-        public int sn_weekly { get; set; }
-        public int sn_soon { get; set; }
-        public int sn_delay { get; set; }
-        public int use_on_days { get; set; }
-
-    }
-
-    public class DiscordID
-    {
-        public string discord { get; set; }
-    }
-
-    public class UbisoftID
-    {
-        public string ubisoft_id { get; set; }
     }
 
     public class Floor
@@ -95,97 +56,6 @@ namespace xstrat.Json
             this.image = image;
             this.map_id = map_id;
             this.level = level;
-        }
-    }
-
-    public class Game
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-    }
-
-    public class JColor
-    {
-        public string color { get; set; }
-    }
-
-    public class JoinPw
-    {
-        public int id { get; set; }
-        public string join_password { get; set; }
-    }
-
-    public class Map
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public int game_id { get; set; }
-        public string floor_0_svg { get; set; }
-        public string floor_1_svg { get; set; }
-        public string floor_2_svg { get; set; }
-        public string floor_3_svg { get; set; }
-
-        public Map(int id, string name, int game_id, string floor_0_svg, string floor_1_svg, string floor_2_svg, string floor_3_svg)
-        {
-            this.id = id;
-            this.name = name;
-            this.game_id = game_id;
-            this.floor_0_svg = floor_0_svg;
-            this.floor_1_svg = floor_1_svg;
-            this.floor_2_svg = floor_2_svg;
-            this.floor_3_svg = floor_3_svg;
-        }
-    }
-
-    public class xPosition
-    {
-        public int id { get; set; }
-        public int map_id { get; set; }
-        public string name { get; set; }
-
-        public xPosition(int id, int map_id, string name)
-        {
-            this.id = id;
-            this.map_id = map_id;
-            this.name = name;
-        }
-    }
-
-    public class NewParams
-    {
-        public string name { get; set; }
-        public string game_id { get; set; }
-
-    }
-
-    public class OffDay
-    {
-        public int? Id { get; set; }
-        public string UserId { get; set; }
-        public string creation_date { get; set; }
-
-        /// <summary>
-        /// types:
-        /// 0 exactly
-        /// 1 entire day
-        /// 2 weekly
-        /// 3 every second week
-        /// 4 monthly
-        /// </summary>
-        public int Typ { get; set; }
-        public string Title { get; set; }
-        public string Start { get; set; }
-        public string End { get; set; }
-
-        public OffDay(int id, string user_id, string creation_date, int typ, string title, string start, string end)
-        {
-            Id = id;
-            this.UserId = user_id;
-            this.creation_date = creation_date;
-            this.Typ = typ;
-            this.Title = title;
-            this.Start = start;
-            this.End = end;
         }
     }
 
@@ -207,83 +77,6 @@ namespace xstrat.Json
         {
             this.id = id;
             this.name = name;
-        }
-    }
-
-    public class Position
-    {
-        public int id { get; set; }
-        public int map_id { get; set; }
-        public string name { get; set; }
-        public List<Strat> strats { get; set; }
-
-        public Position(int id, int map_id, string name, List<Strat> strats)
-        {
-            this.id = id;
-            this.map_id = map_id;
-            this.name = name;
-            this.strats = strats;
-        }
-
-        public Position()
-        {
-        }
-    }
-
-    public class Routine
-    {
-        public int id { get; set; }
-        public string title { get; set; }
-        public int user_id { get; set; }
-        public string created_date { get; set; }
-        public string content { get; set; }
-    }
-
-    public class Scrim
-    {
-        public int id { get; set; }
-        public int event_type { get; set; }
-        public string title { get; set; }
-        public string comment { get; set; }
-        public string time_start { get; set; }
-        public string time_end { get; set; }
-        public string opponent_name { get; set; }
-        public int team_id { get; set; }
-        public int? map_1_id { get; set; }
-        public int? map_2_id { get; set; }
-        public int? map_3_id { get; set; }
-        /// <summary>
-        /// 0 - Normal
-        /// 1 - 6+6
-        /// </summary>
-        public int typ { get; set; }
-        public int creator_id { get; set; }
-        public string creation_date { get; set; }
-        public int? response_typ { get; set; }
-        public string acc_user_list { get; set; }
-        public string deny_user_list { get; set; }
-        public string ign_user_list { get; set; }
-
-
-        public Scrim(int id, int event_type ,string title, string comment, string time_start, string time_end, string opponent_name, int team_id, int? map_1_id, int? map_2_id, int? map_3_id, int typ, int creator_id, string creation_date, string acc_user_list, string deny_user_list, string ign_user_list)
-        {
-            this.id = id;
-            this.event_type = event_type;
-            this.title = title;
-            this.comment = comment;
-            this.time_start = time_start;
-            this.time_end = time_end;
-            this.opponent_name = opponent_name;
-            this.team_id = team_id;
-            this.map_1_id = map_1_id;
-            this.map_2_id = map_2_id;
-            this.map_3_id = map_3_id;
-            this.typ = typ;
-            this.creator_id = creator_id;
-            this.creation_date = creation_date;
-            this.acc_user_list = acc_user_list;
-            this.deny_user_list = deny_user_list;
-            this.ign_user_list = ign_user_list;
         }
     }
 
@@ -311,72 +104,14 @@ namespace xstrat.Json
         }
     }
 
-    public class Strat
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public int team_id { get; set; }
-        public int game_id { get; set; }
-        public int map_id { get; set; }
-        public int position_id { get; set; }
-        public int version { get; set; }
-        public string content { get; set; }
-        public string created_date { get; set; }
-        public int created_by { get; set; }
-        public string last_edit_time { get; set; }
-
-        public Strat(int id,string name, int team_id, int game_id, int map_id, int position_id, int version, string content, string created_date, int created_by, string last_edit_time)
-        {
-            this.id = id;
-            this.name = name;
-            this.team_id = team_id;
-            this.game_id = game_id;
-            this.map_id = map_id;
-            this.position_id = position_id;
-            this.version = version;
-            this.content = content;
-            this.created_date = created_date;
-            this.created_by = created_by;
-            this.last_edit_time = last_edit_time;
-        }
-
-        public Strat()
-        {
-            this.id = 0;
-            this.name = "strat 1";
-            this.team_id = 0;
-            this.game_id = 0;
-            this.map_id = 0;
-            this.position_id = 0;
-            this.version = 1;
-            this.content = "";
-        }
-    }
-
-    public class TeamInfo
-    {
-        public string team_name { get; set; }
-        public string admin_name { get; set; }
-        public string game_name { get; set; }
-        public int use_on_days { get; set; }
-    }
-
-    public class User
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string color { get; set; }
-        public string ubisoft_id { get; set; }
-    }
-
     public class XMap
     {
         public string Name { get; set; }
         public int game_id { get; set; }
         public List<Floor> floors { get; set; } = new List<Floor>();
-        public List<Position> positions { get; set; } = new List<Position>();
+        public List<Models.Supabase.Position> positions { get; set; } = new List<Models.Supabase.Position>();
 
-        public XMap(string name, int game_id, List<Floor> floors, List<Position> positions)
+        public XMap(string name, int game_id, List<Floor> floors, List<Models.Supabase.Position> positions)
         {
             Name = name;
             this.game_id = game_id;
@@ -390,37 +125,14 @@ namespace xstrat.Json
             floors.Add(new Floor(1, "first floor", @"https://xstrat.app/wp-content/uploads/2022/03/DZ-consulate-groundfloor.png", 0, 1));
             var stratlist = new List<Strat>();
             stratlist.Add(new Strat());
-            positions.Add(new Position(0, 0, "1", stratlist));
-            positions.Add(new Position(1, 0, "2", stratlist));
+            positions.Add(new Models.Supabase.Position(0, 0, "1", stratlist));
+            positions.Add(new Models.Supabase.Position(1, 0, "2", stratlist));
             Name = "Bank";
             game_id = 0;
         }
 
 
     }
-
-    public class Operator
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public int game_id { get; set; }
-        public int type { get; set; }
-
-        public Operator(int id, string name, int game_id, int type)
-        {
-            this.id = id;
-            this.name = name;
-            this.game_id = game_id;
-            this.type = type;
-        }
-
-        public Operator(){
-            
-        }
-    }
-
-
-
 
     /// <summary>
     /// api response by stats call

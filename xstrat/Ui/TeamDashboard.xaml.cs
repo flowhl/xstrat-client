@@ -27,7 +27,6 @@ namespace xstrat.Ui
     /// </summary>
     public partial class TeamDashboard : UserControl
     {
-        public List<User> teammates { get; set; } = new List<User>();
         public Models.Supabase.Team TeamInfo;
         public TeamDashboard()
         {
@@ -84,6 +83,8 @@ namespace xstrat.Ui
         private async void LeaveBtn_Click(object sender, RoutedEventArgs e)
         {
             await ApiHandler.LeaveTeam();
+            Reload();
+            Retrieve();
         }
 
         private void JoinPWAdminBtn_Click(object sender, RoutedEventArgs e)
@@ -112,7 +113,6 @@ namespace xstrat.Ui
             if (result)
             {
                 Notify.sendSuccess("Changed color successfully");
-                ApiHandler.RemoveFromCache("TeamMembers");
             }
             else
             {
@@ -155,15 +155,15 @@ namespace xstrat.Ui
         }
         private async Task RenameAdminBtn_ClickAsync(string newname)
         {
-            var result = await ApiHandler.RenameTeam(newname);
-            if (result.Item1)
+            var result = await ApiHandler.RenameTeamAsync(newname);
+            if (result)
             {
                 Notify.sendSuccess("Renamed successfully");
                 Retrieve();
             }
             else
             {
-                Notify.sendError(result.Item2);
+                Notify.sendError("Could not rename team, make sure to be team admin");
             }
         }
 

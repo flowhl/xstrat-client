@@ -1,5 +1,6 @@
 ﻿
 using System;
+using xstrat.Core;
 
 namespace xstrat.Models.Supabase
 {
@@ -14,5 +15,7 @@ namespace xstrat.Models.Supabase
         public string UserId { get; set; }
 
         public string Content { get; set; }
+
+        public EventHandler<RoutineButtonClicked> MoveButtonEvent;
     }
 }

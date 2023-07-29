@@ -21,4 +21,11 @@ namespace xstrat
             return string.IsNullOrWhiteSpace(str);
         }
     }
+    public static class DateTimeExtensions
+    {
+        public static DateTime SetTime(this DateTime dateTime, int hour, int minute, int second)
+        {
+            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hour, minute, second, dateTime.Kind);
+        }
+    }
 }

@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 using xstrat.MVVM.View;
 
 namespace xstrat.Ui
@@ -26,7 +27,7 @@ namespace xstrat.Ui
     /// </summary>
     public partial class OffdayControl : UserControl
     {
-        public int? id { get; set; }
+        public string id { get; set; }
         public string user_id { get; set; }
         public OffdayControl()
         {
@@ -53,26 +54,20 @@ namespace xstrat.Ui
             }
         }
 
-        public void LoadOffDay(OffDay offDay)
+        public void LoadOffDay(CalendarBlock offDay)
         {
             id = offDay.Id;
             user_id = offDay.UserId;
             //YYYY-MM-DD hh:mm:ss
             TitleText.Text = offDay.Title;
 
-            CreationDate.Text = "Created on: " + offDay.creation_date.Split('T').First() ;
+            CreationDate.Text = "Created on: " + offDay.CreatedAt.ToString().Split('T').First() ;
             
-            FromDatePicker.Text = offDay.Start.Split(' ').First();
-            ToDatePicker.Text = offDay.End.Split(' ').First();
-            
-            int fromHour = int.Parse(offDay.Start.Split(' ')[1].Split(':').First());
-            int fromMinute = int.Parse(offDay.Start.Split(' ')[1].Split(':')[1]);
-            
-            int toHour = int.Parse(offDay.End.Split(' ')[1].Split(':').First());
-            int toMinute = int.Parse(offDay.End.Split(' ')[1].Split(':')[1]);
+            FromDatePicker.Text = offDay.Start.ToString().Split(' ').First();
+            ToDatePicker.Text = offDay.CreatedAt.ToString().Split(' ').First();
 
-            FromTimeSelector.SetTime(fromHour, fromMinute);
-            ToTimeSelector.SetTime(toHour, toMinute);
+            FromTimeSelector.SetTime(offDay.Start.GetValueOrDefault().Hour, offDay.Start.GetValueOrDefault().Minute);
+            ToTimeSelector.SetTime(offDay.End.GetValueOrDefault().Hour, offDay.End.GetValueOrDefault().Minute);
             
             TypeSelector.SelectIndexWhenLoaded(offDay.Typ);
             if(offDay.Typ == 1)
@@ -82,7 +77,7 @@ namespace xstrat.Ui
             }
 
         }
-        public OffDay GetOffDay()
+        public CalendarBlock GetOffDay()
         {
             if (FromDatePicker.SelectedDate == null)
             {
@@ -95,20 +90,12 @@ namespace xstrat.Ui
                 return null;
             }
 
+            DateTime start = FromDatePicker.SelectedDate.GetValueOrDefault().SetTime(FromTimeSelector.GetHour(), FromTimeSelector.GetMinute(), 0);
+            DateTime end = ToDatePicker.SelectedDate.GetValueOrDefault().SetTime(ToTimeSelector.GetHour(), ToTimeSelector.GetMinute(), 0);
 
+            if(end.Hour == 0 && end.Minute == 0) { end.SetTime(23, 59, 59); }
 
-            string fromDate = FromDatePicker.SelectedDate.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
-            string toDate = ToDatePicker.SelectedDate.GetValueOrDefault().ToString("yyyy/MM/dd HH:mm:ss").Replace(".", "/").Replace("-", "/");
-
-            string startDate = fromDate.Split(' ')[0];
-            string endDate = toDate.Split(' ')[0];
-            string startTime = FromTimeSelector.GetTimeString();
-            string endTime = ToTimeSelector.GetTimeString();
-            endTime = endTime.Replace("00:00:00", "23:59:59");
-
-            string start = startDate + " " + startTime;
-            string end = endDate + " " + endTime;
-            OffDay offDay = new OffDay(id.GetValueOrDefault(), user_id, null, TypeSelector.selectedOffDayType.id, TitleText.Text, start, end);
+            CalendarBlock offDay = new CalendarBlock() { Id = id, UserId = user_id, Typ = TypeSelector.selectedOffDayType.id, Title = TitleText.Text, Start =  start, End = end};
             return offDay;
         }
 

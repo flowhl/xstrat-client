@@ -10,6 +10,15 @@ namespace xstrat.Models.Supabase
 
         public string UserId { get; set; }
 
+
+        /// <summary>
+        /// types:
+        /// 0 exactly
+        /// 1 entire day
+        /// 2 weekly
+        /// 3 every second week
+        /// 4 monthly
+        /// </summary>
         public int Typ { get; set; }
 
         public string Title { get; set; }

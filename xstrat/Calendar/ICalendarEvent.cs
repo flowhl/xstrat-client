@@ -21,6 +21,6 @@ namespace xstrat.Calendar
         List<Object> Args { get; set; }
         bool Visible { get; set; }
         UserData User { get; set; }
-        Scrim Scrim { get; set; }
+        CalendarEvent Scrim { get; set; }
     }
 }

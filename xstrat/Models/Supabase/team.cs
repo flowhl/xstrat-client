@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using xstrat.Core;
 
 namespace xstrat.Models.Supabase
 {
@@ -31,5 +33,8 @@ namespace xstrat.Models.Supabase
         public DateTime? CreatedAt { get; set; }
 
         public string Password { get; set; }
+
+        public string GameName { get {  return DataCache.CurrentGames.Where(x => x.Id == GameID).FirstOrDefault()?.Name ?? Id; } }
+        public string AdminName { get {  return DataCache.CurrentTeamMates.Where(x => x.Id == AdminUserID).FirstOrDefault()?.Name ?? Id; } }
     }
 }

@@ -25,7 +25,7 @@ namespace xstrat.Ui
             InitializeComponent();
             UserName.Text = name;
             UserID.Content = ID;
-            UserColorRectangle.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
+            UserColorRectangle.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color ?? "#FFFFFF"));
         }
     }
 }

@@ -72,7 +72,7 @@ namespace xstrat.MVVM.View
         {
             if (UbiIDText.Text != null && UbiIDText.Text != string.Empty)
             {
-                var result = await ApiHandler.SetUbisoftID(UbiIDText.Text);
+                var result = ApiHandler.SetUbisoftID(UbiIDText.Text);
                 if (result)
                 {
                     Notify.sendSuccess("Changed Ubisoft-ID successfully");

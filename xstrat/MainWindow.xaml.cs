@@ -35,6 +35,7 @@ namespace xstrat
         public MainWindow()
         {
             SettingsHandler.Initialize();
+            RestHandler.Initialize();
             ApiHandler.Initialize();
             InitializeComponent();
             Loaded += MainWindow_Loaded;
@@ -168,7 +169,7 @@ namespace xstrat
         {
             if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.Token != null && SettingsHandler.Settings.Token != "")
             {
-                ApiHandler.AddBearer(SettingsHandler.Settings.Token);
+                RestHandler.CurrentSession = await ApiHandler.RenewSessionAsync(SettingsHandler.Settings.Token);
                 bool verified = await ApiHandler.VerifyTokenAsync();
                 if(verified)
                 {
@@ -196,7 +197,7 @@ namespace xstrat
                 SettingsHandler.Settings.Token = token;
                 SettingsHandler.Save();
             }
-            ApiHandler.AddBearer(token);
+            //ApiHandler.AddBearer(token);
             NewlyRegistered = false;
             //EndLoading();
             IsLoggedIn = true;

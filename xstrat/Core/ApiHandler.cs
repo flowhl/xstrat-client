@@ -27,84 +27,42 @@ namespace xstrat
     public static class ApiHandler
     {
         #region Properties and Session functions
-        public static RestClient Client;
-
-        public static Session CurrentSession;
 
         /// <summary>
         /// creates restclient instance
         /// </summary>
         public async static void Initialize()
         {
-            if (Client == null)
-            {
+            //if (Client == null)
+            //{
 
-                if (SettingsHandler.Settings.APIURL != null)
-                {
-                    var options = new RestClientOptions
-                    {
-                        MaxTimeout = 10000,
-                        BaseUrl = new Uri( SettingsHandler.Settings.APIURL),
-                    };
-                    Client = new RestClient(options );
-                }
-                else
-                {
-                    Notify.sendError("Please enter a proper url to reach the server. Use https://app.xstrat.app/ as default");
-                }
-            }
-            var request = new RestRequest("/", Method.Get);
-            request.RequestFormat = DataFormat.Json;
+            //    if (SettingsHandler.Settings.APIURL != null)
+            //    {
+            //        var options = new RestClientOptions
+            //        {
+            //            MaxTimeout = 10000,
+            //            BaseUrl = new Uri(SettingsHandler.Settings.APIURL),
+            //        };
+            //        Client = new RestClient(options);
+            //    }
+            //    else
+            //    {
+            //        Notify.sendError("Please enter a proper url to reach the server. Use https://app.xstrat.app/ as default");
+            //    }
+            //}
+            //var request =RestHandler.GetRequest("/", Method.Get);
+            //
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
+            //var response = Client.Execute<RestResponse>(request);
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK) //success
-            {
-                Notify.sendError("Api could not be reached. Please check your connection and restart");
-                //await Task.Delay(5000);
-                ////MessageBox.Show("Api could not be reached. Please check your connection");
-                //App.Current.Shutdown();
-            }
-            //RenewSessionQueue();
-        }
-
-        public static async void RenewSessionQueue()
-        {
-            while (true)
-            {
-                if (CurrentSession != null)
-                {
-                    if (CurrentSession.ExpiresIn <= 600)
-                    {
-                        var newSession = await RenewSessionAsync();
-                        if (newSession != null)
-                        {
-                            CurrentSession = newSession;
-                            //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
-                        }
-                        else
-                        {
-                            Notify.sendError("Could not renew session token");
-                        }
-                    }
-                }
-                await Task.Delay(1000);
-            }
-        }
-
-        /// <summary>
-        /// adds baerer_token to client if not allready
-        /// </summary>
-        /// <param name="token"></param>
-        public static async void AddBearer(string token)
-        {
-            if (Client.Authenticator == null)
-            {
-                //Client.Authenticator = new JwtAuthenticator(token);
-                CurrentSession = new Session { AccessToken = token };
-                CurrentSession = await RenewSessionAsync();
-                //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
-            }
+            //if (response.StatusCode != System.Net.HttpStatusCode.OK) //success
+            //{
+            //    Notify.sendError("Api could not be reached. Please check your connection and restart");
+            //    //await Task.Delay(5000);
+            //    ////MessageBox.Show("Api could not be reached. Please check your connection");
+            //    //App.Current.Shutdown();
+            //}
+            ////RenewSessionQueue();
         }
 
 
@@ -121,24 +79,27 @@ namespace xstrat
         /// </returns>
         public static async Task<(bool, string)> RegisterAsync(string _name, string _email, string _pw)
         {
-            Waiting();
-            var request = new RestRequest("user/signup", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { email = _email, password = _pw });
+            using (RestClient client = new RestClient("https://localhost:44322"))
+            {
+                Waiting();
+                var request =RestHandler.GetRequest("user/signup", Method.Post);
+                
+                request.AddJsonBody(new { email = _email, password = _pw });
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-            {
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return (true, "");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Conflict) //duplicate
+                {
+                    EndWaiting();
+                    return (false, "email allready registered");
+                }
                 EndWaiting();
-                return (true, "");
+                return (false, "db error");
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Conflict) //duplicate
-            {
-                EndWaiting();
-                return (false, "email allready registered");
-            }
-            EndWaiting();
-            return (false, "db error");
         }
 
         /// <summary>
@@ -149,61 +110,85 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<Session> SignInAsync(string _email, string _pw)
         {
-            Waiting();
-            var request = new RestRequest("user/signin", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { email = _email, password = _pw });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var session = JsonConvert.DeserializeObject<Session>(response.Content);
-                CurrentSession = session;
-                //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
-                DataCache.RetrieveUser();
+                Waiting();
+                var request =RestHandler.GetRequest("User/SignIn", Method.Post);
+                
+                //request.AddJsonBody(new { email = _email, password = _pw });
+                request.AddJsonBody(new { email = _email, password = _pw });
+
+                var response = client.Execute<RestResponse>(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var session = JsonConvert.DeserializeObject<Session>(response.Content);
+                    RestHandler.CurrentSession = session;
+                    DataCache.RetrieveUser();
+                    EndWaiting();
+                    return session;
+                }
                 EndWaiting();
-                return session;
+                Notify.sendError("Error logging in: " + response.Content);
+                return null;
             }
-            EndWaiting();
-            Notify.sendError("Error logging in: " + response.Content);
-            return null;
         }
 
         public static async Task<Models.Supabase.UserData> GetUserDataAsync()
         {
-            Waiting();
-            var request = new RestRequest("user/data", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-
-            var userData = JsonConvert.DeserializeObject<Models.Supabase.UserData>(response.Content);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request = RestHandler.GetRequest("User/Data", Method.Get);
+                var response = client.Execute<RestResponse>(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var userData = JsonConvert.DeserializeObject<Models.Supabase.UserData>(response.Content);
+                    EndWaiting();
+                    return userData;
+                }
                 EndWaiting();
-                return userData;
+                Notify.sendError("Error getting user data in: " + response.Content);
+                return null;
             }
-            EndWaiting();
-            Notify.sendError("Error getting user data in: " + response.Content);
-            return null;
+
         }
 
         public static async Task<Session> RenewSessionAsync()
         {
-            if (CurrentSession == null) return null;
-            var request = new RestRequest("user/refresh", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var session = JsonConvert.DeserializeObject<Session>(response.Content);
-                return session;
+                var request =RestHandler.GetRequest("user/refresh", Method.Post);
+                
+
+                var response = client.Execute<RestResponse>(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var session = JsonConvert.DeserializeObject<Session>(response.Content);
+                    return session;
+                }
+                return null;
             }
-            return null;
+        }
+
+        public static async Task<Session> RenewSessionAsync(string token)
+        {
+            using (RestClient client = new RestClient("https://localhost:44322"))
+            {
+                var request = RestHandler.GetRequest("user/refresh", Method.Post);
+                request.Authenticator = new JwtAuthenticator(token);
+
+                var response = client.Execute<RestResponse>(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var session = JsonConvert.DeserializeObject<Session>(response.Content);
+                    return session;
+                }
+                return null;
+            }
         }
 
 
@@ -232,57 +217,71 @@ namespace xstrat
             EndWaiting();
         }
 
-        public static async Task<bool> SetColor(string color)
+        public static async Task<bool> SetColor(string icolor)
         {
-            Waiting();
-            var request = new RestRequest("user/color", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { color = color.Replace("#FF", "#") });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("user/color", Method.Post);
+
+                string scolor = icolor.Replace("#FF", "#");
+
+                string jsonBody = JsonConvert.SerializeObject(new { color = scolor });
+                jsonBody = jsonBody.Replace(@"\", "");
+                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    DataCache.RetrieveUser();
+                    DataCache.RetrieveTeamMates();
+                    return true;
+                }
                 EndWaiting();
-                DataCache.RetrieveUser();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         public static async Task<bool> SetDiscordId(string discord)
         {
-            Waiting();
-            var request = new RestRequest("user/discord", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { discord = discord });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("user/discord", Method.Post);
+                
+                request.AddJsonBody(new { discord = discord });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    DataCache.RetrieveUser();
+                    return true;
+                }
                 EndWaiting();
-                DataCache.RetrieveUser();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
-        public static async Task<bool> SetUbisoftID(string ubisoft_id)
+        public static bool SetUbisoftID(string ubisoft_id)
         {
-            Waiting();
-            var request = new RestRequest("user/ubisoft", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { ubisoft_id = ubisoft_id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request = RestHandler.GetRequest("user/ubisoft", Method.Post);
+
+                request.AddJsonBody(new { ubisoft_id = ubisoft_id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         #endregion
@@ -292,57 +291,66 @@ namespace xstrat
         #region Maps
         public static async Task<List<Models.Supabase.Map>> GetMapsAsync()
         {
-            Waiting();
-            var request = new RestRequest("maps", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var maps = JsonConvert.DeserializeObject<List<Models.Supabase.Map>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("maps", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var maps = JsonConvert.DeserializeObject<List<Models.Supabase.Map>>(response.Content);
 
+                    EndWaiting();
+                    return maps;
+                }
                 EndWaiting();
-                return maps;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
         #endregion
 
         #region Operators
         public static async Task<List<Models.Supabase.Operator>> GetOperatorsAsync()
         {
-            Waiting();
-            var request = new RestRequest("operators", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var operators = JsonConvert.DeserializeObject<List<Models.Supabase.Operator>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("operators", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var operators = JsonConvert.DeserializeObject<List<Models.Supabase.Operator>>(response.Content);
 
+                    EndWaiting();
+                    return operators;
+                }
                 EndWaiting();
-                return operators;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
         #endregion
 
         #region Positions
         public static async Task<List<Models.Supabase.Position>> GetPositionsAsync()
         {
-            Waiting();
-            var request = new RestRequest("position", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var positions = JsonConvert.DeserializeObject<List<Models.Supabase.Position>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("position", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var positions = JsonConvert.DeserializeObject<List<Models.Supabase.Position>>(response.Content);
 
+                    EndWaiting();
+                    return positions;
+                }
                 EndWaiting();
-                return positions;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
         #endregion
 
@@ -350,19 +358,22 @@ namespace xstrat
 
         public static async Task<List<Models.Supabase.Game>> GetGamesAsync()
         {
-            Waiting();
-            var request = new RestRequest("game", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var game = JsonConvert.DeserializeObject<List<Models.Supabase.Game>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("game", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var game = JsonConvert.DeserializeObject<List<Models.Supabase.Game>>(response.Content);
 
+                    EndWaiting();
+                    return game;
+                }
                 EndWaiting();
-                return game;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         #endregion
@@ -373,111 +384,127 @@ namespace xstrat
 
         public static async Task<bool> GetAdminStatus()
         {
-            Waiting();
-            var request = new RestRequest("user/teamadminstatus", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var isAdmin = JsonConvert.DeserializeObject<bool>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("user/teamadminstatus", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var isAdmin = JsonConvert.DeserializeObject<bool>(response.Content);
 
+                    EndWaiting();
+                    return isAdmin;
+                }
                 EndWaiting();
-                return isAdmin;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         public static async Task<bool> JoinTeam(string id, string pw)
         {
-            Waiting();
-            var request = new RestRequest("team/join", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { password = pw, team_id = id });
+            using (RestClient client = new RestClient("https://localhost:44322"))
+            {
+                Waiting();
+                var request =RestHandler.GetRequest("team/join", Method.Post);
+                
+                request.AddJsonBody(new { password = pw, team_id = id });
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-            {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    EndWaiting();
+                    return true;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Notify.sendError("Invalid id or password");
+                    EndWaiting();
+                    return false;
+                }
                 EndWaiting();
-                return true;
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                Notify.sendError("Invalid id or password");
-                EndWaiting();
+                Notify.sendError("DB Error");
                 return false;
             }
-            EndWaiting();
-            Notify.sendError("DB Error");
-            return false;
         }
 
         public static async Task LeaveTeam()
         {
-            Waiting();
-            var request = new RestRequest("team/leave", Method.Get);
-            request.RequestFormat = DataFormat.Json;
+            using (RestClient client = new RestClient("https://localhost:44322"))
+            {
+                Waiting();
+                var request =RestHandler.GetRequest("team/leave", Method.Get);
+                
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-            {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
-                Notify.sendSuccess("Team left sucessfully");
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    Notify.sendSuccess("Team left sucessfully");
+                }
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Notify.sendError("You cannot leave the team as you are the team admin");
+                }
+                EndWaiting();
             }
-            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                Notify.sendError("You cannot leave the team as you are the team admin");
-            }
-            EndWaiting();
         }
 
         public static async Task<bool> NewTeam(string name, string igame_id)
         {
-            var request = new RestRequest("team/new", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { name = name, game_id = igame_id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
+                var request =RestHandler.GetRequest("team/new", Method.Post);
+                
+                request.AddJsonBody(new { name = name, game_id = igame_id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         public static async Task<bool> RenameTeamAsync(string _newname)
         {
-            var request = new RestRequest("team/rename", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { name = _newname });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
+                var request =RestHandler.GetRequest("team/rename", Method.Post);
+                
+                request.AddJsonBody(new { name = _newname });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         public static async Task<List<Models.Supabase.UserData>> GetTeamMembersAsync()
         {
             Waiting();
-            using(RestClient client = new RestClient("https://localhost:44322")) {
+            using (RestClient client = new RestClient("https://localhost:44322"))
+            {
 
-                var request = new RestRequest("team/members", Method.Get);
+                var request =RestHandler.GetRequest("team/members", Method.Get);
                 request.Timeout = 1000;
-                request.RequestFormat = DataFormat.Json;
+                
                 var response = client.Execute(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
@@ -489,62 +516,71 @@ namespace xstrat
                 EndWaiting();
                 return null;
             }
-            
+
         }
 
         public static async Task<Models.Supabase.Team> GetTeamInfoAsync()
         {
-            Waiting();
-            var request = new RestRequest("team", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var team = JsonConvert.DeserializeObject<Models.Supabase.Team>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("team", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var team = JsonConvert.DeserializeObject<Models.Supabase.Team>(response.Content);
 
+                    EndWaiting();
+                    return team;
+                }
                 EndWaiting();
-                return team;
+                return null;
             }
-            EndWaiting();
-            return null;
 
         }
 
         public static async Task<bool> DeleteTeam()
         {
-            Waiting();
-            var request = new RestRequest("team/delete", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
+                Waiting();
+                var request =RestHandler.GetRequest("team/delete", Method.Post);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         public static async Task<bool> SetDiscordAdminSettings(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay, int use_on_days)
         {
-            Waiting();
-            var request = new RestRequest("team/adminsettings", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { webhook = webhook, sn_created = sn_created, sn_changed = sn_changed, sn_weekly = sn_weekly, sn_soon = sn_soon, sn_delay = sn_delay, use_on_days = use_on_days });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveTeam();
-                DataCache.RetrieveTeamMates();
+                Waiting();
+                var request =RestHandler.GetRequest("team/adminsettings", Method.Post);
+                
+                request.AddJsonBody(new { webhook = webhook, sn_created = sn_created, sn_changed = sn_changed, sn_weekly = sn_weekly, sn_soon = sn_soon, sn_delay = sn_delay, use_on_days = use_on_days });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveTeam();
+                    DataCache.RetrieveTeamMates();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         #endregion
@@ -556,19 +592,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> NewRoutine()
         {
-            Waiting();
-            var request = new RestRequest("routine/new", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveRoutines();
+                Waiting();
+                var request =RestHandler.GetRequest("routine/new", Method.Post);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveRoutines();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
 
         }
 
@@ -579,20 +618,23 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteRoutine(string id)
         {
-            Waiting();
-            var request = new RestRequest("routine/delete", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { routine_id = id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveRoutines();
+                Waiting();
+                var request =RestHandler.GetRequest("routine/delete", Method.Post);
+                
+                request.AddJsonBody(new { routine_id = id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveRoutines();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         /// <summary>
@@ -601,19 +643,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<Models.Supabase.Routine>> GetRoutinesAsync()
         {
-            Waiting();
-            var request = new RestRequest("routine", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var routines = JsonConvert.DeserializeObject<List<Models.Supabase.Routine>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("routine", Method.Get);
+                
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var routines = JsonConvert.DeserializeObject<List<Models.Supabase.Routine>>(response.Content);
 
+                    EndWaiting();
+                    return routines;
+                }
                 EndWaiting();
-                return routines;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         /// <summary>
@@ -625,20 +670,23 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> UpdateRoutineAsync(string ntitle, string ncontent, string n_id)
         {
-            Waiting();
-            var request = new RestRequest("routine/update", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { title = ntitle, content = ncontent, routine_id = n_id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                DataCache.RetrieveRoutines();
+                Waiting();
+                var request =RestHandler.GetRequest("routine/update", Method.Post);
+                
+                request.AddJsonBody(new { title = ntitle, content = ncontent, routine_id = n_id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    DataCache.RetrieveRoutines();
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
         #endregion
 
@@ -649,19 +697,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> NewOffDay(int typ, string title, string start, string end)
         {
-            Waiting();
-            var request = new RestRequest("calendarblock/new", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { typ = typ, title = title, start = start, end = end });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("calendarblock/new", Method.Post);
+                
+                request.AddJsonBody(new { typ = typ, title = title, start = start, end = end });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return (true, response.Content);
+                }
                 EndWaiting();
-                return (true, response.Content);
+                return (false, "db error");
             }
-            EndWaiting();
-            return (false, "db error");
         }
 
         /// <summary>
@@ -671,19 +722,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> DeleteOffDay(string id)
         {
-            Waiting();
-            var request = new RestRequest("calendarblock/delete", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { event_id = id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("calendarblock/delete", Method.Post);
+                
+                request.AddJsonBody(new { event_id = id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return (true, response.Content);
+                }
                 EndWaiting();
-                return (true, response.Content);
+                return (false, "db error");
             }
-            EndWaiting();
-            return (false, "db error");
         }
 
 
@@ -693,7 +747,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarBlock>> GetUserOffDays()
         {
-            var userCalendarBlocks = (await GetTeamOffDays()).Where(x => x.Id == DataCache.CurrentUser.Id);
+            var userCalendarBlocks = (await GetTeamOffDays()).EmptyIfNull().Where(x => x.Id == DataCache.CurrentUser.Id);
             return userCalendarBlocks.ToList();
         }
 
@@ -703,20 +757,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarBlock>> GetTeamOffDays()
         {
-
-            Waiting();
-            var request = new RestRequest("calendarblock", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var blocks = JsonConvert.DeserializeObject<List<CalendarBlock>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("calendarblock", Method.Get);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var blocks = JsonConvert.DeserializeObject<List<CalendarBlock>>(response.Content);
+                    EndWaiting();
+                    return blocks;
+                }
                 EndWaiting();
-                return blocks;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         /// <summary>
@@ -728,25 +784,28 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SaveOffDay(string id, int typ, string title, DateTime start, DateTime end)
         {
-            Waiting();
-            var request = new RestRequest("calendarblock/update", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            if (typ == 1)
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                start = start.SetTime(0, 0, 0);
-                end = end.SetTime(23, 59, 59);
-            }
+                Waiting();
+                var request =RestHandler.GetRequest("calendarblock/update", Method.Post);
+                
+                if (typ == 1)
+                {
+                    start = start.SetTime(0, 0, 0);
+                    end = end.SetTime(23, 59, 59);
+                }
 
-            request.AddJsonBody(new { id = id, typ = typ, title = title, start = start, end = end });
+                request.AddJsonBody(new { id = id, typ = typ, title = title, start = start, end = end });
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-            {
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
         #endregion
 
@@ -759,20 +818,23 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<CalendarEvent> NewScrim(int typ, string title, string opponent_name, string time_start, string time_end, int event_type)
         {
-            Waiting();
-            var request = new RestRequest("calendarevent/new", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = time_start, time_end = time_end, event_type = event_type });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var calendarEvent = JsonConvert.DeserializeObject<CalendarEvent>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent/new", Method.Post);
+                
+                request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = time_start, time_end = time_end, event_type = event_type });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var calendarEvent = JsonConvert.DeserializeObject<CalendarEvent>(response.Content);
+                    EndWaiting();
+                    return calendarEvent;
+                }
                 EndWaiting();
-                return calendarEvent;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         /// <summary>
@@ -782,19 +844,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteScrim(string id)
         {
-            Waiting();
-            var request = new RestRequest("calendarevent/delete", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { scrim_id = id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent/delete", Method.Post);
+                
+                request.AddJsonBody(new { scrim_id = id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
 
@@ -804,19 +869,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarEvent>> GetTeamScrims()
         {
-            Waiting();
-            var request = new RestRequest("calendarevent", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var cal = JsonConvert.DeserializeObject<List<CalendarEvent>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent", Method.Get);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var cal = JsonConvert.DeserializeObject<List<CalendarEvent>>(response.Content);
+                    EndWaiting();
+                    return cal;
+                }
                 EndWaiting();
-                return cal;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         /// <summary>
@@ -828,19 +896,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SaveScrim(string id, string title, string comment, string time_start, string time_end, string opponent_name, string map_1_id, string map_2_id, string map_3_id, int typ, int event_type)
         {
-            Waiting();
-            var request = new RestRequest("calendarevent/update", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { scrim_id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent/update", Method.Post);
+                
+                request.AddJsonBody(new { scrim_id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         /// <summary>
@@ -854,19 +925,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SetScrimResponse(string scrim_id, int typ)
         {
-            Waiting();
-            var request = new RestRequest("calendarevent/response", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { scrim_id = scrim_id, typ = typ });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent/response", Method.Post);
+                
+                request.AddJsonBody(new { scrim_id = scrim_id, typ = typ });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         /// <summary>
@@ -878,19 +952,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarEventResponse>> GetScrimResponse()
         {
-            Waiting();
-            var request = new RestRequest("calendarevent/responses", Method.Get);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var responses = JsonConvert.DeserializeObject<List<CalendarEventResponse>>(response.Content);
+                Waiting();
+                var request =RestHandler.GetRequest("calendarevent/responses", Method.Get);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    var responses = JsonConvert.DeserializeObject<List<CalendarEventResponse>>(response.Content);
+                    EndWaiting();
+                    return responses;
+                }
                 EndWaiting();
-                return responses;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
         #endregion
@@ -914,11 +991,11 @@ namespace xstrat
             else
             {
                 Waiting();
-                var request = new RestRequest("tracker/stats", Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                var request =RestHandler.GetRequest("tracker/stats", Method.Post);
+                
                 request.AddJsonBody(new { username = username, region = region });
 
-                var response = await Client.ExecuteAsync<RestResponse>(request);
+                var response = Client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
@@ -941,11 +1018,11 @@ namespace xstrat
             else
             {
                 Waiting();
-                var request = new RestRequest("user/scrimresponsestats", Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                var request =RestHandler.GetRequest("user/scrimresponsestats", Method.Post);
+                
                 request.AddJsonBody(new { user_id = user_id });
 
-                var response = await Client.ExecuteAsync<RestResponse>(request);
+                var response = Client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
@@ -975,11 +1052,11 @@ namespace xstrat
             else
             {
                 Waiting();
-                var request = new RestRequest("tracker/statsbyallseasons", Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                var request =RestHandler.GetRequest("tracker/statsbyallseasons", Method.Post);
+                
                 request.AddJsonBody(new { username = username, region = region });
 
-                var response = await Client.ExecuteAsync<RestResponse>(request);
+                var response = Client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
@@ -1007,11 +1084,11 @@ namespace xstrat
             else
             {
                 Waiting();
-                var request = new RestRequest("tracker/statsbyoperator", Method.Post);
-                request.RequestFormat = DataFormat.Json;
+                var request =RestHandler.GetRequest("tracker/statsbyoperator", Method.Post);
+                
                 request.AddJsonBody(new { username = username, team = "attacker,defender" });
 
-                var response = await Client.ExecuteAsync<RestResponse>(request);
+                var response = Client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
@@ -1042,10 +1119,10 @@ namespace xstrat
             else
             {
                 Waiting();
-                var request = new RestRequest("/license/status", Method.Get);
-                request.RequestFormat = DataFormat.Json;
+                var request =RestHandler.GetRequest("/license/status", Method.Get);
+                
 
-                var response = await Client.ExecuteAsync<RestResponse>(request);
+                var response = Client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
@@ -1066,11 +1143,11 @@ namespace xstrat
         {
             RemoveFromCache("GetLicenseStatus");
             Waiting();
-            var request = new RestRequest("/license/activate", Method.Post);
-            request.RequestFormat = DataFormat.Json;
+            var request =RestHandler.GetRequest("/license/activate", Method.Post);
+            
             request.AddJsonBody(new { key = key });
 
-            var response = await Client.ExecuteAsync<RestResponse>(request);
+            var response = Client.Execute<RestResponse>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
             {
                 EndWaiting();
@@ -1095,19 +1172,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> NewStrat(string name, string game_id, string map_id, string position_id, int version, string content)
         {
-            Waiting();
-            var request = new RestRequest("strat/new", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { name = name, game_id = game_id, map_id = map_id, position_id = position_id, version = version, content = content });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("strat/new", Method.Post);
+                
+                request.AddJsonBody(new { name = name, game_id = game_id, map_id = map_id, position_id = position_id, version = version, content = content });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return (true, response.Content);
+                }
                 EndWaiting();
-                return (true, response.Content);
+                return (false, "db error");
             }
-            EndWaiting();
-            return (false, "db error");
         }
 
         /// <summary>
@@ -1117,19 +1197,22 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteStrat(string strat_id)
         {
-            Waiting();
-            var request = new RestRequest("strat/delete", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { strat_id = strat_id });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                Waiting();
+                var request =RestHandler.GetRequest("strat/delete", Method.Post);
+                
+                request.AddJsonBody(new { strat_id = strat_id });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
 
@@ -1139,18 +1222,21 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<Strat>> GetStrats()
         {
-            var request = new RestRequest("strat", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                var request =RestHandler.GetRequest("strat", Method.Post);
+                
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    var strats = JsonConvert.DeserializeObject<List<Strat>>(response.Content);
+                    return strats;
+                }
                 EndWaiting();
-                var strats = JsonConvert.DeserializeObject<List<Strat>>(response.Content);
-                return strats;
+                return null;
             }
-            EndWaiting();
-            return null;
         }
 
 
@@ -1163,22 +1249,25 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SaveStrat(string strat_id, string name, string map_id, string position_id, int version, string content)
         {
-            //compress
-            content = Globals.CompressString(content);
-
-            Waiting();
-            var request = new RestRequest("strat/save", Method.Post);
-            request.RequestFormat = DataFormat.Json;
-            request.AddJsonBody(new { strat_id = strat_id, name = name, map_id = map_id, position_id = position_id, version = version, content = content });
-
-            var response = await Client.ExecuteAsync<RestResponse>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            using (RestClient client = new RestClient("https://localhost:44322"))
             {
+                //compress
+                content = Globals.CompressString(content);
+
+                Waiting();
+                var request =RestHandler.GetRequest("strat/save", Method.Post);
+                
+                request.AddJsonBody(new { strat_id = strat_id, name = name, map_id = map_id, position_id = position_id, version = version, content = content });
+
+                var response = client.Execute<RestResponse>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+                {
+                    EndWaiting();
+                    return true;
+                }
                 EndWaiting();
-                return true;
+                return false;
             }
-            EndWaiting();
-            return false;
         }
 
         #endregion

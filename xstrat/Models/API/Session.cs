@@ -9,22 +9,22 @@ namespace xstrat.Models.API
 {
     public class Session
     {
-        [JsonProperty("accessToken")]
+        [JsonProperty("access_token")]
         public string? AccessToken { get; set; }
 
-        [JsonProperty("expiresIn")]
+        [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
 
-        [JsonProperty("refreshToken")]
+        [JsonProperty("refresh_token")]
         public string? RefreshToken { get; set; }
 
-        [JsonProperty("tokenType")]
+        [JsonProperty("token_type")]
         public string? TokenType { get; set; }
 
         [JsonProperty("user")]
         public User? User { get; set; }
 
-        [JsonProperty("createdAt")]
+        [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 

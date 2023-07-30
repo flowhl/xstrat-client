@@ -61,8 +61,8 @@ namespace xstrat.Ui
             if (TeamInfo != null)
             {
                 TeamName.Content = TeamInfo.Name;
-                AdminName.Content = "Admin: " + TeamInfo.AdminUserID;
-                GameName.Content = "Game: " + TeamInfo.GameID;
+                AdminName.Content = "Admin: " + TeamInfo.AdminName;
+                GameName.Content = "Game: " + TeamInfo.GameName;
             }
 
         }
@@ -105,7 +105,7 @@ namespace xstrat.Ui
         private async Task RetrieveColorAsync()
         {
 
-            ColorPickerUI.SelectedColor = (Color)ColorConverter.ConvertFromString(DataCache.CurrentUser.Color);
+            ColorPickerUI.SelectedColor = (Color)ColorConverter.ConvertFromString(DataCache.CurrentUser?.Color ?? "#FF1234");
         }
         private async Task SaveColorAsync()
         {
@@ -135,7 +135,7 @@ namespace xstrat.Ui
         }
         private async Task JoinPWAdminBtn_ClickAsync()
         {
-            if(DataCache.CurrentTeam == null || DataCache.CurrentTeam.Password.IsNotNullOrEmpty())
+            if(DataCache.CurrentTeam == null || DataCache.CurrentTeam.Password.IsNullOrEmpty())
             {
                 Notify.sendError("No Team or Join Password found!");
                 Logger.Log("No Team or Join Password found!");

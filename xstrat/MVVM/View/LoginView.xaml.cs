@@ -65,7 +65,7 @@ namespace xstrat.MVVM.View
                     return;
                 }
 
-                ApiHandler.CurrentSession = session;
+                RestHandler.CurrentSession = session;
 
                 string baerer = session.AccessToken;
                 string user_id = session.User.Id;

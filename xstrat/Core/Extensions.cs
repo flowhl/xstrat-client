@@ -28,4 +28,12 @@ namespace xstrat
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, hour, minute, second, dateTime.Kind);
         }
     }
+    public static class ListExtensions
+    {
+        // Extension method to make the list empty if it's null
+        public static List<T> EmptyIfNull<T>(this List<T> list)
+        {
+            return list ?? new List<T>();
+        }
+    }
 }

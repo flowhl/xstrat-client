@@ -47,14 +47,14 @@ namespace xstrat.Ui
         private async void NewOffDay_Click(object sender, RoutedEventArgs e)
         {
             DateTime dt = DateTime.Now;
-            (bool, string) result = await ApiHandler.NewOffDay(0, "Title", dt.ToString("yyyy'/'MM'/'dd' 'HH:mm:ss"), dt.AddHours(1).ToString("yyyy'/'MM'/'dd' 'HH:mm:ss"));
-            if (result.Item1)
+            bool result = await ApiHandler.NewOffDay(0, "Title", dt.ToString("yyyy'/'MM'/'dd' 'HH:mm:ss"), dt.AddHours(1).ToString("yyyy'/'MM'/'dd' 'HH:mm:ss"));
+            if (result)
             {
                 RetrieveOffDays();
             }
             else
             {
-                Notify.sendError("Could not save new off day: " + result.Item2);
+                Notify.sendError("Could not save new entry");
             }
         }
 
@@ -117,9 +117,9 @@ namespace xstrat.Ui
                 ODList.Children.Add(od);
             }
         }
-        private async void RetrieveOffDays()
+        private void RetrieveOffDays()
         {
-            var result = await ApiHandler.GetUserOffDays();
+            var result = ApiHandler.GetUserOffDays();
 
             offDays = result;
 

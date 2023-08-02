@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
+using xstrat.Models.Supabase;
 
 namespace xstrat.Ui
 {
@@ -143,7 +144,18 @@ namespace xstrat.Ui
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(type == 1)
+            if (EventTypeSelector.selectedEventType == null)
+            {
+                Notify.sendError("You need to set a Type first");
+                return;
+
+            }
+            if (ScrimModeSelector.selectedScrimMode == null)
+            {
+                Notify.sendError("You need to set a Mode first");
+                return;
+            }
+            if (type == 1)
             {
                 DateTime tempdate = CalendarDatePicker.SelectedDate.GetValueOrDefault();
                 if(tempdate == null)
@@ -201,7 +213,7 @@ namespace xstrat.Ui
 
 
                 string scrim_id = null;
-                var result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end, EventTypeSelector.selectedEventType.id);
+                CalendarEvent result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end, EventTypeSelector.selectedEventType.id);
                 if (result != null)
                 {
                     scrim_id = result.Id;

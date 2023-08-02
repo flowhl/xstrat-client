@@ -208,8 +208,7 @@ namespace xstrat.Ui
                     ucParent = LogicalTreeHelper.GetParent(ucParent);
                 }
                 var sv = ucParent as ScrimView;
-                sv.RetrieveScrims();
-                sv.UpdateScrimList();
+                sv.Retrieve();
             }
         }
 

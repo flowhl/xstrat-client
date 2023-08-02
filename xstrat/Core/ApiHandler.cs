@@ -695,7 +695,7 @@ namespace xstrat
         /// adds new routine to db by api call
         /// </summary>
         /// <returns></returns>
-        public static async Task<(bool, string)> NewOffDay(int typ, string title, string start, string end)
+        public static async Task<bool> NewOffDay(int typ, string title, string start, string end)
         {
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
@@ -708,10 +708,11 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
-                    return (true, response.Content);
+                    DataCache.RetrieveCalendarBlocks();
+                    return true;
                 }
                 EndWaiting();
-                return (false, "db error");
+                return false;
             }
         }
 
@@ -725,14 +726,15 @@ namespace xstrat
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
-                var request =RestHandler.GetRequest("calendarblock/delete", Method.Post);
+                var request =RestHandler.GetRequest("calendarblock/delete", Method.Delete);
                 
-                request.AddJsonBody(new { event_id = id });
+                request.AddJsonBody(new { block_id = id });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveCalendarBlocks();
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -745,10 +747,9 @@ namespace xstrat
         /// Loads all routines by api call
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<CalendarBlock>> GetUserOffDays()
+        public static List<CalendarBlock>GetUserOffDays()
         {
-            var userCalendarBlocks = (await GetTeamOffDays()).EmptyIfNull().Where(x => x.Id == DataCache.CurrentUser.Id);
-            return userCalendarBlocks.ToList();
+            return DataCache.CurrentCalendarBlocks.Where(x => x.UserId == DataCache.CurrentUser.Id).ToList();
         }
 
         /// <summary>
@@ -760,7 +761,7 @@ namespace xstrat
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
-                var request =RestHandler.GetRequest("calendarblock", Method.Get);
+                    var request =RestHandler.GetRequest("calendarblock", Method.Get);
                 
 
                 var response = client.Execute<RestResponse>(request);
@@ -801,6 +802,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveCalendarBlocks();
                     return true;
                 }
                 EndWaiting();
@@ -829,6 +831,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     var calendarEvent = JsonConvert.DeserializeObject<CalendarEvent>(response.Content);
+                    DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return calendarEvent;
                 }
@@ -847,13 +850,14 @@ namespace xstrat
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
-                var request =RestHandler.GetRequest("calendarevent/delete", Method.Post);
+                var request =RestHandler.GetRequest("calendarevent/delete", Method.Delete);
                 
-                request.AddJsonBody(new { scrim_id = id });
+                request.AddJsonBody(new { id = id });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
+                    DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return true;
                 }
@@ -901,11 +905,12 @@ namespace xstrat
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/update", Method.Post);
                 
-                request.AddJsonBody(new { scrim_id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
+                request.AddJsonBody(new { id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
+                    DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return true;
                 }
@@ -930,12 +935,13 @@ namespace xstrat
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/response", Method.Post);
                 
-                request.AddJsonBody(new { scrim_id = scrim_id, typ = typ });
+                request.AddJsonBody(new { event_id = scrim_id, response_type = typ });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveCalendarEventResponses();
                     return true;
                 }
                 EndWaiting();
@@ -950,7 +956,7 @@ namespace xstrat
         /// 2 deny
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<CalendarEventResponse>> GetScrimResponse()
+        public static async Task<List<CalendarEventResponse>> GetCalendarEventResponsesAsync()
         {
             using (RestClient client = new RestClient("https://localhost:44322"))
             {

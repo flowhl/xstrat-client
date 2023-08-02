@@ -203,6 +203,9 @@ namespace xstrat
             IsLoggedIn = true;
             Notify.ResumeLogging();
             Globals.Init();
+            DataCache.RetrieveUser();
+            DataCache.RetrieveTeam();
+            DataCache.RetrieveTeamMates();
         }
         public void RegisterComplete()
         {

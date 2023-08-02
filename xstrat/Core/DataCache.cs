@@ -82,7 +82,9 @@ namespace xstrat.Core
 
         public static async Task RetrieveTeamMates()
         {
-            CurrentTeamMates = await ApiHandler.GetTeamMembersAsync();
+            var task = ApiHandler.GetTeamMembersAsync();
+            task.Wait();
+            CurrentTeamMates = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -108,7 +110,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetMapsAsync();
             task.Wait();
-            CurrentMaps = task.Result;
+            CurrentMaps = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -134,7 +136,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetOperatorsAsync();
             task.Wait();
-            CurrentOperators = task.Result;
+            CurrentOperators = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -160,7 +162,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetGamesAsync();
             task.Wait();
-            CurrentGames = task.Result;
+            CurrentGames = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -186,7 +188,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetPositionsAsync();
             task.Wait();
-            CurrentPositions = task.Result;
+            CurrentPositions = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -212,7 +214,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetRoutinesAsync();
             task.Wait();
-            CurrentRoutines = task.Result;
+            CurrentRoutines = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -238,7 +240,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetTeamOffDays();
             task.Wait();
-            CurrentCalendarBlocks = task.Result;
+            CurrentCalendarBlocks = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -264,7 +266,7 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetTeamScrims();
             task.Wait();
-            CurrentCalendarEvents = task.Result;
+            CurrentCalendarEvents = task.Result.EmptyIfNull();
         }
         #endregion
 
@@ -290,7 +292,34 @@ namespace xstrat.Core
         {
             var task = ApiHandler.GetStrats();
             task.Wait();
-            CurrentStrats = task.Result;
+            CurrentStrats = task.Result.EmptyIfNull();
+        }
+        #endregion
+
+
+        #region CalendarEventResponses
+        public static List<CalendarEventResponse> _currentCalendarEventResponses;
+        public static List<CalendarEventResponse> CurrentCalendarEventResponses
+        {
+            get
+            {
+                if (_currentCalendarEventResponses == null)
+                {
+                    RetrieveCalendarEventResponses();
+                }
+                return _currentCalendarEventResponses;
+            }
+            set
+            {
+                _currentCalendarEventResponses = value;
+            }
+        }
+
+        public static void RetrieveCalendarEventResponses()
+        {
+            var task = ApiHandler.GetCalendarEventResponsesAsync();
+            task.Wait();
+            CurrentCalendarEventResponses = task.Result.EmptyIfNull();
         }
         #endregion
     }

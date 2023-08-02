@@ -42,7 +42,7 @@ namespace xstrat.MVVM.View
 
 
         private List<CalendarBlock> CalendarBlocks = new List<CalendarBlock>();
-        private List<CalendarEvent> scrims = new List<CalendarEvent>();
+        private List<CalendarEvent> Scrims = new List<CalendarEvent>();
         public List<ICalendarEvent> _events;
         public List<ICalendarEvent> Events
         {
@@ -76,13 +76,8 @@ namespace xstrat.MVVM.View
             // set date of first example event to +- middle of month
             DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 15);
 
-            // add example events
             Events = new List<ICalendarEvent>();
-            //Events.Add(new CalendarEntry() { DateFrom = DateTime.Now.AddDays(6), DateTo = DateTime.Now.AddDays(6).AddHours(1), Label = "Scrim", typ = 0 });
-            RetrieveCalendarBlocks();
-            RetrieveScrims();
-            // draw days with events calendar
-            CalendarMonthUI.DrawDays();
+            Retrieve();
 
             // subscribe to double cliked event
             CalendarMonthUI.CalendarEventDoubleClickedEvent += Calendar_CalendarEventDoubleClickedEvent;
@@ -130,10 +125,10 @@ namespace xstrat.MVVM.View
 
         public void UpdateScrimList()
         {
-            if (scrims != null && scrims.Count > 0)
+            if (Scrims != null && Scrims.Count > 0)
             {
                 ScrimListPanel.Children.Clear();
-                foreach (var scrim in scrims)
+                foreach (var scrim in Scrims)
                 {
                     if (scrim.End > DateTime.Now)
                     {
@@ -145,6 +140,13 @@ namespace xstrat.MVVM.View
 
         private void ResponseWindow_Closing(object sender, CancelEventArgs e)
         {
+            Retrieve();
+        }
+
+        public void Retrieve()
+        {
+            Events.Clear();
+            RetrieveCalendarBlocks();
             RetrieveScrims();
             CalendarMonthUI.DrawDays();
         }
@@ -168,14 +170,13 @@ namespace xstrat.MVVM.View
             await Task.Delay(100);
 
             CalendarMonthUI.DrawDays();
-
         }
 
         public async void RetrieveScrims()
         {
-            scrims = DataCache.CurrentCalendarEvents;
+            Scrims = DataCache.CurrentCalendarEvents;
 
-            foreach (var sc in scrims)
+            foreach (var sc in Scrims)
             {
                 MakeCalendarEntry(sc);
             }
@@ -657,14 +658,12 @@ namespace xstrat.MVVM.View
 
         private void Response_Closed(object sender, EventArgs e)
         {
-            RetrieveScrims();
-            UpdateScrimList();
+            Retrieve();
         }
 
         private void ReloadBtn_Click(object sender, RoutedEventArgs e)
         {
-            RetrieveScrims();
-            UpdateScrimList();
+            Retrieve();
         }
     }
 }

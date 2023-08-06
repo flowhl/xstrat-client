@@ -106,6 +106,7 @@ namespace xstrat.Ui
                 }
                 DeleteBtn.Visibility = Visibility.Collapsed;
                 EventTypeSelector.SelectIndexWhenLoaded(0);
+                EventTypeSelector.SelectIndex(0);
             }
             else if(type == 1)
             {
@@ -124,22 +125,19 @@ namespace xstrat.Ui
                 MapSelector3.SelectIndexWhenLoaded(DataCache.CurrentMaps.IndexOf(DataCache.CurrentMaps.Where(x => x.Id == scrim.Map3Id).FirstOrDefault()));
                 CreatorLabel.Content = DataCache.CurrentTeamMates.Where(x => x.Id == scrim.CreatedUser).FirstOrDefault().Name;
                 CreationDateLabel.Content = scrim.CreatedAt.ToString().Replace("T", " ").Replace("Z", "");
-                if (!Globals.AdminUser)
+                if (DataCache.CurrentTeam.AdminUserID != DataCache.CurrentUser.Id)
                 {
                     DeleteBtn.Visibility = Visibility.Collapsed;
                 }
-                EventTypeSelector.Loaded += EventTypeSelector_Loaded;
+                EventTypeSelector.SelectIndex(scrim.EventType);
+                ScrimModeSelector.SelectIndex(scrim.Typ);
+                EventTypeSelector.SelectIndexWhenLoaded(scrim.EventType);
+                ScrimModeSelector.SelectIndexWhenLoaded(scrim.Typ);
             }
             if(PlayerStack.Children.Count < 1)
             {
                 UserViewer.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private void EventTypeSelector_Loaded(object sender, RoutedEventArgs e)
-        {
-            EventTypeSelector.Loaded -= EventTypeSelector_Loaded;
-            EventTypeSelector.SelectIndexWhenLoaded(scrim.EventType);
         }
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -164,10 +162,8 @@ namespace xstrat.Ui
                     return;
                 }
 
-                string start = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                string end = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                start = start.Replace(".", "/").Replace("-", "/");
-                end = end.Replace(".", "/").Replace("-", "/");
+                DateTime start = tempdate.SetTime(FromHour.Value, FromMinute.Value, 0);
+                DateTime end = tempdate.SetTime(ToHour.Value, ToMinute.Value, 0);
 
                 string map1 = null;
                 if (MapSelector1.SelectedMap != null)
@@ -206,11 +202,8 @@ namespace xstrat.Ui
                     return;
                 }
 
-                string start = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + FromHour.Value.ToString().PadLeft(2, '0') + ":" + FromMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                string end = tempdate.ToString("yyyy/MM/dd HH:mm:ss").Split(' ')[0] + " " + ToHour.Value.ToString().PadLeft(2, '0') + ":" + ToMinute.Value.ToString().PadLeft(2, '0') + ":00";
-                start = start.Replace(".", "/").Replace("-", "/");
-                end = end.Replace(".", "/").Replace("-", "/");
-
+                DateTime start = tempdate.SetTime(FromHour.Value, FromMinute.Value, 0);
+                DateTime end = tempdate.SetTime(ToHour.Value, ToMinute.Value, 0);
 
                 string scrim_id = null;
                 CalendarEvent result = await ApiHandler.NewScrim(ScrimModeSelector.selectedScrimMode.id, TitleBox.Text, OpponentNameBox.Text, start, end, EventTypeSelector.selectedEventType.id);

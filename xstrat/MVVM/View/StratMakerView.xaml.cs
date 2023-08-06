@@ -592,7 +592,7 @@ namespace xstrat.MVVM.View
             foreach (var teamMate in DataCache.CurrentTeamMates)
             {
                 Button newBtn = new Button();
-                newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(teamMate.Name);
+                newBtn.Name = "Color_" + Globals.RemoveIllegalCharactersFromName(teamMate.Name.RemoveAllWhitespace());
                 newBtn.Tag = teamMate;
                 newBtn.Background = teamMate.Color.ToSolidColorBrush();
                 newBtn.BorderThickness = new Thickness(0);
@@ -618,7 +618,7 @@ namespace xstrat.MVVM.View
         private void ColorBtnClicked(object sender, RoutedEventArgs e)
         {
             string user = (sender as Button).Name.Replace("Color_", "");
-            UserData teammate = DataCache.CurrentTeamMates.Where(x => x.Id == Globals.GetUserIdFromName(user)).FirstOrDefault();
+            UserData teammate = DataCache.CurrentTeamMates.Where(x => Globals.RemoveIllegalCharactersFromName(x.Name).RemoveAllWhitespace() == user).FirstOrDefault();
             CurrentBrush = teammate.Color.ToSolidColorBrush();
             DeselectAllColors();
             (sender as Button).BorderThickness = new Thickness(2);

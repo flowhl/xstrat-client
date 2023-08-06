@@ -20,6 +20,11 @@ namespace xstrat
         {
             return string.IsNullOrWhiteSpace(str);
         }
+        public static string RemoveAllWhitespace(this string str)
+        {
+            if (str == null) return null;
+            return string.Concat(str.Where(c => !char.IsWhiteSpace(c)));
+        }
     }
     public static class DateTimeExtensions
     {

@@ -161,7 +161,7 @@ namespace xstrat.Ui
 
             }
             //TODO: Fix
-            //Status = scrim.response_typ.GetValueOrDefault(0);
+            Status = DataCache.CurrentCalendarEventResponses.Where(x => x.CalendarEventID == scrim.Id && x.UserId == DataCache.CurrentUser.Id).FirstOrDefault()?.ResponseTyp ?? 0;
             StatusChanged();
         }
 

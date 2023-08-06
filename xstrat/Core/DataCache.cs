@@ -70,7 +70,7 @@ namespace xstrat.Core
             {
                 if (_currentTeamMates == null)
                 {
-                    RetrieveTeamMates().Wait();
+                    RetrieveTeamMates();
                 }
                 return _currentTeamMates;
             }
@@ -80,7 +80,7 @@ namespace xstrat.Core
             }
         }
 
-        public static async Task RetrieveTeamMates()
+        public static void RetrieveTeamMates()
         {
             var task = ApiHandler.GetTeamMembersAsync();
             task.Wait();

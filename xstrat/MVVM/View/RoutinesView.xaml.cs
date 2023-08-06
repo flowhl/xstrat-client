@@ -43,6 +43,7 @@ namespace xstrat.MVVM.View
         public void Retrieve()
         {
             Routines = DataCache.CurrentRoutines.ToList();
+            UpdateUI();
         }
 
         private void addRoutines()

@@ -117,7 +117,7 @@ namespace xstrat.MVVM.View
 
         private void RetrieveDiscordID()
         {
-            DCId.Text = DataCache.CurrentUser.DiscordId;
+            DCId.Text = DataCache.CurrentUser?.DiscordId;
         }
         private async Task SaveDiscordIDAsync()
         {

@@ -436,7 +436,7 @@ namespace xstrat
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
-                var request =RestHandler.GetRequest("team/leave", Method.Get);
+                var request =RestHandler.GetRequest("team/leave", Method.Post);
                 
 
                 var response = client.Execute<RestResponse>(request);
@@ -446,7 +446,7 @@ namespace xstrat
                     DataCache.RetrieveTeamMates();
                     Notify.sendSuccess("Team left sucessfully");
                 }
-                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                else
                 {
                     Notify.sendError("You cannot leave the team as you are the team admin");
                 }
@@ -462,8 +462,8 @@ namespace xstrat
                 
                 request.AddJsonBody(new { name = name, game_id = igame_id });
 
-                var response = client.Execute<RestResponse>(request);
-                if (response.StatusCode == System.Net.HttpStatusCode.Created) //success
+                var response = client.Execute<RestResponse>(request);   
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     DataCache.RetrieveTeam();
                     DataCache.RetrieveTeamMates();
@@ -785,6 +785,8 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SaveOffDay(string id, int typ, string title, DateTime start, DateTime end)
         {
+            start= start.ToLocalTime();
+            end = end.ToLocalTime();
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
@@ -792,8 +794,8 @@ namespace xstrat
                 
                 if (typ == 1)
                 {
-                    start = start.SetTime(0, 0, 0);
-                    end = end.SetTime(23, 59, 59);
+                    start = start.SetTime(0, 0, 0).ToUniversalTime();
+                    end = end.SetTime(23, 59, 59).ToUniversalTime();
                 }
 
                 request.AddJsonBody(new { id = id, typ = typ, title = title, start = start, end = end });
@@ -804,6 +806,10 @@ namespace xstrat
                     EndWaiting();
                     DataCache.RetrieveCalendarBlocks();
                     return true;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return false;
@@ -818,14 +824,16 @@ namespace xstrat
         /// time = timestringfrom + | + timestringto
         /// </summary>
         /// <returns></returns>
-        public static async Task<CalendarEvent> NewScrim(int typ, string title, string opponent_name, string time_start, string time_end, int event_type)
+        public static async Task<CalendarEvent> NewScrim(int typ, string title, string opponent_name, DateTime start, DateTime end, int event_type)
         {
+            start = start.ToLocalTime();
+            end = end.ToLocalTime();
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/new", Method.Post);
                 
-                request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = time_start, time_end = time_end, event_type = event_type });
+                request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = start, time_end = end, event_type = event_type });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -834,6 +842,10 @@ namespace xstrat
                     DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return calendarEvent;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return null;
@@ -860,6 +872,10 @@ namespace xstrat
                     DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return true;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return false;
@@ -898,14 +914,16 @@ namespace xstrat
         /// <param name="ncontent"></param>
         /// <param name="n_id"></param>
         /// <returns></returns>
-        public static async Task<bool> SaveScrim(string id, string title, string comment, string time_start, string time_end, string opponent_name, string map_1_id, string map_2_id, string map_3_id, int typ, int event_type)
+        public static async Task<bool> SaveScrim(string id, string title, string comment, DateTime start, DateTime end, string opponent_name, string map_1_id, string map_2_id, string map_3_id, int typ, int event_type)
         {
+            start = start.ToLocalTime();
+            end = end.ToLocalTime();
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/update", Method.Post);
                 
-                request.AddJsonBody(new { id = id, title = title, comment = comment, time_start = time_start, time_end = time_end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
+                request.AddJsonBody(new { id = id, title = title, comment = comment, time_start = start, time_end = end, opponent_name = opponent_name, map_1_id = map_1_id, map_2_id = map_2_id, map_3_id = map_3_id, typ = typ, event_type = event_type });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -913,6 +931,10 @@ namespace xstrat
                     DataCache.RetrieveCalendarEvents();
                     EndWaiting();
                     return true;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return false;
@@ -944,6 +966,10 @@ namespace xstrat
                     DataCache.RetrieveCalendarEventResponses();
                     return true;
                 }
+                else
+                {
+                    Notify.sendError(response.Content);
+                }
                 EndWaiting();
                 return false;
             }
@@ -970,6 +996,10 @@ namespace xstrat
                     var responses = JsonConvert.DeserializeObject<List<CalendarEventResponse>>(response.Content);
                     EndWaiting();
                     return responses;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return null;
@@ -1189,6 +1219,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveStrats();
                     return (true, response.Content);
                 }
                 EndWaiting();
@@ -1214,6 +1245,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveStrats();
                     return true;
                 }
                 EndWaiting();
@@ -1230,7 +1262,7 @@ namespace xstrat
         {
             using (RestClient client = new RestClient("https://localhost:44322"))
             {
-                var request =RestHandler.GetRequest("strat", Method.Post);
+                var request =RestHandler.GetRequest("strat", Method.Get);
                 
 
                 var response = client.Execute<RestResponse>(request);
@@ -1269,6 +1301,7 @@ namespace xstrat
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
                 {
                     EndWaiting();
+                    DataCache.RetrieveStrats();
                     return true;
                 }
                 EndWaiting();

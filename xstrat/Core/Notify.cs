@@ -10,7 +10,7 @@ namespace xstrat.Core
 {
     public static class Notify
     {
-        private static bool endLogging = false;
+        private static bool endLogging = true;
         public static NotificationManager NotifyManager = new NotificationManager();
         public static void sendInfo(string message)
         {
@@ -42,9 +42,9 @@ namespace xstrat.Core
                 Type = NotificationType.Success
             });
         }
-        public static void sendError(string message)
+        public static void sendError(string message, bool force = false)
         {
-            if (endLogging) return;
+            if (endLogging && !force) return;
             NotifyManager.Show(new NotificationContent
             {
                 Title = "Error!",

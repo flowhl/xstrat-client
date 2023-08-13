@@ -190,44 +190,49 @@ namespace xstrat.Ui
             switch (ws)
             {
                 case Wallstates.solid:
-                    CenterIcon.Source = None;
-                    CenterIcon.Height = 19;
-                    CenterIcon.Width = 19;
+                    CenterImage.Source = None;
+                    CenterImage.Height = 19;
+                    CenterImage.Width = 19;
+                    CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
                     return None;
                 case Wallstates.removed:
-                    CenterIcon.Source = Breach;
-                    CenterIcon.Height = 22;
-                    CenterIcon.Width = double.NaN;
+                    //CenterImage.Source = Breach;
+                    CenterImage.Source = None;
+                    CenterImage.Height = 22;
+                    CenterImage.Width = double.NaN;
+                    CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
                     return None;
                 case Wallstates.reinforced:
-                    CenterIcon.Source = Reinforcement;
-                    CenterIcon.Height = 19;
-                    CenterIcon.Width = this.Width * 0.9;
+                    //CenterImage.Source = Reinforcement;
+                    CenterImage.Source = None;
+                    CenterImage.Height = 19;
+                    CenterImage.Width = this.Width * 0.9;
+                    CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Lock;
                     return None;
                 case Wallstates.mira:
-                    CenterIcon.Source = Mira;
-                    CenterIcon.Height = 50;
-                    CenterIcon.Width = 50;
+                    CenterImage.Source = Mira;
+                    CenterImage.Height = 50;
+                    CenterImage.Width = 50;
                     return None;
                 case Wallstates.miraReversed:
-                    CenterIcon.Source = MiraReversed;
-                    CenterIcon.Height = 50;
-                    CenterIcon.Width = 50;
+                    CenterImage.Source = MiraReversed;
+                    CenterImage.Height = 50;
+                    CenterImage.Width = 50;
                     return None;
                 case Wallstates.head:
-                    CenterIcon.Source = None;
+                    CenterImage.Source = None;
                     return HeadLevel;
                 case Wallstates.body:
-                    CenterIcon.Source = None;
+                    CenterImage.Source = None;
                     return BodyLevel;
                 case Wallstates.foot:
-                    CenterIcon.Source = None;
+                    CenterImage.Source = None;
                     return FootLevel;
                 case Wallstates.punch:
-                    CenterIcon.Source = None;
+                    CenterImage.Source = None;
                     return MurderHole;
                 default:
-                    CenterIcon.Source = None;
+                    CenterImage.Source = None;
                     return None;
             }
         }

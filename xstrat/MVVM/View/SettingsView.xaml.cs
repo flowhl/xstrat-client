@@ -38,7 +38,7 @@ namespace xstrat.MVVM.View
             {
                 APIText.Text = SettingsHandler.Settings.APIURL;
             }
-            if (!Globals.AdminUser)
+            if (DataCache.CurrentTeam.AdminUserID != DataCache.CurrentUser.Id)
             {
                 DcAdminView.Visibility = Visibility.Collapsed;
                 TeamAdminSettingsBorder.Visibility = Visibility.Collapsed;
@@ -109,7 +109,7 @@ namespace xstrat.MVVM.View
             SettingsHandler.Save();
             SaveDiscordIDAsync();
             SaveUbisoftIDAsync();
-            if (Globals.AdminUser)
+            if (DataCache.CurrentTeam.AdminUserID == DataCache.CurrentUser.Id)
             {
                 SaveDiscordData();
             }

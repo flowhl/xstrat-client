@@ -226,7 +226,9 @@ namespace xstrat.MVVM.View
                 Canvas.SetTop(scc, minY);
 
                 // set the fill color of the rectangle
-                rectangle.Fill = CurrentBrush;
+                //rectangle.Fill = CurrentBrush;
+                rectangle.StrokeThickness = 4;
+                rectangle.Stroke = CurrentBrush;
 
                 ClickPoint1 = null;
             }
@@ -262,7 +264,9 @@ namespace xstrat.MVVM.View
 
 
                 // set the fill color of the rectangle
-                circle.Fill = CurrentBrush;
+                //circle.Fill = CurrentBrush;
+                circle.StrokeThickness = 4;
+                circle.Stroke = CurrentBrush;
 
                 // Add the circle to the canvas
                 DrawingLayer.Children.Add(scc);
@@ -473,7 +477,7 @@ namespace xstrat.MVVM.View
 
         private void LoadDragItems()
         {
-            if (DataCache.CurrentTeam.GameID == "R6 Siege")
+            if (DataCache.CurrentTeam.GameID == DataCache.CurrentGames.Where(x => x.Name == "Rainbow Six Siege").FirstOrDefault().Id)
             {
                 IconsSP.Children.Clear();
                 string folder = Globals.XStratInstallPath + @"/Images/Icons/";
@@ -1135,7 +1139,7 @@ namespace xstrat.MVVM.View
         {
             Menu.Items.Clear();
             var thickness = new Thickness(0, 0, 0, 0);
-            foreach (var map in DataCache.CurrentMaps)
+            foreach (var map in DataCache.CurrentMaps.Where(x => x.Floor0SVG.IsNotNullOrEmpty() || x.Floor1SVG.IsNotNullOrEmpty() || x.Floor2SVG.IsNotNullOrEmpty() || x.Floor3SVG.IsNotNullOrEmpty()).OrderBy(x => x.Name))
             {
                 var mapItem = new MenuItem();
                 //mapItem.Name = map.name + "_MapItem";
@@ -1204,6 +1208,7 @@ namespace xstrat.MVVM.View
             {
                 Notify.sendSuccess("Strat created successfully");
                 Strat newStrat = JsonConvert.DeserializeObject<Strat>(result.Item2);
+                currentStrat = newStrat;
                 Refresh();
             }
             else
@@ -1217,7 +1222,7 @@ namespace xstrat.MVVM.View
         {
             ApiHandler.Waiting();
             DataCache.RetrieveStrats();
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
             UpdateTopBar();
             if (currentStrat != null)
             {

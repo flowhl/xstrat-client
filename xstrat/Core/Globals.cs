@@ -323,7 +323,6 @@ namespace xstrat.Core
 
         public static List<ScrimMode> ScrimModes = new List<ScrimMode>();
         public static List<EventType> EventTypes = new List<EventType>();
-        public static bool AdminUser = false;
 
         public static DateTime lastEventClicked { get; set; }
 
@@ -759,7 +758,7 @@ namespace xstrat.Core
             string stringToHash = x + "_" + y + "_" + width + "_" + height;
             string hash = string.Format("{0:X}", stringToHash.GetHashCode());
 
-            string uid = "_" + game_id + "_" + map_id + "_" + floor_id + "_" + hash;
+            string uid = "_" + game_id.Replace("-", "") + "_" + map_id.Replace("-", "") + "_" + floor_id + "_" + hash;
 
             double translateX = 0;
             double translateY = 0;

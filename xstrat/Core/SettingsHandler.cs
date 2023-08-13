@@ -63,7 +63,7 @@ namespace xstrat.Core
             try
             {
                 newSettings.StayLoggedin = Convert.ToBoolean(lines[0]);
-                newSettings.Token = lines[1];
+                newSettings.AccessToken = lines[1];
                 newSettings.SkinSwitcherPath = lines[2];
                 newSettings.SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
                 newSettings.APIURL = lines[4];
@@ -85,7 +85,8 @@ namespace xstrat.Core
     {
         //settings propeties:
         public bool StayLoggedin { get; set; }
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
         public string SkinSwitcherPath { get; set; }
         public bool SkinSwitcherStatus { get; set; }
         public string APIURL { get; set; }

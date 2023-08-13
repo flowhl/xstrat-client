@@ -79,7 +79,7 @@ namespace xstrat
         /// </returns>
         public static async Task<(bool, string)> RegisterAsync(string _name, string _email, string _pw)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("user/signup", Method.Post);
@@ -110,7 +110,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<Session> SignInAsync(string _email, string _pw)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("User/SignIn", Method.Post);
@@ -129,14 +129,14 @@ namespace xstrat
                     return session;
                 }
                 EndWaiting();
-                Notify.sendError("Error logging in: " + response.Content);
+                Notify.sendError("Error logging in: " + response.Content, true);
                 return null;
             }
         }
 
         public static async Task<Models.Supabase.UserData> GetUserDataAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request = RestHandler.GetRequest("User/Data", Method.Get);
@@ -155,30 +155,14 @@ namespace xstrat
 
         }
 
-        public static async Task<Session> RenewSessionAsync()
+        public static async Task<Session> RenewSessionAsync(string access, string refresh)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
-            {
-                var request =RestHandler.GetRequest("user/refresh", Method.Post);
-                
-
-                var response = client.Execute<RestResponse>(request);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
-                {
-                    var session = JsonConvert.DeserializeObject<Session>(response.Content);
-                    return session;
-                }
-                return null;
-            }
-        }
-
-        public static async Task<Session> RenewSessionAsync(string token)
-        {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 var request = RestHandler.GetRequest("user/refresh", Method.Post);
-                request.Authenticator = new JwtAuthenticator(token);
+                request.Authenticator = new JwtAuthenticator(access);
+
+                request.AddJsonBody(new { refresh_token = refresh });
 
                 var response = client.Execute<RestResponse>(request);
 
@@ -187,6 +171,8 @@ namespace xstrat
                     var session = JsonConvert.DeserializeObject<Session>(response.Content);
                     return session;
                 }
+
+                Logger.Log("Error renewing Session: " + response.Content);
                 return null;
             }
         }
@@ -219,7 +205,7 @@ namespace xstrat
 
         public static async Task<bool> SetColor(string icolor)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("user/color", Method.Post);
@@ -245,7 +231,7 @@ namespace xstrat
 
         public static async Task<bool> SetDiscordId(string discord)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("user/discord", Method.Post);
@@ -266,7 +252,7 @@ namespace xstrat
 
         public static bool SetUbisoftID(string ubisoft_id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request = RestHandler.GetRequest("user/ubisoft", Method.Post);
@@ -291,7 +277,7 @@ namespace xstrat
         #region Maps
         public static async Task<List<Models.Supabase.Map>> GetMapsAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("maps", Method.Get);
@@ -313,10 +299,10 @@ namespace xstrat
         #region Operators
         public static async Task<List<Models.Supabase.Operator>> GetOperatorsAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
-                var request =RestHandler.GetRequest("operators", Method.Get);
+                var request =RestHandler.GetRequest("operator", Method.Get);
                 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -335,7 +321,7 @@ namespace xstrat
         #region Positions
         public static async Task<List<Models.Supabase.Position>> GetPositionsAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("position", Method.Get);
@@ -358,7 +344,7 @@ namespace xstrat
 
         public static async Task<List<Models.Supabase.Game>> GetGamesAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("game", Method.Get);
@@ -384,7 +370,7 @@ namespace xstrat
 
         public static async Task<bool> GetAdminStatus()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("user/teamadminstatus", Method.Get);
@@ -404,7 +390,7 @@ namespace xstrat
 
         public static async Task<bool> JoinTeam(string id, string pw)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("team/join", Method.Post);
@@ -433,7 +419,7 @@ namespace xstrat
 
         public static async Task LeaveTeam()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("team/leave", Method.Post);
@@ -456,7 +442,7 @@ namespace xstrat
 
         public static async Task<bool> NewTeam(string name, string igame_id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 var request =RestHandler.GetRequest("team/new", Method.Post);
                 
@@ -477,7 +463,7 @@ namespace xstrat
 
         public static async Task<bool> RenameTeamAsync(string _newname)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 var request =RestHandler.GetRequest("team/rename", Method.Post);
                 
@@ -499,7 +485,7 @@ namespace xstrat
         public static async Task<List<Models.Supabase.UserData>> GetTeamMembersAsync()
         {
             Waiting();
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
 
                 var request =RestHandler.GetRequest("team/members", Method.Get);
@@ -521,7 +507,7 @@ namespace xstrat
 
         public static async Task<Models.Supabase.Team> GetTeamInfoAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("team", Method.Get);
@@ -542,7 +528,7 @@ namespace xstrat
 
         public static async Task<bool> DeleteTeam()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("team/delete", Method.Post);
@@ -563,7 +549,7 @@ namespace xstrat
 
         public static async Task<bool> SetDiscordAdminSettings(string webhook, int sn_created, int sn_changed, int sn_weekly, int sn_soon, int sn_delay, int use_on_days)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("team/adminsettings", Method.Post);
@@ -592,7 +578,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> NewRoutine()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("routine/new", Method.Post);
@@ -618,7 +604,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteRoutine(string id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("routine/delete", Method.Post);
@@ -643,7 +629,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<Models.Supabase.Routine>> GetRoutinesAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("routine", Method.Get);
@@ -670,7 +656,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> UpdateRoutineAsync(string ntitle, string ncontent, string n_id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("routine/update", Method.Post);
@@ -697,7 +683,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> NewOffDay(int typ, string title, string start, string end)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarblock/new", Method.Post);
@@ -723,7 +709,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> DeleteOffDay(string id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarblock/delete", Method.Delete);
@@ -758,7 +744,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarBlock>> GetTeamOffDays()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                     var request =RestHandler.GetRequest("calendarblock", Method.Get);
@@ -787,7 +773,7 @@ namespace xstrat
         {
             start= start.ToLocalTime();
             end = end.ToLocalTime();
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarblock/update", Method.Post);
@@ -828,12 +814,12 @@ namespace xstrat
         {
             start = start.ToLocalTime();
             end = end.ToLocalTime();
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/new", Method.Post);
                 
-                request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, time_start = start, time_end = end, event_type = event_type });
+                request.AddJsonBody(new { typ = typ, title = title, opponent_name = opponent_name, start = start, end = end, event_type = event_type });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -859,7 +845,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteScrim(string id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/delete", Method.Delete);
@@ -889,7 +875,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarEvent>> GetTeamScrims()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent", Method.Get);
@@ -918,7 +904,7 @@ namespace xstrat
         {
             start = start.ToLocalTime();
             end = end.ToLocalTime();
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/update", Method.Post);
@@ -952,7 +938,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SetScrimResponse(string scrim_id, int typ)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/response", Method.Post);
@@ -984,7 +970,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<CalendarEventResponse>> GetCalendarEventResponsesAsync()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("calendarevent/responses", Method.Get);
@@ -1208,7 +1194,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<(bool, string)> NewStrat(string name, string game_id, string map_id, string position_id, int version, string content)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("strat/new", Method.Post);
@@ -1234,7 +1220,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> DeleteStrat(string strat_id)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 Waiting();
                 var request =RestHandler.GetRequest("strat/delete", Method.Post);
@@ -1260,7 +1246,7 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<List<Strat>> GetStrats()
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 var request =RestHandler.GetRequest("strat", Method.Get);
                 
@@ -1271,6 +1257,10 @@ namespace xstrat
                     EndWaiting();
                     var strats = JsonConvert.DeserializeObject<List<Strat>>(response.Content);
                     return strats;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return null;
@@ -1287,13 +1277,13 @@ namespace xstrat
         /// <returns></returns>
         public static async Task<bool> SaveStrat(string strat_id, string name, string map_id, string position_id, int version, string content)
         {
-            using (RestClient client = new RestClient("https://localhost:44322"))
+            using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
             {
                 //compress
                 content = Globals.CompressString(content);
 
                 Waiting();
-                var request =RestHandler.GetRequest("strat/save", Method.Post);
+                var request =RestHandler.GetRequest("strat/update", Method.Post);
                 
                 request.AddJsonBody(new { strat_id = strat_id, name = name, map_id = map_id, position_id = position_id, version = version, content = content });
 
@@ -1303,6 +1293,10 @@ namespace xstrat
                     EndWaiting();
                     DataCache.RetrieveStrats();
                     return true;
+                }
+                else
+                {
+                    Notify.sendError(response.Content);
                 }
                 EndWaiting();
                 return false;

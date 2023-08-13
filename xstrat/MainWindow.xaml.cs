@@ -11,6 +11,7 @@ using System.Globalization;
 using XStrat;
 using System.Linq;
 using System.Windows.Controls;
+using xstrat.Models.API;
 
 namespace xstrat
 {
@@ -167,9 +168,19 @@ namespace xstrat
         /// <returns></returns>
         private async Task LoginWindowAsync()
         {
-            if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.Token != null && SettingsHandler.Settings.Token != "")
+            if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.AccessToken.IsNotNullOrEmpty() && SettingsHandler.Settings.RefreshToken.IsNotNullOrEmpty())
             {
-                RestHandler.CurrentSession = await ApiHandler.RenewSessionAsync(SettingsHandler.Settings.Token);
+                var newSession = await ApiHandler.RenewSessionAsync(SettingsHandler.Settings.AccessToken, SettingsHandler.Settings.RefreshToken);
+                if(newSession == null)
+                {
+                    mv.CurrentView = new LoginView();
+                    return;
+                }
+
+                RestHandler.CurrentSession = newSession;
+                SettingsHandler.Settings.RefreshToken = RestHandler.CurrentSession.RefreshToken;
+                SettingsHandler.Settings.AccessToken = RestHandler.CurrentSession.AccessToken;
+                SettingsHandler.Save();
                 bool verified = await ApiHandler.VerifyTokenAsync();
                 if(verified)
                 {
@@ -190,11 +201,18 @@ namespace xstrat
             mv.CurrentView = new RegisterView();
         }
 
-        public void LoginComplete(string token)
+        public void LoginComplete(Session session)
         {
             if (SettingsHandler.Settings.StayLoggedin)
             {
-                SettingsHandler.Settings.Token = token;
+                SettingsHandler.Settings.AccessToken = session.AccessToken;
+                SettingsHandler.Settings.RefreshToken = session.RefreshToken;
+                SettingsHandler.Save();
+            }
+            else
+            {
+                SettingsHandler.Settings.AccessToken = null;
+                SettingsHandler.Settings.RefreshToken = null;
                 SettingsHandler.Save();
             }
             //ApiHandler.AddBearer(token);

@@ -19,8 +19,8 @@ namespace xstrat.Core
 
         public static void Initialize()
         {
-            Client = new RestClient(SettingsHandler.Settings.APIURL ?? "https://localhost:44322");
-            Timer = new Timer(Callback, null, 0, 60 * 1000);
+            Client = new RestClient(SettingsHandler.Settings.APIURL ?? SettingsHandler.Settings.APIURL);
+            Timer = new Timer(Callback, null, 0, 2 * 60 * 1000);
         }
 
         public static RestRequest GetRequest(string Endpoint, Method method)
@@ -42,13 +42,12 @@ namespace xstrat.Core
 
         private async static void RenewSession()
         {
-            if (CurrentSession == null || CurrentSession.ExpiresIn <= 600)
+            if (CurrentSession != null && (CurrentSession.ExpiresAt() - DateTime.Now).TotalSeconds <= 600)
             {
-                var newSession = await ApiHandler.RenewSessionAsync();
+                var newSession = await ApiHandler.RenewSessionAsync(CurrentSession.AccessToken, CurrentSession.RefreshToken);
                 if (newSession != null)
                 {
                     CurrentSession = newSession;
-                    //Client.Authenticator = new JwtAuthenticator(CurrentSession.AccessToken);
                 }
                 else
                 {

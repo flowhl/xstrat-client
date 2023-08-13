@@ -15,7 +15,8 @@
             <Image Height="22" Width="10" Panel.ZIndex="1" IsHitTestVisible="False"  HorizontalAlignment="Center" VerticalAlignment="Center" Name="Icon5"></Image>
             <Image Height="22" Width="10" Panel.ZIndex="1" IsHitTestVisible="False"  HorizontalAlignment="Center" VerticalAlignment="Center" Name="Icon6"></Image>
         </StackPanel>
-        <Image IsHitTestVisible="False" Height="22" Width="22" Stretch="Fill" Panel.ZIndex="2" HorizontalAlignment="Center" Name="CenterIcon"  VerticalAlignment="Center"></Image>
+        <Image IsHitTestVisible="False" Height="22" Width="22" Stretch="Fill" Panel.ZIndex="2" HorizontalAlignment="Center" Name="CenterImage" VerticalAlignment="Center"></Image>
+        <materialDesign:PackIcon IsHitTestVisible="False" Height="22" Width="22" Panel.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Center" Name="CenterIcon" Foreground="White" Kind="None"></materialDesign:PackIcon>
         <StackPanel Orientation="Horizontal" Name="SP" MouseLeftButtonDown="StackPanel_MouseLeftButtonDown" MouseRightButtonDown="StackPanel_MouseRightButtonDown">
             <Rectangle Name="Rec1" Fill="CornflowerBlue" Width="10"></Rectangle>
             <Rectangle Name="Rec2" Fill="CornflowerBlue" Width="10"></Rectangle>

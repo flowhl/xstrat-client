@@ -67,7 +67,6 @@ namespace xstrat.MVVM.View
 
                 RestHandler.CurrentSession = session;
 
-                string baerer = session.AccessToken;
                 string user_id = session.User.Id;
 
                 if(user_id.IsNotNullOrEmpty())
@@ -77,7 +76,7 @@ namespace xstrat.MVVM.View
                 SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
                 SettingsHandler.Settings.LastLoginMail = email.Text.Trim();
                 SettingsHandler.Save();
-                wnd.LoginComplete(baerer);
+                wnd.LoginComplete(session);
                 
             }
             else

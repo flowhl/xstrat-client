@@ -20,7 +20,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                     <Label Style="{StaticResource PH1}" HorizontalAlignment="Center" Grid.Row="0">Team Calendar:</Label>
-                    <local1:CalendarMonth x:Name="CalendarMonthUI" Events="{Binding ElementName=CalendarUI, Path=Events}" Margin="30,30,30,0" GridBrush="#336cb5" GridBorderThickness="0.8" Grid.Row="1" />
+                    <local1:CalendarMonth MinHeight="550" x:Name="CalendarMonthUI" Events="{Binding ElementName=CalendarUI, Path=Events}" Margin="30,30,30,0" GridBrush="#336cb5" GridBorderThickness="0.8" Grid.Row="1" />
                     <Border Style="{StaticResource Control}" Margin="10" Grid.Row="2">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                             <StackPanel Name="Row1" Orientation="Vertical" MaxHeight="100" MaxWidth="200" Margin="10">

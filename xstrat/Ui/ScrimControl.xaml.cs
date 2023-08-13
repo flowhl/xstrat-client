@@ -254,7 +254,6 @@ namespace xstrat.Ui
             else
             {
                 Notify.sendError("Scrim status could not be loaded");
-                throw new Exception("Scrim status could not be loaded");
             }
 
         }

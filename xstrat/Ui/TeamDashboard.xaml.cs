@@ -149,9 +149,9 @@ namespace xstrat.Ui
                 return;
             }
 
-            MessageBox.Show("Team ID: " + DataCache.CurrentTeam.Id + "\nJoin password: " + DataCache.CurrentTeam.Password, "Your teams' join credentials:");
-            Notify.sendSuccess("Copied the join password to your clipboard");
-            Clipboard.SetText(DataCache.CurrentTeam.Password);
+            //MessageBox.Show("Team ID: " + DataCache.CurrentTeam.Id + "\nJoin password: " + DataCache.CurrentTeam.Password, "Your teams' join credentials:");
+            Notify.sendSuccess("Copied the team id and join password to your clipboard");
+            Clipboard.SetText($"Team ID: {DataCache.CurrentTeam.Id} | Join password: {DataCache.CurrentTeam.Password}");
         }
         private async Task RenameAdminBtn_ClickAsync(string newname)
         {

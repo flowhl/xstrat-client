@@ -51,7 +51,10 @@ namespace xstrat.Core
         }
         private static void Create()
         {
-            var newSettings = new SettingsModel();
+            var newSettings = new SettingsModel()
+            {
+                APIURL = "https://api-v2.xstrat.app",
+            };
             Globals.SerializeToFile<SettingsModel>(newSettings, SettingsFile);
         }
 

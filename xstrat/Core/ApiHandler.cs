@@ -21,6 +21,10 @@ using Newtonsoft.Json;
 using NuGet;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using xstrat.Models.Supabase;
+using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace xstrat
 {
@@ -84,7 +88,7 @@ namespace xstrat
                 Waiting();
                 var request =RestHandler.GetRequest("user/signup", Method.Post);
                 
-                request.AddJsonBody(new { email = _email, password = _pw });
+                request.AddJsonBody(new { email = _email, password = _pw, username = _name });
 
                 var response = client.Execute<RestResponse>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
@@ -92,12 +96,9 @@ namespace xstrat
                     EndWaiting();
                     return (true, "");
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Conflict) //duplicate
-                {
-                    EndWaiting();
-                    return (false, "email allready registered");
-                }
                 EndWaiting();
+                var msg = ExtractMessage(response.Content);
+                Notify.sendError(msg, true);
                 return (false, "db error");
             }
         }
@@ -1322,6 +1323,23 @@ namespace xstrat
         public static void EndWaiting()
         {
             Cursor.Current = Cursors.Default;
+        }
+
+        public static string ExtractMessage(string jsonString)
+        {
+            // Remove the outer escaped quotes
+            string trimmedJsonString = jsonString.Trim('"');
+
+            // Unescape the inner content
+            string unescapedJsonString = System.Text.RegularExpressions.Regex.Unescape(trimmedJsonString);
+
+            // Parse the unescaped JSON string
+            var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(unescapedJsonString);
+
+            // Extract the "msg" value
+            string message = jsonObject["msg"].ToString();
+
+            return message;
         }
 
         #endregion

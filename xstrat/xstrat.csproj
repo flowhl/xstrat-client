@@ -287,6 +287,7 @@
     <Compile Include="Core\YoutubeAPIHandler.cs" />
     <Compile Include="Json\Datamodels.cs" />
     <Compile Include="Json\LicenseStatus.cs" />
+    <Compile Include="Models\API\ErrorResponse.cs" />
     <Compile Include="Models\API\Session.cs" />
     <Compile Include="Models\API\User.cs" />
     <Compile Include="Models\API\UserIdentity.cs" />

@@ -34,6 +34,7 @@ namespace xstrat.MVVM.View
             Error.Content = "";
             var _email = email.Text;
             var _password = password.Password;
+            var _repeat_password = RepeatPassword.Password;
             var _username = username.Text;
             if (string.IsNullOrEmpty(_email))
             {
@@ -48,6 +49,12 @@ namespace xstrat.MVVM.View
             if (string.IsNullOrEmpty(_password))
             {
                 Error.Content = "Password cannot be empty";
+                return;
+            }
+
+            if (_password != _repeat_password)
+            {
+                Error.Content = "Passwords do not match";
                 return;
             }
 

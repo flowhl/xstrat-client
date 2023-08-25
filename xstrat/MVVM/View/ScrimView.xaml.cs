@@ -299,13 +299,10 @@ namespace xstrat.MVVM.View
 
             string stringStartDay = "";
             string stringEndDay = "";
-            if (od.Start.ToString().Split(' ')[0].Trim().ToLower() != od.End.ToString().Split(' ')[0].Trim().ToLower())
+            if (od.Start.GetValueOrDefault().Date != od.End.GetValueOrDefault().Date)
             {
-                DateTime from = DateTime.ParseExact(od.Start.ToString(), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                DateTime to = DateTime.ParseExact(od.End.ToString(), "yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-
-                stringStartDay = from.ToString("ddd") + " ";
-                stringEndDay = to.ToString("ddd") + " ";
+                stringStartDay = od.Start.GetValueOrDefault().ToString("ddd") + " ";
+                stringEndDay = od.End.GetValueOrDefault().ToString("ddd") + " ";
             }
 
 

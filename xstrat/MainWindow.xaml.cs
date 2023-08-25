@@ -101,6 +101,7 @@ namespace xstrat
 
             StateChanged += MainWindow_StateChanged;
             WallEditorBtn.Visibility = Visibility.Collapsed;
+
         }
 
         private void Globals_OnDataRetrieved(object sender, EventArgs e)

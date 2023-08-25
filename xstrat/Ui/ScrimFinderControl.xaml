@@ -151,22 +151,10 @@
                 <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
                     
                     <!--SEARCH BUTTON-->
-                    <Button Height="30" Width="120" Name="SearchBtn" Content="Search" BorderThickness="0" FontSize="15" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Click="SearchBtn_Click">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                    <Button Height="30" Width="120" Style="{StaticResource Secondary}" Name="SearchBtn" Content="Search" Click="SearchBtn_Click" />
 
                     <!--NEW BUTTON-->
-                    <Button Height="30" Width="120" Name="NewBtn" Content="New Scrim" BorderThickness="0" FontSize="15" Background="#202020" Foreground="White" VerticalContentAlignment="Center" Margin="10" Click="NewBtn_Click">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                    <Button Height="30" Width="120" Style="{StaticResource Secondary}" Name="NewBtn" Content="New Scrim" Margin="10" Click="NewBtn_Click" />
                 </StackPanel>
                 <local:ColorDisplay x:Name="OffdayDisplay" Color="#D64251" Margin="10,0,10,0" NameInput="Offday"></local:ColorDisplay>
                 <local:ColorDisplay Color="#2D9ED5" Margin="10,0,10,0" NameInput="Scrim"></local:ColorDisplay>

@@ -78,94 +78,43 @@ namespace xstrat.Ui
                 }
                 TxtEnemyName.Content = "Against: " + Scrim.OpponentName;
                 TxtDescription.Text = Scrim.Comment;
-
-                ParticipantsSP.Children.Clear();
-
-                //TODO UserList
-                //string acc_users = Scrim.acc_user_list;
-                //if(acc_users != null && acc_users != "")
-                //{
-                //    var ulist = acc_users.Split(';');
-                //    foreach (var item in ulist)
-                //    {
-                //        string uid = null;
-                //        try
-                //        {
-                //            uid = item.ToString();
-                //        }
-                //        catch
-                //        {
-                //            continue;
-                //        }
-                //        if (uid.IsNullOrEmpty()) continue;
-
-                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                //        if (user == null) continue;
-                //        var control = new ScrimParticipationControl(1, user.Name);
-                //        control.Margin = new Thickness(5, 0, 0, 0);
-                //        ParticipantsSP.Children.Add(control);
-                //    }
-                //}
-
-
-                //string deny_users = Scrim.deny_user_list;
-                //if (deny_users != null && deny_users != "")
-                //{
-                //    var ulist = deny_users.Split(';');
-                //    foreach (var item in ulist)
-                //    {
-                //        string uid = null;
-                //        try
-                //        {
-                //            uid = item.ToString();
-                //        }
-                //        catch
-                //        {
-                //            continue;
-                //        }
-                //        if (uid.IsNullOrEmpty()) continue;
-
-                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                //        if (user == null) continue;
-                //        var control = new ScrimParticipationControl(2, user.Name);
-                //        control.Margin = new Thickness(5, 0, 0, 0);
-                //        ParticipantsSP.Children.Add(control);
-                //    }
-                //}
-
-
-                //string ign_users = Scrim.ign_user_list;
-                //if (ign_users != null && ign_users != "")
-                //{
-                //    var ulist = ign_users.Split(';');
-                //    foreach (var item in ulist)
-                //    {
-                //        string uid = null;
-                //        try
-                //        {
-                //            uid = item.ToString();
-                //        }
-                //        catch
-                //        {
-                //            continue;
-                //        }
-                //        if (uid.IsNullOrEmpty()) continue;
-
-                //        UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == uid).FirstOrDefault();
-                //        if (user == null) continue;
-                //        var control = new ScrimParticipationControl(0, user.Name);
-                //        control.Margin = new Thickness(5, 0, 0, 0);
-                //        ParticipantsSP.Children.Add(control);
-                //    }
-                //}
+                
+                RefreshParticipants();
 
             }
-            //TODO: Fix
             Status = DataCache.CurrentCalendarEventResponses.Where(x => x.CalendarEventID == scrim.Id && x.UserId == DataCache.CurrentUser.Id).FirstOrDefault()?.ResponseTyp ?? 0;
             StatusChanged();
         }
 
-        private void AcceptBtn_Click(object sender, RoutedEventArgs e)
+        public void RefreshParticipants()
+        {
+            ParticipantsSP.Children.Clear();
+            List<CalendarEventResponse> user_responses = DataCache.CurrentCalendarEventResponses.Where(x => x.CalendarEventID == Scrim.Id).ToList();
+            if (user_responses != null && user_responses.Count > 0)
+            {
+                foreach (var item in user_responses)
+                {
+                    string uid = null;
+                    try
+                    {
+                        uid = item.Id.ToString();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    if (uid.IsNullOrEmpty()) continue;
+
+                    UserData user = DataCache.CurrentTeamMates.Where(x => x.Id == item.UserId).FirstOrDefault();
+                    if (user == null) continue;
+                    var control = new ScrimParticipationControl(item.ResponseTyp, user.Name);
+                    control.Margin = new Thickness(5, 0, 0, 0);
+                    ParticipantsSP.Children.Add(control);
+                }
+            }
+        }
+
+        private async void AcceptBtn_Click(object sender, RoutedEventArgs e)
         {
             if(Status == 1)
             {
@@ -175,10 +124,11 @@ namespace xstrat.Ui
             {
                 Status = 1;
             }
+            await SetResponse();
             StatusChanged();
         }
 
-        private void DenyBtn_Click(object sender, RoutedEventArgs e)
+        private async void DenyBtn_Click(object sender, RoutedEventArgs e)
         {
             if (Status == 2)
             {
@@ -188,7 +138,22 @@ namespace xstrat.Ui
             {
                 Status = 2;
             }
+            await SetResponse();
             StatusChanged();
+        }
+
+        public async Task SetResponse()
+        {
+            var result = await ApiHandler.SetScrimResponse(Scrim.Id, Status);
+            if (result)
+            {
+                Logger.Log("Set Response");
+                RefreshParticipants();
+            }
+            else
+            {
+                Notify.sendError("Scrim status could not be loaded");
+            }
         }
 
         private void EditBtn_Click(object sender, RoutedEventArgs e)
@@ -212,7 +177,7 @@ namespace xstrat.Ui
             }
         }
 
-        private async void StatusChanged()
+        private void StatusChanged()
         {
             switch (Status)
             {
@@ -245,15 +210,6 @@ namespace xstrat.Ui
                     break;
                 default:
                     break;
-            }
-            var result = await ApiHandler.SetScrimResponse(Scrim.Id, Status);
-            if (result)
-            {
-                Logger.Log("Set Response");
-            }
-            else
-            {
-                Notify.sendError("Scrim status could not be loaded");
             }
 
         }

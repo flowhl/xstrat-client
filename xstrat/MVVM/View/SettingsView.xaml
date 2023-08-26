@@ -44,19 +44,19 @@
                                 <TextBox Name="DCWebhook" Foreground="#336cb5" VerticalContentAlignment="Center" Background="#252525" Width="250" Height="25" BorderThickness="0">https://discord.com/api/webhooks/...</TextBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify1">
-                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">New scrim notification:</Label>
+                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">New event notification:</Label>
                                 <local1:ToggleSwitch Height="20" x:Name="SwNew"></local1:ToggleSwitch>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify2">
-                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Scrim time changed notification:</Label>
+                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Event time changed notification:</Label>
                                 <local1:ToggleSwitch Height="20" x:Name="SwTimeChanged"></local1:ToggleSwitch>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify3">
-                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Scrim starting soon notification:</Label>
+                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Event starting soon notification:</Label>
                                 <local1:ToggleSwitch Height="20" x:Name="SwStartingSoon"></local1:ToggleSwitch>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify4">
-                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Weekly scrim summary:</Label>
+                                <Label Style="{StaticResource PS}" VerticalAlignment="Bottom">Weekly event summary:</Label>
                                 <local1:ToggleSwitch Height="20" x:Name="SwWeeklySummary"></local1:ToggleSwitch>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Name="DiscordNotify5">

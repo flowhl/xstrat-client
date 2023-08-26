@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("XStrat")]
 [assembly: AssemblyDescription("XStrat Client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Florian Wahl")]
+[assembly: AssemblyCompany("XStrat - Developed by Florian Wahl")]
 [assembly: AssemblyProduct("XStrat")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.2.0")]
-[assembly: AssemblyFileVersion("2.0.2.0")]
+[assembly: AssemblyVersion("2.0.3.0")]
+[assembly: AssemblyFileVersion("2.0.3.0")]

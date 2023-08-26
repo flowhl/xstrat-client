@@ -62,15 +62,23 @@ namespace xstrat
 
         private async void CheckForUpdate()
         {
-            if(manager != null)
+            try
             {
-                var updateinfo = await manager.CheckForUpdate();
-                if(updateinfo.ReleasesToApply.Count > 0)
+                using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/flowhl/xstrat-client"))
                 {
-                    await manager.UpdateApp();
-                    //MessageBox.Show("New Update found. Please restart your client to install");
-                    Notify.sendInfo("New Update found. Please restart your client to install");
+                    var isUpdate = await mgr.CheckForUpdate();
+                    if (isUpdate.ReleasesToApply.Count > 0)
+                    {
+
+                        await mgr.UpdateApp();
+
+                        Notify.sendInfo("New Update found. Please restart your client to install");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Notify.sendWarn("Could not update app: " + ex.Message);
             }
         }
 
@@ -79,15 +87,14 @@ namespace xstrat
             Globals.OnDataRetrieved += Globals_OnDataRetrieved;
             mv = (MainViewModel)DataContext;
             mv.CurrentView = mv.LoadingVM;
-            
+
             Task loginTask = LoginWindowAsync();
 
             try
             {
-                manager = await UpdateManager.GitHubUpdateManager(@"https://github.com/flowhl/xstrat-client");
                 CheckForUpdate();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ex.Message);
             }
@@ -116,7 +123,7 @@ namespace xstrat
         /// <param name="e"></param>
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if (this.WindowState == WindowState.Maximized)
                 {
@@ -169,10 +176,10 @@ namespace xstrat
         /// <returns></returns>
         private async Task LoginWindowAsync()
         {
-            if(SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.AccessToken.IsNotNullOrEmpty() && SettingsHandler.Settings.RefreshToken.IsNotNullOrEmpty())
+            if (SettingsHandler.Settings.StayLoggedin == true && SettingsHandler.Settings.AccessToken.IsNotNullOrEmpty() && SettingsHandler.Settings.RefreshToken.IsNotNullOrEmpty())
             {
                 var newSession = await ApiHandler.RenewSessionAsync(SettingsHandler.Settings.AccessToken, SettingsHandler.Settings.RefreshToken);
-                if(newSession == null)
+                if (newSession == null)
                 {
                     mv.CurrentView = new LoginView();
                     return;
@@ -183,7 +190,7 @@ namespace xstrat
                 SettingsHandler.Settings.AccessToken = RestHandler.CurrentSession.AccessToken;
                 SettingsHandler.Save();
                 bool verified = await ApiHandler.VerifyTokenAsync();
-                if(verified)
+                if (verified)
                 {
                     Notify.ResumeLogging();
                     //EndLoading();
@@ -255,7 +262,7 @@ namespace xstrat
 
         private void ButtonFullscreen_Click(object sender, RoutedEventArgs e)
         {
-            if(WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Normal;
             }
@@ -266,7 +273,7 @@ namespace xstrat
         }
         public void SetLoadingStatus(string message)
         {
-            if(lv != null)
+            if (lv != null)
             {
                 lv.SetStatusMessage(message);
             }
@@ -274,7 +281,7 @@ namespace xstrat
 
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(counterToUnlockEditor > 5)
+            if (counterToUnlockEditor > 5)
             {
                 WallEditorBtn.Visibility = Visibility.Visible;
             }

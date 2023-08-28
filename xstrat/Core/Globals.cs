@@ -30,6 +30,7 @@ using System.Xml.Linq;
 using SkiaSharp.Views.WPF;
 using NuGet;
 using xstrat.Models.Supabase;
+using System.Security.Cryptography;
 
 namespace xstrat.Core
 {
@@ -591,432 +592,443 @@ namespace xstrat.Core
                 CallOnDataRetrieved();
             }
         }
-    private static void RetrieveOffDayTypes()
-    {
-        OffDayTypes.Clear();
-        OffDayTypes.Add(new OffDayType(0, "exactly"));
-        OffDayTypes.Add(new OffDayType(1, "entire day"));
-        OffDayTypes.Add(new OffDayType(2, "weekly"));
-        OffDayTypes.Add(new OffDayType(3, "every second week"));
-        OffDayTypes.Add(new OffDayType(4, "monthly"));
-        OffDayTypes.Add(new OffDayType(5, "daily"));
-    }
-    private static void RetrieveCalendarFilterTypes()
-    {
-        CalendarFilterTypes.Clear();
-        CalendarFilterTypes.Add(new CalendarFilterType(0, "min players"));
-        CalendarFilterTypes.Add(new CalendarFilterType(1, "specific players"));
-        CalendarFilterTypes.Add(new CalendarFilterType(2, "min specific players"));
-        CalendarFilterTypes.Add(new CalendarFilterType(3, "everyone"));
-    }
-    private static void RetrieveScrimModes()
-    {
-        ScrimModes.Clear();
-        ScrimModes.Add(new ScrimMode(0, "Normal"));
-        ScrimModes.Add(new ScrimMode(1, "6+6"));
-        ScrimModes.Add(new ScrimMode(2, "2-2-2"));
-        ScrimModes.Add(new ScrimMode(3, "4+4"));
-    }
-    private static void RetrieveEventTypes()
-    {
-        EventTypes.Clear();
-        EventTypes.Add(new EventType(0, "Scrim"));
-        EventTypes.Add(new EventType(1, "Strats"));
-        EventTypes.Add(new EventType(2, "Training"));
-        EventTypes.Add(new EventType(3, "Dryrun"));
-        EventTypes.Add(new EventType(4, "Warmup"));
-        EventTypes.Add(new EventType(5, "Match"));
-        EventTypes.Add(new EventType(6, "Cup"));
-    }
-    
-    public static string GetUserIdFromName(string name)
-    {
-        var rows = DataCache.CurrentTeamMates.Where(x => x.Name.ToUpper().StartsWith(name.ToUpper()));
-        if (rows.Any()) return rows.First().Id;
-        return null;
-    }
-    public static SolidColorBrush ToSolidColorBrush(this string hex_code)
-    {
-        return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
-    }
-
-    #region SVG
-
-    public static string GetPathFromId(int game_id, int map_id, int floor_id)
-    {
-        string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
-        string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
-        if (!File.Exists(file)) return null;
-        return file;
-    }
-
-    public static XmlDocument GetSCVDocumentForMapAndFloor(string map_id, int floor_id = 0)
-    {
-        var map = DataCache.CurrentMaps.Where(x => x.Id == map_id).FirstOrDefault();
-        if (map == null) return null;
-        if (floor_id < 0 || floor_id > 4) return null;
-
-        string svg = null;
-        if (floor_id == 0 && !string.IsNullOrEmpty(map.Floor0SVG))
+        private static void RetrieveOffDayTypes()
         {
-            svg = map.Floor0SVG;
+            OffDayTypes.Clear();
+            OffDayTypes.Add(new OffDayType(0, "exactly"));
+            OffDayTypes.Add(new OffDayType(1, "entire day"));
+            OffDayTypes.Add(new OffDayType(2, "weekly"));
+            OffDayTypes.Add(new OffDayType(3, "every second week"));
+            OffDayTypes.Add(new OffDayType(4, "monthly"));
+            OffDayTypes.Add(new OffDayType(5, "daily"));
         }
-        if (floor_id == 1 && !string.IsNullOrEmpty(map.Floor1SVG))
+        private static void RetrieveCalendarFilterTypes()
         {
-            svg = map.Floor1SVG;
+            CalendarFilterTypes.Clear();
+            CalendarFilterTypes.Add(new CalendarFilterType(0, "min players"));
+            CalendarFilterTypes.Add(new CalendarFilterType(1, "specific players"));
+            CalendarFilterTypes.Add(new CalendarFilterType(2, "min specific players"));
+            CalendarFilterTypes.Add(new CalendarFilterType(3, "everyone"));
         }
-        if (floor_id == 2 && !string.IsNullOrEmpty(map.Floor2SVG))
+        private static void RetrieveScrimModes()
         {
-            svg = map.Floor2SVG;
+            ScrimModes.Clear();
+            ScrimModes.Add(new ScrimMode(0, "Normal"));
+            ScrimModes.Add(new ScrimMode(1, "6+6"));
+            ScrimModes.Add(new ScrimMode(2, "2-2-2"));
+            ScrimModes.Add(new ScrimMode(3, "4+4"));
         }
-        if (floor_id == 3 && !string.IsNullOrEmpty(map.Floor3SVG))
+        private static void RetrieveEventTypes()
         {
-            svg = map.Floor3SVG;
+            EventTypes.Clear();
+            EventTypes.Add(new EventType(0, "Scrim"));
+            EventTypes.Add(new EventType(1, "Strats"));
+            EventTypes.Add(new EventType(2, "Training"));
+            EventTypes.Add(new EventType(3, "Dryrun"));
+            EventTypes.Add(new EventType(4, "Warmup"));
+            EventTypes.Add(new EventType(5, "Match"));
+            EventTypes.Add(new EventType(6, "Cup"));
         }
 
-        if (string.IsNullOrEmpty(svg)) return null;
-
-        var xml = new XmlDocument();
-        xml.LoadXml(svg);
-        return xml;
-    }
-
-    public static XmlDocument GetSVGDocumentFromPath(string path)
-    {
-        if (!File.Exists(path)) return null;
-
-        //load svg
-        XmlDocument svgDocument = new XmlDocument();
-        svgDocument.Load(path);
-        return svgDocument;
-    }
-
-    public static SvgContent GetSvgContent(XmlDocument svgDocument, string game_id, string map_id, int floor_id)
-    {
-        #region Generate svgContent
-        SvgContent svgContent = new SvgContent();
-
-        svgContent.Rects = new List<SvgRect>();
-
-        svgContent.Name = svgDocument.Name;
-
-        svgContent.XmlDocument = svgDocument;
-        #endregion
-        #region remove walls
-
-        var XDocumentNoWalls = XDocument.Parse(svgDocument.OuterXml);
-
-        var rectsToRemove = XDocumentNoWalls.Descendants().Where(e => e.Name.LocalName == "rect" && e.Attribute("style").Value.Contains("linear-gradient")).ToList();
-
-        foreach (var rect in rectsToRemove)
+        public static string GetUserIdFromName(string name)
         {
-            rect.Remove();
+            var rows = DataCache.CurrentTeamMates.Where(x => x.Name.ToUpper().StartsWith(name.ToUpper()));
+            if (rows.Any()) return rows.First().Id;
+            return null;
+        }
+        public static SolidColorBrush ToSolidColorBrush(this string hex_code)
+        {
+            return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
         }
 
-        string svgStringNoWalls = XDocumentNoWalls.ToString();
+        #region SVG
 
-        XmlDocument XmlDocumentNoWalls = new XmlDocument();
-        XmlDocumentNoWalls.LoadXml(svgStringNoWalls);
-
-        svgContent.XmlDocumentNoWalls = XmlDocumentNoWalls;
-
-        #endregion
-        #region Get Viewbox
-
-        XmlNode svg = svgDocument.ChildNodes[1];
-        string viewBox = svg.Attributes["viewBox"].Value;
-
-        string[] values = viewBox.Split(' ');
-
-        #endregion
-        #region Viewbox analysis
-
-        double vx = Globals.GetDouble(values[0], 0.0);
-        double vy = Globals.GetDouble(values[1], 0.0);
-        double vwidth = Globals.GetDouble(values[2], 0.0);
-        double vheight = Globals.GetDouble(values[3], 0.0);
-
-        svgContent.ViewBoxDimensions = new Point(vwidth, vheight);
-        svgContent.ViewBoxPosition = new Point(vx, vy);
-
-        #endregion
-        #region Generate Rectangles
-
-        XmlNodeList rectangles = svgDocument.GetElementsByTagName("rect");
-
-        foreach (XmlNode rectangle in rectangles)
+        public static string GetPathFromId(int game_id, int map_id, int floor_id)
         {
-            var attributes = rectangle.Attributes;
+            string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
+            string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
+            if (!File.Exists(file)) return null;
+            return file;
+        }
 
-            double x = Globals.GetDouble(attributes["x"]?.Value ?? "0", 0);
-            double y = Globals.GetDouble(attributes["y"]?.Value ?? "0", 0);
-            double width = Globals.GetDouble(attributes["width"].Value, 0);
-            double height = Globals.GetDouble(attributes["height"].Value, 0);
-            string style = attributes["style"].Value;
-            string transform = attributes["transform"]?.Value;
+        public static XmlDocument GetSCVDocumentForMapAndFloor(string map_id, int floor_id = 0)
+        {
+            var map = DataCache.CurrentMaps.Where(x => x.Id == map_id).FirstOrDefault();
+            if (map == null) return null;
+            if (floor_id < 0 || floor_id > 4) return null;
 
-            string stringToHash = x + "_" + y + "_" + width + "_" + height;
-            string hash = string.Format("{0:X}", stringToHash.GetHashCode());
-
-            string uid = "_" + game_id.Replace("-", "") + "_" + map_id.Replace("-", "") + "_" + floor_id + "_" + hash;
-
-            double translateX = 0;
-            double translateY = 0;
-            double rotation = 0;
-            bool hasTransform = false;
-
-            if (!string.IsNullOrEmpty(transform))
+            string svg = null;
+            if (floor_id == 0 && !string.IsNullOrEmpty(map.Floor0SVG))
             {
-                hasTransform = true;
-
-                // Parse the transform attribute
-                string[] transformValues = transform.Split(' ');
-                translateX = Globals.GetDouble(transformValues[0].Substring(10), 0);
-                translateY = Globals.GetDouble(transformValues[1].Substring(0, transformValues[1].Length - 1), 0);
-                rotation = Globals.GetDouble(transformValues[2].Substring(7).Replace(")", ""), 0);
+                svg = map.Floor0SVG;
+            }
+            if (floor_id == 1 && !string.IsNullOrEmpty(map.Floor1SVG))
+            {
+                svg = map.Floor1SVG;
+            }
+            if (floor_id == 2 && !string.IsNullOrEmpty(map.Floor2SVG))
+            {
+                svg = map.Floor2SVG;
+            }
+            if (floor_id == 3 && !string.IsNullOrEmpty(map.Floor3SVG))
+            {
+                svg = map.Floor3SVG;
             }
 
+            if (string.IsNullOrEmpty(svg)) return null;
 
-            SvgRect svgRect = new SvgRect { height = height, width = width, x = x, y = y, style = style, transform = transform, uid = uid, translateX = translateX, translateY = translateY, rotation = rotation, hasTransform = hasTransform };
-
-            svgContent.Rects.Add(svgRect);
-        }
-        #endregion
-        return svgContent;
-    }
-
-    public static SVGImage.SVG.SVGImage GetImageForSVG(SvgContent svg)
-    {
-        if (svg == null) return null;
-
-
-        //generate svg viewer
-        var image = new SVGImage.SVG.SVGImage();
-
-        var stream = new MemoryStream();
-        svg.XmlDocumentNoWalls.Save(stream);
-        stream.Position = 0;
-
-        image.SetImage(stream);
-
-        image.Height = svg.ViewBoxDimensions.Y;
-        image.Width = svg.ViewBoxDimensions.X;
-
-        return image;
-    }
-
-    public static SVGImage.SVG.SVGImage GetImageForFloorAndMap(int game_id, int map_id, int floor_id)
-    {
-        //get file name
-        string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
-        string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
-        if (!File.Exists(file)) return null;
-
-        //generate svg viewer
-        var image = new SVGImage.SVG.SVGImage();
-        image.SetImage(File.OpenRead(file));
-
-        //analyse svg to get dimensions:
-        XmlDocument svgDocument = new XmlDocument();
-        svgDocument.Load(file);
-
-        XmlNode svg = svgDocument.ChildNodes[1];
-        string viewBox = svg.Attributes["viewBox"].Value;
-
-        string[] values = viewBox.Split(' ');
-
-        double vx = Globals.GetDouble(values[0], 0.0);
-        double vy = Globals.GetDouble(values[1], 0.0);
-        double vwidth = Globals.GetDouble(values[2], 0.0);
-        double vheight = Globals.GetDouble(values[3], 0.0);
-
-        //set image size
-        image.Height = vheight;
-        image.Width = vwidth;
-
-        return image;
-    }
-
-    #endregion
-
-    public class CalendarEventCreatedArgs : EventArgs
-    {
-        public DateTime Date { get; set; }
-    }
-
-    public static string SerializeToString<T>(this T toSerialize)
-    {
-        XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-        using (StringWriter textWriter = new StringWriter())
-        {
-            xmlSerializer.Serialize(textWriter, toSerialize);
-            return textWriter.ToString();
-        }
-    }
-
-    // Serialize an object to XML and save it to a file
-    public static void SerializeToFile<T>(this T obj, string path)
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(T));
-        using (TextWriter writer = new StreamWriter(path))
-        {
-            serializer.Serialize(writer, obj);
-        }
-    }
-
-    // Deserialize an object from an XML file
-    public static T DeserializeFromFile<T>(string path)
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(T));
-        using (TextReader reader = new StreamReader(path))
-        {
-            return (T)serializer.Deserialize(reader);
-        }
-    }
-
-    public static void CopyTo(Stream src, Stream dest)
-    {
-        byte[] bytes = new byte[4096];
-
-        int cnt;
-
-        while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
-        {
-            dest.Write(bytes, 0, cnt);
-        }
-    }
-
-
-    /// <summary>
-    /// Compresses the string.
-    /// </summary>
-    /// <param name="text">The text.</param>
-    /// <returns></returns>
-    public static string CompressString(string text)
-    {
-        byte[] buffer = Encoding.UTF8.GetBytes(text);
-        var memoryStream = new MemoryStream();
-        using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-        {
-            gZipStream.Write(buffer, 0, buffer.Length);
+            var xml = new XmlDocument();
+            xml.LoadXml(svg);
+            return xml;
         }
 
-        memoryStream.Position = 0;
-
-        var compressedData = new byte[memoryStream.Length];
-        memoryStream.Read(compressedData, 0, compressedData.Length);
-
-        var gZipBuffer = new byte[compressedData.Length + 4];
-        Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
-        Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
-        return Convert.ToBase64String(gZipBuffer);
-    }
-
-    /// <summary>
-    /// Decompresses the string.
-    /// </summary>
-    /// <param name="compressedText">The compressed text.</param>
-    /// <returns></returns>
-    public static string DecompressString(string compressedText)
-    {
-        try
+        public static XmlDocument GetSVGDocumentFromPath(string path)
         {
-            byte[] gZipBuffer = Convert.FromBase64String(compressedText);
-            using (var memoryStream = new MemoryStream())
+            if (!File.Exists(path)) return null;
+
+            //load svg
+            XmlDocument svgDocument = new XmlDocument();
+            svgDocument.Load(path);
+            return svgDocument;
+        }
+
+        public static SvgContent GetSvgContent(XmlDocument svgDocument, string game_id, string map_id, int floor_id)
+        {
+            #region Generate svgContent
+            SvgContent svgContent = new SvgContent();
+
+            svgContent.Rects = new List<SvgRect>();
+
+            svgContent.Name = svgDocument.Name;
+
+            svgContent.XmlDocument = svgDocument;
+            #endregion
+            #region remove walls
+
+            var XDocumentNoWalls = XDocument.Parse(svgDocument.OuterXml);
+
+            var rectsToRemove = XDocumentNoWalls.Descendants().Where(e => e.Name.LocalName == "rect" && e.Attribute("style").Value.Contains("linear-gradient")).ToList();
+
+            foreach (var rect in rectsToRemove)
             {
-                int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
-                memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+                rect.Remove();
+            }
 
-                var buffer = new byte[dataLength];
+            string svgStringNoWalls = XDocumentNoWalls.ToString();
 
-                memoryStream.Position = 0;
-                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+            XmlDocument XmlDocumentNoWalls = new XmlDocument();
+            XmlDocumentNoWalls.LoadXml(svgStringNoWalls);
+
+            svgContent.XmlDocumentNoWalls = XmlDocumentNoWalls;
+
+            #endregion
+            #region Get Viewbox
+
+            XmlNode svg = svgDocument.ChildNodes[1];
+            string viewBox = svg.Attributes["viewBox"].Value;
+
+            string[] values = viewBox.Split(' ');
+
+            #endregion
+            #region Viewbox analysis
+
+            double vx = Globals.GetDouble(values[0], 0.0);
+            double vy = Globals.GetDouble(values[1], 0.0);
+            double vwidth = Globals.GetDouble(values[2], 0.0);
+            double vheight = Globals.GetDouble(values[3], 0.0);
+
+            svgContent.ViewBoxDimensions = new Point(vwidth, vheight);
+            svgContent.ViewBoxPosition = new Point(vx, vy);
+
+            #endregion
+            #region Generate Rectangles
+
+            XmlNodeList rectangles = svgDocument.GetElementsByTagName("rect");
+
+            foreach (XmlNode rectangle in rectangles)
+            {
+                var attributes = rectangle.Attributes;
+
+                double x = Globals.GetDouble(attributes["x"]?.Value ?? "0", 0);
+                double y = Globals.GetDouble(attributes["y"]?.Value ?? "0", 0);
+                double width = Globals.GetDouble(attributes["width"].Value, 0);
+                double height = Globals.GetDouble(attributes["height"].Value, 0);
+                string style = attributes["style"].Value;
+                string transform = attributes["transform"]?.Value;
+
+                string stringToHash = x + "_" + y + "_" + width + "_" + height;
+                string hash = string.Format("{0:X}", stringToHash.GetHashCode());
+
+                string uid = "_" + game_id.Replace("-", "") + "_" + map_id.Replace("-", "") + "_" + floor_id + "_" + hash;
+
+                double translateX = 0;
+                double translateY = 0;
+                double rotation = 0;
+                bool hasTransform = false;
+
+                if (!string.IsNullOrEmpty(transform))
                 {
-                    gZipStream.Read(buffer, 0, buffer.Length);
+                    hasTransform = true;
+
+                    // Parse the transform attribute
+                    string[] transformValues = transform.Split(' ');
+                    translateX = Globals.GetDouble(transformValues[0].Substring(10), 0);
+                    translateY = Globals.GetDouble(transformValues[1].Substring(0, transformValues[1].Length - 1), 0);
+                    rotation = Globals.GetDouble(transformValues[2].Substring(7).Replace(")", ""), 0);
                 }
 
-                return Encoding.UTF8.GetString(buffer);
+
+                SvgRect svgRect = new SvgRect { height = height, width = width, x = x, y = y, style = style, transform = transform, uid = uid, translateX = translateX, translateY = translateY, rotation = rotation, hasTransform = hasTransform };
+
+                svgContent.Rects.Add(svgRect);
+            }
+            #endregion
+            return svgContent;
+        }
+
+        public static SVGImage.SVG.SVGImage GetImageForSVG(SvgContent svg)
+        {
+            if (svg == null) return null;
+
+
+            //generate svg viewer
+            var image = new SVGImage.SVG.SVGImage();
+
+            var stream = new MemoryStream();
+            svg.XmlDocumentNoWalls.Save(stream);
+            stream.Position = 0;
+
+            image.SetImage(stream);
+
+            image.Height = svg.ViewBoxDimensions.Y;
+            image.Width = svg.ViewBoxDimensions.X;
+
+            return image;
+        }
+
+        public static SVGImage.SVG.SVGImage GetImageForFloorAndMap(int game_id, int map_id, int floor_id)
+        {
+            //get file name
+            string fileName = game_id + "_" + map_id + "_" + floor_id + ".svg";
+            string file = Environment.CurrentDirectory + @"/Images/Maps/" + fileName;
+            if (!File.Exists(file)) return null;
+
+            //generate svg viewer
+            var image = new SVGImage.SVG.SVGImage();
+            image.SetImage(File.OpenRead(file));
+
+            //analyse svg to get dimensions:
+            XmlDocument svgDocument = new XmlDocument();
+            svgDocument.Load(file);
+
+            XmlNode svg = svgDocument.ChildNodes[1];
+            string viewBox = svg.Attributes["viewBox"].Value;
+
+            string[] values = viewBox.Split(' ');
+
+            double vx = Globals.GetDouble(values[0], 0.0);
+            double vy = Globals.GetDouble(values[1], 0.0);
+            double vwidth = Globals.GetDouble(values[2], 0.0);
+            double vheight = Globals.GetDouble(values[3], 0.0);
+
+            //set image size
+            image.Height = vheight;
+            image.Width = vwidth;
+
+            return image;
+        }
+
+        #endregion
+
+        public class CalendarEventCreatedArgs : EventArgs
+        {
+            public DateTime Date { get; set; }
+        }
+
+        public static string SerializeToString<T>(this T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
             }
         }
-        catch
+
+        // Serialize an object to XML and save it to a file
+        public static void SerializeToFile<T>(this T obj, string path)
         {
-            return compressedText;
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (TextWriter writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, obj);
+            }
+        }
+
+        // Deserialize an object from an XML file
+        public static T DeserializeFromFile<T>(string path)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (TextReader reader = new StreamReader(path))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+
+        public static void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+
+            int cnt;
+
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+
+        public static string GetFileHash(string filePath)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                using (FileStream fileStream = File.OpenRead(filePath))
+                {
+                    byte[] hashValue = sha256.ComputeHash(fileStream);
+                    return BitConverter.ToString(hashValue).Replace("-", string.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Compresses the string.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        public static string CompressString(string text)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+            }
+
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            var gZipBuffer = new byte[compressedData.Length + 4];
+            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+            return Convert.ToBase64String(gZipBuffer);
+        }
+
+        /// <summary>
+        /// Decompresses the string.
+        /// </summary>
+        /// <param name="compressedText">The compressed text.</param>
+        /// <returns></returns>
+        public static string DecompressString(string compressedText)
+        {
+            try
+            {
+                byte[] gZipBuffer = Convert.FromBase64String(compressedText);
+                using (var memoryStream = new MemoryStream())
+                {
+                    int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                    memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+
+                    var buffer = new byte[dataLength];
+
+                    memoryStream.Position = 0;
+                    using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
+                        gZipStream.Read(buffer, 0, buffer.Length);
+                    }
+
+                    return Encoding.UTF8.GetString(buffer);
+                }
+            }
+            catch
+            {
+                return compressedText;
+            }
+        }
+
+        public static string RemoveIllegalCharactersFromName(string input)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            return rgx.Replace(input, "");
+        }
+
+        public static double GetDouble(string value, double defaultValue)
+        {
+            double result;
+
+            value = value.Replace(",", ".");
+
+            //Try parsing in the current culture
+            if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+            {
+                result = defaultValue;
+            }
+
+            return result;
+        }
+
+        public static bool isWithin5Percent(double x, double y)
+        {
+            double difference = Math.Abs(x - y);
+            double threshold = y * 0.05;
+            return difference < threshold;
+        }
+
+        static public void CopyFolder(string sourceFolder, string destFolder)
+        {
+            if (!Directory.Exists(destFolder))
+                Directory.CreateDirectory(destFolder);
+            string[] files = Directory.GetFiles(sourceFolder);
+            foreach (string file in files)
+            {
+                string name = Path.GetFileName(file);
+                string dest = Path.Combine(destFolder, name);
+                File.Copy(file, dest);
+            }
+            string[] folders = Directory.GetDirectories(sourceFolder);
+            foreach (string folder in folders)
+            {
+                string name = Path.GetFileName(folder);
+                string dest = Path.Combine(destFolder, name);
+                CopyFolder(folder, dest);
+            }
         }
     }
 
-    public static string RemoveIllegalCharactersFromName(string input)
+    public class SvgRect
     {
-        Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-        return rgx.Replace(input, "");
+        public string uid { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
+        public double width { get; set; }
+        public double height { get; set; }
+        public string style { get; set; }
+        public string transform { get; set; }
+
+        public double translateX { get; set; }
+        public double translateY { get; set; }
+        public double rotation { get; set; }
+        public bool hasTransform { get; set; }
     }
 
-    public static double GetDouble(string value, double defaultValue)
+    public class SvgContent
     {
-        double result;
-
-        value = value.Replace(",", ".");
-
-        //Try parsing in the current culture
-        if (!double.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out result))
-        {
-            result = defaultValue;
-        }
-
-        return result;
+        public string Name { get; set; }
+        public List<SvgRect> Rects { get; set; }
+        public Point ViewBoxPosition { get; set; }
+        public Point ViewBoxDimensions { get; set; }
+        public XmlDocument XmlDocument { get; set; }
+        public XmlDocument XmlDocumentNoWalls { get; set; }
     }
-
-    public static bool isWithin5Percent(double x, double y)
-    {
-        double difference = Math.Abs(x - y);
-        double threshold = y * 0.05;
-        return difference < threshold;
-    }
-
-    static public void CopyFolder(string sourceFolder, string destFolder)
-    {
-        if (!Directory.Exists(destFolder))
-            Directory.CreateDirectory(destFolder);
-        string[] files = Directory.GetFiles(sourceFolder);
-        foreach (string file in files)
-        {
-            string name = Path.GetFileName(file);
-            string dest = Path.Combine(destFolder, name);
-            File.Copy(file, dest);
-        }
-        string[] folders = Directory.GetDirectories(sourceFolder);
-        foreach (string folder in folders)
-        {
-            string name = Path.GetFileName(folder);
-            string dest = Path.Combine(destFolder, name);
-            CopyFolder(folder, dest);
-        }
-    }
-}
-
-public class SvgRect
-{
-    public string uid { get; set; }
-    public double x { get; set; }
-    public double y { get; set; }
-    public double width { get; set; }
-    public double height { get; set; }
-    public string style { get; set; }
-    public string transform { get; set; }
-
-    public double translateX { get; set; }
-    public double translateY { get; set; }
-    public double rotation { get; set; }
-    public bool hasTransform { get; set; }
-}
-
-public class SvgContent
-{
-    public string Name { get; set; }
-    public List<SvgRect> Rects { get; set; }
-    public Point ViewBoxPosition { get; set; }
-    public Point ViewBoxDimensions { get; set; }
-    public XmlDocument XmlDocument { get; set; }
-    public XmlDocument XmlDocumentNoWalls { get; set; }
-}
 }

@@ -278,6 +278,7 @@
     <Compile Include="Core\CSVHelper.cs" />
     <Compile Include="Core\DataCache.cs" />
     <Compile Include="Core\DissectDataModels.cs" />
+    <Compile Include="Core\DissectHelper.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\Globals.cs" />
     <Compile Include="Core\Notify.cs" />

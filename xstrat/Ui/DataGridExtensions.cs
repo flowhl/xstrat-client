@@ -199,7 +199,7 @@ namespace xstrat
                 {
                     // Get the current value of the bound property
                     var propInfo = e.NewValue.GetType().GetProperty(BindingPath);
-                    var value = propInfo.GetValue(e.NewValue);
+                    var value = propInfo?.GetValue(e.NewValue);
 
                     // Convert the value to a Brush using the value converter
                     var converter = new IndicatorValueConverter();

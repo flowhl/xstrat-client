@@ -121,7 +121,7 @@
                     <!--<RadioButton Content="Statistics" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StatsViewCommand}" />-->
                     <!--<RadioButton Content="Training Routines" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding RoutinesViewCommand}" />-->
                     <!--<RadioButton Content="Skin Switcher" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SkinSwitcherViewCommand}" />-->
-                    <!--<RadioButton Content="Replays" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ReplayViewCommand}" />-->
+                    <RadioButton Content="Replays" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ReplayViewCommand}" />
                     <RadioButton Content="Settings" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SettingsViewCommand}" />
                     <!--<RadioButton Content="My License" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding LicenseViewCommand}" />-->
                     <RadioButton Content="About XStrat" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding AboutViewCommand}" />

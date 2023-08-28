@@ -33,7 +33,7 @@ namespace xstrat.MVVM.View
     {
 
         public ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
-        
+
 
         public ReplayView()
         {
@@ -84,7 +84,8 @@ namespace xstrat.MVVM.View
                 // Reset the timer when the status is set again
                 if (statusTimer != null) statusTimer.Stop();
                 statusTimer = new System.Timers.Timer(10000);
-                statusTimer.Elapsed += (sender, e) => {
+                statusTimer.Elapsed += (sender, e) =>
+                {
                     this.Dispatcher.Invoke(() =>
                     {
                         StatusText.Content = "";
@@ -131,7 +132,7 @@ namespace xstrat.MVVM.View
                 rep.FolderName = foldername;
                 rep.IsXStratFolder = true;
 
-                rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
+                //rep.Di = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
 
                 list.Add(rep);
                 SetStatus($"Loaded: {xreplay}");
@@ -162,7 +163,7 @@ namespace xstrat.MVVM.View
 
                 rep.IsInGameFolder = true;
 
-                rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
+                //rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
 
                 if (needsAdd) list.Add(rep);
                 SetStatus($"Loaded: {greplay}");
@@ -174,15 +175,15 @@ namespace xstrat.MVVM.View
             {
                 foreach (var title in titles)
                 {
-                    var listItems = list.Where(x => x.FolderName == title.FolderName);
+                    var listItems = list.Where(x => x.FileHash == title.FileHash);
                     foreach (var item in listItems)
                     {
                         item.Title = title.Title;
+                        item.DissectReplay = title.DissectReplay;
                     }
                 }
             }
 
-            
             ReplayFolders = list;
             ReplayDG.ItemsSource = null;
             ReplayDG.ItemsSource = ReplayFolders;
@@ -228,30 +229,38 @@ namespace xstrat.MVVM.View
             Globals.CopyFolder(sourceDirectory, targetDirectory);
         }
 
-        public async void CreateJson(string folderName, bool refeshAfter = false)
-        {
-            SetStatus($"Analyzing: {folderName}");
-            if (folderName.IsNullOrEmpty()) return;
+        //public async void CreateJson(string folderName, bool refeshAfter = false)
+        //{
+        //    SetStatus($"Analyzing: {folderName}");
+        //    if (folderName.IsNullOrEmpty()) return;
 
-            string exe = Path.Combine(Globals.XStratInstallPath, "External/r6-dissect.exe");
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = exe,
-                Arguments = $"{folderName} -x {folderName}.json",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                WorkingDirectory = SettingsHandler.XStratReplayPath,
-                CreateNoWindow = true
-            };
-            Process process = new Process();
-            process.StartInfo = startInfo;
-            process.OutputDataReceived += Process_OutputDataReceived;
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
-            process.OutputDataReceived -= Process_OutputDataReceived;
-            SetStatus($"Analyzed Successfully: {folderName}");
-            if (refeshAfter) ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated = true;
+        //    string exe = Path.Combine(Globals.XStratInstallPath, "External/r6-dissect.exe");
+        //    ProcessStartInfo startInfo = new ProcessStartInfo
+        //    {
+        //        FileName = exe,
+        //        Arguments = $"{folderName} -x {folderName}.json",
+        //        RedirectStandardOutput = true,
+        //        UseShellExecute = false,
+        //        WorkingDirectory = SettingsHandler.XStratReplayPath,
+        //        CreateNoWindow = true
+        //    };
+        //    Process process = new Process();
+        //    process.StartInfo = startInfo;
+        //    process.OutputDataReceived += Process_OutputDataReceived;
+        //    process.Start();
+        //    process.BeginOutputReadLine();
+        //    process.WaitForExit();
+        //    process.OutputDataReceived -= Process_OutputDataReceived;
+        //    SetStatus($"Analyzed Successfully: {folderName}");
+        //    if (refeshAfter) ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated = true;
+        //}
+
+        public async void AnalyzeFile(MatchReplayFolder folder)
+        {
+            if (folder == null) return;
+            SetStatus("Analyzing");
+            folder.DissectReplay = DissectHelper.GetReplay(Path.Combine(SettingsHandler.XStratReplayPath, folder.FolderName));
+            SetStatus("");
         }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -264,14 +273,14 @@ namespace xstrat.MVVM.View
                 });
             }
         }
-            
+
         private void AnalyzeAll()
         {
-            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && !x.JsonCreated).AsEnumerable();
+            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && x.DissectReplay != null).AsEnumerable();
 
             foreach (var item in toAnalyze)
             {
-                Task.Run(() => CreateJson(item.FolderName, true));
+                Task.Run(() => AnalyzeFile(item));
             }
         }
 
@@ -281,7 +290,7 @@ namespace xstrat.MVVM.View
             if (folderName.IsNullOrEmpty()) return;
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
             string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
-            string jsonFile = Path.Combine(SettingsHandler.Settings.GameReplayPath,$"{folderName}.json");
+            string jsonFile = Path.Combine(SettingsHandler.Settings.GameReplayPath, $"{folderName}.json");
             if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
             if (File.Exists(jsonFile)) File.Delete(jsonFile);
@@ -295,13 +304,13 @@ namespace xstrat.MVVM.View
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
             string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
 
-            if(ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
+            if (ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
             {
                 MessageBox.Show("Cannot have more than 12 replays in folder as they wont be loaded in the game");
                 return;
             }
 
-            if(Directory.Exists(dirXStrat) && !Directory.Exists(dirGame))
+            if (Directory.Exists(dirXStrat) && !Directory.Exists(dirGame))
             {
                 Globals.CopyFolder(dirXStrat, dirGame);
             }
@@ -332,10 +341,7 @@ namespace xstrat.MVVM.View
 
         private void ShowTimeLine(string folderName)
         {
-            string jsonPath = Path.Combine(SettingsHandler.XStratReplayPath, $"{folderName}.json");
-            string json = File.ReadAllText(jsonPath);
-
-            Dissect.MatchReplay replay = JsonConvert.DeserializeObject<Dissect.MatchReplay>(json);
+            Dissect.MatchReplay replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().DissectReplay;
 
             StatsDG.ItemsSource = null;
             StatsDG.ItemsSource = replay.Stats.ToList();
@@ -351,9 +357,11 @@ namespace xstrat.MVVM.View
             }
         }
 
+
         #endregion
 
         #region FileHelpers
+
         public bool hasRounds(string path)
         {
             if (!Directory.Exists(path)) return false;
@@ -389,7 +397,7 @@ namespace xstrat.MVVM.View
 
             foreach (var folder in ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty()))
             {
-                dict.Add(new MatchReplayTitle { FolderName = folder.FolderName, Title = folder.Title });
+                dict.Add(new MatchReplayTitle { FileHash = folder.FileHash, Title = folder.Title, DissectReplay = folder.DissectReplay });
             }
 
             SerializeTitleDict(dict.ToArray());
@@ -431,16 +439,16 @@ namespace xstrat.MVVM.View
 
         private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
         {
-            string folderName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
-            if (folderName.IsNullOrEmpty()) return;
+            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
+            if (item == null) return;
 
-            if (ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated == false)
+            if (item.DissectReplay == null)
             {
-                Task.Run(() => CreateJson(folderName, true));
+                Task.Run(() => AnalyzeFile(item));
             }
             else
             {
-                ShowTimeLine(folderName);
+                ShowTimeLine(item.FolderName);
             }
 
         }
@@ -455,7 +463,7 @@ namespace xstrat.MVVM.View
             string folderName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
             if (folderName.IsNullOrEmpty()) return;
 
-            if(ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.IsInGameFolder ?? false)
+            if (ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.IsInGameFolder ?? false)
             {
                 RemoveFromGameFolder(folderName);
             }
@@ -501,6 +509,19 @@ namespace xstrat.MVVM.View
             }
         }
 
+        private string fileHash;
+        public string FileHash
+        {
+            get
+            {
+                if (fileHash.IsNullOrEmpty())
+                {
+                    fileHash = Globals.CreateDirectoryMd5(Path.Combine(SettingsHandler.XStratReplayPath, FolderName));
+                }
+                return fileHash;
+            }
+        }
+
         private string title;
         public string Title
         {
@@ -543,17 +564,25 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private bool jsonCreated;
-        public bool JsonCreated
+        private Dissect.MatchReplay dissectReplay;
+        public Dissect.MatchReplay DissectReplay
         {
-            get { return jsonCreated; }
+            get { return dissectReplay; }
             set
             {
-                if (jsonCreated != value)
+                if (dissectReplay != value)
                 {
-                    jsonCreated = value;
-                    OnPropertyChanged(nameof(JsonCreated));
+                    dissectReplay = value;
+                    OnPropertyChanged(nameof(DissectReplay));
                 }
+            }
+        }
+
+        public bool Analyzed
+        {
+            get
+            {
+                return dissectReplay != null;
             }
         }
 
@@ -566,8 +595,9 @@ namespace xstrat.MVVM.View
     }
     public class MatchReplayTitle
     {
-        public string FolderName { get; set; }
+        public string FileHash { get; set; }
         public string Title { get; set; }
+        public Dissect.MatchReplay DissectReplay { get; set; }
 
         public MatchReplayTitle()
         {

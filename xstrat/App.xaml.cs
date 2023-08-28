@@ -27,12 +27,13 @@ namespace xstrat
             EventManager.RegisterClassHandler(typeof(TextBox), TextBox.MouseDoubleClickEvent,
                 new RoutedEventHandler(SelectAllText));
             base.OnStartup(e);
-            #if DEBUG
-                Console.WriteLine("Mode=Debug");
-            #else
+#if DEBUG
+            Console.WriteLine("Mode=Debug");
+            SetupExceptionHandling();
+#else
                 Console.WriteLine("Mode=Release"); 
                 SetupExceptionHandling();
-            #endif
+#endif
         }
 
         private void SetupExceptionHandling()

@@ -40,7 +40,7 @@
                         <!--Inidcators-->
                         <xstrat:DataGridIndicatorColumn Header="Backup" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
                         <xstrat:DataGridIndicatorColumn Header="In Gamefolder" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
-                        <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="JsonCreated" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="Analyzed" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
 
                         <!--Buttons-->
                         <xstrat:DataGridIconColumn Width="60" Kind="Import" ButtonToolTip="Import" Click="ImportColumn_Click" ></xstrat:DataGridIconColumn>

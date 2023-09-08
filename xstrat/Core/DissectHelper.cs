@@ -24,7 +24,7 @@ namespace xstrat.Core
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "r6-dissect.exe",
-                Arguments = $" -x stdout \"C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/games/Tom Clancy's Rainbow Six Siege/MatchReplay/Match-2023-08-27_15-47-03-139\"",
+                Arguments = $" -x stdout \"{path}\"",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 WorkingDirectory = Path.Combine(Globals.XStratInstallPath, "External"),

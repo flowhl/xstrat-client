@@ -202,13 +202,47 @@ namespace xstrat.Dissect
         public int Headshots { get; set; }
 
         [JsonProperty("headshotPercentage")]
-        public int HeadshotPercentage { get; set; }
+        public double HeadshotPercentage { get; set; }
 
         [JsonProperty("rounds")]
         public int Rounds { get; set; }
 
         [JsonProperty("deaths")]
         public int Deaths { get; set; }
+        //Custom calculated:
+
+        public double KD
+        {
+            get
+            {
+                return (double)Kills / (double)Deaths;
+            }
+        }
+
+        public string KDString
+        {
+            get
+            {
+                return KD.ToString("F2");
+            }
+        }
+
+        public string DiedString
+        {
+            get
+            {
+                return Died.ToString();
+
+            }
+        }
+
+        public string HeadshotPercentageString
+        {
+            get
+            {
+                return HeadshotPercentage.ToString("F2") + "%";
+            }
+        }
     }
 
     public class Team

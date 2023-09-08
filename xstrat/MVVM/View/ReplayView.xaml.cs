@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -255,7 +256,7 @@ namespace xstrat.MVVM.View
         //    if (refeshAfter) ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated = true;
         //}
 
-        public async void AnalyzeFile(MatchReplayFolder folder)
+        public void AnalyzeFile(MatchReplayFolder folder)
         {
             if (folder == null) return;
             SetStatus("Analyzing");
@@ -274,14 +275,20 @@ namespace xstrat.MVVM.View
             }
         }
 
-        private void AnalyzeAll()
+        private async Task AnalyzeAll()
         {
-            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && x.DissectReplay != null).AsEnumerable();
-
+            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && x.DissectReplay == null).AsEnumerable();
+            SetStatus("Analyzing all replays");
+            ApiHandler.Waiting();
+            var tasks = new List<Task>();
             foreach (var item in toAnalyze)
             {
-                Task.Run(() => AnalyzeFile(item));
+                tasks.Add(Task.Run(() => AnalyzeFile(item)));
             }
+            await tasks.WhenAll();
+            SetStatus("Done");
+            ApiHandler.EndWaiting();
+            SaveTitleDict();
         }
 
         private void Delete(string folderName)
@@ -395,7 +402,7 @@ namespace xstrat.MVVM.View
 
             if (ReplayFolders == null || ReplayFolders.Count == 0) return;
 
-            foreach (var folder in ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty()))
+            foreach (var folder in ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty() || x.DissectReplay != null))
             {
                 dict.Add(new MatchReplayTitle { FileHash = folder.FileHash, Title = folder.Title, DissectReplay = folder.DissectReplay });
             }
@@ -432,19 +439,20 @@ namespace xstrat.MVVM.View
             LoadReplays();
         }
 
-        private void CreateAllJsonBtn_Click(object sender, RoutedEventArgs e)
+        private async void CreateAllJsonBtn_Click(object sender, RoutedEventArgs e)
         {
-            AnalyzeAll();
+            await AnalyzeAll();
         }
 
-        private void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
+        private async void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
         {
             var item = (ReplayDG.SelectedItem as MatchReplayFolder);
             if (item == null) return;
 
             if (item.DissectReplay == null)
             {
-                Task.Run(() => AnalyzeFile(item));
+                AnalyzeFile(item);
+                SaveTitleDict();
             }
             else
             {

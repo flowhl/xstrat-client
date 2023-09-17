@@ -215,7 +215,7 @@ namespace xstrat.Dissect
         {
             get
             {
-                return (double)Kills / (double)Deaths;
+                return Deaths > 0 ? (double)Kills / (double)Deaths : 0;
             }
         }
 

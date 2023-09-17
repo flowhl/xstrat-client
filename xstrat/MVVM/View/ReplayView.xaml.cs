@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using DotNetProjects.SVGImage.SVG.Shapes.Filter;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -45,8 +47,6 @@ namespace xstrat.MVVM.View
         private void ReplayView_Loaded(object sender, RoutedEventArgs e)
         {
             LoadReplays();
-            ReplayDG.ItemsSource = ReplayFolders;
-            ReplayDG.DataContext = ReplayFolders;
             Globals.wnd.KeyUp += Wnd_KeyDown;
         }
 
@@ -72,6 +72,8 @@ namespace xstrat.MVVM.View
             GenerateFolderList();
 
             //Update UI
+            ReplayDG.ItemsSource = ReplayFolders;
+            ReplayDG.DataContext = ReplayFolders;
         }
 
         private System.Timers.Timer statusTimer;
@@ -289,6 +291,10 @@ namespace xstrat.MVVM.View
             SetStatus("Done");
             ApiHandler.EndWaiting();
             SaveTitleDict();
+            ReplayDG.ItemsSource = null;
+            ReplayDG.DataContext = null;
+            ReplayDG.ItemsSource = ReplayFolders;
+            ReplayDG.DataContext = ReplayFolders;
         }
 
         private void Delete(string folderName)
@@ -408,7 +414,7 @@ namespace xstrat.MVVM.View
             }
 
             SerializeTitleDict(dict.ToArray());
-            Notify.sendSuccess("Saved titles sucessfully");
+            Notify.sendSuccess("Saved sucessfully");
         }
 
         public void SerializeTitleDict(MatchReplayTitle[] dict)
@@ -453,12 +459,15 @@ namespace xstrat.MVVM.View
             {
                 AnalyzeFile(item);
                 SaveTitleDict();
+                ReplayDG.ItemsSource = null;
+                ReplayDG.DataContext = null;
+                ReplayDG.ItemsSource = ReplayFolders;
+                ReplayDG.DataContext = ReplayFolders;
             }
             else
             {
                 ShowTimeLine(item.FolderName);
             }
-
         }
 
         private void DeleteButtonColumn_Click(object sender, RoutedEventArgs e)
@@ -497,9 +506,28 @@ namespace xstrat.MVVM.View
             SaveTitleDict();
         }
 
+        private void ExportExcelButtonColumn_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
+            if (item == null) return;
+            if (!item.IsXStratFolder)
+            {
+                Notify.sendWarn("Please backup the replay first");
+                return;
+            }
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            saveFileDialog.FileName = item.FolderName;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                DissectHelper.ExportReplay(Path.Combine(SettingsHandler.XStratReplayPath, item.FolderName), filePath);    
+            }
+        }
         #endregion
-
     }
     public class MatchReplayFolder : INotifyPropertyChanged
     {

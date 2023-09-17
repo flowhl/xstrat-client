@@ -1207,7 +1207,8 @@ namespace xstrat.MVVM.View
             if (result.Item1)
             {
                 Notify.sendSuccess("Strat created successfully");
-                Strat newStrat = JsonConvert.DeserializeObject<Strat>(result.Item2);
+                JObject jsonObj = JObject.Parse(result.Item2);
+                Strat newStrat = JsonConvert.DeserializeObject<Strat>(jsonObj["model"].ToString());
                 currentStrat = newStrat;
                 Refresh();
             }
@@ -1226,7 +1227,10 @@ namespace xstrat.MVVM.View
             UpdateTopBar();
             if (currentStrat != null)
             {
-                LoadStrat(currentStrat.Id);
+                if (currentStrat.Id.IsNotNullOrEmpty())
+                {
+                    LoadStrat(currentStrat.Id);
+                }
             }
             ApiHandler.EndWaiting();
         }
@@ -1356,7 +1360,7 @@ namespace xstrat.MVVM.View
 
         private void DrawingLayer_MouseMove(object sender, MouseEventArgs e)
         {
-            
+
             if (CurrentToolTip == View.ToolTip.Brush && Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 Point mousepoint = e.GetPosition(DrawingLayer);
@@ -1426,23 +1430,23 @@ namespace xstrat.MVVM.View
                     for (int i = DrawingLayer.Children.Count - 1; i >= 0; i--)
                     {
                         UIElement element = DrawingLayer.Children[i] as UIElement;
-                        
+
                         if (element == null) continue;
 
-                        if(element is Ellipse)
+                        if (element is Ellipse)
                         {
                             var el = element as Ellipse;
                             double X = Canvas.GetLeft(el) + el.Width;
                             double Y = Canvas.GetTop(el) + el.Height;
 
-                            if(Math.Abs(X - currentMousePosition.X) < eraserRadius && Math.Abs(Y - currentMousePosition.Y) < eraserRadius)
+                            if (Math.Abs(X - currentMousePosition.X) < eraserRadius && Math.Abs(Y - currentMousePosition.Y) < eraserRadius)
                             {
                                 // Remove the object from the canvas
                                 DrawingLayer.Children.RemoveAt(i);
                             }
                         }
                         else
-                        { 
+                        {
                             Rect elementRect = VisualTreeHelper.GetDescendantBounds(element);
                             elementRect = element.TransformToAncestor(DrawingLayer).TransformBounds(elementRect);
 
@@ -1459,10 +1463,10 @@ namespace xstrat.MVVM.View
                     DrawingLayer.InvalidateVisual();
                 }
 
-                previousMousePosition = currentMousePosition;   
+                previousMousePosition = currentMousePosition;
             }
 
-            
+
         }
 
 
@@ -1629,7 +1633,7 @@ namespace xstrat.MVVM.View
 
             if (e.Key == Key.D1)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Cursor);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Cursor);
             }
             if (e.Key == Key.D2)
             {
@@ -1637,19 +1641,19 @@ namespace xstrat.MVVM.View
             }
             if (e.Key == Key.D3)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Eraser);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Eraser);
             }
             if (e.Key == Key.D4)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Text);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Text);
             }
             if (e.Key == Key.D5)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Node);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Node);
             }
             if (e.Key == Key.D6)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Arrow);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Arrow);
             }
             if (e.Key == Key.D7)
             {
@@ -1657,7 +1661,7 @@ namespace xstrat.MVVM.View
             }
             if (e.Key == Key.D8)
             {
-                if(Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Rectangle);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl)) ToolTipChanged(View.ToolTip.Rectangle);
             }
 
         }

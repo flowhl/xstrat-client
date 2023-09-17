@@ -284,31 +284,20 @@ namespace xstrat.MVVM.View
             {
                 return Globals.UserIdToName(od.UserId) + " | entire day";
             }
+            
+            string outputTime = string.Empty;
 
-            string stringStartTime = "";
-            string stringEndTime = "";
-            try
+            if (od.Start.GetValueOrDefault().Date == od.End.GetValueOrDefault().Date)
             {
-                stringStartTime = od.Start.ToString().Split(' ')[1].Replace(":00", "");
-                stringEndTime = od.End.ToString().Split(' ')[1].Replace(":00", "");
+                outputTime = od.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + od.End.GetValueOrDefault().ToString("HH:mm");
             }
-            catch (Exception ex)
+            else
             {
-                Notify.sendError(ex.Message);
+                outputTime = od.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + od.End.GetValueOrDefault().ToString("dd.MM. HH:mm");
             }
-
-            string stringStartDay = "";
-            string stringEndDay = "";
-            if (od.Start.GetValueOrDefault().Date != od.End.GetValueOrDefault().Date)
-            {
-                stringStartDay = od.Start.GetValueOrDefault().ToString("ddd") + " ";
-                stringEndDay = od.End.GetValueOrDefault().ToString("ddd") + " ";
-            }
-
 
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.UserIdToName(od.UserId) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
-
+            return Globals.UserIdToName(od.UserId) + " | " + outputTime + " | " + stitle;
         }
 
         private string GetLabel(CalendarEvent sc)
@@ -323,20 +312,18 @@ namespace xstrat.MVVM.View
                 stitle = sc.Title;
             }
 
-            string sstart = "";
-            string send = "";
-            try
-            {
-                sstart = sc.Start.ToString().Split(' ')[1].Replace(":00", "");
-                send = sc.End.ToString().Split(' ')[1].Replace(":00", "");
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError(ex.Message);
-            }
-            //return "Scrim: " + sc.opponent_name + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.EventTypes[sc.Typ].name + ": " + sc.OpponentName + " | " + sstart + "-" + send;
+            string outputTime = string.Empty;
 
+            if(sc.Start.GetValueOrDefault().Date == sc.End.GetValueOrDefault().Date)
+            {
+                outputTime = sc.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + sc.End.GetValueOrDefault().ToString("HH:mm");
+            }
+            else
+            {
+                outputTime = sc.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + sc.End.GetValueOrDefault().ToString("dd.MM. HH:mm");
+            }
+
+            return Globals.EventTypes[sc.EventType].name + ": " + outputTime + " | " + stitle;
         }
 
         #endregion

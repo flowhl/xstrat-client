@@ -30,9 +30,16 @@ namespace xstrat.Core
 
         public static void RetrieveTeam()
         {
+            bool teamNull = _currentTeam == null;
             var task = ApiHandler.GetTeamInfoAsync();
             task.Wait();
             CurrentTeam = task.Result;
+
+            if ((teamNull && task.Result != null )|| (!teamNull && task.Result == null))
+            {
+                Globals.wnd.UpdateMenuButtons();
+            }
+
         }
         #endregion
 

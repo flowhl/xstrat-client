@@ -84,6 +84,7 @@ namespace xstrat
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateMenuButtons();
             Globals.OnDataRetrieved += Globals_OnDataRetrieved;
             mv = (MainViewModel)DataContext;
             mv.CurrentView = mv.LoadingVM;
@@ -107,8 +108,8 @@ namespace xstrat
             Thread.CurrentThread.CurrentCulture = ci;
 
             StateChanged += MainWindow_StateChanged;
-            WallEditorBtn.Visibility = Visibility.Collapsed;
-
+            BtnWallEditor.Visibility = Visibility.Collapsed;
+            UpdateMenuButtons();
         }
 
         private void Globals_OnDataRetrieved(object sender, EventArgs e)
@@ -283,9 +284,24 @@ namespace xstrat
         {
             if (counterToUnlockEditor > 5)
             {
-                WallEditorBtn.Visibility = Visibility.Visible;
+                BtnWallEditor.Visibility = Visibility.Visible;
             }
             counterToUnlockEditor++;
         }
+
+        public void UpdateMenuButtons()
+        {
+            BtnWallEditor.Visibility = Visibility.Collapsed;
+            BtnLicense.Visibility = Visibility.Collapsed;
+            BtnSkinSwitcher.Visibility = Visibility.Collapsed;
+            BtnRoutines.Visibility = Visibility.Collapsed;
+            BtnStats.Visibility = Visibility.Collapsed;
+            var vis = DataCache.CurrentTeam != null ? Visibility.Visible : Visibility.Collapsed;
+            BtnAvailability.Visibility = vis;
+            BtnEventPlanner.Visibility = vis;
+            BtnCalendar.Visibility = vis;
+            BtnStratmaker.Visibility = vis;
+        }
+
     }
 }

@@ -352,30 +352,9 @@ namespace xstrat.MVVM.View
                 return Globals.UserIdToName(od.UserId) + " | entire day";
             }
 
-            string stringStartTime = "";
-            string stringEndTime = "";
-            try
-            {
-                stringStartTime = od.Start.ToString().Split(' ')[1].Replace(":00", "");
-                stringEndTime = od.End.ToString().Split(' ')[1].Replace(":00", "");
-            }
-            catch (Exception ex)
-            {
-                Notify.sendError(ex.Message);
-            }
-
-            string stringStartDay = "";
-            string stringEndDay = "";
-            if (od.Start.GetValueOrDefault().Date != od.End.GetValueOrDefault().Date)
-            {
-                stringStartDay = od.Start.GetValueOrDefault().ToString("ddd") + " ";
-                stringEndDay = od.End.GetValueOrDefault().ToString("ddd") + " ";
-            }
-
-
+            string outputTime = od.Start.GetValueOrDefault().ToString("HH:mm") + "-" + od.End.GetValueOrDefault().ToString("HH:mm");
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.UserIdToName(od.UserId) + " | " + stringStartDay + stringStartTime + " - " + stringEndDay + stringEndTime;
-
+            return Globals.UserIdToName(od.UserId) + " | " + outputTime + " | " + stitle;
         }
 
         private string GetLabel(Models.Supabase.CalendarEvent sc)
@@ -402,7 +381,7 @@ namespace xstrat.MVVM.View
                 Notify.sendError(ex.Message);
             }
             //return "Scrim: " + sc.opponent_name + " | " + stitle + ": " + sstart + "-" + send;
-            return Globals.EventTypes[sc.Typ].name + ": " + sc.OpponentName + " | " + sstart + "-" + send;
+            return Globals.EventTypes[sc.EventType].name + ": " + sc.OpponentName + " | " + sstart + "-" + send;
 
         }
         #endregion

@@ -112,20 +112,20 @@
             <Border Background="#101010" Grid.Row="2" CornerRadius="12">
                 <StackPanel Name="SPRadioButtons">
 
-                    <RadioButton Content="Dashboard" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" IsChecked="True" Command="{Binding HomeViewCommand}" />
-                    <RadioButton Content="Team Info" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding TeamViewCommand}" />
-                    <RadioButton Content="Availability" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding OffdayViewCommand}" />
-                    <RadioButton Content="Event Planner" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ScrimViewCommand}" />
-                    <RadioButton Content="Calendar" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding CalendarViewCommand}" />
-                    <RadioButton Content="Strat Maker" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StratMakerViewCommand}" />
-                    <!--<RadioButton Content="Statistics" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StatsViewCommand}" />-->
-                    <!--<RadioButton Content="Training Routines" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding RoutinesViewCommand}" />-->
-                    <!--<RadioButton Content="Skin Switcher" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SkinSwitcherViewCommand}" />-->
-                    <RadioButton Content="Replays" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ReplayViewCommand}" />
-                    <RadioButton Content="Settings" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SettingsViewCommand}" />
-                    <!--<RadioButton Content="My License" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding LicenseViewCommand}" />-->
-                    <RadioButton Content="About XStrat" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding AboutViewCommand}" />
-                    <RadioButton Content="Wall Editor" Name="WallEditorBtn" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding WallEditorViewCommand}" />
+                    <RadioButton x:Name="BtnDashboard" Content="Dashboard" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" IsChecked="True" Command="{Binding HomeViewCommand}" />
+                    <RadioButton x:Name="BtnTeamInfo" Content="Team Info" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding TeamViewCommand}" />
+                    <RadioButton x:Name="BtnAvailability" Content="Availability" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding OffdayViewCommand}" />
+                    <RadioButton x:Name="BtnEventPlanner" Content="Event Planner" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ScrimViewCommand}" />
+                    <RadioButton x:Name="BtnCalendar" Content="Calendar" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding CalendarViewCommand}" />
+                    <RadioButton x:Name="BtnStratmaker" Content="Strat Maker" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StratMakerViewCommand}" />
+                    <RadioButton x:Name="BtnStats" Content="Statistics" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StatsViewCommand}" />
+                    <RadioButton x:Name="BtnRoutines" Content="Training Routines" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding RoutinesViewCommand}" />
+                    <RadioButton x:Name="BtnSkinSwitcher" Content="Skin Switcher" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SkinSwitcherViewCommand}" />
+                    <RadioButton x:Name="BtnReplays" Content="Replays" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ReplayViewCommand}" />
+                    <RadioButton x:Name="BtnSettings" Content="Settings" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SettingsViewCommand}" />
+                    <RadioButton x:Name="BtnLicense" Content="My License" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding LicenseViewCommand}" />
+                    <RadioButton x:Name="BtnAbout" Content="About XStrat" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding AboutViewCommand}" />
+                    <RadioButton x:Name="BtnWallEditor" Content="Wall Editor" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding WallEditorViewCommand}" />
 
                 </StackPanel>
             </Border>

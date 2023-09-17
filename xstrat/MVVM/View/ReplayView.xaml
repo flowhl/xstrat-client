@@ -47,8 +47,8 @@
                         <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Analyze Replay / Show Timeline" Click="AnalyzeButtonColumn_Click" ></xstrat:DataGridIconColumn>
                         <xstrat:DataGridIconColumn Width="60" Kind="GoogleController" ButtonToolTip="Add/Remove game folder" Click="CopyToGameButtonColumn_Click"></xstrat:DataGridIconColumn>
                         <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click"></xstrat:DataGridIconColumn>
-
                         <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
+                        <xstrat:DataGridIconColumn Width="60" x:Name="ExportExcelButtonColumn" ButtonToolTip="Export for Excel" Kind="FileExportOutline" Click="ExportExcelButtonColumn_Click"></xstrat:DataGridIconColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -57,14 +57,13 @@
                 <DataGrid Name="StatsDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="200"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Rounds Played" Binding="{Binding Rounds}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Kills" Binding="{Binding Kills}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}" ></DataGridTextColumn>
                         <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}" ></DataGridTextColumn>
                         <DataGridTextColumn Header="Assists" Binding="{Binding Assists}" ></DataGridTextColumn>
                         <DataGridTextColumn Header="KD" Binding="{Binding KDString}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Rounds Played" Binding="{Binding Rounds}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="1vX" Binding="{Binding _1vX}"></DataGridTextColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>

@@ -245,6 +245,7 @@ namespace xstrat.Ui
         public void updateWidth()
         {
             double nwidth = ActualWidth / 6;
+            double nheight = ActualHeight;
             Rec1.Width = nwidth;
             Rec2.Width = nwidth;
             Rec3.Width = nwidth;
@@ -258,6 +259,13 @@ namespace xstrat.Ui
             Icon4.Width = nwidth;
             Icon5.Width = nwidth;
             Icon6.Width = nwidth;
+
+            Icon1.Height = nheight;
+            Icon2.Height = nheight;
+            Icon3.Height = nheight;
+            Icon4.Height = nheight;
+            Icon5.Height = nheight;
+            Icon6.Height = nheight;
         }
 
         public ImageSource GetImageSource(string relativePath)

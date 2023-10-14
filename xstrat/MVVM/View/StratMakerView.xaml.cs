@@ -863,7 +863,7 @@ namespace xstrat.MVVM.View
 
             IconSizeSlider.Value = content.IconSize;
             IconSize = content.IconSize;
-            RescaleAllIcons(content.IconSize);
+            RescaleIcons(content.IconSize);
 
             Kommentar.Text = content.comment;
         }
@@ -1563,13 +1563,13 @@ namespace xstrat.MVVM.View
             IconSize = e.NewValue;
 
             //scale all icons
-            RescaleAllIcons(e.NewValue);
+            RescaleIcons(e.NewValue);
         }
 
-        private void RescaleAllIcons(double size)
+        private void RescaleIcons(double size)
         {
             if (!IsLoaded || IconSizeSlider == null) return;
-            foreach (StratContentControl item in DrawingLayer.Children.OfType<StratContentControl>())
+            foreach (StratContentControl item in DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is Image && Selector.GetIsSelected(x)))
             {
                 double newsize = size;
                 double oldsize = item.Width;
@@ -1769,8 +1769,6 @@ namespace xstrat.MVVM.View
         public string gadgets { get; set; }
         public string position { get; set; }
     }
-
-
 
     public class DragNDropObj
     {

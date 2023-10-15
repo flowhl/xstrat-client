@@ -638,7 +638,14 @@ namespace xstrat.Core
         }
         public static SolidColorBrush ToSolidColorBrush(this string hex_code)
         {
-            return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
+            try
+            {
+                return (SolidColorBrush)new BrushConverter().ConvertFromString(hex_code);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
         #region SVG
@@ -1029,6 +1036,12 @@ namespace xstrat.Core
                 string dest = Path.Combine(destFolder, name);
                 CopyFolder(folder, dest);
             }
+        }
+
+        public static SolidColorBrush GetUserColorBrush(string id)
+        {
+            var brush = DataCache.CurrentTeamMates?.Where(x => x.Id == id).FirstOrDefault()?.Color?.ToSolidColorBrush();
+            return brush;
         }
     }
 

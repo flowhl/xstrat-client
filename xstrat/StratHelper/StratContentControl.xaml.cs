@@ -28,7 +28,7 @@ namespace XStrat
         Point Start { get; set; }
         public bool Selection { get; set; }
         public bool Locked { get; set; } = false;
-        public int UserID { get; set; } = -1;
+        public string UserID { get; set; }
 
         public StratContentControl()
         {

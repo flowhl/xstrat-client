@@ -43,6 +43,9 @@ using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using xstrat.Models.Supabase;
 using Newtonsoft.Json;
+using static SkiaSharp.HarfBuzz.SKShaper;
+using LiveChartsCore.Kernel;
+using System.Net;
 
 namespace xstrat.MVVM.View
 {
@@ -59,6 +62,7 @@ namespace xstrat.MVVM.View
 
         public ToolTip CurrentToolTip;
         public Brush CurrentBrush = null;
+        public string CurrentBrushUser = null;
         public bool isMouseDown = false;
         public int BrushSize { get; set; } = 10;
 
@@ -157,6 +161,7 @@ namespace xstrat.MVVM.View
             newcc.Style = this.FindResource("DesignerItemStyle") as Style;
             newcc.BorderBrush = Brushes.Transparent;
             newcc.BorderThickness = new Thickness(2);
+            newcc.Tag = CurrentBrushUser;
 
             DrawingLayer.Children.Add(newcc);
 
@@ -206,6 +211,7 @@ namespace xstrat.MVVM.View
                 scc.Style = this.FindResource("DesignerItemStyle") as Style;
                 scc.BorderBrush = Brushes.Transparent;
                 scc.BorderThickness = new Thickness(2);
+                scc.UserID = CurrentBrushUser;
 
                 // create a new rectangle object
                 Rectangle rectangle = new Rectangle();
@@ -229,6 +235,7 @@ namespace xstrat.MVVM.View
                 //rectangle.Fill = CurrentBrush;
                 rectangle.StrokeThickness = 4;
                 rectangle.Stroke = CurrentBrush;
+                rectangle.Tag = CurrentBrushUser;
 
                 ClickPoint1 = null;
             }
@@ -267,6 +274,9 @@ namespace xstrat.MVVM.View
                 //circle.Fill = CurrentBrush;
                 circle.StrokeThickness = 4;
                 circle.Stroke = CurrentBrush;
+                circle.Tag = CurrentBrushUser;
+                scc.Tag = CurrentBrushUser;
+                scc.UserID = CurrentBrushUser;
 
                 // Add the circle to the canvas
                 DrawingLayer.Children.Add(scc);
@@ -516,15 +526,23 @@ namespace xstrat.MVVM.View
                 Image newimg = new Image();
                 newimg.IsHitTestVisible = false;
                 newimg.Source = draggedItem.Source;
+                newimg.Tag = CurrentBrushUser;
+
+                var border = new Border();
+                border.BorderThickness = new Thickness(2);
+                border.BorderBrush = CurrentBrush;
+                border.Tag = CurrentBrushUser;
+                border.Child = newimg;
 
                 StratContentControl newcc = new StratContentControl();
-                newcc.Content = newimg;
+                newcc.Content = border;
                 newcc.Height = IconSize;
                 newcc.Width = IconSize;
                 newcc.Padding = new Thickness(1);
                 newcc.Style = this.FindResource("DesignerItemStyle") as Style;
                 newcc.BorderBrush = CurrentBrush;
                 newcc.BorderThickness = new Thickness(2);
+                newcc.Tag = CurrentBrushUser;
 
                 DrawingLayer.Children.Add(newcc);
 
@@ -544,10 +562,62 @@ namespace xstrat.MVVM.View
 
         private void SetBrushToItem()
         {
-            var items = DrawingLayer.Children.OfType<StratContentControl>().Where(x => Selector.GetIsSelected(x));
+            var items = DrawingLayer.Children.OfType<UIElement>().Where(x => Selector.GetIsSelected(x));
             foreach (var item in items)
             {
-                item.BorderBrush = CurrentBrush;
+                // Image or Text
+                if (item is StratContentControl)
+                {
+                    if ((item as StratContentControl).Content is Border)
+                    {
+                        ((item as StratContentControl).Content as Border).BorderBrush = CurrentBrush;
+                        ((item as StratContentControl).Content as Border).Tag = CurrentBrushUser;
+                        (item as StratContentControl).UserID = CurrentBrushUser;
+                        (item as StratContentControl).Tag = CurrentBrushUser;
+                    }
+                    if ((item as StratContentControl).Content is TextControl)
+                    {
+                        TextControl textControl = (TextControl)(item as StratContentControl).Content;
+                        textControl.BorderBrush = CurrentBrush;
+                        (item as StratContentControl).UserID = CurrentBrushUser;
+                        (item as StratContentControl).Tag = CurrentBrushUser;
+                        textControl.Tag = CurrentBrushUser;
+                    }
+                    if((item as StratContentControl).Content is Ellipse)
+                    {
+                        var ellipse = (Ellipse)(item as StratContentControl).Content;
+                        ellipse.Tag = CurrentBrushUser;
+                        ellipse.Stroke = CurrentBrush;
+                        (item as StratContentControl).UserID = CurrentBrushUser;
+                        (item as StratContentControl).Tag = CurrentBrushUser;
+                    }
+                    if((item as StratContentControl).Content is Rectangle)
+                    {
+                        var rect = (Rectangle)(item as StratContentControl).Content;
+                        rect.Tag = CurrentBrushUser;
+                        rect.Stroke = CurrentBrush;
+                        (item as StratContentControl).UserID = CurrentBrushUser;
+                        (item as StratContentControl).Tag = CurrentBrushUser;
+                    }
+
+                }
+
+                //Drawing
+                if (item is Ellipse)
+                {
+                    var ellipse = (Ellipse)item;
+                    ellipse.Tag = CurrentBrushUser;
+                    ellipse.Stroke = CurrentBrush;
+                }
+
+                //Arrow
+                if (item is Path)
+                {
+                    var path = (Path)item;
+                    path.Tag = CurrentBrushUser;
+                    path.Stroke = CurrentBrush;
+                    path.Fill = CurrentBrush;
+                }
             }
         }
 
@@ -624,6 +694,7 @@ namespace xstrat.MVVM.View
             string user = (sender as Button).Name.Replace("Color_", "");
             UserData teammate = DataCache.CurrentTeamMates.Where(x => Globals.RemoveIllegalCharactersFromName(x.Name).RemoveAllWhitespace() == user).FirstOrDefault();
             CurrentBrush = teammate.Color.ToSolidColorBrush();
+            CurrentBrushUser = teammate.Id.ToString();
             DeselectAllColors();
             (sender as Button).BorderThickness = new Thickness(2);
             SetBrushToItem();
@@ -722,21 +793,22 @@ namespace xstrat.MVVM.View
 
         #region ToolTips Methods:
 
-        public Path CreateArrow(Point pointStart, Point pointEnd, double arrowWidth, Brush brush = null)
+        public Path CreateArrow(Point pointStart, Point pointEnd, double arrowWidth, string UserID = null)
         {
             // Create a path to represent the arrow
             Path arrowPath = new Path();
 
-            if (brush == null)
+            if (UserID == null)
             {
                 // Set the stroke and fill colors for the path
                 arrowPath.Stroke = CurrentBrush;
                 arrowPath.Fill = CurrentBrush;
+                arrowPath.Tag = CurrentBrushUser;
             }
             else
             {
-                arrowPath.Stroke = brush;
-                arrowPath.Fill = brush;
+                arrowPath.Stroke = Globals.GetUserColorBrush(UserID);
+                arrowPath.Fill = Globals.GetUserColorBrush(UserID);
             }
 
 
@@ -861,9 +933,9 @@ namespace xstrat.MVVM.View
 
             LoadDragNDropItems(content.dragNDropObjs);
 
-            IconSizeSlider.Value = content.IconSize;
-            IconSize = content.IconSize;
-            RescaleIcons(content.IconSize);
+            //IconSizeSlider.Value = content.IconSize;
+            //IconSize = content.IconSize;
+            //RescaleIcons(content.IconSize);
 
             Kommentar.Text = content.comment;
         }
@@ -974,13 +1046,14 @@ namespace xstrat.MVVM.View
                 // Image or Text
                 if (item is StratContentControl)
                 {
-                    if ((item as StratContentControl).Content is Image)
+                    if ((item as StratContentControl).Content is Border)
                     {
                         newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                        newEntry.brush = (item as StratContentControl).BorderBrush.ToString();
-                        Image image = ((item as StratContentControl).Content as Image);
+                        newEntry.userID = (item as StratContentControl).UserID;
+                        Image image = ((item as StratContentControl).Content as Border).Child as Image;
                         newEntry.image = GetRelativePathForImage(((BitmapImage)image.Source).UriSource);
                         newEntry.type = DragNDropObjType.Image;
+                        newEntry.diameter = image.ActualWidth;
                     }
                     if ((item as StratContentControl).Content is TextControl)
                     {
@@ -989,8 +1062,26 @@ namespace xstrat.MVVM.View
                         newEntry.height = (item as StratContentControl).Height;
                         newEntry.textContent = ((item as StratContentControl).Content as TextControl).MainContent.Text;
                         newEntry.type = DragNDropObjType.Text;
+                        newEntry.userID = (item as StratContentControl).UserID;
+                    }
+                    if ((item as StratContentControl).Content is Ellipse)
+                    {
+                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.width = (item as StratContentControl).Width;
+                        newEntry.height = (item as StratContentControl).Height;
+                        newEntry.diameter = (item as StratContentControl).Height;
+                        newEntry.type = DragNDropObjType.Circle;
+                        newEntry.userID = (item as StratContentControl).UserID;
                     }
 
+                    if ((item as StratContentControl).Content is Rectangle)
+                    {
+                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.width = (item as StratContentControl).Width;
+                        newEntry.height = (item as StratContentControl).Height;
+                        newEntry.type = DragNDropObjType.Rectangle;
+                        newEntry.userID = (item as StratContentControl).UserID;
+                    }
                 }
 
                 //Drawing
@@ -998,8 +1089,8 @@ namespace xstrat.MVVM.View
                 {
                     newEntry.pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
                     newEntry.diameter = (item as Ellipse).Width;
-                    newEntry.brush = (item as Ellipse).Fill.ToString();
-                    newEntry.type = DragNDropObjType.Circle;
+                    newEntry.type = DragNDropObjType.DrawingCircle;
+                    newEntry.userID = (item as Ellipse).Tag.ToString();
                 }
 
                 //Arrow
@@ -1013,7 +1104,7 @@ namespace xstrat.MVVM.View
                     newEntry.arrowGeometryStart = (g as LineGeometry).StartPoint;
                     newEntry.arrowGeometryEnd = (g as LineGeometry).EndPoint;
 
-                    newEntry.brush = (item as Path).Fill.ToString();
+                    newEntry.userID = (item as Path).Tag.ToString();
                     newEntry.type = DragNDropObjType.Arrow;
                 }
                 if (newEntry != null) result.Add(newEntry);
@@ -1047,21 +1138,35 @@ namespace xstrat.MVVM.View
             {
                 if (item.type == DragNDropObjType.Image)
                 {
+                    if(item.image.IsNullOrEmpty())
+                    {
+                        Notify.sendWarn($"could not find image path for image: {item.userID} | {item.height} | {item.width}");
+                        continue;
+                    }
+
                     Point newpos = item.pos;
 
                     Image newimg = new Image();
                     newimg.IsHitTestVisible = false;
                     newimg.Source = new BitmapImage(new Uri(ImageFolder + item.image, UriKind.Absolute));
+                    
+                    var border = new Border();
+                    border.BorderThickness = new Thickness(2);
+                    border.BorderBrush = CurrentBrush;
+                    border.Tag = CurrentBrushUser;
+                    border.Child = newimg;
 
                     StratContentControl newcc = new StratContentControl();
-                    newcc.Content = newimg;
+                    newcc.Content = border;
                     newcc.Height = 50;
                     newcc.Width = 50;
                     newcc.Padding = new Thickness(1);
                     newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = item.brush.ToSolidColorBrush();
+                    newcc.BorderBrush = item.userID?.ToSolidColorBrush();
                     newcc.BorderThickness = new Thickness(2);
                     newcc.PreviewMouseLeftButtonDown += Newcc_MouseLeftButtonDown;
+                    newcc.UserID = item.userID;
+                    newcc.Tag = item.userID;
 
                     DrawingLayer.Children.Add(newcc);
 
@@ -1071,13 +1176,82 @@ namespace xstrat.MVVM.View
 
                 if (item.type == DragNDropObjType.Circle)
                 {
+                    var scc = new StratContentControl();
+
+                    scc.Padding = new Thickness(1);
+                    scc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    scc.BorderBrush = Brushes.Transparent;
+                    scc.BorderThickness = new Thickness(2);
+
+                    Ellipse circle = new Ellipse();
+                    circle.IsHitTestVisible = false;
+
+                    scc.Content = circle;
+
+                    scc.Width = item.width;
+                    scc.Height = item.height;
+
+
+                    // set the fill color of the rectangle
+                    //circle.Fill = CurrentBrush;
+                    circle.StrokeThickness = 4;
+                    circle.Stroke = Globals.GetUserColorBrush(item.userID); ;
+                    circle.Tag = item.userID;
+                    scc.Tag = item.userID;
+                    scc.UserID = item.userID;
+
+                    // Add the circle to the canvas
+                    DrawingLayer.Children.Add(scc);
+
+                    // set the position of the rectangle on the canvas
+                    Canvas.SetLeft(scc, item.pos.X);
+                    Canvas.SetTop(scc, item.pos.Y);
+                }
+
+                if(item.type == DragNDropObjType.DrawingCircle)
+                {
                     var ellipse = new Ellipse();
-                    ellipse.Fill = item.brush.ToSolidColorBrush();
+                    ellipse.Fill = Globals.GetUserColorBrush(item.userID);
                     ellipse.Width = item.diameter;
                     ellipse.Height = item.diameter;
+                    ellipse.Tag = item.userID;
                     DrawingLayer.Children.Add(ellipse);
                     Canvas.SetLeft(ellipse, item.pos.X);
                     Canvas.SetTop(ellipse, item.pos.Y);
+                }
+
+                if (item.type == DragNDropObjType.Rectangle)
+                {
+                    var scc = new StratContentControl();
+
+                    scc.Padding = new Thickness(1);
+                    scc.Style = this.FindResource("DesignerItemStyle") as Style;
+                    scc.BorderBrush = Brushes.Transparent;
+                    scc.BorderThickness = new Thickness(2);
+
+                    Rectangle rect = new Rectangle();
+                    rect.IsHitTestVisible = false;
+
+                    scc.Content = rect;
+
+                    scc.Width = item.width;
+                    scc.Height = item.height;
+
+
+                    // set the fill color of the rectangle
+                    //circle.Fill = CurrentBrush;
+                    rect.StrokeThickness = 4;
+                    rect.Stroke = Globals.GetUserColorBrush(item.userID); ;
+                    rect.Tag = item.userID;
+                    scc.Tag = item.userID;
+                    scc.UserID = item.userID;
+
+                    // Add the circle to the canvas
+                    DrawingLayer.Children.Add(scc);
+
+                    // set the position of the rectangle on the canvas
+                    Canvas.SetLeft(scc, item.pos.X);
+                    Canvas.SetTop(scc, item.pos.Y);
                 }
 
                 if (item.type == DragNDropObjType.Text)
@@ -1093,6 +1267,8 @@ namespace xstrat.MVVM.View
                     newcc.Style = this.FindResource("DesignerItemStyle") as Style;
                     newcc.BorderBrush = Brushes.Transparent;
                     newcc.BorderThickness = new Thickness(2);
+                    newcc.UserID = item.userID;
+                    newcc.Tag = item.userID;
 
                     DrawingLayer.Children.Add(newcc);
 
@@ -1102,11 +1278,11 @@ namespace xstrat.MVVM.View
 
                 if (item.type == DragNDropObjType.Arrow)
                 {
-                    var arrow = CreateArrow(item.arrowGeometryStart, item.arrowGeometryEnd, 20, item.brush.ToSolidColorBrush());
+                    var arrow = CreateArrow(item.arrowGeometryStart, item.arrowGeometryEnd, 20, item.userID);
                     DrawingLayer.Children.Add(arrow);
                     Canvas.SetLeft(arrow, item.pos.X);
                     Canvas.SetTop(arrow, item.pos.Y);
-
+                    arrow.Tag = item.userID;
                 }
             }
             DeselectAll();
@@ -1360,11 +1536,11 @@ namespace xstrat.MVVM.View
 
         private void DrawingLayer_MouseMove(object sender, MouseEventArgs e)
         {
-
             if (CurrentToolTip == View.ToolTip.Brush && Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 Point mousepoint = e.GetPosition(DrawingLayer);
-                paintCircle(CurrentBrush, mousepoint);
+                var circle = paintCircle(CurrentBrush, mousepoint);
+                circle.Tag = CurrentBrushUser;
                 e.Handled = true;
             }
             if (CurrentToolTip == View.ToolTip.Eraser && Mouse.LeftButton == MouseButtonState.Pressed)
@@ -1470,7 +1646,7 @@ namespace xstrat.MVVM.View
         }
 
 
-        private void paintCircle(Brush circleColor, Point position)
+        private Ellipse paintCircle(Brush circleColor, Point position)
         {
             Ellipse ellipse = new Ellipse();
             ellipse.Fill = circleColor;
@@ -1479,6 +1655,7 @@ namespace xstrat.MVVM.View
             Canvas.SetTop(ellipse, position.Y);
             Canvas.SetLeft(ellipse, position.X);
             DrawingLayer.Children.Add(ellipse);
+            return ellipse;
         }
 
         private void BrushSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -1489,6 +1666,51 @@ namespace xstrat.MVVM.View
         #endregion
 
         #region Helpers for XStrathelper
+
+        public void UpdateUserID()
+        {
+            foreach (var item in DrawingLayer.Children)
+            {
+                // Image or Text
+                if (item is StratContentControl)
+                {
+                    var brush = Globals.GetUserColorBrush((item as StratContentControl).UserID);
+                    if (brush == null) brush = Brushes.Red;
+                    if ((item as StratContentControl).Content is Border)
+                    {
+                        ((item as StratContentControl).Content as Border).BorderBrush = brush;
+                    }
+                    if ((item as StratContentControl).Content is TextControl)
+                    {
+                        TextControl textControl = (TextControl)(item as StratContentControl).Content;
+                        textControl.BorderBrush = brush;
+                    }
+
+                }
+
+                //Drawing
+                if (item is Ellipse)
+                {
+                    var ellipse = (Ellipse)item;
+                    string userID = ellipse.Tag.ToString();
+                    var brush = Globals.GetUserColorBrush(userID);
+                    if (brush == null) brush = Brushes.Red;
+                    ellipse.Stroke = brush;
+                }
+
+                //Arrow
+                if (item is Path)
+                {
+                    var path = (Path)item;
+                    string userID = path.Tag.ToString();
+                    var brush = Globals.GetUserColorBrush(userID);
+                    if (brush == null) brush = Brushes.Red;
+                    path.Stroke = brush;
+                    path.Fill = brush;
+                }
+            }
+
+        }
 
         public void PointDragMove(Point p)
         {
@@ -1569,7 +1791,7 @@ namespace xstrat.MVVM.View
         private void RescaleIcons(double size)
         {
             if (!IsLoaded || IconSizeSlider == null) return;
-            foreach (StratContentControl item in DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is Image && Selector.GetIsSelected(x)))
+            foreach (StratContentControl item in DrawingLayer.Children.OfType<StratContentControl>().Where(x => x.Content is Border && Selector.GetIsSelected(x)))
             {
                 double newsize = size;
                 double oldsize = item.Width;
@@ -1773,7 +1995,7 @@ namespace xstrat.MVVM.View
     public class DragNDropObj
     {
         public Point pos { get; set; }
-        public string brush { get; set; }
+        public string userID { get; set; }
         public DragNDropObjType type { get; set; }
         public double width { get; set; }
         public double height { get; set; }
@@ -1789,8 +2011,8 @@ namespace xstrat.MVVM.View
         Image,
         Circle,
         Text,
-        Arrow
+        Arrow,
+        Rectangle,
+        DrawingCircle,
     }
-
-
 }

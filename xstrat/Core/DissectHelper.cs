@@ -23,7 +23,7 @@ namespace xstrat.Core
                 string exe = Path.Combine(Globals.XStratInstallPath, "External/r6-dissect.exe");
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = "r6-dissect.exe",
+                    FileName = exe,
                     Arguments = $" -x stdout \"{path}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -42,7 +42,7 @@ namespace xstrat.Core
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.Message + ex.StackTrace);
+                Notify.sendError(ex.Message + ex.StackTrace);
                 return null;
             }
         }

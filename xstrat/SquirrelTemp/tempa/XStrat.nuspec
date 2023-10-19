@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>XStrat</id>
+    <version>2.0.6</version>
+    <title>XStrat Client</title>
+    <authors>Florian Wahl</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://xstrat.app/</projectUrl>
+    <description>XStrat Client</description>
+    <releaseNotes>&lt;![CDATA[
+&lt;p&gt;XStrat desktop client&lt;/p&gt;
+
+]]&gt;</releaseNotes>
+    <copyright>Copyright 2023</copyright>
+    <tags>XStrat</tags>
+  </metadata>
+</package>

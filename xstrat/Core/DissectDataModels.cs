@@ -25,7 +25,7 @@ namespace xstrat.Dissect
         public string Name { get; set; }
 
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
     }
 
     public class MatchFeedback
@@ -37,7 +37,7 @@ namespace xstrat.Dissect
         public string Time { get; set; }
 
         [JsonProperty("timeInSeconds")]
-        public int TimeInSeconds { get; set; }
+        public double TimeInSeconds { get; set; }
 
         [JsonProperty("message")]
         public string Message { get; set; }
@@ -114,7 +114,7 @@ namespace xstrat.Dissect
         [JsonProperty("rounds")]
         public List<Round> Rounds { get; set; }
 
-        [JsonProperty("playerStats")]
+        [JsonProperty("stats")]
         public List<Stat> Stats { get; set; }
     }
 

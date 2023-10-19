@@ -24,6 +24,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
 using xstrat.Core;
+using xstrat.Dissect;
 using static System.Net.Mime.MediaTypeNames;
 using Path = System.IO.Path;
 
@@ -398,7 +399,9 @@ namespace xstrat.MVVM.View
             XmlSerializer deserializer = new XmlSerializer(typeof(MatchReplayTitle[]));
             using (StringReader stringReader = new StringReader(xmlContent))
             {
-                return ((MatchReplayTitle[])deserializer.Deserialize(stringReader)).ToList();
+                var res = ((MatchReplayTitle[])deserializer.Deserialize(stringReader)).ToList();
+                res.ForEach(x => x.DeserializeJson());
+                return res;
             }
         }
 
@@ -412,6 +415,8 @@ namespace xstrat.MVVM.View
             {
                 dict.Add(new MatchReplayTitle { FileHash = folder.FileHash, Title = folder.Title, DissectReplay = folder.DissectReplay });
             }
+
+            dict.ForEach(x => x.SerializeToJson());
 
             SerializeTitleDict(dict.ToArray());
             Notify.sendSuccess("Saved sucessfully");
@@ -633,10 +638,24 @@ namespace xstrat.MVVM.View
     {
         public string FileHash { get; set; }
         public string Title { get; set; }
+
+        public string DissectJson { get; set; }
+
+        [XmlIgnore]
         public Dissect.MatchReplay DissectReplay { get; set; }
 
         public MatchReplayTitle()
         {
+        }
+
+        public void SerializeToJson()
+        {
+            DissectJson = Newtonsoft.Json.JsonConvert.SerializeObject(DissectReplay);
+        }
+        public void DeserializeJson()
+        {
+            if(DissectJson == null) { return; }
+            DissectReplay = Newtonsoft.Json.JsonConvert.DeserializeObject<MatchReplay>(DissectJson);
         }
     }
 }

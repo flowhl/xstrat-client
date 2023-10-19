@@ -180,7 +180,7 @@
                     <!--<wpfext:ZoomControl Background="Transparent" AllowDrop="True" Drop="ZoomControl_Drop" x:Name="ZoomControl" MouseMove="DrawingLayer_MouseMove" ModifierMode="None">-->
                     <zoomcontrol:ZoomControl x:Name="ZoomControl" ClipToBounds="True" Background="#161616" AllowDrop="True" Drop="ZoomControl_Drop" Grid.ColumnSpan="2" MouseMove="DrawingLayer_MouseMove" PreviewMouseLeftButtonDown="ZoomControl_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="ZoomControl_PreviewMouseLeftButtonUp" MouseLeftButtonDown="ZoomControl_MouseLeftButtonDown">
                         <Grid Name="MapContent">
-                            <Canvas Name="DrawingLayer">
+                            <Canvas Name="DrawingLayer" Panel.ZIndex="99999">
                             </Canvas>
                             <Canvas Name="WallsLayer" Panel.ZIndex="1" AllowDrop="True" PreviewMouseLeftButtonUp="WallsLayer_PreviewMouseLeftButtonUp" PreviewMouseMove="WallsLayer_PreviewMouseMove">
                                 <!--<local1:WallControl x:Name="WallControl1" Height="9" Width="60" Panel.ZIndex="2" Canvas.Left="300" Canvas.Top="200"></local1:WallControl>-->

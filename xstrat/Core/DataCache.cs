@@ -10,6 +10,33 @@ namespace xstrat.Core
 {
     public static class DataCache
     {
+        #region RetrieveAll
+
+        public static void RetrieveAllCaches()
+        {
+            try
+            {
+                RetrieveUser();
+                RetrieveTeam();
+                RetrieveTeamMates();
+                RetrieveGames();
+                RetrieveMaps();
+                RetrieveOperators();
+                RetrievePositions();
+                RetrieveRoutines();
+                RetrieveStrats();
+                RetrieveCalendarEvents();
+                RetrieveCalendarBlocks();
+                RetrieveCalendarEventResponses();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        #endregion
+
         #region Team
         public static Team _currentTeam;
         public static Team CurrentTeam
@@ -35,7 +62,7 @@ namespace xstrat.Core
             task.Wait();
             CurrentTeam = task.Result;
 
-            if ((teamNull && task.Result != null )|| (!teamNull && task.Result == null))
+            if ((teamNull && task.Result != null) || (!teamNull && task.Result == null))
             {
                 Globals.wnd.UpdateMenuButtons();
             }

@@ -309,6 +309,7 @@
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LoadingViewModel.cs" />
     <Compile Include="MVVM\ViewModel\OffdayViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\PasswordResetViewModel.cs" />
     <Compile Include="MVVM\ViewModel\ReplayViewModel.cs" />
     <Compile Include="MVVM\ViewModel\RoutinesViewModel.cs" />
     <Compile Include="MVVM\ViewModel\ScrimViewModel.cs" />
@@ -327,6 +328,9 @@
     </Compile>
     <Compile Include="MVVM\View\OffdayView.xaml.cs">
       <DependentUpon>OffdayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\PasswordResetView.xaml.cs">
+      <DependentUpon>PasswordResetView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\ReplayView.xaml.cs">
       <DependentUpon>ReplayView.xaml</DependentUpon>
@@ -528,6 +532,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\OffdayView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\PasswordResetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

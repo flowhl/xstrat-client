@@ -64,7 +64,6 @@ namespace xstrat.MVVM.View
 
         private void RetrieveUbisoftID()
         {
-
             UbiIDText.Text = DataCache.CurrentUser.UbisoftId;
         }
 

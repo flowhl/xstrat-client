@@ -22,7 +22,7 @@ namespace xstrat.MVVM.View
     /// </summary>
     public partial class RegisterView : UserControl
     {
-        public char[] forbiddenchars = "(){}[]|`¬¦! \"£$%^&*\"<>:;#~_-+=,@.".ToCharArray();
+        //public char[] forbiddenchars = "(){}[]|`¬¦! \"£$%^&*\"<>:;#~_-+=,@.".ToCharArray();
         MainWindow wnd = (MainWindow)Application.Current.MainWindow;
         public RegisterView()
         {
@@ -76,11 +76,11 @@ namespace xstrat.MVVM.View
                 return;
             }
 
-            if (containsChars(_password))
-            {
-                Error.Content = "Password cannot contain (){}[]|`¬¦! \"£$%^&*\"<>:;#~_-+=,@.";
-                return;
-            }
+            //if (containsChars(_password))
+            //{
+            //    Error.Content = "Password cannot contain (){}[]|`¬¦! \"£$%^&*\"<>:;#~_-+=,@.";
+            //    return;
+            //}
 
             RegisterAsync();
         }
@@ -93,10 +93,12 @@ namespace xstrat.MVVM.View
             var _email = email.Text;
             var _password = password.Password;
             var _username = username.Text;
-            
+
             (bool, string) result = await ApiHandler.RegisterAsync(_username, _email, _password);
             if (result.Item1)
             {
+                SettingsHandler.Settings.LastLoginMail = _email;
+                SettingsHandler.Save();
                 wnd.RegisterComplete();
             }
             else
@@ -104,28 +106,28 @@ namespace xstrat.MVVM.View
                 Error.Content = "Registration error: " + result.Item2;
                 return;
             }
-            
+
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
         {
             wnd.RegisterComplete();
         }
-        private bool containsChars(string input)
-        {
-            foreach (var c in forbiddenchars)
-            {
-                if (input.Contains(c))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //private bool containsChars(string input)
+        //{
+        //    foreach (var c in forbiddenchars)
+        //    {
+        //        if (input.Contains(c))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         private void UserControl_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 RegisterBtn_Click(this, EventArgs.Empty as RoutedEventArgs);
             }
@@ -157,9 +159,7 @@ namespace xstrat.MVVM.View
                 StrengthSlider.Background = orange;
                 return;
             }
-
             StrengthSlider.Background = red;
-
         }
     }
 }

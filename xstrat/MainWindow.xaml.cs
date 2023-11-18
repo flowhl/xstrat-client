@@ -102,6 +102,7 @@ namespace xstrat
             finally
             {
                 Globals.Init();
+                DataCache.RetrieveAllCaches();
             }
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy";
@@ -233,6 +234,7 @@ namespace xstrat
             DataCache.RetrieveUser();
             DataCache.RetrieveTeam();
             DataCache.RetrieveTeamMates();
+            DataCache.RetrieveAllCaches();
         }
         public void RegisterComplete()
         {

@@ -135,6 +135,27 @@ namespace xstrat
             }
         }
 
+        public static async Task<bool> RequestPasswordResetEmailAsync()
+        {
+            //using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))
+            //{
+            //    Waiting();
+            //    var request = RestHandler.GetRequest("User/RequestEmail", Method.Post);
+            //    var response = client.Execute<RestResponse>(request);
+
+            //    if (response.StatusCode == System.Net.HttpStatusCode.OK) //success
+            //    {
+            //        var userData = JsonConvert.DeserializeObject<Models.Supabase.UserData>(response.Content);
+            //        EndWaiting();
+            //        return userData;
+            //    }
+            //    EndWaiting();
+            //    Notify.sendError("Error getting user data in: " + response.Content);
+            //    return false;
+            //}
+            return false;
+        }
+
         public static async Task<Models.Supabase.UserData> GetUserDataAsync()
         {
             using (RestClient client = new RestClient(SettingsHandler.Settings.APIURL))

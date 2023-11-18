@@ -29,6 +29,7 @@ namespace xstrat.MVVM.ViewModel
         public RelayCommand WallEditorViewCommand { get; set; }
         public RelayCommand ReplayViewCommand { get; set; }
         public RelayCommand OffdayViewCommand { get; set; }
+        public RelayCommand PasswordResetViewCommand { get; set; }
 
 
         public HomeViewModel HomeVM { get; set; }
@@ -48,6 +49,7 @@ namespace xstrat.MVVM.ViewModel
         public WallEditorViewModel WallEditorVM { get; set; }
         public ReplayViewModel ReplayVM { get; set; }
         public OffdayViewModel OffdayVM { get; set; }
+        public PasswordResetViewModel PasswordResetVM { get; set; }
 
         public object _currentView;
 
@@ -79,6 +81,7 @@ namespace xstrat.MVVM.ViewModel
             WallEditorVM = new WallEditorViewModel();
             ReplayVM = new ReplayViewModel();
             OffdayVM = new OffdayViewModel();
+            PasswordResetVM = new PasswordResetViewModel();
 
             CurrentView = HomeVM;
 
@@ -99,6 +102,7 @@ namespace xstrat.MVVM.ViewModel
             WallEditorViewCommand = new RelayCommand(o => { CurrentView = WallEditorVM; });
             ReplayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = ReplayVM; });
             OffdayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = OffdayVM; });
+            PasswordResetViewCommand = new RelayCommand(o => { CurrentView = PasswordResetVM; });
         }
     }
 }

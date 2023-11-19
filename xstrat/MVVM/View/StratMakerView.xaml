@@ -31,6 +31,12 @@
                                 <MaterialDesign:PackIcon Height="25" Width="25" Kind="Reload" />
                             </Button.Content>
                         </Button>
+                        
+                        <Button Style="{StaticResource Secondary}" Margin="5" HorizontalAlignment="Right" Height="30" Width="30" Name="DeleteBtn" Click="DeleteBtn_Click">
+                            <Button.Content>
+                                <MaterialDesign:PackIcon Height="25" Width="25" Kind="Delete" />
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
 
                 </Grid>

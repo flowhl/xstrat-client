@@ -56,7 +56,7 @@ namespace xstrat.MVVM.View
     {
         private List<XMap> maps = new List<XMap>();
 
-        public Models.Supabase.Strat currentStrat { get; set; }
+        public Models.Supabase.Strat CurrentStrat { get; set; }
 
         Image draggedItem;
 
@@ -583,7 +583,7 @@ namespace xstrat.MVVM.View
                         (item as StratContentControl).Tag = CurrentBrushUser;
                         textControl.Tag = CurrentBrushUser;
                     }
-                    if((item as StratContentControl).Content is Ellipse)
+                    if ((item as StratContentControl).Content is Ellipse)
                     {
                         var ellipse = (Ellipse)(item as StratContentControl).Content;
                         ellipse.Tag = CurrentBrushUser;
@@ -591,7 +591,7 @@ namespace xstrat.MVVM.View
                         (item as StratContentControl).UserID = CurrentBrushUser;
                         (item as StratContentControl).Tag = CurrentBrushUser;
                     }
-                    if((item as StratContentControl).Content is Rectangle)
+                    if ((item as StratContentControl).Content is Rectangle)
                     {
                         var rect = (Rectangle)(item as StratContentControl).Content;
                         rect.Tag = CurrentBrushUser;
@@ -878,25 +878,23 @@ namespace xstrat.MVVM.View
             WallsLayer.Children.Clear();
             MapStack.Children.Clear();
 
-            currentStrat = DataCache.CurrentStrats.Where(x => x.Id == id).FirstOrDefault();
-            if (currentStrat == null) return;
-
-            map_id = currentStrat.MapId;
+            CurrentStrat = DataCache.CurrentStrats.Where(x => x.Id == id).FirstOrDefault();
+            if (CurrentStrat == null) return;
 
             //body
 
-            map_id = currentStrat.MapId;
-            TxtMapName.Content = DataCache.CurrentMaps.Where(x => x.Id == currentStrat.MapId).FirstOrDefault()?.Name;
-            TxtCreatedBy.Content = DataCache.CurrentTeamMates.Where(x => x.Id == currentStrat.CreatedUser).FirstOrDefault()?.Name;
-            TxtCreatedOn.Content = currentStrat.CreatedAt.ToString().Replace("-", "/").Replace("T", " ");
-            TxtLastEdit.Content = currentStrat.LastEdit?.ToString().Replace("-", "/").Replace("T", " ");
-            TxtVersion.Content = currentStrat.Version;
+            map_id = CurrentStrat.MapId;
+            TxtMapName.Content = DataCache.CurrentMaps.Where(x => x.Id == CurrentStrat.MapId).FirstOrDefault()?.Name;
+            TxtCreatedBy.Content = DataCache.CurrentTeamMates.Where(x => x.Id == CurrentStrat.CreatedUser).FirstOrDefault()?.Name;
+            TxtCreatedOn.Content = CurrentStrat.CreatedAt.ToString().Replace("-", "/").Replace("T", " ");
+            TxtLastEdit.Content = CurrentStrat.LastEdit?.ToString().Replace("-", "/").Replace("T", " ");
+            TxtVersion.Content = CurrentStrat.Version;
 
             //content
 
-            if (string.IsNullOrEmpty(currentStrat.Content)) return;
+            if (string.IsNullOrEmpty(CurrentStrat.Content)) return;
 
-            StratContent content = GetStratContentFromString(currentStrat.Content);
+            StratContent content = GetStratContentFromString(CurrentStrat.Content);
 
             Floor0 = content.floors.Contains(0);
             Floor1 = content.floors.Contains(1);
@@ -942,7 +940,7 @@ namespace xstrat.MVVM.View
 
         public async Task SaveStratAsync()
         {
-            if (currentStrat == null)
+            if (CurrentStrat == null)
             {
                 Notify.sendError("No current strat");
                 return;
@@ -976,7 +974,7 @@ namespace xstrat.MVVM.View
             else
             {
 
-                var result = await ApiHandler.SaveStrat(currentStrat.Id, currentStrat.Name, map_id, pos_id, currentStrat.Version + 1, scontent);
+                var result = await ApiHandler.SaveStrat(CurrentStrat.Id, CurrentStrat.Name, map_id, pos_id, CurrentStrat.Version + 1, scontent);
                 if (result)
                 {
                     Notify.sendSuccess("Strat saved successfully");
@@ -1138,7 +1136,7 @@ namespace xstrat.MVVM.View
             {
                 if (item.type == DragNDropObjType.Image)
                 {
-                    if(item.image.IsNullOrEmpty())
+                    if (item.image.IsNullOrEmpty())
                     {
                         Notify.sendWarn($"could not find image path for image: {item.userID} | {item.height} | {item.width}");
                         continue;
@@ -1149,7 +1147,7 @@ namespace xstrat.MVVM.View
                     Image newimg = new Image();
                     newimg.IsHitTestVisible = false;
                     newimg.Source = new BitmapImage(new Uri(ImageFolder + item.image, UriKind.Absolute));
-                    
+
                     var border = new Border();
                     border.BorderThickness = new Thickness(2);
                     border.BorderBrush = CurrentBrush;
@@ -1208,7 +1206,7 @@ namespace xstrat.MVVM.View
                     Canvas.SetTop(scc, item.pos.Y);
                 }
 
-                if(item.type == DragNDropObjType.DrawingCircle)
+                if (item.type == DragNDropObjType.DrawingCircle)
                 {
                     var ellipse = new Ellipse();
                     ellipse.Fill = Globals.GetUserColorBrush(item.userID);
@@ -1385,7 +1383,7 @@ namespace xstrat.MVVM.View
                 Notify.sendSuccess("Strat created successfully");
                 JObject jsonObj = JObject.Parse(result.Item2);
                 Strat newStrat = JsonConvert.DeserializeObject<Strat>(jsonObj["model"].ToString());
-                currentStrat = newStrat;
+                CurrentStrat = newStrat;
                 Refresh();
             }
             else
@@ -1401,11 +1399,11 @@ namespace xstrat.MVVM.View
             DataCache.RetrieveStrats();
             //await Task.Delay(1000);
             UpdateTopBar();
-            if (currentStrat != null)
+            if (CurrentStrat != null)
             {
-                if (currentStrat.Id.IsNotNullOrEmpty())
+                if (CurrentStrat.Id.IsNotNullOrEmpty())
                 {
-                    LoadStrat(currentStrat.Id);
+                    LoadStrat(CurrentStrat.Id);
                 }
             }
             ApiHandler.EndWaiting();
@@ -1529,6 +1527,45 @@ namespace xstrat.MVVM.View
         {
             Refresh();
         }
+
+        private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentStrat == null) 
+            {
+                Notify.sendWarn("There is no strat loaded");
+                return; 
+            }
+            bool admin = await ApiHandler.GetAdminStatus();
+            if (!admin)
+            {
+                Notify.sendWarn("Only the team admin is allowed to delete strats");
+                return;
+            }
+            var res = await ApiHandler.DeleteStrat(CurrentStrat.Id);
+            if(res)
+            {
+                CurrentStrat = null;
+                UpdateTopBar();
+                LoadStrat(null);
+
+                map_id = null;
+                TxtMapName.Content = null;
+                TxtCreatedBy.Content = null;
+                TxtCreatedOn.Content = null;
+                TxtLastEdit.Content = null;
+                TxtVersion.Content = null;
+
+                Floor0 = false;
+                Floor1 = false;
+                Floor2 = false;
+                Floor3 = false;
+
+                UpdateFloorButtons();
+
+                Notify.sendSuccess("Deleted sucessfully");
+            }
+        }
+
         #endregion
 
         #region drawing
@@ -1937,10 +1974,13 @@ namespace xstrat.MVVM.View
 
         #endregion
     }
+
+    #region Sub Classes
     public enum ToolTip
     {
         Cursor, Eraser, Text, Node, Arrow, Circle, Rectangle, Brush
     }
+
     [Serializable]
     public class StratContent
     {
@@ -2015,4 +2055,6 @@ namespace xstrat.MVVM.View
         Rectangle,
         DrawingCircle,
     }
+
+    #endregion
 }

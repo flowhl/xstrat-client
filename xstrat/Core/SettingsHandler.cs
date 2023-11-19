@@ -69,7 +69,7 @@ namespace xstrat.Core
                 newSettings.AccessToken = lines[1];
                 newSettings.SkinSwitcherPath = lines[2];
                 newSettings.SkinSwitcherStatus = Convert.ToBoolean(lines[3]);
-                newSettings.APIURL = lines[4];
+                newSettings.APIURL = lines[4].Replace("https://api.xstrat.app", "https://api-v2.xstrat.app");
                 newSettings.LastLoginMail = lines[5];
                 newSettings.CurrentUserId = lines[6];
                 newSettings.GameReplayPath = lines[7];

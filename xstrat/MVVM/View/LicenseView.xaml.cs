@@ -18,7 +18,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for LicenseView.xaml
     /// </summary>
-    public partial class LicenseView : UserControl
+    public partial class LicenseView : StateUserControl
     {
         public LicenseView()
         {

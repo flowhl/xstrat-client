@@ -21,6 +21,12 @@ namespace xstrat.Ui
     /// </summary>
     public partial class TimeSelector : UserControl
     {
+
+        // Declare the event using the delegate
+        public event TimeChangedEventHandler TimeChanged;
+        // Define a delegate for the event handler
+        public delegate void TimeChangedEventHandler(object sender, EventArgs e);
+
         public TimeSelector()
         {
             InitializeComponent();
@@ -40,32 +46,34 @@ namespace xstrat.Ui
 
         private void HourBox_ValueIncreasedToLimit(object sender, EventArgs e)
         {
-
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void HourBox_ValueDecreasedToLimit(object sender, EventArgs e)
         {
-
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void HourBox_ValueChanged(object sender, EventArgs e)
         {
-
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void MinuteBox_ValueIncreasedToLimit(object sender, EventArgs e)
         {
             HourBox.Value++;
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void MinuteBox_ValueDecreasedToLimit(object sender, EventArgs e)
         {
             HourBox.Value--;
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void MinuteBox_ValueChanged(object sender, EventArgs e)
         {
-
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         public string GetTimeString()
@@ -80,6 +88,7 @@ namespace xstrat.Ui
             if (minute < 0) minute = 0;
             HourBox.Value = hour;
             MinuteBox.Value = minute;
+            TimeChanged.Invoke(this, EventArgs.Empty);
         }
 
         public int GetHour() {  return HourBox.Value; }

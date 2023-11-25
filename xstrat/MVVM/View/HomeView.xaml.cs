@@ -21,7 +21,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for HomeView.xaml
     /// </summary>
-    public partial class HomeView : UserControl
+    public partial class HomeView : StateUserControl
     {
         public HomeView()
         {

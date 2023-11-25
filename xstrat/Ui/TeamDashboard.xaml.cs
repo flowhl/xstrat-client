@@ -25,7 +25,7 @@ namespace xstrat.Ui
     /// <summary>
     /// Interaction logic for TeamDashboard.xaml
     /// </summary>
-    public partial class TeamDashboard : UserControl
+    public partial class TeamDashboard : StateUserControl
     {
         public Models.Supabase.Team TeamInfo;
         public TeamDashboard()
@@ -46,7 +46,7 @@ namespace xstrat.Ui
             GameName.Content = "Game: ";
             TeamInfo = DataCache.CurrentTeam;
             await CheckAdmin();
-            await RetrieveColorAsync();
+            RetrieveColorAsync();
             DependencyObject ucParent = this.Parent;
 
             while (!(ucParent is UserControl))
@@ -102,10 +102,10 @@ namespace xstrat.Ui
             DeleteAdminBtn_ClickAsync();
         }
 
-        private async Task RetrieveColorAsync()
+        private void RetrieveColorAsync()
         {
-
             ColorPickerUI.SelectedColor = (Color)ColorConverter.ConvertFromString(DataCache.CurrentUser?.Color ?? "#FF1234");
+            HasChanges = false;
         }
         private async Task SaveColorAsync()
         {
@@ -167,9 +167,15 @@ namespace xstrat.Ui
             }
         }
 
-        private void SaveColor_Click(object sender, RoutedEventArgs e)
+        public override void Save(bool silent = false)
         {
             SaveColorAsync();
+            base.Save();
+        }
+
+        private void SaveColor_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
         }
         private String HexConverter(System.Windows.Media.Color c)
         {
@@ -184,6 +190,11 @@ namespace xstrat.Ui
         {
             DataCache.RetrieveTeam();
             DataCache.RetrieveTeamMates();
+        }
+
+        private void ColorPickerUI_ColorChanged(object sender, RoutedEventArgs e)
+        {
+            HasChanges = true;
         }
     }
 }

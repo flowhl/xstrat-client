@@ -23,7 +23,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for TeamView.xaml
     /// </summary>
-    public partial class TeamView : UserControl
+    public partial class TeamView : StateUserControl
     {
         public TeamView()
         {

@@ -25,7 +25,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for RoutinesView.xaml
     /// </summary>
-    public partial class RoutinesView : UserControl
+    public partial class RoutinesView : StateUserControl
     {
         List<Models.Supabase.Routine> Routines = new List<Models.Supabase.Routine>();
         private List<RoutineStep> routineSteps = new List<RoutineStep>();

@@ -37,7 +37,7 @@ namespace xstrat.Ui
             Directory.CreateDirectory(docPath);
             Directory.CreateDirectory(normalPath);
             Directory.CreateDirectory(noSkinPath);
-            TS.setStatus(SettingsHandler.Settings.SkinSwitcherStatus);
+            TS.IsToggled = SettingsHandler.Settings.SkinSwitcherStatus;
 
         }
 
@@ -71,14 +71,7 @@ namespace xstrat.Ui
 
         private void TS_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (TS.Toggled1 == true)
-            {
-                SettingsHandler.Settings.SkinSwitcherStatus = true;
-            }
-            else
-            {
-                SettingsHandler.Settings.SkinSwitcherStatus = false;
-            }
+            SettingsHandler.Settings.SkinSwitcherStatus = TS.IsToggled;
             SettingsHandler.Save();
         }
 

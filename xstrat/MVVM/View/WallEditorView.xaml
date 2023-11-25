@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="xstrat.MVVM.View.WallEditorView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:zoomcontrol="clr-namespace:Denxorz.ZoomControl;assembly=Denxorz.ZoomControl" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150" >
+﻿<xstrat:StateUserControl xmlns:xstrat="clr-namespace:xstrat" x:Class="xstrat.MVVM.View.WallEditorView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:local1="clr-namespace:xstrat.Ui" xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:zoomcontrol="clr-namespace:Denxorz.ZoomControl;assembly=Denxorz.ZoomControl" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150" >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
@@ -102,4 +102,4 @@
             </Grid>
         </Border>
     </Grid>
-</UserControl>
+</xstrat:StateUserControl>

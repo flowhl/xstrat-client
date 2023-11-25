@@ -20,7 +20,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for RegisterView.xaml
     /// </summary>
-    public partial class RegisterView : UserControl
+    public partial class RegisterView : StateUserControl
     {
         //public char[] forbiddenchars = "(){}[]|`¬¦! \"£$%^&*\"<>:;#~_-+=,@.".ToCharArray();
         MainWindow wnd = (MainWindow)Application.Current.MainWindow;

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="xstrat.MVVM.View.LicenseView"
+﻿<xstrat:StateUserControl xmlns:xstrat="clr-namespace:xstrat" x:Class="xstrat.MVVM.View.LicenseView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,4 +11,4 @@
             <ui:LicenseInfo x:Name="LicenseInfo"></ui:LicenseInfo>
         </StackPanel>
     </Grid>
-</UserControl>
+</xstrat:StateUserControl>

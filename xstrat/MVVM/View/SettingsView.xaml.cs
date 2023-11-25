@@ -19,19 +19,18 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SettingsView : StateUserControl
     {
         public SettingsView()
         {
             InitializeComponent();
-            Loaded += SettingsView_Loaded;
-            
+            Loaded += SettingsView_Loaded;            
         }
 
         private void SettingsView_Loaded(object sender, RoutedEventArgs e)
         {
             SkinSwitcherPathDisplay.Text = SettingsHandler.Settings.SkinSwitcherPath;
-            RememberMeSettings.setStatus(SettingsHandler.Settings.StayLoggedin);
+            RememberMeSettings.IsToggled = SettingsHandler.Settings.StayLoggedin;
             RetrieveDiscordID();
             RetrieveUbisoftID();
             if (SettingsHandler.Settings.APIURL != null)
@@ -49,6 +48,7 @@ namespace xstrat.MVVM.View
                 TeamAdminSettingsBorder.Visibility = Visibility.Visible;
                 RetrieveTeamSettingsData();
             }
+            HasChanges = false;
         }
 
         internal class Credential
@@ -103,7 +103,12 @@ namespace xstrat.MVVM.View
 
         private void Save_BtnClick(object sender, RoutedEventArgs e)
         {
-            SettingsHandler.Settings.StayLoggedin = RememberMeSettings.getStatus();
+            Save();
+        }
+
+        public override void Save(bool silent = false)
+        {
+            SettingsHandler.Settings.StayLoggedin = RememberMeSettings.IsToggled;
             SettingsHandler.Settings.APIURL = APIText.Text;
             SettingsHandler.Save();
             SaveDiscordIDAsync();
@@ -112,6 +117,7 @@ namespace xstrat.MVVM.View
             {
                 SaveDiscordData();
             }
+            base.Save(silent);
         }
 
         private void RetrieveDiscordID()
@@ -120,7 +126,7 @@ namespace xstrat.MVVM.View
         }
         private async Task SaveDiscordIDAsync()
         {
-            if(DCId.Text != null && DCId.Text != string.Empty && IsDigitsOnly(DCId.Text))
+            if(DCId.Text != null && DCId.Text != string.Empty && (DCId.Text.IsDigitsOnly()))
             {
                 var result = await ApiHandler.SetDiscordId(DCId.Text);
                 if (result)
@@ -139,21 +145,21 @@ namespace xstrat.MVVM.View
         }
 
         private void RetrieveTeamSettingsData()
-        {
-            
+        {            
             DCWebhook.Text = DataCache.CurrentTeam.Webhook;
-            SwNew.setStatus(StringToBool(DataCache.CurrentTeam.NotifyCreated.ToString()));
-            SwTimeChanged.setStatus(StringToBool(DataCache.CurrentTeam.NotifyChanged.ToString()));
-            SwWeeklySummary.setStatus(StringToBool(DataCache.CurrentTeam.NotifyWeekly.ToString()));
-            SwStartingSoon.setStatus(StringToBool(DataCache.CurrentTeam.NotifySoon.ToString()));
-            SWUseOnDays.setStatus(StringToBool(DataCache.CurrentTeam.UseOnDays.ToString()));
+            SwNew.IsToggled = DataCache.CurrentTeam.NotifyCreated.ToString().ToBool();
+            SwTimeChanged.IsToggled = DataCache.CurrentTeam.NotifyChanged.ToString().ToBool();
+            SwWeeklySummary.IsToggled = DataCache.CurrentTeam.NotifyWeekly.ToString().ToBool();
+            SwStartingSoon.IsToggled = DataCache.CurrentTeam.NotifySoon.ToString().ToBool();
+            SWUseOnDays.IsToggled = DataCache.CurrentTeam.UseOnDays.ToString().ToBool();
             ScrimTimeDelay.Value = DataCache.CurrentTeam.NotifyDelay;
+            HasChanges = false;
         }
         private async Task SaveDiscordData()
         {
             if (DCWebhook.Text != null && DCWebhook.Text != string.Empty)
             {
-                var result = await ApiHandler.SetDiscordAdminSettings(DCWebhook.Text, Convert.ToInt32(SwNew.getStatus()), Convert.ToInt32(SwTimeChanged.getStatus()), Convert.ToInt32(SwWeeklySummary.getStatus()), Convert.ToInt32(SwStartingSoon.getStatus()), ScrimTimeDelay.Value, Convert.ToInt32(SWUseOnDays.getStatus()));
+                var result = await ApiHandler.SetDiscordAdminSettings(DCWebhook.Text, Convert.ToInt32(SwNew.IsToggled), Convert.ToInt32(SwTimeChanged.IsToggled), Convert.ToInt32(SwWeeklySummary.IsToggled), Convert.ToInt32(SwStartingSoon.IsToggled), ScrimTimeDelay.Value, Convert.ToInt32(SWUseOnDays.IsToggled));
                 if (result)
                 {
                     Notify.sendSuccess("Changed Discord admin settings successfully");
@@ -167,21 +173,6 @@ namespace xstrat.MVVM.View
             {
                 Notify.sendWarn("Discord Webhook cannot be empty");
             }
-        }
-
-        private bool IsDigitsOnly(string str)
-        {
-            foreach (char c in str)
-            {
-                if (c < '0' || c > '9')
-                    return false;
-            }
-
-            return true;
-        }
-        private bool StringToBool(string input)
-        {
-            return (input.Trim() == "1");
         }
 
         private void DcHelp_Click(object sender, RoutedEventArgs e)
@@ -201,6 +192,57 @@ namespace xstrat.MVVM.View
                 ReplayPathDisplay.Text = path;
                 SettingsHandler.Save();
             }
+            HasChanges = true;
+        }
+
+        private void RememberMeSettings_Toggled(object sender, EventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void APIText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void UbiIDText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void SWUseOnDays_Toggled(object sender, EventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void DCId_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void DCWebhook_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void SwNew_Toggled(object sender, EventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void SwTimeChanged_Toggled(object sender, EventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void SwWeeklySummary_Toggled(object sender, EventArgs e)
+        {
+            HasChanges = true;
+        }
+
+        private void ScrimTimeDelay_ValueChanged(object sender, EventArgs e)
+        {
+            HasChanges = true;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace xstrat.MVVM.View
     /// 
 
     [ObservableObject]
-    public partial class StatsView : UserControl
+    public partial class StatsView : StateUserControl
     {
         #region Graph stuff
 
@@ -664,7 +664,7 @@ namespace xstrat.MVVM.View
 
         private void TeamToggle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            team = !TeamToggle.getStatus();
+            team = !TeamToggle.IsToggled;
             if (team)
             {
                 foreach (var plc in PlayerList.Children)

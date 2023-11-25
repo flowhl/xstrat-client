@@ -52,7 +52,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for StratMakerView.xaml
     /// </summary>
-    public partial class StratMakerView : UserControl
+    public partial class StratMakerView : StateUserControl
     {
         private List<XMap> maps = new List<XMap>();
 
@@ -66,10 +66,50 @@ namespace xstrat.MVVM.View
         public bool isMouseDown = false;
         public int BrushSize { get; set; } = 10;
 
-        public bool Floor0 { get; set; }
-        public bool Floor1 { get; set; }
-        public bool Floor2 { get; set; }
-        public bool Floor3 { get; set; }
+        private bool floor0;
+        public bool Floor0
+        {
+            get { return floor0; }
+            set
+            {
+                floor0 = value;
+                HasChanges = true;
+            }
+        }
+
+        private bool floor1;
+        public bool Floor1
+        {
+            get { return floor1; }
+            set
+            {
+                floor1 = value;
+                HasChanges = true;
+            }
+        }
+
+        private bool floor2;
+        public bool Floor2
+        {
+            get { return floor2; }
+            set
+            {
+                floor2 = value;
+                HasChanges = true;
+            }
+        }
+
+        private bool floor3;
+        public bool Floor3
+        {
+            get { return floor3; }
+            set
+            {
+                floor3 = value;
+                HasChanges = true;
+            }
+        }
+
 
         public string map_id;
         public string pos_id;
@@ -83,6 +123,7 @@ namespace xstrat.MVVM.View
         {
             InitializeComponent();
             Loaded += StratMakerView_Loaded;
+            HasChanges = false;
         }
 
         private void StratMakerView_Loaded(object sender, RoutedEventArgs e)
@@ -146,6 +187,7 @@ namespace xstrat.MVVM.View
             {
                 CreateCircle(MousePosition);
             }
+            HasChanges = true;
         }
 
         public void CreateText(Point MousePosition)
@@ -558,6 +600,7 @@ namespace xstrat.MVVM.View
                 Notify.sendError("Error creating ContentControl for image: " + ex.Message);
             }
             draggedItem = null;
+            HasChanges = true;
         }
 
         private void SetBrushToItem()
@@ -786,7 +829,6 @@ namespace xstrat.MVVM.View
             BtnArrow.BorderThickness = new Thickness(0);
             BtnCircle.BorderThickness = new Thickness(0);
             BtnRectangle.BorderThickness = new Thickness(0);
-
         }
 
         #endregion
@@ -852,6 +894,8 @@ namespace xstrat.MVVM.View
             // Set the geometry group as the data for the path
             arrowPath.Data = arrowGeometryGroup;
 
+            HasChanges = true;
+
             return arrowPath;
         }
 
@@ -869,7 +913,7 @@ namespace xstrat.MVVM.View
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            SaveStratAsync();
+            Save();
         }
 
         public void LoadStrat(string id)
@@ -936,6 +980,13 @@ namespace xstrat.MVVM.View
             //RescaleIcons(content.IconSize);
 
             Kommentar.Text = content.comment;
+            HasChanges = false;
+        }
+
+        public override void Save(bool silent = false)
+        {
+            SaveStratAsync();
+            base.Save();
         }
 
         public async Task SaveStratAsync()
@@ -984,6 +1035,7 @@ namespace xstrat.MVVM.View
                     Notify.sendError("Could not save strat");
                 }
             }
+            HasChanges = false;
         }
 
         public AssignmentTable GetAssignmentTable()
@@ -1353,6 +1405,10 @@ namespace xstrat.MVVM.View
             MenuItem sendObj = sender as MenuItem;
             if (sendObj == null) return;
 
+            //check if pending changes
+            var res = AllowExit();
+            if (!res) return;
+
             if (sendObj.Tag.ToString().StartsWith("create_"))
             {
                 var split = sendObj.Tag.ToString().Split('_');
@@ -1525,6 +1581,9 @@ namespace xstrat.MVVM.View
 
         private void ReloadBtn_Click(object sender, RoutedEventArgs e)
         {
+            //check if pending changes
+            var res = AllowExit();
+            if (!res) return;
             Refresh();
         }
 
@@ -1875,7 +1934,7 @@ namespace xstrat.MVVM.View
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
-                    SaveStratAsync();
+                    Save();
                     return;
                 }
             }

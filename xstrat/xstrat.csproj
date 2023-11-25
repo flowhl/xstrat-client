@@ -305,6 +305,7 @@
     <Compile Include="Models\Supabase\strat.cs" />
     <Compile Include="Models\Supabase\team.cs" />
     <Compile Include="Models\Supabase\user_data.cs" />
+    <Compile Include="MVVM\Extensions\UserControlExtension.cs" />
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LoadingViewModel.cs" />

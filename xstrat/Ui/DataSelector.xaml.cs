@@ -26,6 +26,11 @@ namespace xstrat.Ui
     /// </summary>
     public partial class DataSelector : UserControl
     {
+        // Declare the event using the delegate
+        public event SelectionChangedEventHandler SelectionChanged;
+        // Define a delegate for the event handler
+        public delegate void SelectionChangedEventHandler(object sender, EventArgs e);
+
         public UserData selectedUser { get; set; } = null;
         public Models.Supabase.Game selectedGame { get; set; } = null;
         public OffDayType selectedOffDayType = null;
@@ -56,6 +61,7 @@ namespace xstrat.Ui
             Loaded += (sender, args) =>
             {
                 UpdateUI();
+                CBox.SelectionChanged += (sender, args) => { SelectionChanged?.Invoke(sender, null); };
             };
         }
 
@@ -66,6 +72,7 @@ namespace xstrat.Ui
             Loaded += (sender, args) =>
             {
                 UpdateUI();
+                CBox.SelectionChanged += (sender, args) => { SelectionChanged?.Invoke(sender, null); };
             };
         }
 

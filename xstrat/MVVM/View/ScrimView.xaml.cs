@@ -30,7 +30,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for ScrimView.xaml
     /// </summary>
-    public partial class ScrimView : UserControl, INotifyPropertyChanged
+    public partial class ScrimView : StateUserControl, INotifyPropertyChanged
     {
         public TimeSpan ScrimDuration { get; set; }
 

@@ -18,7 +18,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for PasswordResetView.xaml
     /// </summary>
-    public partial class PasswordResetView : UserControl
+    public partial class PasswordResetView : StateUserControl
     {
         public PasswordResetView()
         {

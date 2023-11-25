@@ -21,7 +21,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for SkinSwitcherView.xaml
     /// </summary>
-    public partial class SkinSwitcherView : UserControl
+    public partial class SkinSwitcherView : StateUserControl
     {
         public SkinSwitcherView()
         {

@@ -27,6 +27,11 @@ namespace xstrat.Ui
     /// </summary>
     public partial class OffdayControl : UserControl
     {
+        // Declare the event using the delegate
+        public event ValuesChangedEventHandler ValuesChanged;
+        // Define a delegate for the event handler
+        public delegate void ValuesChangedEventHandler(object sender, EventArgs e);
+
         public string id { get; set; }
         public string user_id { get; set; }
         public OffdayControl()
@@ -37,21 +42,6 @@ namespace xstrat.Ui
             Thread.CurrentThread.CurrentCulture = ci;
 
             InitializeComponent();
-            TypeSelector.CBox.SelectionChanged += CBox_SelectionChanged;
-        }
-
-        private void CBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (TypeSelector.selectedOffDayType.id == 1)
-            {
-                FromTimeSelector.Visibility = Visibility.Hidden;
-                ToTimeSelector.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                FromTimeSelector.Visibility = Visibility.Visible;
-                ToTimeSelector.Visibility = Visibility.Visible;
-            }
         }
 
         public void LoadOffDay(CalendarBlock offDay)
@@ -75,7 +65,7 @@ namespace xstrat.Ui
                 FromTimeSelector.Visibility = Visibility.Hidden;
                 ToTimeSelector.Visibility = Visibility.Hidden;
             }
-
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
         }
         public CalendarBlock GetOffDay()
         {
@@ -112,6 +102,46 @@ namespace xstrat.Ui
                 var index = tv.ODList.Children.IndexOf(this);
                 tv.DeleteOffDay(tv.offDays[index].Id);
             }
+        }
+
+        private void TitleText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void FromDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ToDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void TypeSelector_SelectionChanged(object sender, EventArgs e)
+        {
+            if (TypeSelector.selectedOffDayType.id == 1)
+            {
+                FromTimeSelector.Visibility = Visibility.Hidden;
+                ToTimeSelector.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                FromTimeSelector.Visibility = Visibility.Visible;
+                ToTimeSelector.Visibility = Visibility.Visible;
+            }
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void FromTimeSelector_TimeChanged(object sender, EventArgs e)
+        {
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ToTimeSelector_TimeChanged(object sender, EventArgs e)
+        {
+            ValuesChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

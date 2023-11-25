@@ -21,6 +21,7 @@ namespace xstrat
     public partial class MainWindow : System.Windows.Window
     {
         MainViewModel mv;
+        public StateUserControl CurrentView { get; set; }
 
         public LoadingView lv;
 
@@ -41,6 +42,7 @@ namespace xstrat
             InitializeComponent();
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -102,7 +104,8 @@ namespace xstrat
             finally
             {
                 Globals.Init();
-                DataCache.RetrieveAllCaches();
+                if (IsLoaded)
+                    DataCache.RetrieveAllCaches();
             }
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy";
@@ -168,7 +171,7 @@ namespace xstrat
         /// <param name="e"></param>
         private async void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Application.Current.MainWindow.Close();
         }
 
 
@@ -233,7 +236,8 @@ namespace xstrat
             Globals.Init();
             DataCache.RetrieveUser();
             DataCache.RetrieveTeam();
-            DataCache.RetrieveTeamMates();
+            if (IsLoaded)
+                DataCache.RetrieveTeamMates();
             DataCache.RetrieveAllCaches();
         }
         public void RegisterComplete()

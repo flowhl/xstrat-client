@@ -23,9 +23,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!--Title Row-->
-                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Foreground="White" Background="Transparent" BorderThickness="0" TabIndex="1" Text="Title" Name="TitleText" FontSize="16" VerticalContentAlignment="Center" />
+                <TextBox TextChanged="TitleText_TextChanged" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Foreground="White" Background="Transparent" BorderThickness="0" TabIndex="1" Text="Title" Name="TitleText" FontSize="16" VerticalContentAlignment="Center" />
                 <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Right" Foreground="#AAAAAA" FontSize="13" Name="CreationDate" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0,0,0">Created on: 01.01.2022</TextBox>
-                <local:DataSelector Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Type="Offdaytype" TabIndex="2" Width="130" Height="25" x:Name="TypeSelector" HorizontalAlignment="Right" />
+                <local:DataSelector SelectionChanged="TypeSelector_SelectionChanged" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Type="Offdaytype" TabIndex="2" Width="130" Height="25" x:Name="TypeSelector" HorizontalAlignment="Right" />
                 <Button Grid.Row="0" Grid.Column="4" Margin="2" HorizontalAlignment="Right" Background="Transparent" Foreground="White" BorderThickness="0" Name="DeleteButton" Click="DeleteButton_Click">
                     <Button.Content>
                         <MaterialDesign:PackIcon Height="20" Width="20" Kind="DeleteOutline" />
@@ -34,7 +34,7 @@
                 
                 <!--From Row-->
                 <TextBox IsReadOnly="True" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="0" Foreground="#AAAAAA" FontSize="13" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">From:</TextBox>
-                <DatePicker Background="Transparent" Grid.Row="1" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="FromDatePicker">
+                <DatePicker SelectedDateChanged="FromDatePicker_SelectedDateChanged" Background="Transparent" Grid.Row="1" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="FromDatePicker">
                     <DatePicker.CalendarStyle>
                         <Style TargetType="{x:Type Calendar}">
                             <Setter Property="Background" Value="Black" />
@@ -49,11 +49,11 @@
                         </Style>
                     </DatePicker.Resources>
                 </DatePicker>
-                <local:TimeSelector Grid.Row="1" Grid.Column="2" x:Name="FromTimeSelector"/>
+                <local:TimeSelector TimeChanged="FromTimeSelector_TimeChanged" Grid.Row="1" Grid.Column="2" x:Name="FromTimeSelector"/>
 
                 <!--From Row-->
                 <TextBox IsReadOnly="True" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Grid.Row="2" Grid.Column="0" Foreground="#AAAAAA" FontSize="13" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">To:</TextBox>
-                <DatePicker Background="Transparent" Grid.Row="2" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="ToDatePicker">
+                <DatePicker SelectedDateChanged="ToDatePicker_SelectedDateChanged" Background="Transparent" Grid.Row="2" Width="160" Grid.Column="1" TabIndex="3" Margin="4" VerticalAlignment="Center" BorderThickness="0" Foreground="#336cb5" Name="ToDatePicker">
                     <DatePicker.CalendarStyle>
                         <Style TargetType="{x:Type Calendar}">
                             <Setter Property="Background" Value="Black" />
@@ -68,7 +68,7 @@
                         </Style>
                     </DatePicker.Resources>
                 </DatePicker>
-                <local:TimeSelector Grid.Row="2" Grid.Column="2" x:Name="ToTimeSelector" />
+                <local:TimeSelector TimeChanged="ToTimeSelector_TimeChanged" Grid.Row="2" Grid.Column="2" x:Name="ToTimeSelector" />
 
 
             </Grid>          

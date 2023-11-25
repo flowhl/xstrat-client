@@ -33,7 +33,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for ReplayView.xaml
     /// </summary>
-    public partial class ReplayView : UserControl
+    public partial class ReplayView : StateUserControl
     {
 
         public ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }

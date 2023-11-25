@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="xstrat.MVVM.View.SkinSwitcherView"
+﻿<xstrat:StateUserControl xmlns:xstrat="clr-namespace:xstrat" x:Class="xstrat.MVVM.View.SkinSwitcherView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -27,4 +27,4 @@
             </Border>
         </StackPanel>        
     </Grid>
-</UserControl>
+</xstrat:StateUserControl>

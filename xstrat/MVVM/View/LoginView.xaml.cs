@@ -21,7 +21,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LoginView : UserControl
+    public partial class LoginView : StateUserControl
     {
         MainWindow wnd = (MainWindow)Application.Current.MainWindow;
         public LoginView()
@@ -35,7 +35,7 @@ namespace xstrat.MVVM.View
             {
                 Error.Content = null;
             }
-            RememberMe.setStatus(SettingsHandler.Settings.StayLoggedin);
+            RememberMe.IsToggled = SettingsHandler.Settings.StayLoggedin;
             email.Text = SettingsHandler.Settings.LastLoginMail;
         }
 
@@ -73,7 +73,7 @@ namespace xstrat.MVVM.View
                 {
                     SettingsHandler.Settings.CurrentUserId = user_id;
                 }
-                SettingsHandler.Settings.StayLoggedin = RememberMe.getStatus();
+                SettingsHandler.Settings.StayLoggedin = RememberMe.IsToggled;
                 SettingsHandler.Settings.LastLoginMail = email.Text.Trim();
                 SettingsHandler.Save();
                 wnd.LoginComplete(session);

@@ -85,24 +85,34 @@ namespace xstrat.MVVM.ViewModel
 
             CurrentView = HomeVM;
 
-            HomeViewCommand = new RelayCommand(o => { if(wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = HomeVM;});
-            SettingsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded) CurrentView = SettingsVM; });
-            AboutViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = AboutVM; });
+            HomeViewCommand = new RelayCommand(o => { if(wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = HomeVM;});
+            SettingsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && IsAllowedToExit()) CurrentView = SettingsVM; });
+            AboutViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = AboutVM; });
             RegisterViewCommand = new RelayCommand(o => { CurrentView = RegisterVM; });
             LoginViewCommand = new RelayCommand(o => { CurrentView = LoginVM; });
-            SkinSwitcherViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = SkinSwitcherVM; });
-            RoutinesViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = RoutinesVM; });
-            StratMakerViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = StratMakerVM; });
-            TeamViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = TeamVM; });
-            CalendarViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = CalendarVM; });
-            ScrimViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = ScrimVM; });
-            StatsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = StatsVM; });
-            LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = LicenseVM; });
+            SkinSwitcherViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = SkinSwitcherVM; });
+            RoutinesViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = RoutinesVM; });
+            StratMakerViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = StratMakerVM; });
+            TeamViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = TeamVM; });
+            CalendarViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = CalendarVM; });
+            ScrimViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = ScrimVM; });
+            StatsViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = StatsVM; });
+            LicenseViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = LicenseVM; });
             LoadingViewCommand = new RelayCommand(o => { CurrentView = LoadingVM; });
             WallEditorViewCommand = new RelayCommand(o => { CurrentView = WallEditorVM; });
-            ReplayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = ReplayVM; });
-            OffdayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading) CurrentView = OffdayVM; });
+            ReplayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = ReplayVM; });
+            OffdayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = OffdayVM; });
             PasswordResetViewCommand = new RelayCommand(o => { CurrentView = PasswordResetVM; });
+        }
+
+        public bool IsAllowedToExit()
+        {
+            var view = wnd.CurrentView;
+            if (view != null)
+            {
+                return view.AllowExit();
+            }
+            return true;
         }
     }
 }

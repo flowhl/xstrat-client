@@ -20,76 +20,61 @@ namespace xstrat.Ui
     /// </summary>
     public partial class ToggleSwitch : UserControl
     {
-        Thickness LeftSide = new Thickness(-39, 0, 0, 0);
-        Thickness RightSide = new Thickness(0, 0, -39, 0);
-        SolidColorBrush Off = new SolidColorBrush(Color.FromRgb(160, 160, 160));
-        SolidColorBrush On = (SolidColorBrush)new BrushConverter().ConvertFrom("#336cb5");
-        private bool Toggled = false;
+        private readonly Thickness LeftSide = new Thickness(-39, 0, 0, 0);
+        private readonly Thickness RightSide = new Thickness(0, 0, -39, 0);
+        private readonly SolidColorBrush Off = new SolidColorBrush(Color.FromRgb(160, 160, 160));
+        private readonly SolidColorBrush On = (SolidColorBrush)new BrushConverter().ConvertFrom("#336cb5");
+
+        private bool _toggled;
+
+        // Declare the Toggled event
+        public event EventHandler Toggled;
+
         public ToggleSwitch()
         {
             InitializeComponent();
-            Back.Fill = Off;
-            Toggled = false;
-            Dot.Margin = LeftSide;
+            SetToggleState(false);
         }
-        public bool Toggled1 { get => Toggled; set => Toggled = value; }
+
+        public bool IsToggled
+        {
+            get => _toggled;
+            set
+            {
+                if (_toggled != value)
+                {
+                    SetToggleState(value);
+                    OnToggled(EventArgs.Empty); // Raise the event
+                }
+            }
+        }
+
+        protected virtual void OnToggled(EventArgs e)
+        {
+            Toggled?.Invoke(this, e);
+        }
+
+        private void SetToggleState(bool toggled)
+        {
+            _toggled = toggled;
+            Back.Fill = _toggled ? On : Off;
+            Dot.Margin = _toggled ? RightSide : LeftSide;
+        }
 
         private void Dot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Toggled)
-            {
-                Back.Fill = On;
-                Toggled = true;
-                Dot.Margin = RightSide;
-
-            }
-            else
-            {
-
-                Back.Fill = Off;
-                Toggled = false;
-                Dot.Margin = LeftSide;
-
-            }
+            Toggle();
         }
+
         private void Back_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Toggled)
-            {
-                Back.Fill = On;
-                Toggled = true;
-                Dot.Margin = RightSide;
-
-            }
-            else
-            {
-
-                Back.Fill = Off;
-                Toggled = false;
-                Dot.Margin = LeftSide;
-
-            }
+            Toggle();
         }
-        public void setStatus(Boolean status)
-        {
-            if (status)
-            {
-                Back.Fill = On;
-                Toggled = true;
-                Dot.Margin = RightSide;
 
-            }
-            else
-            {
-                Back.Fill = Off;
-                Toggled = false;
-                Dot.Margin = LeftSide;
-            }
-
-        }
-        public Boolean getStatus()
+        private void Toggle()
         {
-            return Toggled;
+            IsToggled = !IsToggled;
         }
     }
+
 }

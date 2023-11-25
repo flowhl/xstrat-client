@@ -21,6 +21,7 @@ using xstrat.Calendar;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.Models.Supabase;
+using xstrat;
 using xstrat.Ui;
 using static xstrat.Ui.ScrimWindow;
 
@@ -29,7 +30,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for CalendarView.xaml
     /// </summary>
-    public partial class CalendarView : UserControl, INotifyPropertyChanged
+    public partial class CalendarView : StateUserControl, INotifyPropertyChanged
     {
         private List<Models.Supabase.CalendarBlock> offDays = new List<Models.Supabase.CalendarBlock>();
         private List<Models.Supabase.CalendarEvent> scrims = new List<Models.Supabase.CalendarEvent>();

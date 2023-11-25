@@ -31,7 +31,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for WallEditorView.xaml
     /// </summary>
-    public partial class WallEditorView : UserControl
+    public partial class WallEditorView : StateUserControl
     {
         public bool isMouseDown = false;
 

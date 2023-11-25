@@ -19,7 +19,7 @@ namespace xstrat.MVVM.View
     /// <summary>
     /// Interaction logic for LoadingView.xaml
     /// </summary>
-    public partial class LoadingView : UserControl
+    public partial class LoadingView : StateUserControl
     {
         public string[] messages = {
             "Discovering new ways of making you wait.",

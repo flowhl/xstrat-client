@@ -25,6 +25,20 @@ namespace xstrat
             if (str == null) return null;
             return string.Concat(str.Where(c => !char.IsWhiteSpace(c)));
         }
+        public static bool IsDigitsOnly(this string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+            return true;
+        }
+
+        public static bool ToBool(this string input)
+        {
+            return (input.Trim() == "1");
+        }
     }
     public static class DateTimeExtensions
     {

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
+using xstrat.MVVM.View;
 
 namespace xstrat.Ui
 {
@@ -22,6 +23,7 @@ namespace xstrat.Ui
     public partial class WallControl : UserControl
     {
         public Wallstates[] states = new Wallstates[] {Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, };
+        public string User_ID { get; set; }
 
         public bool isLocked = false;
 
@@ -45,13 +47,15 @@ namespace xstrat.Ui
             InitializeComponent();
             Init();
             states = new Wallstates[] { walls[0], walls[1], walls[2], walls[3], walls[4], walls[5] };
-            updateWidth();
+            UpdateWidth();
+            UpdateColor();
         }
         public WallControl()
         {
             InitializeComponent();
             Init();
-            updateWidth();
+            UpdateWidth();
+            UpdateColor();
         }
 
         public void Init()
@@ -66,9 +70,44 @@ namespace xstrat.Ui
             MiraReversed = GetImageSource("/Images/Icons/wall_mirareversed.png");
         }
 
+        public void UpdateColor()
+        {
+            if (User_ID.IsNullOrEmpty())
+            {
+
+                this.BorderBrush = Brushes.Transparent;
+                this.BorderThickness = new Thickness(0);
+                return;
+            }
+            
+            var user = DataCache.CurrentTeamMates.Where(x => x.Id == User_ID).FirstOrDefault();
+            if (user == null) return;
+
+            var color = user.Color;
+            if (color.IsNullOrEmpty()) return;
+
+            this.BorderBrush = color.ToSolidColorBrush();
+            this.BorderThickness = new Thickness(2);
+        }
+
         private void StackPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (isLocked) return;
+
+            if(Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if(User_ID.IsNotNullOrEmpty() && User_ID == StratMakerToolTipHelper.CurrentBrushUser)
+                {
+                    User_ID = null;
+                    UpdateColor();
+                    return;
+                }
+
+                User_ID = StratMakerToolTipHelper.CurrentBrushUser;
+                UpdateColor();
+                return;
+            }
+
             var val = states[0];
             if (states.All(x => x == val))
             {
@@ -239,10 +278,10 @@ namespace xstrat.Ui
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            updateWidth();
+            UpdateWidth();
         }
 
-        public void updateWidth()
+        public void UpdateWidth()
         {
             double nwidth = ActualWidth / 6;
             double nheight = ActualHeight;

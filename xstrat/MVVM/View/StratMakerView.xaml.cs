@@ -60,9 +60,30 @@ namespace xstrat.MVVM.View
 
         Image draggedItem;
 
-        public ToolTip CurrentToolTip;
+        public ToolTip CurrentToolTip
+        {
+
+            get
+            {
+                return StratMakerToolTipHelper.CurrentToolTip;
+            }
+            set
+            {
+                StratMakerToolTipHelper.CurrentToolTip = value;
+            }
+        }
         public Brush CurrentBrush = null;
-        public string CurrentBrushUser = null;
+        public string CurrentBrushUser
+        {
+            get
+            {
+                return StratMakerToolTipHelper.CurrentBrushUser;
+            }
+            set
+            {
+                StratMakerToolTipHelper.CurrentBrushUser = value;
+            }
+        }
         public bool isMouseDown = false;
         public int BrushSize { get; set; } = 10;
 
@@ -132,7 +153,8 @@ namespace xstrat.MVVM.View
             xStratHelper.WEMode = false;
 
             Globals.wnd.KeyDown += KeyDown;
-
+            CurrentToolTip = View.ToolTip.Cursor;
+            CurrentBrushUser = null;
             Opened();
         }
 
@@ -940,46 +962,48 @@ namespace xstrat.MVVM.View
 
             StratContent content = GetStratContentFromString(CurrentStrat.Content);
 
-            Floor0 = content.floors.Contains(0);
-            Floor1 = content.floors.Contains(1);
-            Floor2 = content.floors.Contains(2);
-            Floor3 = content.floors.Contains(3);
+            Floor0 = content.Floors.Contains(0);
+            Floor1 = content.Floors.Contains(1);
+            Floor2 = content.Floors.Contains(2);
+            Floor3 = content.Floors.Contains(3);
             UpdateFloorButtons();
 
-            AttBanSelector.SelectValue(content?.banAtt?.Name ?? "");
-            DefBanSelector.SelectValue(content?.banDef?.Name ?? "");
+            AttBanSelector.SelectValue(content?.BanAtt?.Name ?? "");
+            DefBanSelector.SelectValue(content?.BanDef?.Name ?? "");
 
             LoadMapImages();
 
             var wallsList = WallsLayer.Children.OfType<WallControl>().ToList();
             var hatchList = WallsLayer.Children.OfType<HatchControl>().ToList();
 
-            foreach (var wall in content.wallstatus)
+            foreach (var wall in content.Wallstatus)
             {
-                var w = wallsList.Where(x => x.Name == wall.wall_uid).FirstOrDefault();
+                var w = wallsList.Where(x => x.Name == wall.Wall_UID).FirstOrDefault();
                 if (w == null) continue;
-                w.states = wall.states;
+                w.states = wall.States;
+                w.User_ID = wall.User_ID;
                 w.UpdateUI();
-                //TODO user einfügen
+                w.UpdateColor();
             }
-            foreach (var hatch in content.hatchstatus)
+            foreach (var hatch in content.Hatchstatus)
             {
-                var h = hatchList.Where(x => x.Name == hatch.hatch_uid).FirstOrDefault();
+                var h = hatchList.Where(x => x.Name == hatch.Hatch_UID).FirstOrDefault();
                 if (h == null) continue;
-                h.states = hatch.states;
+                h.states = hatch.States;
+                h.User_ID = hatch.User_ID;
                 h.UpdateUI();
-                //TODO user einfügen
+                h.UpdateColor();
             }
 
-            LoadAssignmentTable(content.assignmentTable);
+            LoadAssignmentTable(content.AssignmentTable);
 
-            LoadDragNDropItems(content.dragNDropObjs);
+            LoadDragNDropItems(content.DragNDropObjs);
 
             //IconSizeSlider.Value = content.IconSize;
             //IconSize = content.IconSize;
             //RescaleIcons(content.IconSize);
 
-            Kommentar.Text = content.comment;
+            Kommentar.Text = content.Comment;
             HasChanges = false;
         }
 
@@ -999,10 +1023,10 @@ namespace xstrat.MVVM.View
 
             StratContent content = new StratContent(); //build here
 
-            content.comment = Kommentar.Text;
-            content.wallstatus = GetWallObjs();
-            content.hatchstatus = GetHatchObjs();
-            content.dragNDropObjs = GetDragNDropObjs();
+            content.Comment = Kommentar.Text;
+            content.Wallstatus = GetWallObjs();
+            content.Hatchstatus = GetHatchObjs();
+            content.DragNDropObjs = GetDragNDropObjs();
             content.IconSize = IconSize;
 
             List<int> floors = new List<int>();
@@ -1011,10 +1035,10 @@ namespace xstrat.MVVM.View
             if (Floor2) floors.Add(2);
             if (Floor3) floors.Add(3);
 
-            content.floors = floors;
-            content.banDef = DefBanSelector.selectedOperator;
-            content.banAtt = AttBanSelector.selectedOperator;
-            content.assignmentTable = GetAssignmentTable();
+            content.Floors = floors;
+            content.BanDef = DefBanSelector.selectedOperator;
+            content.BanAtt = AttBanSelector.selectedOperator;
+            content.AssignmentTable = GetAssignmentTable();
 
             string scontent = content.SerializeToString();
 
@@ -1038,45 +1062,45 @@ namespace xstrat.MVVM.View
             HasChanges = false;
         }
 
-        public AssignmentTable GetAssignmentTable()
+        public AssignmentTableModel GetAssignmentTable()
         {
-            var table = new AssignmentTable();
+            var table = new AssignmentTableModel();
 
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.Id, gadgets = Gadget1.Text, loadout = Loadout1.Text, position = Position1.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.Id, gadgets = Gadget2.Text, loadout = Loadout2.Text, position = Position2.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.Id, gadgets = Gadget3.Text, loadout = Loadout3.Text, position = Position3.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.Id, gadgets = Gadget4.Text, loadout = Loadout4.Text, position = Position4.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.Id, gadgets = Gadget5.Text, loadout = Loadout5.Text, position = Position5.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.Id, Gadgets = Gadget1.Text, Loadout = Loadout1.Text, Position = Position1.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.Id, Gadgets = Gadget2.Text, Loadout = Loadout2.Text, Position = Position2.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.Id, Gadgets = Gadget3.Text, Loadout = Loadout3.Text, Position = Position3.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.Id, Gadgets = Gadget4.Text, Loadout = Loadout4.Text, Position = Position4.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.Id, Gadgets = Gadget5.Text, Loadout = Loadout5.Text, Position = Position5.Text });
 
             return table;
         }
 
-        public void LoadAssignmentTable(AssignmentTable table)
+        public void LoadAssignmentTable(AssignmentTableModel table)
         {
-            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[0].User_id).FirstOrDefault()?.Name ?? "");
-            Gadget1.Text = table.Rows[0].gadgets;
-            Loadout1.Text = table.Rows[0].loadout;
-            Position1.Text = table.Rows[0].position;
+            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[0]?.User_id).FirstOrDefault()?.Name ?? "");
+            Gadget1.Text = table.Rows[0].Gadgets;
+            Loadout1.Text = table.Rows[0].Loadout;
+            Position1.Text = table.Rows[0].Position;
 
-            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[1].User_id).FirstOrDefault()?.Name ?? "");
-            Gadget2.Text = table.Rows[1].gadgets;
-            Loadout2.Text = table.Rows[1].loadout;
-            Position2.Text = table.Rows[1].position;
+            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[1]?.User_id).FirstOrDefault()?.Name ?? "");
+            Gadget2.Text = table.Rows[1].Gadgets;
+            Loadout2.Text = table.Rows[1].Loadout;
+            Position2.Text = table.Rows[1].Position;
 
-            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[2].User_id).FirstOrDefault()?.Name ?? "");
-            Gadget3.Text = table.Rows[2].gadgets;
-            Loadout3.Text = table.Rows[2].loadout;
-            Position3.Text = table.Rows[2].position;
+            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[2]?.User_id).FirstOrDefault()?.Name ?? "");
+            Gadget3.Text = table.Rows[2].Gadgets;
+            Loadout3.Text = table.Rows[2].Loadout;
+            Position3.Text = table.Rows[2].Position;
 
-            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[3].User_id).FirstOrDefault()?.Name ?? "");
-            Gadget4.Text = table.Rows[3].gadgets;
-            Loadout4.Text = table.Rows[3].loadout;
-            Position4.Text = table.Rows[3].position;
+            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[3]?.User_id).FirstOrDefault()?.Name ?? "");
+            Gadget4.Text = table.Rows[3].Gadgets;
+            Loadout4.Text = table.Rows[3].Loadout;
+            Position4.Text = table.Rows[3].Position;
 
-            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[4].User_id).FirstOrDefault()?.Name ?? "");
-            Gadget5.Text = table.Rows[4].gadgets;
-            Loadout5.Text = table.Rows[4].loadout;
-            Position5.Text = table.Rows[4].position;
+            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[4]?.User_id).FirstOrDefault()?.Name ?? "");
+            Gadget5.Text = table.Rows[4].Gadgets;
+            Loadout5.Text = table.Rows[4].Loadout;
+            Position5.Text = table.Rows[4].Position;
         }
 
         public List<DragNDropObj> GetDragNDropObjs()
@@ -1098,64 +1122,64 @@ namespace xstrat.MVVM.View
                 {
                     if ((item as StratContentControl).Content is Border)
                     {
-                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                        newEntry.userID = (item as StratContentControl).UserID;
+                        newEntry.Pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.UserID = (item as StratContentControl).UserID;
                         Image image = ((item as StratContentControl).Content as Border).Child as Image;
-                        newEntry.image = GetRelativePathForImage(((BitmapImage)image.Source).UriSource);
-                        newEntry.type = DragNDropObjType.Image;
-                        newEntry.diameter = image.ActualWidth;
+                        newEntry.Image = GetRelativePathForImage(((BitmapImage)image.Source).UriSource);
+                        newEntry.Type = DragNDropObjType.Image;
+                        newEntry.Diameter = image.ActualWidth;
                     }
                     if ((item as StratContentControl).Content is TextControl)
                     {
-                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                        newEntry.width = (item as StratContentControl).Width;
-                        newEntry.height = (item as StratContentControl).Height;
-                        newEntry.textContent = ((item as StratContentControl).Content as TextControl).MainContent.Text;
-                        newEntry.type = DragNDropObjType.Text;
-                        newEntry.userID = (item as StratContentControl).UserID;
+                        newEntry.Pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.Width = (item as StratContentControl).Width;
+                        newEntry.Height = (item as StratContentControl).Height;
+                        newEntry.TextContent = ((item as StratContentControl).Content as TextControl).MainContent.Text;
+                        newEntry.Type = DragNDropObjType.Text;
+                        newEntry.UserID = (item as StratContentControl).UserID;
                     }
                     if ((item as StratContentControl).Content is Ellipse)
                     {
-                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                        newEntry.width = (item as StratContentControl).Width;
-                        newEntry.height = (item as StratContentControl).Height;
-                        newEntry.diameter = (item as StratContentControl).Height;
-                        newEntry.type = DragNDropObjType.Circle;
-                        newEntry.userID = (item as StratContentControl).UserID;
+                        newEntry.Pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.Width = (item as StratContentControl).Width;
+                        newEntry.Height = (item as StratContentControl).Height;
+                        newEntry.Diameter = (item as StratContentControl).Height;
+                        newEntry.Type = DragNDropObjType.Circle;
+                        newEntry.UserID = (item as StratContentControl).UserID;
                     }
 
                     if ((item as StratContentControl).Content is Rectangle)
                     {
-                        newEntry.pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
-                        newEntry.width = (item as StratContentControl).Width;
-                        newEntry.height = (item as StratContentControl).Height;
-                        newEntry.type = DragNDropObjType.Rectangle;
-                        newEntry.userID = (item as StratContentControl).UserID;
+                        newEntry.Pos = new Point(Canvas.GetLeft(item as StratContentControl), Canvas.GetTop(item as StratContentControl));
+                        newEntry.Width = (item as StratContentControl).Width;
+                        newEntry.Height = (item as StratContentControl).Height;
+                        newEntry.Type = DragNDropObjType.Rectangle;
+                        newEntry.UserID = (item as StratContentControl).UserID;
                     }
                 }
 
                 //Drawing
                 if (item is Ellipse)
                 {
-                    newEntry.pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
-                    newEntry.diameter = (item as Ellipse).Width;
-                    newEntry.type = DragNDropObjType.DrawingCircle;
-                    newEntry.userID = (item as Ellipse).Tag.ToString();
+                    newEntry.Pos = new Point(Canvas.GetLeft(item as Ellipse), Canvas.GetTop(item as Ellipse));
+                    newEntry.Diameter = (item as Ellipse).Width;
+                    newEntry.Type = DragNDropObjType.DrawingCircle;
+                    newEntry.UserID = (item as Ellipse).Tag.ToString();
                 }
 
                 //Arrow
                 if (item is Path)
                 {
-                    newEntry.pos = new Point(Canvas.GetLeft(item as Path), Canvas.GetTop(item as Path));
+                    newEntry.Pos = new Point(Canvas.GetLeft(item as Path), Canvas.GetTop(item as Path));
 
                     var g = ((item as Path).Data as GeometryGroup).Children.First();
                     if (g == null) continue;
 
-                    newEntry.arrowGeometryStart = (g as LineGeometry).StartPoint;
-                    newEntry.arrowGeometryEnd = (g as LineGeometry).EndPoint;
+                    newEntry.ArrowGeometryStart = (g as LineGeometry).StartPoint;
+                    newEntry.ArrowGeometryEnd = (g as LineGeometry).EndPoint;
 
-                    newEntry.userID = (item as Path).Tag.ToString();
-                    newEntry.type = DragNDropObjType.Arrow;
+                    newEntry.UserID = (item as Path).Tag.ToString();
+                    newEntry.Type = DragNDropObjType.Arrow;
                 }
                 if (newEntry != null) result.Add(newEntry);
             }
@@ -1186,19 +1210,19 @@ namespace xstrat.MVVM.View
 
             foreach (var item in list)
             {
-                if (item.type == DragNDropObjType.Image)
+                if (item.Type == DragNDropObjType.Image)
                 {
-                    if (item.image.IsNullOrEmpty())
+                    if (item.Image.IsNullOrEmpty())
                     {
-                        Notify.sendWarn($"could not find image path for image: {item.userID} | {item.height} | {item.width}");
+                        Notify.sendWarn($"could not find image path for image: {item.UserID} | {item.Height} | {item.Width}");
                         continue;
                     }
 
-                    Point newpos = item.pos;
+                    Point newpos = item.Pos;
 
                     Image newimg = new Image();
                     newimg.IsHitTestVisible = false;
-                    newimg.Source = new BitmapImage(new Uri(ImageFolder + item.image, UriKind.Absolute));
+                    newimg.Source = new BitmapImage(new Uri(ImageFolder + item.Image, UriKind.Absolute));
 
                     var border = new Border();
                     border.BorderThickness = new Thickness(2);
@@ -1212,11 +1236,11 @@ namespace xstrat.MVVM.View
                     newcc.Width = 50;
                     newcc.Padding = new Thickness(1);
                     newcc.Style = this.FindResource("DesignerItemStyle") as Style;
-                    newcc.BorderBrush = item.userID?.ToSolidColorBrush();
+                    newcc.BorderBrush = item.UserID?.ToSolidColorBrush();
                     newcc.BorderThickness = new Thickness(2);
                     newcc.PreviewMouseLeftButtonDown += Newcc_MouseLeftButtonDown;
-                    newcc.UserID = item.userID;
-                    newcc.Tag = item.userID;
+                    newcc.UserID = item.UserID;
+                    newcc.Tag = item.UserID;
 
                     DrawingLayer.Children.Add(newcc);
 
@@ -1224,7 +1248,7 @@ namespace xstrat.MVVM.View
                     Canvas.SetTop(newcc, newpos.Y);
                 }
 
-                if (item.type == DragNDropObjType.Circle)
+                if (item.Type == DragNDropObjType.Circle)
                 {
                     var scc = new StratContentControl();
 
@@ -1238,39 +1262,39 @@ namespace xstrat.MVVM.View
 
                     scc.Content = circle;
 
-                    scc.Width = item.width;
-                    scc.Height = item.height;
+                    scc.Width = item.Width;
+                    scc.Height = item.Height;
 
 
                     // set the fill color of the rectangle
                     //circle.Fill = CurrentBrush;
                     circle.StrokeThickness = 4;
-                    circle.Stroke = Globals.GetUserColorBrush(item.userID); ;
-                    circle.Tag = item.userID;
-                    scc.Tag = item.userID;
-                    scc.UserID = item.userID;
+                    circle.Stroke = Globals.GetUserColorBrush(item.UserID); ;
+                    circle.Tag = item.UserID;
+                    scc.Tag = item.UserID;
+                    scc.UserID = item.UserID;
 
                     // Add the circle to the canvas
                     DrawingLayer.Children.Add(scc);
 
                     // set the position of the rectangle on the canvas
-                    Canvas.SetLeft(scc, item.pos.X);
-                    Canvas.SetTop(scc, item.pos.Y);
+                    Canvas.SetLeft(scc, item.Pos.X);
+                    Canvas.SetTop(scc, item.Pos.Y);
                 }
 
-                if (item.type == DragNDropObjType.DrawingCircle)
+                if (item.Type == DragNDropObjType.DrawingCircle)
                 {
                     var ellipse = new Ellipse();
-                    ellipse.Fill = Globals.GetUserColorBrush(item.userID);
-                    ellipse.Width = item.diameter;
-                    ellipse.Height = item.diameter;
-                    ellipse.Tag = item.userID;
+                    ellipse.Fill = Globals.GetUserColorBrush(item.UserID);
+                    ellipse.Width = item.Diameter;
+                    ellipse.Height = item.Diameter;
+                    ellipse.Tag = item.UserID;
                     DrawingLayer.Children.Add(ellipse);
-                    Canvas.SetLeft(ellipse, item.pos.X);
-                    Canvas.SetTop(ellipse, item.pos.Y);
+                    Canvas.SetLeft(ellipse, item.Pos.X);
+                    Canvas.SetTop(ellipse, item.Pos.Y);
                 }
 
-                if (item.type == DragNDropObjType.Rectangle)
+                if (item.Type == DragNDropObjType.Rectangle)
                 {
                     var scc = new StratContentControl();
 
@@ -1284,30 +1308,30 @@ namespace xstrat.MVVM.View
 
                     scc.Content = rect;
 
-                    scc.Width = item.width;
-                    scc.Height = item.height;
+                    scc.Width = item.Width;
+                    scc.Height = item.Height;
 
 
                     // set the fill color of the rectangle
                     //circle.Fill = CurrentBrush;
                     rect.StrokeThickness = 4;
-                    rect.Stroke = Globals.GetUserColorBrush(item.userID); ;
-                    rect.Tag = item.userID;
-                    scc.Tag = item.userID;
-                    scc.UserID = item.userID;
+                    rect.Stroke = Globals.GetUserColorBrush(item.UserID); ;
+                    rect.Tag = item.UserID;
+                    scc.Tag = item.UserID;
+                    scc.UserID = item.UserID;
 
                     // Add the circle to the canvas
                     DrawingLayer.Children.Add(scc);
 
                     // set the position of the rectangle on the canvas
-                    Canvas.SetLeft(scc, item.pos.X);
-                    Canvas.SetTop(scc, item.pos.Y);
+                    Canvas.SetLeft(scc, item.Pos.X);
+                    Canvas.SetTop(scc, item.Pos.Y);
                 }
 
-                if (item.type == DragNDropObjType.Text)
+                if (item.Type == DragNDropObjType.Text)
                 {
                     TextControl txt = new TextControl();
-                    txt.MainContent.Text = item.textContent;
+                    txt.MainContent.Text = item.TextContent;
 
                     StratContentControl newcc = new StratContentControl();
                     newcc.Content = txt;
@@ -1317,22 +1341,22 @@ namespace xstrat.MVVM.View
                     newcc.Style = this.FindResource("DesignerItemStyle") as Style;
                     newcc.BorderBrush = Brushes.Transparent;
                     newcc.BorderThickness = new Thickness(2);
-                    newcc.UserID = item.userID;
-                    newcc.Tag = item.userID;
+                    newcc.UserID = item.UserID;
+                    newcc.Tag = item.UserID;
 
                     DrawingLayer.Children.Add(newcc);
 
-                    Canvas.SetLeft(newcc, item.pos.X);
-                    Canvas.SetTop(newcc, item.pos.Y);
+                    Canvas.SetLeft(newcc, item.Pos.X);
+                    Canvas.SetTop(newcc, item.Pos.Y);
                 }
 
-                if (item.type == DragNDropObjType.Arrow)
+                if (item.Type == DragNDropObjType.Arrow)
                 {
-                    var arrow = CreateArrow(item.arrowGeometryStart, item.arrowGeometryEnd, 20, item.userID);
+                    var arrow = CreateArrow(item.ArrowGeometryStart, item.ArrowGeometryEnd, 20, item.UserID);
                     DrawingLayer.Children.Add(arrow);
-                    Canvas.SetLeft(arrow, item.pos.X);
-                    Canvas.SetTop(arrow, item.pos.Y);
-                    arrow.Tag = item.userID;
+                    Canvas.SetLeft(arrow, item.Pos.X);
+                    Canvas.SetTop(arrow, item.Pos.Y);
+                    arrow.Tag = item.UserID;
                 }
             }
             DeselectAll();
@@ -1344,7 +1368,7 @@ namespace xstrat.MVVM.View
 
             foreach (var wall in WallsLayer.Children.OfType<WallControl>())
             {
-                wallObjs.Add(new WallObj { states = wall.states, wall_uid = wall.Name.Replace("SCC_", "") });
+                wallObjs.Add(new WallObj { States = wall.states, Wall_UID = wall.Name.Replace("SCC_", ""), User_ID = wall.User_ID });
             }
             return wallObjs;
         }
@@ -1355,7 +1379,7 @@ namespace xstrat.MVVM.View
 
             foreach (var hatch in WallsLayer.Children.OfType<HatchControl>())
             {
-                hatchObjs.Add(new HatchObj { states = hatch.states, hatch_uid = hatch.Name.Replace("SCC_", "") });
+                hatchObjs.Add(new HatchObj { States = hatch.states, Hatch_UID = hatch.Name.Replace("SCC_", ""), User_ID = hatch.User_ID });
             }
 
             return hatchObjs;
@@ -1589,10 +1613,10 @@ namespace xstrat.MVVM.View
 
         private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentStrat == null) 
+            if (CurrentStrat == null)
             {
                 Notify.sendWarn("There is no strat loaded");
-                return; 
+                return;
             }
             bool admin = await ApiHandler.GetAdminStatus();
             if (!admin)
@@ -1601,7 +1625,7 @@ namespace xstrat.MVVM.View
                 return;
             }
             var res = await ApiHandler.DeleteStrat(CurrentStrat.Id);
-            if(res)
+            if (res)
             {
                 CurrentStrat = null;
                 UpdateTopBar();
@@ -2043,42 +2067,41 @@ namespace xstrat.MVVM.View
     [Serializable]
     public class StratContent
     {
-        public List<WallObj> wallstatus { get; set; }
-        public List<HatchObj> hatchstatus { get; set; }
-        public List<DragNDropObj> dragNDropObjs { get; set; }
-        public string comment { get; set; }
-        public List<int> floors { get; set; }
+        public List<WallObj> Wallstatus { get; set; }
+        public List<HatchObj> Hatchstatus { get; set; }
+        public List<DragNDropObj> DragNDropObjs { get; set; }
+        public string Comment { get; set; }
+        public List<int> Floors { get; set; }
         public double IconSize { get; set; }
-        public AssignmentTable assignmentTable { get; set; }
-        public Operator banDef { get; set; }
-        public Operator banAtt { get; set; }
+        public AssignmentTableModel AssignmentTable { get; set; }
+        public Operator BanDef { get; set; }
+        public Operator BanAtt { get; set; }
 
 
         public StratContent()
         {
-            wallstatus = new List<WallObj>();
-            hatchstatus = new List<HatchObj>();
-            dragNDropObjs = new List<DragNDropObj>();
-            comment = "";
-            floors = new List<int>();
+            Wallstatus = new List<WallObj>();
+            Hatchstatus = new List<HatchObj>();
+            DragNDropObjs = new List<DragNDropObj>();
+            Comment = "";
+            Floors = new List<int>();
         }
-
     }
 
     public class WallObj
     {
-        public string wall_uid { get; set; }
-        public int user_id { get; set; }
-        public Wallstates[] states { get; set; }
+        public string Wall_UID { get; set; }
+        public string User_ID { get; set; }
+        public Wallstates[] States { get; set; }
     }
     public class HatchObj
     {
-        public string hatch_uid { get; set; }
-        public int user_id { get; set; }
-        public Hatchstates[] states { get; set; }
+        public string Hatch_UID { get; set; }
+        public string User_ID { get; set; }
+        public Hatchstates[] States { get; set; }
     }
 
-    public class AssignmentTable
+    public class AssignmentTableModel
     {
         public List<AssignmentTableDataRow> Rows = new List<AssignmentTableDataRow>();
     }
@@ -2086,23 +2109,23 @@ namespace xstrat.MVVM.View
     public class AssignmentTableDataRow
     {
         public string User_id { get; set; }
-        public string loadout { get; set; }
-        public string gadgets { get; set; }
-        public string position { get; set; }
+        public string Loadout { get; set; }
+        public string Gadgets { get; set; }
+        public string Position { get; set; }
     }
 
     public class DragNDropObj
     {
-        public Point pos { get; set; }
-        public string userID { get; set; }
-        public DragNDropObjType type { get; set; }
-        public double width { get; set; }
-        public double height { get; set; }
-        public string textContent { get; set; }
-        public Point arrowGeometryStart { get; set; }
-        public Point arrowGeometryEnd { get; set; }
-        public string image { get; set; }
-        public double diameter { get; set; }
+        public Point Pos { get; set; }
+        public string UserID { get; set; }
+        public DragNDropObjType Type { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public string TextContent { get; set; }
+        public Point ArrowGeometryStart { get; set; }
+        public Point ArrowGeometryEnd { get; set; }
+        public string Image { get; set; }
+        public double Diameter { get; set; }
     }
 
     public enum DragNDropObjType
@@ -2113,6 +2136,12 @@ namespace xstrat.MVVM.View
         Arrow,
         Rectangle,
         DrawingCircle,
+    }
+
+    public static class StratMakerToolTipHelper
+    {
+        public static ToolTip CurrentToolTip { get; set; }
+        public static string CurrentBrushUser { get; set; }
     }
 
     #endregion

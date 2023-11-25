@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xstrat.Core;
+using xstrat.MVVM.View;
 using static WPFSpark.MonitorHelper;
 
 namespace xstrat.Ui
@@ -24,12 +25,14 @@ namespace xstrat.Ui
     public partial class HatchControl : UserControl
     {
         public Hatchstates[] states = new Hatchstates[] { Hatchstates.solid, Hatchstates.solid, Hatchstates.solid, Hatchstates.solid };
+        public string User_ID { get; set; }
 
         public bool isLocked = false;
 
         public HatchControl()
         {
             InitializeComponent();
+            UpdateColor();
         }
         
         public void UpdateUI()
@@ -38,6 +41,25 @@ namespace xstrat.Ui
             {
                 SetState(i, states[i]);
             }
+        }
+
+        public void UpdateColor()
+        {
+            if (User_ID.IsNullOrEmpty())
+            {
+                this.BorderBrush = Brushes.Transparent;
+                this.BorderThickness = new Thickness(0);
+                return;
+            }
+
+            var user = DataCache.CurrentTeamMates.Where(x => x.Id == User_ID).FirstOrDefault();
+            if (user == null) return;
+
+            var color = user.Color;
+            if (color.IsNullOrEmpty()) return;
+
+            this.BorderBrush = color.ToSolidColorBrush();
+            this.BorderThickness = new Thickness(2);
         }
 
         private Hatchstates increaseHS(Hatchstates hs )
@@ -87,6 +109,21 @@ namespace xstrat.Ui
         private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (isLocked) return;
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if (User_ID.IsNotNullOrEmpty() && User_ID == StratMakerToolTipHelper.CurrentBrushUser)
+                {
+                    User_ID = null;
+                    UpdateColor();
+                    return;
+                }
+
+                User_ID = StratMakerToolTipHelper.CurrentBrushUser;
+                UpdateColor();
+                return;
+            }
+
             var val = states[0];
             if (states.All(x => x == val))
             {

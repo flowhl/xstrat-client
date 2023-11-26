@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace xstrat.Core
 {
-    public enum Wallstates
+    public enum WallStates
     {
         solid,
         reinforced,
@@ -18,7 +18,7 @@ namespace xstrat.Core
         foot,
         punch
     }
-    public enum Hatchstates
+    public enum HatchStates
     {
         solid,
         removed,

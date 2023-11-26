@@ -24,7 +24,7 @@ namespace xstrat.Ui
     /// </summary>
     public partial class HatchControl : UserControl
     {
-        public Hatchstates[] states = new Hatchstates[] { Hatchstates.solid, Hatchstates.solid, Hatchstates.solid, Hatchstates.solid };
+        public HatchStates[] states = new HatchStates[] { HatchStates.solid, HatchStates.solid, HatchStates.solid, HatchStates.solid };
         public string User_ID { get; set; }
 
         public bool isLocked = false;
@@ -62,16 +62,16 @@ namespace xstrat.Ui
             this.BorderThickness = new Thickness(2);
         }
 
-        private Hatchstates increaseHS(Hatchstates hs )
+        private HatchStates increaseHS(HatchStates hs )
         {
             int i = (int)hs;
             i++;
             if (i >= 3) i = 0;
 
-            return (Hatchstates)i;
+            return (HatchStates)i;
         }
 
-        private void SetState(int SPIndex, Hatchstates hs)
+        private void SetState(int SPIndex, HatchStates hs)
         {
             switch (SPIndex)
             {
@@ -91,15 +91,15 @@ namespace xstrat.Ui
                     break;
             }
         }
-        private SolidColorBrush stateToColor(Hatchstates hs)
+        private SolidColorBrush stateToColor(HatchStates hs)
         {
             switch (hs)
             {
-                case Hatchstates.solid: //blue -> default
+                case HatchStates.solid: //blue -> default
                     return new SolidColorBrush(Colors.CornflowerBlue);
-                case Hatchstates.removed: //transparent
+                case HatchStates.removed: //transparent
                     return "#303030".ToSolidColorBrush();
-                case Hatchstates.reinforced: //
+                case HatchStates.reinforced: //
                     return new SolidColorBrush(Colors.DeepPink);
                 default:
                     return new SolidColorBrush(Colors.AliceBlue);
@@ -136,7 +136,7 @@ namespace xstrat.Ui
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    states[i] = Hatchstates.solid;
+                    states[i] = HatchStates.solid;
                 }
             }
             UpdateUI();

@@ -1066,38 +1066,40 @@ namespace xstrat.MVVM.View
         {
             var table = new AssignmentTableModel();
 
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player1.selectedUser?.Id, Gadgets = Gadget1.Text, Loadout = Loadout1.Text, Position = Position1.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player2.selectedUser?.Id, Gadgets = Gadget2.Text, Loadout = Loadout2.Text, Position = Position2.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player3.selectedUser?.Id, Gadgets = Gadget3.Text, Loadout = Loadout3.Text, Position = Position3.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player4.selectedUser?.Id, Gadgets = Gadget4.Text, Loadout = Loadout4.Text, Position = Position4.Text });
-            table.Rows.Add(new AssignmentTableDataRow { User_id = Player5.selectedUser?.Id, Gadgets = Gadget5.Text, Loadout = Loadout5.Text, Position = Position5.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_ID = Player1.selectedUser?.Id, Gadgets = Gadget1.Text, Loadout = Loadout1.Text, Position = Position1.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_ID = Player2.selectedUser?.Id, Gadgets = Gadget2.Text, Loadout = Loadout2.Text, Position = Position2.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_ID = Player3.selectedUser?.Id, Gadgets = Gadget3.Text, Loadout = Loadout3.Text, Position = Position3.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_ID = Player4.selectedUser?.Id, Gadgets = Gadget4.Text, Loadout = Loadout4.Text, Position = Position4.Text });
+            table.Rows.Add(new AssignmentTableDataRow { User_ID = Player5.selectedUser?.Id, Gadgets = Gadget5.Text, Loadout = Loadout5.Text, Position = Position5.Text });
 
             return table;
         }
 
         public void LoadAssignmentTable(AssignmentTableModel table)
         {
-            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[0]?.User_id).FirstOrDefault()?.Name ?? "");
+            if (table == null) return;
+
+            Player1.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[0]?.User_ID).FirstOrDefault()?.Name ?? "");
             Gadget1.Text = table.Rows[0].Gadgets;
             Loadout1.Text = table.Rows[0].Loadout;
             Position1.Text = table.Rows[0].Position;
 
-            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[1]?.User_id).FirstOrDefault()?.Name ?? "");
+            Player2.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[1]?.User_ID).FirstOrDefault()?.Name ?? "");
             Gadget2.Text = table.Rows[1].Gadgets;
             Loadout2.Text = table.Rows[1].Loadout;
             Position2.Text = table.Rows[1].Position;
 
-            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[2]?.User_id).FirstOrDefault()?.Name ?? "");
+            Player3.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[2]?.User_ID).FirstOrDefault()?.Name ?? "");
             Gadget3.Text = table.Rows[2].Gadgets;
             Loadout3.Text = table.Rows[2].Loadout;
             Position3.Text = table.Rows[2].Position;
 
-            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[3]?.User_id).FirstOrDefault()?.Name ?? "");
+            Player4.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[3]?.User_ID).FirstOrDefault()?.Name ?? "");
             Gadget4.Text = table.Rows[3].Gadgets;
             Loadout4.Text = table.Rows[3].Loadout;
             Position4.Text = table.Rows[3].Position;
 
-            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[4]?.User_id).FirstOrDefault()?.Name ?? "");
+            Player5.SelectValue(DataCache.CurrentTeamMates.Where(x => x.Id == table.Rows[4]?.User_ID).FirstOrDefault()?.Name ?? "");
             Gadget5.Text = table.Rows[4].Gadgets;
             Loadout5.Text = table.Rows[4].Loadout;
             Position5.Text = table.Rows[4].Position;
@@ -1492,11 +1494,35 @@ namespace xstrat.MVVM.View
         public StratContent GetStratContentFromString(string input)
         {
             input = Globals.DecompressString(input);
+
+            //migration
+            input = MigrateOldStratContent(input);
+
             using (var stringReader = new System.IO.StringReader(input))
             {
                 var serializer = new XmlSerializer(typeof(StratContent));
                 return serializer.Deserialize(stringReader) as StratContent;
             }
+        }
+
+        public string MigrateOldStratContent(string content)
+        {
+            content = content.Replace("user_id>", "User_ID>");
+            content = content.Replace("loadout>", "Loadout>");
+            content = content.Replace("gadgets>", "Gadgets>");
+            content = content.Replace("position>", "Position>");
+            content = content.Replace("hatch_uid>", "Hatch_UID>");
+            content = content.Replace("wall_uid>", "Wall_UID>");
+            content = content.Replace("wall_UID>", "Wall_UID>");
+            content = content.Replace("states>", "States>");
+            content = content.Replace("assignmentTable>", "AssignmentTableModel>");
+            content = content.Replace("floors>", "Floors>");
+            content = content.Replace("states>", "States>");
+            content = content.Replace("wallstatus>", "Wallstatus>");
+            content = content.Replace("hatchstatus>", "Hatchstatus>");
+            content = content.Replace("dragNDropObjs>", "DragNDropObjs>");
+
+            return content;
         }
 
         #endregion
@@ -2071,7 +2097,9 @@ namespace xstrat.MVVM.View
         public List<HatchObj> Hatchstatus { get; set; }
         public List<DragNDropObj> DragNDropObjs { get; set; }
         public string Comment { get; set; }
+
         public List<int> Floors { get; set; }
+        
         public double IconSize { get; set; }
         public AssignmentTableModel AssignmentTable { get; set; }
         public Operator BanDef { get; set; }
@@ -2092,13 +2120,13 @@ namespace xstrat.MVVM.View
     {
         public string Wall_UID { get; set; }
         public string User_ID { get; set; }
-        public Wallstates[] States { get; set; }
+        public WallStates[] States { get; set; }
     }
     public class HatchObj
     {
         public string Hatch_UID { get; set; }
         public string User_ID { get; set; }
-        public Hatchstates[] States { get; set; }
+        public HatchStates[] States { get; set; }
     }
 
     public class AssignmentTableModel
@@ -2108,7 +2136,7 @@ namespace xstrat.MVVM.View
 
     public class AssignmentTableDataRow
     {
-        public string User_id { get; set; }
+        public string User_ID { get; set; }
         public string Loadout { get; set; }
         public string Gadgets { get; set; }
         public string Position { get; set; }

@@ -285,7 +285,7 @@
     <Compile Include="Core\RestHandler.cs" />
     <Compile Include="Core\RoutineButtonClicked.cs" />
     <Compile Include="Core\RoutineStepButtonClicked.cs" />
-    <Compile Include="Core\Wallstates.cs" />
+    <Compile Include="Core\WallStates.cs" />
     <Compile Include="Core\YoutubeAPIHandler.cs" />
     <Compile Include="Json\Datamodels.cs" />
     <Compile Include="Json\LicenseStatus.cs" />

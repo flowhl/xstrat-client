@@ -22,7 +22,7 @@ namespace xstrat.Ui
     /// </summary>
     public partial class WallControl : UserControl
     {
-        public Wallstates[] states = new Wallstates[] {Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, Wallstates.solid, };
+        public WallStates[] states = new WallStates[] {WallStates.solid, WallStates.solid, WallStates.solid, WallStates.solid, WallStates.solid, WallStates.solid, };
         public string User_ID { get; set; }
 
         public bool isLocked = false;
@@ -42,11 +42,11 @@ namespace xstrat.Ui
         /// 
         /// </summary>
         /// <param name="walls"></param>
-        public WallControl(Wallstates[] walls)
+        public WallControl(WallStates[] walls)
         {
             InitializeComponent();
             Init();
-            states = new Wallstates[] { walls[0], walls[1], walls[2], walls[3], walls[4], walls[5] };
+            states = new WallStates[] { walls[0], walls[1], walls[2], walls[3], walls[4], walls[5] };
             UpdateWidth();
             UpdateColor();
         }
@@ -111,11 +111,11 @@ namespace xstrat.Ui
             var val = states[0];
             if (states.All(x => x == val))
             {
-                if(val >= Wallstates.miraReversed)
+                if(val >= WallStates.miraReversed)
                 {
                     for (int i = 0; i < states.Length; i++)
                     {
-                        states[i] = Wallstates.solid;
+                        states[i] = WallStates.solid;
                     }
                 }
                 else
@@ -130,7 +130,7 @@ namespace xstrat.Ui
             {
                 for (int i = 0; i < states.Length; i++)
                 {
-                    states[i] = Wallstates.solid;
+                    states[i] = WallStates.solid;
                 }
             }
             UpdateUI();
@@ -148,13 +148,13 @@ namespace xstrat.Ui
             int clickedIndex = SP.Children.IndexOf((UIElement)e.OriginalSource);
             if(clickedIndex < states.Length && clickedIndex >= 0)
             {
-                if(states[clickedIndex] > Wallstates.mira && states[clickedIndex] < Wallstates.punch)
+                if(states[clickedIndex] > WallStates.mira && states[clickedIndex] < WallStates.punch)
                 {
                     states[clickedIndex]++;
                 }
                 else
                 {
-                    states[clickedIndex] = Wallstates.head;
+                    states[clickedIndex] = WallStates.head;
                 }
             }
             UpdateUI();
@@ -166,7 +166,7 @@ namespace xstrat.Ui
                 SetState(i, states[i], StateToImage(states[i]));
             }
         }
-        private void SetState(int SPIndex, Wallstates ws, ImageSource source)
+        private void SetState(int SPIndex, WallStates ws, ImageSource source)
         {
             switch (SPIndex)
             {
@@ -198,76 +198,76 @@ namespace xstrat.Ui
                     break;
             }
         }
-        private SolidColorBrush stateToColor(Wallstates ws)
+        private SolidColorBrush stateToColor(WallStates ws)
         {
             switch (ws)
             {
-                case Wallstates.solid: //blue -> default
+                case WallStates.solid: //blue -> default
                     return new SolidColorBrush(Colors.CornflowerBlue);
-                case Wallstates.removed: //transparent
+                case WallStates.removed: //transparent
                     return "#303030".ToSolidColorBrush();
-                case Wallstates.reinforced: //
+                case WallStates.reinforced: //
                     return "#101010".ToSolidColorBrush();
-                case Wallstates.mira: // mira purple
+                case WallStates.mira: // mira purple
                     return new SolidColorBrush(Colors.Purple);
-                case Wallstates.miraReversed: // mira purple
+                case WallStates.miraReversed: // mira purple
                     return new SolidColorBrush(Colors.Purple);
-                case Wallstates.head: // Red
+                case WallStates.head: // Red
                     return new SolidColorBrush(Colors.Red);
-                case Wallstates.body: // Orange-Red
+                case WallStates.body: // Orange-Red
                     return new SolidColorBrush(Colors.OrangeRed);
-                case Wallstates.foot: // Orange
+                case WallStates.foot: // Orange
                     return new SolidColorBrush(Colors.Orange);
-                case Wallstates.punch: // default with icon
+                case WallStates.punch: // default with icon
                     return new SolidColorBrush(Colors.CornflowerBlue);
                 default:
                     return new SolidColorBrush(Colors.AliceBlue);
             }
         }
-        private ImageSource StateToImage(Wallstates ws)
+        private ImageSource StateToImage(WallStates ws)
         {
             switch (ws)
             {
-                case Wallstates.solid:
+                case WallStates.solid:
                     CenterImage.Source = None;
                     CenterImage.Height = 19;
                     CenterImage.Width = 19;
                     CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
                     return None;
-                case Wallstates.removed:
+                case WallStates.removed:
                     //CenterImage.Source = Breach;
                     CenterImage.Source = None;
                     CenterImage.Height = 22;
                     CenterImage.Width = double.NaN;
                     CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.None;
                     return None;
-                case Wallstates.reinforced:
+                case WallStates.reinforced:
                     //CenterImage.Source = Reinforcement;
                     CenterImage.Source = None;
                     CenterImage.Height = 19;
                     CenterImage.Width = this.Width * 0.9;
                     CenterIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Lock;
                     return None;
-                case Wallstates.mira:
+                case WallStates.mira:
                     CenterImage.Source = Mira;
                     CenterImage.Height = 50;
                     CenterImage.Width = 50;
                     return None;
-                case Wallstates.miraReversed:
+                case WallStates.miraReversed:
                     CenterImage.Source = MiraReversed;
                     CenterImage.Height = 50;
                     CenterImage.Width = 50;
                     return None;
-                case Wallstates.head:
+                case WallStates.head:
                     CenterImage.Source = None;
                     return HeadLevel;
-                case Wallstates.body:
+                case WallStates.body:
                     CenterImage.Source = None;
                     return BodyLevel;
-                case Wallstates.foot:
+                case WallStates.foot:
                     CenterImage.Source = None;
                     return FootLevel;
-                case Wallstates.punch:
+                case WallStates.punch:
                     CenterImage.Source = None;
                     return MurderHole;
                 default:

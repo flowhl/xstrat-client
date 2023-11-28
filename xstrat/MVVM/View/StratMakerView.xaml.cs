@@ -1521,6 +1521,15 @@ namespace xstrat.MVVM.View
             content = content.Replace("wallstatus>", "Wallstatus>");
             content = content.Replace("hatchstatus>", "Hatchstatus>");
             content = content.Replace("dragNDropObjs>", "DragNDropObjs>");
+            content = content.Replace("pos>", "Pos>");
+            content = content.Replace("userID>", "UserID>");
+            content = content.Replace("type>", "Type>");
+            content = content.Replace("width>", "Width>");
+            content = content.Replace("height>", "Height>");
+            content = content.Replace("arrowGeometryStart>", "ArrowGeometryStart>");
+            content = content.Replace("arrowGeometryEnd>", "ArrowGeometryEnd>");
+            content = content.Replace("diameter>", "Diameter>");
+            content = content.Replace("image>", "Image>");
 
             return content;
         }

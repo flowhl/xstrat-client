@@ -357,10 +357,10 @@ namespace xstrat.MVVM.View
             Process.Start(path);
         }
 
-        private void ShowTimeLine(string folderName)
+        private void ShowStats(string folderName)
         {
-            Dissect.MatchReplay replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().DissectReplay;
-
+            Dissect.MatchReplay replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.DissectReplay;
+            if (replay == null) return;
             StatsDG.ItemsSource = null;
             StatsDG.ItemsSource = replay.Stats.ToList();
             StatsDG.DataContext = replay.Stats;
@@ -501,7 +501,8 @@ namespace xstrat.MVVM.View
 
         private void ReplayDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
+            ShowStats(item.FolderName);
         }
 
         public void ShowWaitingCursor()
@@ -520,6 +521,11 @@ namespace xstrat.MVVM.View
                 Mouse.OverrideCursor = null;
             });
             System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+        }
+
+        private void ShowStatsBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     public class MatchReplayFolder : INotifyPropertyChanged
@@ -617,6 +623,11 @@ namespace xstrat.MVVM.View
                 {
                     dissectReplay = value;
                     OnPropertyChanged(nameof(DissectReplay));
+                    OnPropertyChanged(nameof(Map));
+                    OnPropertyChanged(nameof(GameMode));
+                    OnPropertyChanged(nameof(Result));
+                    OnPropertyChanged(nameof(TeamA));
+                    OnPropertyChanged(nameof(TeamB));
                 }
             }
         }
@@ -635,6 +646,57 @@ namespace xstrat.MVVM.View
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        
+        //replay summary
+        public string Map
+        {
+            get
+            {
+                if (DissectReplay == null || DissectReplay.Rounds == null || DissectReplay.Rounds.Count < 1) return "";
+                return DissectReplay?.Rounds?.FirstOrDefault()?.Map.Name;
+            }
+        }
+
+        public string GameMode
+        {
+            get
+            {
+                if (DissectReplay == null || DissectReplay.Rounds == null || DissectReplay.Rounds.Count < 1) return "";
+                return DissectReplay?.Rounds?.FirstOrDefault()?.Gamemode.Name;
+            }
+        }
+
+        public string Result
+        {
+            get
+            {
+                if (DissectReplay == null || DissectReplay.Rounds == null || DissectReplay.Rounds.Count < 1) return "";
+                int teamA = DissectReplay?.Rounds?.Last().Teams[0].Score ?? 0;
+                int teamB = DissectReplay?.Rounds?.Last().Teams[1].Score ?? 0;
+                return teamA + ":" + teamB;
+            }
+        }
+        
+        public string TeamA
+        {
+            get
+            {
+                if (DissectReplay == null || DissectReplay.Rounds == null || DissectReplay.Rounds.Count < 1) return "";
+                string teamA = DissectReplay?.Rounds?.FirstOrDefault().Teams[0].Name;
+                return teamA;
+            }
+        }
+
+        public string TeamB
+        {
+            get
+            {
+                if (DissectReplay == null || DissectReplay.Rounds == null || DissectReplay.Rounds.Count < 1) return "";
+                string teamB = DissectReplay?.Rounds?.FirstOrDefault().Teams[1].Name;
+                return teamB;
+            }
+        }
+    
     }
     public class MatchReplayTitle
     {

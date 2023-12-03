@@ -1,51 +1,52 @@
-﻿<xstrat:StateUserControl x:Class="xstrat.MVVM.View.ReplayView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:ui="clr-namespace:xstrat.Ui" xmlns:xstrat="clr-namespace:xstrat" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150" >
+﻿<xstrat:StateUserControl x:Class="xstrat.MVVM.View.ReplayView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:xstrat.MVVM.View" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:ui="clr-namespace:xstrat.Ui" xmlns:xstrat="clr-namespace:xstrat" mc:Ignorable="d" d:DesignHeight="775" d:DesignWidth="1150">
     <UserControl.Resources>
         <xstrat:NotConverter x:Key="notConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </UserControl.Resources>
-    <Grid>        
+    <Grid>
         <StackPanel Orientation="Vertical">
             <Border Background="#202020" CornerRadius="10" Margin="5">
-                <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Backup All" Margin="5" Click="ImportAllBtn_Click">
-                        <materialDesign:PackIcon Height="30" Width="30" Kind="Import" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button>
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="CreateAllJsonBtn" ToolTip="Analyse All" Margin="5" Click="CreateAllJsonBtn_Click">
-                        <materialDesign:PackIcon Height="30" Width="30" Kind="Search" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button>
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="LoadBtn" ToolTip="Reload" Margin="5" Click="LoadBtn_Click">
-                        <materialDesign:PackIcon Height="30" Width="30" Kind="Reload" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button>
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="SaveBtn" ToolTip="Save titles" Margin="5" Click="SaveBtn_Click">
-                        <materialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button>
-                    <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ClearGameBtn" ToolTip="Clear Game Replays" Margin="5" Click="ClearGameBtn_Click">
-                        <materialDesign:PackIcon Height="30" Width="30" Kind="GoogleControllerOff" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button>
-                </StackPanel>
+                <Grid>
 
-            </Border>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Import Selected" Margin="5" Click="ImportAllBtn_Click">
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="Import" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button>
+                        <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="CreateAllJsonBtn" ToolTip="Analyse Selected" Margin="5" Click="CreateAllJsonBtn_Click">
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="Search" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button>
+                        <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ClearGameBtn" ToolTip="Remove from game folder" Margin="5" Click="ClearGameBtn_Click">
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="GoogleControllerOff" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="LoadBtn" ToolTip="Reload" Margin="5" Click="LoadBtn_Click">
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="Reload" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button>
+                        <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="SaveBtn" ToolTip="Save titles" Margin="5" Click="SaveBtn_Click">
+                            <materialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button>                        
+                    </StackPanel>
+                </Grid>
 
-            <Border Background="#202020" CornerRadius="10" Margin="5" Height="35">
-                <Label Name="StatusText" Style="{StaticResource PS}" VerticalAlignment="Center"></Label>
             </Border>
 
             <Border Background="#202020" CornerRadius="10" Margin="5" Height="400">
-                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" SelectionChanged="ReplayDG_SelectionChanged">
                     <DataGrid.Columns>
+                        <!--Checkbox-->
+                        <xstrat:ImprovedCheckBoxColumn Header="Selected" Binding="{Binding Selected}" Width="70"></xstrat:ImprovedCheckBoxColumn>
+
                         <!--Text-->
                         <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Folder Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
+                        <DataGridTextColumn Header="File Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
 
                         <!--Inidcators-->
-                        <xstrat:DataGridIndicatorColumn Header="Backup" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
+                        <xstrat:DataGridIndicatorColumn Header="Imported" BindingPath="IsXStratFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
                         <xstrat:DataGridIndicatorColumn Header="In Gamefolder" BindingPath="IsInGameFolder" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
                         <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="Analyzed" IsReadOnly="True"></xstrat:DataGridIndicatorColumn>
 
                         <!--Buttons-->
-                        <xstrat:DataGridIconColumn Width="60" Kind="Import" ButtonToolTip="Import" Click="ImportColumn_Click" ></xstrat:DataGridIconColumn>
-                        <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Analyze Replay / Show Timeline" Click="AnalyzeButtonColumn_Click" ></xstrat:DataGridIconColumn>
-                        <xstrat:DataGridIconColumn Width="60" Kind="GoogleController" ButtonToolTip="Add/Remove game folder" Click="CopyToGameButtonColumn_Click"></xstrat:DataGridIconColumn>
                         <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click"></xstrat:DataGridIconColumn>
                         <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
                         <xstrat:DataGridIconColumn Width="60" x:Name="ExportExcelButtonColumn" ButtonToolTip="Export for Excel" Kind="FileExportOutline" Click="ExportExcelButtonColumn_Click"></xstrat:DataGridIconColumn>
@@ -53,17 +54,21 @@
                 </DataGrid>
             </Border>
 
+            <Border Background="#202020" CornerRadius="10" Margin="5" Height="35">
+                <Label Name="StatusText" Style="{StaticResource PS}" VerticalAlignment="Center"></Label>
+            </Border>
+
             <Border Background="#202020" CornerRadius="10" Margin="5" Height="230">
-                <DataGrid Name="StatsDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto">
+                <DataGrid Name="StatsDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="200"></DataGridTextColumn>
                         <DataGridTextColumn Header="Rounds Played" Binding="{Binding Rounds}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Kills" Binding="{Binding Kills}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="Assists" Binding="{Binding Assists}" ></DataGridTextColumn>
-                        <DataGridTextColumn Header="KD" Binding="{Binding KDString}" ></DataGridTextColumn>
+                        <DataGridTextColumn Header="Kills" Binding="{Binding Kills}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Assists" Binding="{Binding Assists}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="KD" Binding="{Binding KDString}"></DataGridTextColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>

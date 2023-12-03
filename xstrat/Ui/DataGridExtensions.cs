@@ -58,6 +58,35 @@ namespace xstrat
     }
     #endregion
 
+    public class ImprovedCheckBoxColumn : DataGridCheckBoxColumn
+    {
+        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        {
+            CheckBox checkBox = (CheckBox)base.GenerateElement(cell, dataItem);
+            checkBox.HorizontalAlignment = HorizontalAlignment.Center;
+            checkBox.VerticalAlignment = VerticalAlignment.Center;
+            checkBox.Background = Brushes.White;
+
+            // Attach a click event to the cell
+            cell.AddHandler(UIElement.PreviewMouseLeftButtonDownEvent, new RoutedEventHandler(Cell_Click), true);
+
+            return checkBox;
+        }
+
+        private void Cell_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridCell cell = sender as DataGridCell;
+            if (cell != null && cell.Content is CheckBox checkBox)
+            {
+                checkBox.IsChecked = !checkBox.IsChecked;
+
+                // Update the binding
+                BindingExpression binding = checkBox.GetBindingExpression(CheckBox.IsCheckedProperty);
+                binding?.UpdateSource();
+            }
+        }
+    }
+
     public class DataGridButtonColumn : DataGridBoundColumn
     {
         public event RoutedEventHandler Click;

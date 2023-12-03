@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using xstrat.Core;
 using xstrat.Dissect;
@@ -68,11 +69,22 @@ namespace xstrat.MVVM.View
 
         public void LoadReplays()
         {
-            //Refresh List
+            ShowWaitingCursor();
+            ReplayDG.ItemsSource = null;
+            ReplayDG.DataContext = null;
 
-            GenerateFolderList();
+            //Refresh List
+            Task.Run(() => GenerateFolderList());
 
             //Update UI
+            UpdateUI();
+            ShowNormalCursor();
+        }
+
+        public void UpdateUI()
+        {
+            ReplayDG.ItemsSource = null;
+            ReplayDG.DataContext = null;
             ReplayDG.ItemsSource = ReplayFolders;
             ReplayDG.DataContext = ReplayFolders;
         }
@@ -101,9 +113,16 @@ namespace xstrat.MVVM.View
 
         #region FileHandling
 
-        public void GenerateFolderList()
+        public async Task GenerateFolderList()
         {
-            SetStatus("Loading Folders");
+            ShowWaitingCursor();
+            SetStatus("Loading Replays...");
+
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                Mouse.SetCursor(Cursors.Wait);
+                ReplayDG.IsReadOnly = true;
+            });
             var list = new ObservableCollection<MatchReplayFolder>();
 
             string xstratpath = SettingsHandler.XStratReplayPath;
@@ -171,6 +190,7 @@ namespace xstrat.MVVM.View
 
                 if (needsAdd) list.Add(rep);
                 SetStatus($"Loaded: {greplay}");
+                SetStatus("Loaded Replays");
             }
 
             //Get Titles from XML
@@ -188,23 +208,31 @@ namespace xstrat.MVVM.View
                 }
             }
 
+            list.ToList().ForEach(x => x.Selected = false);
+
             ReplayFolders = list;
-            ReplayDG.ItemsSource = null;
-            ReplayDG.ItemsSource = ReplayFolders;
+
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                ReplayDG.ItemsSource = null;
+                ReplayDG.ItemsSource = ReplayFolders;
+            });
+
+            ShowNormalCursor();
         }
 
         public void ImportAll()
         {
-            LoadReplays();
+            ShowWaitingCursor();
             if (ReplayFolders == null) return;
 
-            var toImport = ReplayFolders.Where(x => !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
+            var toImport = ReplayFolders.Where(x => x.Selected && !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
 
             foreach (var item in toImport)
             {
                 Import(item.FolderName);
             }
-            LoadReplays();
+            ShowNormalCursor();
         }
 
         public void Import(string folderName)
@@ -231,33 +259,9 @@ namespace xstrat.MVVM.View
             if (Directory.Exists(targetDirectory)) return;
 
             Globals.CopyFolder(sourceDirectory, targetDirectory);
+
+            ReplayFolders.FirstOrDefault(x => x.FolderName == folderName).IsXStratFolder = true;
         }
-
-        //public async void CreateJson(string folderName, bool refeshAfter = false)
-        //{
-        //    SetStatus($"Analyzing: {folderName}");
-        //    if (folderName.IsNullOrEmpty()) return;
-
-        //    string exe = Path.Combine(Globals.XStratInstallPath, "External/r6-dissect.exe");
-        //    ProcessStartInfo startInfo = new ProcessStartInfo
-        //    {
-        //        FileName = exe,
-        //        Arguments = $"{folderName} -x {folderName}.json",
-        //        RedirectStandardOutput = true,
-        //        UseShellExecute = false,
-        //        WorkingDirectory = SettingsHandler.XStratReplayPath,
-        //        CreateNoWindow = true
-        //    };
-        //    Process process = new Process();
-        //    process.StartInfo = startInfo;
-        //    process.OutputDataReceived += Process_OutputDataReceived;
-        //    process.Start();
-        //    process.BeginOutputReadLine();
-        //    process.WaitForExit();
-        //    process.OutputDataReceived -= Process_OutputDataReceived;
-        //    SetStatus($"Analyzed Successfully: {folderName}");
-        //    if (refeshAfter) ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault().JsonCreated = true;
-        //}
 
         public void AnalyzeFile(MatchReplayFolder folder)
         {
@@ -280,9 +284,10 @@ namespace xstrat.MVVM.View
 
         private async Task AnalyzeAll()
         {
-            var toAnalyze = ReplayFolders.Where(x => x.IsXStratFolder && x.DissectReplay == null).AsEnumerable();
-            SetStatus("Analyzing all replays");
-            ApiHandler.Waiting();
+            SetStatus("Analyzing selected replays");
+            ImportAll();
+            ShowWaitingCursor();
+            var toAnalyze = ReplayFolders.Where(x => x.Selected && x.IsXStratFolder && x.DissectReplay == null).AsEnumerable();
             var tasks = new List<Task>();
             foreach (var item in toAnalyze)
             {
@@ -290,12 +295,9 @@ namespace xstrat.MVVM.View
             }
             await tasks.WhenAll();
             SetStatus("Done");
-            ApiHandler.EndWaiting();
-            SaveTitleDict();
-            ReplayDG.ItemsSource = null;
-            ReplayDG.DataContext = null;
-            ReplayDG.ItemsSource = ReplayFolders;
-            ReplayDG.DataContext = ReplayFolders;
+            SaveTitleDict(true);
+            ShowNormalCursor();
+            UpdateUI();
         }
 
         private void Delete(string folderName)
@@ -308,7 +310,9 @@ namespace xstrat.MVVM.View
             if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
             if (File.Exists(jsonFile)) File.Delete(jsonFile);
-            LoadReplays();
+            ReplayFolders.Remove(ReplayFolders.FirstOrDefault(x => x.FolderName == folderName));
+            SetStatus($"Deleted: {folderName}");
+            UpdateUI();
         }
 
         private void CopyToGameFolder(string folderName)
@@ -364,7 +368,7 @@ namespace xstrat.MVVM.View
 
         private void ClearGameBtn_Click(object sender, RoutedEventArgs e)
         {
-            var replaysToDelete = ReplayFolders.Where(x => x.IsInGameFolder);
+            var replaysToDelete = ReplayFolders.Where(x => x.IsInGameFolder && x.Selected);
             foreach (var replay in replaysToDelete)
             {
                 RemoveFromGameFolder(replay.FolderName);
@@ -405,7 +409,7 @@ namespace xstrat.MVVM.View
             }
         }
 
-        public void SaveTitleDict()
+        public void SaveTitleDict(bool silent = false)
         {
             List<MatchReplayTitle> dict = new List<MatchReplayTitle>();
 
@@ -419,7 +423,8 @@ namespace xstrat.MVVM.View
             dict.ForEach(x => x.SerializeToJson());
 
             SerializeTitleDict(dict.ToArray());
-            Notify.sendSuccess("Saved sucessfully");
+            if (!silent)
+                Notify.sendSuccess("Saved sucessfully");
         }
 
         public void SerializeTitleDict(MatchReplayTitle[] dict)
@@ -455,55 +460,15 @@ namespace xstrat.MVVM.View
             await AnalyzeAll();
         }
 
-        private async void AnalyzeButtonColumn_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
-            if (item == null) return;
-
-            if (item.DissectReplay == null)
-            {
-                AnalyzeFile(item);
-                SaveTitleDict();
-                ReplayDG.ItemsSource = null;
-                ReplayDG.DataContext = null;
-                ReplayDG.ItemsSource = ReplayFolders;
-                ReplayDG.DataContext = ReplayFolders;
-            }
-            else
-            {
-                ShowTimeLine(item.FolderName);
-            }
-        }
-
         private void DeleteButtonColumn_Click(object sender, RoutedEventArgs e)
         {
             Delete((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
-        }
-
-        private void CopyToGameButtonColumn_Click(object sender, RoutedEventArgs e)
-        {
-            string folderName = (ReplayDG.SelectedItem as MatchReplayFolder).FolderName;
-            if (folderName.IsNullOrEmpty()) return;
-
-            if (ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.IsInGameFolder ?? false)
-            {
-                RemoveFromGameFolder(folderName);
-            }
-            else
-            {
-                CopyToGameFolder(folderName);
-            }
         }
 
         private void ShowInExplorerColumn_Click(object sender, RoutedEventArgs e)
         {
 
             ShowInExplorer((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
-        }
-
-        private void ImportColumn_Click(object sender, RoutedEventArgs e)
-        {
-            Import((ReplayDG.SelectedItem as MatchReplayFolder).FolderName);
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -529,13 +494,50 @@ namespace xstrat.MVVM.View
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filePath = saveFileDialog.FileName;
-                DissectHelper.ExportReplay(Path.Combine(SettingsHandler.XStratReplayPath, item.FolderName), filePath);    
+                DissectHelper.ExportReplay(Path.Combine(SettingsHandler.XStratReplayPath, item.FolderName), filePath);
             }
         }
         #endregion
+
+        private void ReplayDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        public void ShowWaitingCursor()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+            });
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+        }
+
+        public void ShowNormalCursor()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                Mouse.OverrideCursor = null;
+            });
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+        }
     }
     public class MatchReplayFolder : INotifyPropertyChanged
     {
+        private bool selected;
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                if (selected != value)
+                {
+                    selected = value;
+                    OnPropertyChanged(nameof(Selected));
+                }
+            }
+        }
+
         private string folderName;
         public string FolderName
         {
@@ -654,7 +656,7 @@ namespace xstrat.MVVM.View
         }
         public void DeserializeJson()
         {
-            if(DissectJson == null) { return; }
+            if (DissectJson == null) { return; }
             DissectReplay = Newtonsoft.Json.JsonConvert.DeserializeObject<MatchReplay>(DissectJson);
         }
     }

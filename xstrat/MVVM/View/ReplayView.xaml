@@ -7,7 +7,6 @@
         <StackPanel Orientation="Vertical">
             <Border Background="#202020" CornerRadius="10" Margin="5">
                 <Grid>
-
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="ImportAllBtn" ToolTip="Import Selected" Margin="5" Click="ImportAllBtn_Click">
                             <materialDesign:PackIcon Height="30" Width="30" Kind="Import" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -25,40 +24,41 @@
                         </Button>
                         <Button Style="{StaticResource Secondary}" Height="30" Width="30" Name="SaveBtn" ToolTip="Save titles" Margin="5" Click="SaveBtn_Click">
                             <materialDesign:PackIcon Height="30" Width="30" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </Button>                        
+                        </Button>
                     </StackPanel>
                 </Grid>
-
             </Border>
 
-            <Border Background="#202020" CornerRadius="10" Margin="5" Height="400">
-                <DataGrid Name="ReplayDG" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" SelectionChanged="ReplayDG_SelectionChanged">
-                    <DataGrid.Columns>
-                        <!--Checkbox-->
-                        <xstrat:ImprovedCheckBoxColumn Header="Selected" Binding="{Binding Selected}" Width="70"></xstrat:ImprovedCheckBoxColumn>
-                        <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Show Stats" x:Name="ShowStatsBtn" Click="ShowStatsBtn_Click"></xstrat:DataGridIconColumn>
+            <Border Background="#202020" CornerRadius="10" Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <DataGrid Name="ReplayDG" IsReadOnly="False" Height="400" AutoGenerateColumns="False" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <!--Checkbox-->
+                            <xstrat:ImprovedCheckBoxColumn Header="Selected" Binding="{Binding Selected}" Width="70"></xstrat:ImprovedCheckBoxColumn>
+                            <xstrat:DataGridIconColumn Width="60" Kind="Search" ButtonToolTip="Show Stats" x:Name="ShowStatsBtn" Click="ShowStatsBtn_Click"></xstrat:DataGridIconColumn>
 
-                        <!--Text-->
-                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
-                        <DataGridTextColumn Header="File Name" Binding="{Binding FolderName}" IsReadOnly="True"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Map" Binding="{Binding Map}" IsReadOnly="True"></DataGridTextColumn>
-                        <DataGridTextColumn Header="TeamA" Binding="{Binding TeamA}" IsReadOnly="True"></DataGridTextColumn>
-                        <DataGridTextColumn Header="TeamB" Binding="{Binding TeamB}" IsReadOnly="True"></DataGridTextColumn>
-                        <DataGridTextColumn Header="GameMode" Binding="{Binding GameMode}" IsReadOnly="True"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Result" Binding="{Binding Result}" IsReadOnly="True"></DataGridTextColumn>
-                        
+                            <!--Text-->
+                            <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Map" Binding="{Binding Map}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="TeamA" Binding="{Binding TeamA}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="TeamB" Binding="{Binding TeamB}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="GameMode" Binding="{Binding GameMode}" IsReadOnly="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Result" Binding="{Binding Result}" IsReadOnly="True"></DataGridTextColumn>
 
-                        <!--Inidcators-->
-                        <xstrat:DataGridIndicatorColumn Header="Imported" BindingPath="IsXStratFolder" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
-                        <xstrat:DataGridIndicatorColumn Header="In Gamefolder" BindingPath="IsInGameFolder" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
-                        <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="Analyzed" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
 
-                        <!--Buttons-->
-                        <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click"></xstrat:DataGridIconColumn>
-                        <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
-                        <xstrat:DataGridIconColumn Width="60" x:Name="ExportExcelButtonColumn" ButtonToolTip="Export for Excel" Kind="FileExportOutline" Click="ExportExcelButtonColumn_Click"></xstrat:DataGridIconColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                            <!--Inidcators-->
+                            <xstrat:DataGridIndicatorColumn Header="Imported" BindingPath="IsXStratFolder" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
+                            <xstrat:DataGridIndicatorColumn Header="In Gamefolder" BindingPath="IsInGameFolder" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
+                            <xstrat:DataGridIndicatorColumn Header="Analyzed" BindingPath="Analyzed" IsReadOnly="True" Width="40"></xstrat:DataGridIndicatorColumn>
+
+                            <!--Buttons-->
+                            <xstrat:DataGridIconColumn Width="60" Kind="Folder" ButtonToolTip="Show in explorer" Click="ShowInExplorerColumn_Click"></xstrat:DataGridIconColumn>
+                            <xstrat:DataGridIconColumn Width="60" x:Name="DeleteButtonColumn" ButtonToolTip="Delete" Kind="Delete" Click="DeleteButtonColumn_Click"></xstrat:DataGridIconColumn>
+                            <xstrat:DataGridIconColumn Width="60" x:Name="ExportExcelButtonColumn" ButtonToolTip="Export for Excel" Kind="FileExportOutline" Click="ExportExcelButtonColumn_Click"></xstrat:DataGridIconColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="BtnSelectAll" VerticalAlignment="Center" Margin="5,0,5,5" Content="Select All" HorizontalAlignment="Left" Click="BtnSelectAll_Click" Style="{StaticResource DataGridSmall}"></Button>
+                </StackPanel>
             </Border>
 
             <Border Background="#202020" CornerRadius="10" Margin="5" Height="35">
@@ -72,11 +72,13 @@
                         <DataGridTextColumn Header="Rounds Played" Binding="{Binding Rounds}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Kills" Binding="{Binding Kills}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Headshots" Binding="{Binding Headshots}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Headshots" Binding="{Binding HeadshotPercentageString}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Headshot %" Binding="{Binding HeadshotPercentageString}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Assists" Binding="{Binding Assists}"></DataGridTextColumn>
                         <DataGridTextColumn Header="KD" Binding="{Binding KDString}"></DataGridTextColumn>
-
+                        <DataGridTextColumn Header="Entry Kills" Binding="{Binding EntryKills}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="KOST" Binding="{Binding KOSTPercentageString}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="KPR" Binding="{Binding KPRString}"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

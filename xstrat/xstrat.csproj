@@ -302,9 +302,18 @@
     <Compile Include="Models\Supabase\position.cs" />
     <Compile Include="Models\Supabase\queue.cs" />
     <Compile Include="Models\Supabase\routine.cs" />
+    <Compile Include="Models\Supabase\StatsActivity.cs" />
+    <Compile Include="Models\Supabase\StatsBan.cs" />
+    <Compile Include="Models\Supabase\StatsHelper.cs" />
+    <Compile Include="Models\Supabase\StatsMatch.cs" />
+    <Compile Include="Models\Supabase\StatsPlayer.cs" />
+    <Compile Include="Models\Supabase\StatsRound.cs" />
+    <Compile Include="Models\Supabase\StatsStatistic.cs" />
+    <Compile Include="Models\Supabase\StatsTeam.cs" />
     <Compile Include="Models\Supabase\strat.cs" />
     <Compile Include="Models\Supabase\team.cs" />
     <Compile Include="Models\Supabase\user_data.cs" />
+    <Compile Include="MVVM\ViewModel\AnalystViewModel.cs" />
     <Compile Include="MVVM\Extensions\UserControlExtension.cs" />
     <Compile Include="MVVM\ViewModel\CalendarViewModel.cs" />
     <Compile Include="MVVM\ViewModel\LicenseViewModel.cs" />
@@ -318,6 +327,9 @@
     <Compile Include="MVVM\ViewModel\StratMakerViewModel.cs" />
     <Compile Include="MVVM\ViewModel\TeamViewModel.cs" />
     <Compile Include="MVVM\ViewModel\WallEditorViewModel.cs" />
+    <Compile Include="MVVM\View\AnalystView.xaml.cs">
+      <DependentUpon>AnalystView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
@@ -509,6 +521,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MVVM\View\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\AnalystView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

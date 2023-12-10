@@ -119,6 +119,7 @@
                     <RadioButton x:Name="BtnCalendar" Content="Calendar" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding CalendarViewCommand}" />
                     <RadioButton x:Name="BtnStratmaker" Content="Strat Maker" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StratMakerViewCommand}" />
                     <RadioButton x:Name="BtnStats" Content="Statistics" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding StatsViewCommand}" />
+                    <RadioButton x:Name="BtnAnalyst" Content="Analyst" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding AnalystViewCommand}" />
                     <RadioButton x:Name="BtnRoutines" Content="Training Routines" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding RoutinesViewCommand}" />
                     <RadioButton x:Name="BtnSkinSwitcher" Content="Skin Switcher" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding SkinSwitcherViewCommand}" />
                     <RadioButton x:Name="BtnReplays" Content="Replays" Height="50" Foreground="White" FontSize="14" Style="{StaticResource MenuButtonTheme}" Command="{Binding ReplayViewCommand}" />

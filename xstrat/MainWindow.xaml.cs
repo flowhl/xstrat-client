@@ -307,6 +307,7 @@ namespace xstrat
             BtnEventPlanner.Visibility = vis;
             BtnCalendar.Visibility = vis;
             BtnStratmaker.Visibility = vis;
+            BtnAnalyst.Visibility = vis;
         }
 
     }

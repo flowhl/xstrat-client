@@ -38,6 +38,10 @@ namespace xstrat.Core
                 process.WaitForExit();
 
                 MatchReplay matchReplay = JsonConvert.DeserializeObject<MatchReplay>(output);
+                matchReplay.Rounds.ForEach(x => x.Root = matchReplay);
+                matchReplay.Stats.ForEach(x => x.Root = matchReplay);
+                matchReplay.Rounds.ForEach(x => x.Stats.ForEach(y => y.Root = matchReplay));
+                matchReplay.Rounds.ForEach(x => x.Stats.ForEach(y => y.Round = x));
                 return matchReplay;
             }
             catch (Exception ex)

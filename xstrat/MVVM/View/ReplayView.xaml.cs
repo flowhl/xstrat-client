@@ -36,10 +36,6 @@ namespace xstrat.MVVM.View
     /// </summary>
     public partial class ReplayView : StateUserControl
     {
-
-        public ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
-
-
         public ReplayView()
         {
             InitializeComponent();
@@ -58,7 +54,7 @@ namespace xstrat.MVVM.View
             {
                 if (e.Key == Key.S)
                 {
-                    SaveTitleDict();
+                    DataCache.SaveTitleDict();
                 }
                 if (e.Key == Key.R)
                 {
@@ -85,8 +81,8 @@ namespace xstrat.MVVM.View
         {
             ReplayDG.ItemsSource = null;
             ReplayDG.DataContext = null;
-            ReplayDG.ItemsSource = ReplayFolders;
-            ReplayDG.DataContext = ReplayFolders;
+            ReplayDG.ItemsSource = DataCache.ReplayFolders;
+            ReplayDG.DataContext = DataCache.ReplayFolders;
         }
 
         private System.Timers.Timer statusTimer;
@@ -123,99 +119,13 @@ namespace xstrat.MVVM.View
                 Mouse.SetCursor(Cursors.Wait);
                 ReplayDG.IsReadOnly = true;
             });
-            var list = new ObservableCollection<MatchReplayFolder>();
 
-            string xstratpath = SettingsHandler.XStratReplayPath;
-            string gamepath = SettingsHandler.Settings.GameReplayPath;
-
-            if (gamepath.IsNullOrEmpty() || !Directory.Exists(gamepath))
-            {
-                Notify.sendWarn("Please set Game Replay Path in Settings");
-                return;
-            }
-            if (xstratpath.IsNullOrEmpty())
-            {
-                Notify.sendWarn("Could not find XStrat Replay Folder: " + xstratpath);
-                return;
-            }
-            Directory.CreateDirectory(xstratpath);
-
-            //Get Saved Replays
-
-            var xstratreplays = Directory.GetDirectories(xstratpath, "*", SearchOption.AllDirectories);
-            foreach (var xreplay in xstratreplays)
-            {
-                //has rounds in it
-                if (!hasRounds(xreplay)) continue;
-
-                var rep = new MatchReplayFolder();
-
-                string foldername = Path.GetFileName(xreplay);
-
-                rep.FolderName = foldername;
-                rep.IsXStratFolder = true;
-
-                //rep.Di = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
-
-                list.Add(rep);
-                SetStatus($"Loaded: {xreplay}");
-            }
-
-            //Get Game Folder Replays
-            var gamereplays = Directory.GetDirectories(gamepath, "*", SearchOption.AllDirectories);
-            foreach (var greplay in gamereplays)
-            {
-                //has rounds in it
-                if (!hasRounds(greplay)) continue;
-
-                string foldername = Path.GetFileName(greplay);
-
-                MatchReplayFolder rep;
-
-                rep = list.Where(x => x.FolderName == foldername).FirstOrDefault();
-
-                bool needsAdd = false;
-
-                if (rep == null)
-                {
-                    rep = new MatchReplayFolder();
-
-                    rep.FolderName = foldername;
-                    needsAdd = true;
-                }
-
-                rep.IsInGameFolder = true;
-
-                //rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
-
-                if (needsAdd) list.Add(rep);
-                SetStatus($"Loaded: {greplay}");
-                SetStatus("Loaded Replays");
-            }
-
-            //Get Titles from XML
-            var titles = GetTitleDict();
-            if (titles != null)
-            {
-                foreach (var title in titles)
-                {
-                    var listItems = list.Where(x => x.FileHash == title.FileHash);
-                    foreach (var item in listItems)
-                    {
-                        item.Title = title.Title;
-                        item.DissectReplay = title.DissectReplay;
-                    }
-                }
-            }
-
-            list.ToList().ForEach(x => x.Selected = false);
-
-            ReplayFolders = list;
+            DataCache.RetrieveReplayFolders();
 
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 ReplayDG.ItemsSource = null;
-                ReplayDG.ItemsSource = ReplayFolders;
+                ReplayDG.ItemsSource = DataCache.ReplayFolders;
             });
 
             ShowNormalCursor();
@@ -224,9 +134,9 @@ namespace xstrat.MVVM.View
         public void ImportAll()
         {
             ShowWaitingCursor();
-            if (ReplayFolders == null) return;
+            if (DataCache.ReplayFolders == null) return;
 
-            var toImport = ReplayFolders.Where(x => x.Selected && !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
+            var toImport = DataCache.ReplayFolders.Where(x => x.Selected && !x.IsXStratFolder && x.IsInGameFolder).AsEnumerable();
 
             foreach (var item in toImport)
             {
@@ -260,7 +170,7 @@ namespace xstrat.MVVM.View
 
             Globals.CopyFolder(sourceDirectory, targetDirectory);
 
-            ReplayFolders.FirstOrDefault(x => x.FolderName == folderName).IsXStratFolder = true;
+            DataCache.ReplayFolders.FirstOrDefault(x => x.FolderName == folderName).IsXStratFolder = true;
         }
 
         public void AnalyzeFile(MatchReplayFolder folder)
@@ -287,7 +197,7 @@ namespace xstrat.MVVM.View
             SetStatus("Analyzing selected replays");
             ImportAll();
             ShowWaitingCursor();
-            var toAnalyze = ReplayFolders.Where(x => x.Selected && x.IsXStratFolder && x.DissectReplay == null).AsEnumerable();
+            var toAnalyze = DataCache.ReplayFolders.Where(x => x.Selected && x.IsXStratFolder && x.DissectReplay == null).AsEnumerable();
             var tasks = new List<Task>();
             foreach (var item in toAnalyze)
             {
@@ -295,7 +205,7 @@ namespace xstrat.MVVM.View
             }
             await tasks.WhenAll();
             SetStatus("Done");
-            SaveTitleDict(true);
+            DataCache.SaveTitleDict(true);
             ShowNormalCursor();
             UpdateUI();
         }
@@ -310,7 +220,7 @@ namespace xstrat.MVVM.View
             if (Directory.Exists(dirXStrat)) Directory.Delete(dirXStrat, true);
             if (Directory.Exists(dirGame)) Directory.Delete(dirGame, true);
             if (File.Exists(jsonFile)) File.Delete(jsonFile);
-            ReplayFolders.Remove(ReplayFolders.FirstOrDefault(x => x.FolderName == folderName));
+            DataCache.ReplayFolders.Remove(DataCache.ReplayFolders.FirstOrDefault(x => x.FolderName == folderName));
             SetStatus($"Deleted: {folderName}");
             UpdateUI();
         }
@@ -322,7 +232,7 @@ namespace xstrat.MVVM.View
             string dirXStrat = Path.Combine(SettingsHandler.XStratReplayPath, folderName);
             string dirGame = Path.Combine(SettingsHandler.Settings.GameReplayPath, folderName);
 
-            if (ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
+            if (DataCache.ReplayFolders.Where(x => x.IsInGameFolder).Count() >= 12)
             {
                 MessageBox.Show("Cannot have more than 12 replays in folder as they wont be loaded in the game");
                 return;
@@ -350,7 +260,7 @@ namespace xstrat.MVVM.View
         private void ShowInExplorer(string folderName)
         {
             if (folderName.IsNullOrEmpty()) return;
-            var replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault();
+            var replay = DataCache.ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault();
             if (replay == null || !replay.IsXStratFolder) return;
             string xstratpath = SettingsHandler.XStratReplayPath;
             string path = Path.Combine(xstratpath, folderName);
@@ -359,7 +269,7 @@ namespace xstrat.MVVM.View
 
         private void ShowStats(string folderName)
         {
-            Dissect.MatchReplay replay = ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.DissectReplay;
+            Dissect.MatchReplay replay = DataCache.ReplayFolders.Where(x => x.FolderName == folderName).FirstOrDefault()?.DissectReplay;
             if (replay == null) return;
             StatsDG.ItemsSource = null;
             StatsDG.ItemsSource = replay.Stats.ToList();
@@ -368,78 +278,13 @@ namespace xstrat.MVVM.View
 
         private void ClearGameBtn_Click(object sender, RoutedEventArgs e)
         {
-            var replaysToDelete = ReplayFolders.Where(x => x.IsInGameFolder && x.Selected);
+            var replaysToDelete = DataCache.ReplayFolders.Where(x => x.IsInGameFolder && x.Selected);
             foreach (var replay in replaysToDelete)
             {
                 RemoveFromGameFolder(replay.FolderName);
             }
         }
 
-
-        #endregion
-
-        #region FileHelpers
-
-        public bool hasRounds(string path)
-        {
-            if (!Directory.Exists(path)) return false;
-            var files = Directory.GetFiles(path, "*.rec", SearchOption.AllDirectories);
-
-            return files.Length > 0;
-        }
-
-        public List<MatchReplayTitle> GetTitleDict()
-        {
-            string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
-
-            if (xmlFile.IsNullOrEmpty() || !File.Exists(xmlFile))
-            {
-                Logger.Log("Could not find existing replay file in: " + xmlFile);
-                return null;
-            }
-
-            string xmlContent = File.ReadAllText(xmlFile);
-
-            XmlSerializer deserializer = new XmlSerializer(typeof(MatchReplayTitle[]));
-            using (StringReader stringReader = new StringReader(xmlContent))
-            {
-                var res = ((MatchReplayTitle[])deserializer.Deserialize(stringReader)).ToList();
-                res.ForEach(x => x.DeserializeJson());
-                return res;
-            }
-        }
-
-        public void SaveTitleDict(bool silent = false)
-        {
-            List<MatchReplayTitle> dict = new List<MatchReplayTitle>();
-
-            if (ReplayFolders == null || ReplayFolders.Count == 0) return;
-
-            foreach (var folder in ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty() || x.DissectReplay != null))
-            {
-                dict.Add(new MatchReplayTitle { FileHash = folder.FileHash, Title = folder.Title, DissectReplay = folder.DissectReplay });
-            }
-
-            dict.ForEach(x => x.SerializeToJson());
-
-            SerializeTitleDict(dict.ToArray());
-            if (!silent)
-                Notify.sendSuccess("Saved sucessfully");
-        }
-
-        public void SerializeTitleDict(MatchReplayTitle[] dict)
-        {
-            string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
-
-            if (xmlFile.IsNullOrEmpty())
-            {
-                Logger.Log("XML Path is empty - could not save dictionary: " + xmlFile);
-                return;
-            }
-            string xml = dict.SerializeToString();
-
-            File.WriteAllText(xmlFile, xml);
-        }
 
         #endregion
 
@@ -473,7 +318,7 @@ namespace xstrat.MVVM.View
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            SaveTitleDict();
+            DataCache.SaveTitleDict();
         }
 
         private void ExportExcelButtonColumn_Click(object sender, RoutedEventArgs e)
@@ -499,12 +344,6 @@ namespace xstrat.MVVM.View
         }
         #endregion
 
-        private void ReplayDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
-            ShowStats(item.FolderName);
-        }
-
         public void ShowWaitingCursor()
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -525,7 +364,14 @@ namespace xstrat.MVVM.View
 
         private void ShowStatsBtn_Click(object sender, RoutedEventArgs e)
         {
+            var item = (ReplayDG.SelectedItem as MatchReplayFolder);
+            if (item == null) return;
+            ShowStats(item.FolderName);
+        }
 
+        private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            DataCache.ReplayFolders.ToList().ForEach(x => x.Selected = true);
         }
     }
     public class MatchReplayFolder : INotifyPropertyChanged
@@ -574,9 +420,22 @@ namespace xstrat.MVVM.View
         private string title;
         public string Title
         {
-            get { return title; }
+            get
+            {
+                if (title.IsNullOrEmpty())
+                {
+                    return folderName;
+                }
+                return title;
+            }
             set
             {
+                if (value.IsNullOrEmpty())
+                {
+                    title = FolderName;
+                    OnPropertyChanged(nameof(Title));
+                    return;
+                }
                 if (title != value)
                 {
                     title = value;
@@ -646,7 +505,7 @@ namespace xstrat.MVVM.View
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         //replay summary
         public string Map
         {
@@ -676,7 +535,7 @@ namespace xstrat.MVVM.View
                 return teamA + ":" + teamB;
             }
         }
-        
+
         public string TeamA
         {
             get
@@ -696,7 +555,7 @@ namespace xstrat.MVVM.View
                 return teamB;
             }
         }
-    
+
     }
     public class MatchReplayTitle
     {
@@ -720,6 +579,11 @@ namespace xstrat.MVVM.View
         {
             if (DissectJson == null) { return; }
             DissectReplay = Newtonsoft.Json.JsonConvert.DeserializeObject<MatchReplay>(DissectJson);
+
+            DissectReplay.Rounds.ForEach(x => x.Root = DissectReplay);
+            DissectReplay.Stats.ForEach(x => x.Root = DissectReplay);
+            DissectReplay.Rounds.ForEach(x => x.Stats.ForEach(y => y.Root = DissectReplay));
+            DissectReplay.Rounds.ForEach(x => x.Stats.ForEach(y => y.Round = x));
         }
     }
 }

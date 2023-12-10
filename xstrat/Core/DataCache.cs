@@ -1,10 +1,15 @@
 ﻿using LiveChartsCore.Geo;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Xml.Serialization;
 using xstrat.Models.Supabase;
+using xstrat.MVVM.View;
 
 namespace xstrat.Core
 {
@@ -28,10 +33,11 @@ namespace xstrat.Core
                 RetrieveCalendarEvents();
                 RetrieveCalendarBlocks();
                 RetrieveCalendarEventResponses();
+                RetrieveReplayFolders();
             }
             catch (Exception ex)
             {
-
+                Notify.sendError("Error when retrieving datacaches: " + ex.Message);
             }
         }
 
@@ -330,6 +336,172 @@ namespace xstrat.Core
         }
         #endregion
 
+        #region Replays
+
+        public static ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
+
+        public static async Task RetrieveReplaysAsync()
+        {
+            await Task.Run(() => RetrieveReplayFolders());
+        }
+
+        public static void RetrieveReplayFolders()
+        {
+            var list = new ObservableCollection<MatchReplayFolder>();
+
+            string xstratpath = SettingsHandler.XStratReplayPath;
+            string gamepath = SettingsHandler.Settings.GameReplayPath;
+
+            if (gamepath.IsNullOrEmpty() || !Directory.Exists(gamepath))
+            {
+                Notify.sendWarn("Please set Game Replay Path in Settings");
+                return;
+            }
+            if (xstratpath.IsNullOrEmpty())
+            {
+                Notify.sendWarn("Could not find XStrat Replay Folder: " + xstratpath);
+                return;
+            }
+            Directory.CreateDirectory(xstratpath);
+
+            //Get Saved Replays
+
+            var xstratreplays = Directory.GetDirectories(xstratpath, "*", SearchOption.AllDirectories);
+            foreach (var xreplay in xstratreplays)
+            {
+                //has rounds in it
+                if (!hasRounds(xreplay)) continue;
+
+                var rep = new MatchReplayFolder();
+
+                string foldername = Path.GetFileName(xreplay);
+
+                rep.FolderName = foldername;
+                rep.IsXStratFolder = true;
+
+                //rep.Di = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
+
+                list.Add(rep);
+                //SetStatus($"Loaded: {xreplay}");
+            }
+
+            //Get Game Folder Replays
+            var gamereplays = Directory.GetDirectories(gamepath, "*", SearchOption.AllDirectories);
+            foreach (var greplay in gamereplays)
+            {
+                //has rounds in it
+                if (!hasRounds(greplay)) continue;
+
+                string foldername = Path.GetFileName(greplay);
+                MatchReplayFolder rep;
+
+                rep = list.Where(x => x.FolderName == foldername).FirstOrDefault();
+
+                bool needsAdd = false;
+
+                if (rep == null)
+                {
+                    rep = new MatchReplayFolder();
+
+                    rep.FolderName = foldername;
+                    needsAdd = true;
+                }
+
+                rep.IsInGameFolder = true;
+
+                //rep.JsonCreated = File.Exists(Path.Combine(xstratpath, foldername + ".json"));
+
+                if (needsAdd) list.Add(rep);
+                //SetStatus($"Loaded: {greplay}");
+                //SetStatus("Loaded Replays");
+            }
+
+            //Get Titles from XML
+            var titles = GetTitleDict();
+            if (titles != null)
+            {
+                foreach (var title in titles)
+                {
+                    var listItems = list.Where(x => x.FileHash == title.FileHash);
+                    foreach (var item in listItems)
+                    {
+                        item.Title = title.Title;
+                        item.DissectReplay = title.DissectReplay;
+                    }
+                }
+            }
+
+            list.ToList().ForEach(x => x.Selected = false);
+
+            DataCache.ReplayFolders = list;
+        }
+
+        #region FileHelpers
+
+        public static bool hasRounds(string path)
+        {
+            if (!Directory.Exists(path)) return false;
+            var files = Directory.GetFiles(path, "*.rec", SearchOption.AllDirectories);
+
+            return files.Length > 0;
+        }
+
+        public static List<MatchReplayTitle> GetTitleDict()
+        {
+            string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
+
+            if (xmlFile.IsNullOrEmpty() || !File.Exists(xmlFile))
+            {
+                Logger.Log("Could not find existing replay file in: " + xmlFile);
+                return null;
+            }
+
+            string xmlContent = File.ReadAllText(xmlFile);
+
+            XmlSerializer deserializer = new XmlSerializer(typeof(MatchReplayTitle[]));
+            using (StringReader stringReader = new StringReader(xmlContent))
+            {
+                var res = ((MatchReplayTitle[])deserializer.Deserialize(stringReader)).ToList();
+                res.ForEach(x => x.DeserializeJson());
+                return res;
+            }
+        }
+
+        public static void SaveTitleDict(bool silent = false)
+        {
+            List<MatchReplayTitle> dict = new List<MatchReplayTitle>();
+
+            if (DataCache.ReplayFolders == null || DataCache.ReplayFolders.Count == 0) return;
+
+            foreach (var folder in DataCache.ReplayFolders.Where(x => x.Title.IsNotNullOrEmpty() || x.DissectReplay != null))
+            {
+                dict.Add(new MatchReplayTitle { FileHash = folder.FileHash, Title = folder.Title, DissectReplay = folder.DissectReplay });
+            }
+
+            dict.ForEach(x => x.SerializeToJson());
+
+            SerializeTitleDict(dict.ToArray());
+            if (!silent)
+                Notify.sendSuccess("Saved sucessfully");
+        }
+
+        public static void SerializeTitleDict(MatchReplayTitle[] dict)
+        {
+            string xmlFile = Path.Combine(SettingsHandler.XStratReplayPath, "ReplayTitles.xml");
+
+            if (xmlFile.IsNullOrEmpty())
+            {
+                Logger.Log("XML Path is empty - could not save dictionary: " + xmlFile);
+                return;
+            }
+            string xml = dict.SerializeToString();
+
+            File.WriteAllText(xmlFile, xml);
+        }
+
+        #endregion
+
+        #endregion
 
         #region CalendarEventResponses
         public static List<CalendarEventResponse> _currentCalendarEventResponses;

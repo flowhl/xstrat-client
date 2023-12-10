@@ -30,6 +30,7 @@ namespace xstrat.MVVM.ViewModel
         public RelayCommand ReplayViewCommand { get; set; }
         public RelayCommand OffdayViewCommand { get; set; }
         public RelayCommand PasswordResetViewCommand { get; set; }
+        public RelayCommand AnalystViewCommand { get; set; }
 
 
         public HomeViewModel HomeVM { get; set; }
@@ -50,6 +51,7 @@ namespace xstrat.MVVM.ViewModel
         public ReplayViewModel ReplayVM { get; set; }
         public OffdayViewModel OffdayVM { get; set; }
         public PasswordResetViewModel PasswordResetVM { get; set; }
+        public AnalystViewModel AnalystVM { get; set; }
 
         public object _currentView;
 
@@ -82,6 +84,7 @@ namespace xstrat.MVVM.ViewModel
             ReplayVM = new ReplayViewModel();
             OffdayVM = new OffdayViewModel();
             PasswordResetVM = new PasswordResetViewModel();
+            AnalystVM = new AnalystViewModel();
 
             CurrentView = HomeVM;
 
@@ -103,6 +106,7 @@ namespace xstrat.MVVM.ViewModel
             ReplayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = ReplayVM; });
             OffdayViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = OffdayVM; });
             PasswordResetViewCommand = new RelayCommand(o => { CurrentView = PasswordResetVM; });
+            AnalystViewCommand = new RelayCommand(o => { if (wnd.IsLoaded && wnd.IsLoggedIn && wnd.FinishedLoading && IsAllowedToExit()) CurrentView = AnalystVM; });
         }
 
         public bool IsAllowedToExit()

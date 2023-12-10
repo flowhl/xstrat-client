@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ using System.Windows.Shapes;
 using xstrat.Core;
 using xstrat.Json;
 using xstrat.Models.Supabase;
+using xstrat.MVVM.View;
 
 namespace xstrat.Ui
 {
@@ -39,6 +41,7 @@ namespace xstrat.Ui
         public ScrimMode selectedScrimMode { get; set; } = null;
         public EventType selectedEventType { get; set; } = null;
         public Models.Supabase.Operator selectedOperator { get; set; } = null;
+        public MatchReplayFolder selectedReplayFolder { get; set; } = null;
 
         public DataSelectorTypes Type { get; set; } = 0;
         public int indexToSelect = -1;
@@ -58,27 +61,25 @@ namespace xstrat.Ui
         public DataSelector()
         {
             InitializeComponent();
-            Loaded += (sender, args) =>
-            {
-                UpdateUI();
-                CBox.SelectionChanged += (sender, args) => { SelectionChanged?.Invoke(sender, null); };
-            };
+            Loaded += DataSelector_Loaded;
         }
 
+        private void DataSelector_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateUI();
+            CBox.SelectionChanged += CB_SelectionChanged;
+        }
 
         public DataSelector(DataSelectorTypes Type)
         {
             InitializeComponent();
-            Loaded += (sender, args) =>
-            {
-                UpdateUI();
-                CBox.SelectionChanged += (sender, args) => { SelectionChanged?.Invoke(sender, null); };
-            };
+            Loaded += DataSelector_Loaded;
+            this.Type = Type;
         }
 
         public void SelectIndexWhenLoaded(int index)
         {
-            if(index < 0) return;
+            if (index < 0) return;
             indexToSelect = index;
         }
 
@@ -108,7 +109,7 @@ namespace xstrat.Ui
 
         public void UpdateUI()
         {
-            if(Type == DataSelectorTypes.Teammates)
+            if (Type == DataSelectorTypes.Teammates)
             {
                 CBox.Items.Clear();
                 foreach (var item in DataCache.CurrentTeamMates)
@@ -124,7 +125,7 @@ namespace xstrat.Ui
                     CBox.Items.Add(item.Name);
                 }
             }
-            else if(Type == DataSelectorTypes.OffdayType)
+            else if (Type == DataSelectorTypes.OffdayType)
             {
                 CBox.Items.Clear();
                 foreach (var item in Globals.OffDayTypes)
@@ -188,7 +189,15 @@ namespace xstrat.Ui
                     CBox.Items.Add(item.Name);
                 }
             }
-            if(indexToSelect > -1) CBox.SelectedIndex = indexToSelect;
+            else if(Type == DataSelectorTypes.Replays)
+            {
+                CBox.Items.Clear();
+                foreach (var item in DataCache.ReplayFolders)
+                {
+                    CBox.Items.Add(item.Title + "|" + item.FolderName);
+                }
+            }
+            if (indexToSelect > -1) CBox.SelectedIndex = indexToSelect;
             if (!string.IsNullOrEmpty(valueToSelect)) CBox.SelectedValue = valueToSelect;
         }
 
@@ -196,15 +205,15 @@ namespace xstrat.Ui
         private void CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CBox.SelectedIndex < 0) return;
-            if(Type == DataSelectorTypes.Teammates)
+            if (Type == DataSelectorTypes.Teammates)
             {
                 selectedUser = DataCache.CurrentTeamMates[CBox.SelectedIndex];
             }
-            else if(Type == DataSelectorTypes.Game)
+            else if (Type == DataSelectorTypes.Game)
             {
                 selectedGame = DataCache.CurrentGames[CBox.SelectedIndex];
             }
-            else if(Type == DataSelectorTypes.OffdayType)
+            else if (Type == DataSelectorTypes.OffdayType)
             {
                 selectedOffDayType = Globals.OffDayTypes[CBox.SelectedIndex];
             }
@@ -236,6 +245,10 @@ namespace xstrat.Ui
             {
                 selectedOperator = DataCache.CurrentOperators.Where(x => x.Name == CBox.SelectedItem.ToString()).FirstOrDefault();
             }
+            else if (Type == DataSelectorTypes.Replays)
+            {
+                selectedReplayFolder = DataCache.ReplayFolders.FirstOrDefault(x => (x.Title + "|" + x.FolderName) == CBox.SelectedItem.ToString());
+            }
         }
     }
     public enum DataSelectorTypes
@@ -250,5 +263,6 @@ namespace xstrat.Ui
         AttackOperators,
         DefenseOperators,
         AllOperators,
+        Replays
     }
 }

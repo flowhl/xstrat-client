@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace xstrat.Dissect
 {
@@ -120,6 +121,9 @@ namespace xstrat.Dissect
 
     public class Round
     {
+        [JsonIgnore]
+        public MatchReplay Root { get; set; }
+
         [JsonProperty("gameVersion")]
         public string GameVersion { get; set; }
 
@@ -186,6 +190,11 @@ namespace xstrat.Dissect
 
     public class Stat
     {
+        [JsonIgnore]
+        public MatchReplay Root { get; set; }
+        [JsonIgnore]
+        public Round Round { get; set; }
+
         [JsonProperty("username")]
         public string Username { get; set; }
 
@@ -205,7 +214,7 @@ namespace xstrat.Dissect
         public double HeadshotPercentage { get; set; }
 
         [JsonProperty("rounds")]
-        public int Rounds { get; set; }
+        public int? Rounds { get; set; }
 
         [JsonProperty("deaths")]
         public int Deaths { get; set; }
@@ -243,6 +252,126 @@ namespace xstrat.Dissect
                 return HeadshotPercentage.ToString("F2") + "%";
             }
         }
+
+        [JsonIgnore]
+        public int EntryKills
+        {
+            get
+            {
+                //is general stat
+                if (Round != null)
+                {
+                    int team = Round.Players.Where(x => x.Username == Username).FirstOrDefault().TeamIndex;
+                    var killFeed = Round.MatchFeedback.Where(x => x.Type.Name == "Kill" && Round.Players.Where(x => x.TeamIndex == team).Select(x => x.Username).Contains(x.Username));
+                    if (killFeed.Count() == 0) return 0;
+
+                    if (killFeed.FirstOrDefault().Username == Username)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                }
+                //is round specific stat
+                else
+                {
+                    if (Root == null) return 0;
+                    int entryKills = 0;
+                    foreach (var round in Root.Rounds)
+                    {
+                        entryKills += round.Stats.Where(x => x.Username == Username).Sum(x => x.EntryKills);
+                    }
+                    return entryKills;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public double KOST
+        {
+            get
+            {
+                //is general stat
+                if (Round != null)
+                {
+                    int team = Round.Players.Where(x => x.Username == Username).FirstOrDefault().TeamIndex;
+                    var teamKillFeed = Round.MatchFeedback.Where(x => Round.Players.Where(x => x.TeamIndex == team).Select(x => x.Username).Contains(x.Username));
+                    //Kill
+                    bool isKill = teamKillFeed.Any(x => x.Type.Name == "Kill" && x.Username == Username);
+                    //Objective
+                    bool isObjective = teamKillFeed.Any(x => (x.Type.Name == "DefuserPlantComplete" || x.Type.Name == "DefuserDisableComplete") && x.Username == Username);
+                    //Survive
+                    bool isSurvive = !Round.MatchFeedback.Any(x => x.Type.Name == "Kill" && x.Target == Username);
+                    //Trade
+                    bool isTrade = false;
+                    var killRow = Round.MatchFeedback.FirstOrDefault(x => x.Type.Name == "Kill" && x.Target == Username);
+                    if (killRow != null)
+                    {
+                        string killer = killRow.Username;
+                        isTrade = teamKillFeed.Any(x => x.Type.Name == "Kill" && x.Target == killer && (x.TimeInSeconds - killRow.TimeInSeconds <= 10));
+                    }
+
+                    if (isKill || isObjective || isSurvive || isTrade)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                //is round specific stat
+                else
+                {
+                    if (Root == null) return 0;
+                    List<double> KOSTValues = new List<double>();
+                    foreach (var round in Root.Rounds)
+                    {
+                        KOSTValues.Add(round.Stats.Where(x => x.Username == Username).Average(x => x.KOST));
+                    }
+                    return KOSTValues.Average();
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public string KOSTPercentageString
+        {
+            get
+            {
+                return KOST.ToString("F2") + "%";
+            }
+        }
+
+        [JsonIgnore]
+        public double KPR
+        {
+            get
+            { 
+                if(Round != null)
+                {
+                    return Kills;
+                }
+                else
+                {
+                    if (Root == null) return 0;
+                    return (double)Kills / (double)Root.Rounds.Count;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public string KPRString
+        {
+            get
+            {
+                return KPR.ToString("F2");
+            }
+        }
+
     }
 
     public class Team

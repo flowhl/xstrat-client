@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,6 +41,15 @@ namespace xstrat.MVVM.View
         {
             tbControl.SelectionChanged += TbControl_SelectionChanged;
             UpdatePageButtons();
+            UpdateBindings();
+        }
+
+        public void UpdateBindings()
+        {
+            //dgMatch.ItemsSource = Match?.Rounds;
+            dgTeams.ItemsSource = Match?.Teams;
+            dgBans.ItemsSource = Match?.Bans;
+            TabGeneral.DataContext = Match;
         }
 
         public void Finished()
@@ -49,7 +59,14 @@ namespace xstrat.MVVM.View
         
         public void PageChanged()
         {
-            
+            //Page 0 > 1
+            if(CurrentPage == 1)
+            {
+                Match = new StatsMatch();
+                var replay = dsReplay.selectedReplayFolder;
+                Match.ImportDissect(replay.DissectReplay);
+                UpdateBindings();
+            }
         }
 
         public void Cancel()

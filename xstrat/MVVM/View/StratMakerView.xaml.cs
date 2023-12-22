@@ -46,6 +46,7 @@ using Newtonsoft.Json;
 using static SkiaSharp.HarfBuzz.SKShaper;
 using LiveChartsCore.Kernel;
 using System.Net;
+using System.CodeDom;
 
 namespace xstrat.MVVM.View
 {
@@ -369,7 +370,7 @@ namespace xstrat.MVVM.View
         {
             MapStack.Children.Clear();
             WallsLayer.Children.Clear();
-            DrawingLayer.Children.Clear();
+            //DrawingLayer.Children.Clear();
 
             if (map_id.IsNullOrEmpty()) return;
 
@@ -386,7 +387,6 @@ namespace xstrat.MVVM.View
             foreach (var floor in floors)
             {
                 XmlDocument svgFile;
-
 
                 svgFile = Globals.GetSCVDocumentForMapAndFloor(map_id, floor);
 
@@ -407,67 +407,6 @@ namespace xstrat.MVVM.View
 
                     offset += SVGContent.ViewBoxDimensions.X;
                 }
-
-
-                //    var newimage = Globals.GetImageForFloorAndMap(game_id, map_id, floor);
-                //    MapStack.Children.Add(newimage);
-
-                //    WallsLayer.Children.Clear();
-
-                //    //add walls here
-                //    //var objects = xStratHelper.GetWallObjects(map_id, floor);
-                //    var objects = null;
-                //    foreach (var obj in objects)
-                //    {
-                //        try
-                //        {
-                //            if (obj.type == 0)
-                //            {
-                //                var newpos = new Point();
-                //                newpos.X = obj.position_x + offset.X;
-                //                newpos.Y = obj.position_y + offset.Y;
-
-                //                WallControl newwc = new WallControl();
-                //                newwc.Height = 19;
-                //                newwc.Name = obj.uid;
-                //                newwc.Width = obj.width;
-                //                newwc.RenderTransform = obj.rotate;
-
-                //                WallsLayer.Children.Add(newwc);
-
-                //                Canvas.SetLeft(newwc, newpos.X);
-                //                Canvas.SetTop(newwc, newpos.Y);
-
-                //                SetBrushToItem();
-                //            }
-                //            if (obj.type == 1)
-                //            {
-                //                var newpos = new Point();
-                //                newpos.X = obj.position_x + offset.X;
-                //                newpos.Y = obj.position_y + offset.Y;
-
-                //                HatchControl newhc = new HatchControl();
-                //                newhc.Name = obj.uid;
-                //                newhc.RenderTransform = obj.rotate;
-                //                newhc.Height = 86;
-                //                newhc.Width = 86;
-
-                //                WallsLayer.Children.Add(newhc);
-
-                //                Canvas.SetLeft(newhc, newpos.X);
-                //                Canvas.SetTop(newhc, newpos.Y);
-
-                //                SetBrushToItem();
-                //            }
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            Notify.sendError("Error creating ContentControl for image: " + ex.Message);
-                //        }
-                //    }
-
-                //    offset.X += 4000 / 1.3;
-                //    DeselectAll();
             }
 
         }
@@ -1608,6 +1547,8 @@ namespace xstrat.MVVM.View
 
         private void BtnFloor0_Click(object sender, RoutedEventArgs e)
         {
+            var res = MigrateFloorContent(0, !Floor0);
+            if (!res) return;
             Floor0 = !Floor0;
             UpdateFloorButtons();
             ZoomControl.Focus();
@@ -1616,6 +1557,8 @@ namespace xstrat.MVVM.View
 
         private void BtnFloor1_Click(object sender, RoutedEventArgs e)
         {
+            var res = MigrateFloorContent(1, !Floor1);
+            if (!res) return;
             Floor1 = !Floor1;
             UpdateFloorButtons();
             ZoomControl.Focus();
@@ -1624,6 +1567,8 @@ namespace xstrat.MVVM.View
 
         private void BtnFloor2_Click(object sender, RoutedEventArgs e)
         {
+            var res = MigrateFloorContent(2, !Floor2);
+            if (!res) return;
             Floor2 = !Floor2;
             UpdateFloorButtons();
             ZoomControl.Focus();
@@ -1632,6 +1577,8 @@ namespace xstrat.MVVM.View
 
         private void BtnFloor3_Click(object sender, RoutedEventArgs e)
         {
+            var res = MigrateFloorContent(3, Floor3);
+            if (!res) return;
             Floor3 = !Floor3;
             UpdateFloorButtons();
             ZoomControl.Focus();
@@ -1644,6 +1591,141 @@ namespace xstrat.MVVM.View
             var res = AllowExit();
             if (!res) return;
             Refresh();
+        }
+
+        //Check if items will be deleted
+        //returns true if successfull
+        public bool RemoveItemsInFloorArea(int floor)
+        {
+            if (floor < 0) return false;
+            if (CurrentStrat == null) return false;
+            if (CurrentStrat.Content == null) return false;
+
+            List<int> floors = new List<int>();
+            if (Floor0) floors.Add(0);
+            if (Floor1) floors.Add(1);
+            if (Floor2) floors.Add(2);
+            if (Floor3) floors.Add(3);
+
+            if (!floors.Any(x => x == floor)) floors.Add(floor);
+
+            if (!floors.Any()) return false;
+
+            int number = floors.IndexOf(floor);
+
+            bool isFirstItem = number == 0;
+            bool isLastItem = number == floors.Count - 1;
+
+            double XStart = 4000 * number;
+            double XEnd = 4000 * (number + 1);
+            double YStart = 0;
+            double YEnd = 3000;
+
+            var ItemsInArea = DrawingLayer.Children.OfType<FrameworkElement>().Where(x =>
+            (isFirstItem || x.GetCenterX() >= XStart) &&
+            (isLastItem || x.GetCenterX() <= XEnd)
+            );
+
+
+            bool hasItemInArea = ItemsInArea.Any();
+
+            if (!hasItemInArea) return true;
+
+            var res = MessageBox.Show("The floor you are deleting has items in it. Removing the floor will delete its content. Would you like to continue?", "Items will be removed", MessageBoxButton.YesNo);
+            if (res == MessageBoxResult.No)
+                return false;
+
+            //Remove
+            ItemsInArea.ToList().ForEach(x => DrawingLayer.Children.Remove(x));
+
+            return true;
+        }
+
+        //Moves items to add a floor to the new position
+        //returns false if aborted
+        public bool MigrateFloorContent(int floor, bool wasAdded)
+        {
+            if (floor < 0) return true;
+
+            List<int> floors = new List<int>();
+            if (Floor0) floors.Add(0);
+            if (Floor1) floors.Add(1);
+            if (Floor2) floors.Add(2);
+            if (Floor3) floors.Add(3);
+
+            if (!floors.Any(x => x == floor)) floors.Add(floor);
+
+            if (!floors.Any()) return true;
+
+            floors = floors.OrderBy(x => x).ToList();
+
+            var number = floors.IndexOf(floor);
+            if (number == -1) return true;
+
+            bool isFirstItem = number == 0;
+            bool isLastItem = number == floors.Count - 1;
+
+            //new item was added so we need to move all items to the right
+            if (wasAdded)
+            {
+                //Last item, we dont need to move anything
+                if (isLastItem) return true;
+
+                double XStart = 4000 * number;
+                double XEnd = 4000 * (number + 1);
+
+                //Get all items after the start and move it to the right by 4000
+                var ItemsInArea = DrawingLayer.Children.OfType<FrameworkElement>().Where(x => x.GetCenterX() >= XStart);
+                foreach (var item in ItemsInArea)
+                {
+                    //for path we have to use the transform
+                    if (item is Path)
+                    {
+                        //check if there is already a geometry transform
+                        var transform = (item as Path).RenderTransform as TransformGroup;
+                        if(transform == null) transform = new TransformGroup();
+                        //move it by 4000px to the right
+                        transform.Children.Add(new TranslateTransform(4000, 0));
+                    }
+                    //we can move every other item normally
+                    else
+                    {
+                        var left = Canvas.GetLeft(item);
+                        Canvas.SetLeft(item, left + 4000);
+                    }
+                }
+            }
+            else
+            {
+                //First clear the removed floor area
+                var allow = RemoveItemsInFloorArea(floor);
+                if (!allow) return false;
+                if (isLastItem) return true;
+
+                double XEnd = 4000 * (number + 1);
+
+                //Get all items where the center point is after the end and move it to the left by 4000
+                var ItemsInArea = DrawingLayer.Children.OfType<FrameworkElement>().Where(x => x.GetCenterX() >= XEnd);
+                foreach (var item in ItemsInArea)
+                {
+                    //for path we have to use the transform
+                    if (item is Path)
+                    {
+                        //check if there is already a geometry transform
+                        var transform = (item as Path).RenderTransform as TransformGroup;
+                        if (transform == null) transform = new TransformGroup();
+                        //move it by 4000px to the right
+                        transform.Children.Add(new TranslateTransform(-4000, 0));
+                    }
+                    //we can move every other item normally
+                    else
+                    {
+                        var left = Canvas.GetLeft(item);
+                        Canvas.SetLeft(item, left - 4000);
+                    }
+                }
+            }
+            return true;
         }
 
         private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
@@ -2108,7 +2190,7 @@ namespace xstrat.MVVM.View
         public string Comment { get; set; }
 
         public List<int> Floors { get; set; }
-        
+
         public double IconSize { get; set; }
         public AssignmentTableModel AssignmentTable { get; set; }
         public Operator BanDef { get; set; }
@@ -2121,7 +2203,6 @@ namespace xstrat.MVVM.View
             Hatchstatus = new List<HatchObj>();
             DragNDropObjs = new List<DragNDropObj>();
             Comment = "";
-            Floors = new List<int>();
         }
     }
 

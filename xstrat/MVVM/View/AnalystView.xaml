@@ -5,7 +5,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TabControl Grid.Row="0" Name="tbControl">
-            <TabItem Header="Import" Name="Tab1">
+            <TabItem Header="Import" Name="TabImport">
                 <Grid>
                     <StackPanel>
                         <Label Content="Import from R6 Replay: " Style="{StaticResource P1}"></Label>
@@ -13,12 +13,35 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="General" Name="Tab2"></TabItem>
+            <TabItem Header="General" Name="TabGeneral">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Vertical" Name="SPGeneral">
+                        <Label Style="{StaticResource P1}" Content="General:" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Title:" Style="{StaticResource P1}"></Label>
+                            <TextBox Style="{StaticResource PrimaryTB}" Name="TxtTitle" Text="{Binding Title}" Width="300" Height="30" Margin="0,0,0,10" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Row="1">
+                        <Label Style="{StaticResource P1}" Content="Teams:" />
+                        <DataGrid AutoGenerateColumns="True" Name="dgTeams" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Row="2">
+                        <Label Style="{StaticResource P1}" Content="Bans:" />
+                        <DataGrid AutoGenerateColumns="True" Name="dgBans" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
-            <Button Name="BtnCancel" Content="Cancel" Click="BtnCancel_Click" Height="30" Width="75" Style="{StaticResource Primary}"/>
-            <Button Name="BtnBack" Content="Back" Click="BtnBack_Click" Height="30" Width="75" Style="{StaticResource Secondary}"/>
-            <Button Name="BtnForward" Content="Forward" Click="BtnForward_Click" Height="30" Width="75" Style="{StaticResource Secondary}"/>
+            <Button Name="BtnCancel" Content="Cancel" Click="BtnCancel_Click" Height="30" Width="75" Style="{StaticResource Primary}" />
+            <Button Name="BtnBack" Content="Back" Click="BtnBack_Click" Height="30" Width="75" Style="{StaticResource Secondary}" />
+            <Button Name="BtnForward" Content="Forward" Click="BtnForward_Click" Height="30" Width="75" Style="{StaticResource Secondary}" />
         </StackPanel>
 
     </Grid>

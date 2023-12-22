@@ -579,7 +579,7 @@ namespace xstrat.MVVM.View
         {
             if (DissectJson == null) { return; }
             DissectReplay = Newtonsoft.Json.JsonConvert.DeserializeObject<MatchReplay>(DissectJson);
-
+            if (DissectReplay == null) return;
             DissectReplay.Rounds.ForEach(x => x.Root = DissectReplay);
             DissectReplay.Stats.ForEach(x => x.Root = DissectReplay);
             DissectReplay.Rounds.ForEach(x => x.Stats.ForEach(y => y.Root = DissectReplay));

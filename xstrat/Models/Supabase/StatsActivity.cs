@@ -12,7 +12,7 @@ namespace XStratApi.Models.Supabase
         private DateTime? createdAt;
         private string matchId;
         private long? type;
-        private DateTime? time;
+        private TimeSpan? time;
         private string message;
         private string username;
         private string operatorId;
@@ -52,7 +52,7 @@ namespace XStratApi.Models.Supabase
             get { return (ActivityType)Type; }
         }
 
-        public DateTime? Time
+        public TimeSpan? Time
         {
             get { return time; }
             set { SetProperty(ref time, value); }

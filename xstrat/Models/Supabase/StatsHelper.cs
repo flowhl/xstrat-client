@@ -9,14 +9,14 @@ namespace xstrat.Models.Supabase
     public class StatsHelper
     {
     }
-    public enum Gamemode
+    public enum MatchGameMode
     {
         Bomb,
         Hostage,
         SecureArea,
         Unknown
     }
-    public enum Gametype
+    public enum MatchGametype
     {
         Ranked,
         Unranked,
@@ -40,5 +40,6 @@ namespace xstrat.Models.Supabase
         DefuserPlantComplete,
         DefuserDisableStart,
         DefuserDisableComplete,
+        Unknown
     }
 }

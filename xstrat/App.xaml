@@ -238,6 +238,20 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
+            <!--TextBoxes-->
+            
+            <Style x:Key="PrimaryTB" TargetType="TextBox">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Background" Value="#202020" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <Style x:Key="SecondaryTB" TargetType="TextBox">
+                <Setter Property="Foreground" Value="#336cb5" />
+                <Setter Property="Background" Value="#202020" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
 
             <!--Menu item-->
 

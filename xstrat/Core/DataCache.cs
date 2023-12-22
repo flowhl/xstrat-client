@@ -33,7 +33,6 @@ namespace xstrat.Core
                 RetrieveCalendarEvents();
                 RetrieveCalendarBlocks();
                 RetrieveCalendarEventResponses();
-                RetrieveReplayFolders();
             }
             catch (Exception ex)
             {
@@ -338,7 +337,23 @@ namespace xstrat.Core
 
         #region Replays
 
-        public static ObservableCollection<MatchReplayFolder> ReplayFolders { get; set; }
+
+        private static ObservableCollection<MatchReplayFolder> _replayFolders;
+        public static ObservableCollection<MatchReplayFolder> ReplayFolders
+        {
+            get
+            {
+                if (_replayFolders == null)
+                {
+                    RetrieveReplayFolders();
+                }
+                return _replayFolders;
+            }
+            set
+            {
+                _replayFolders = value;
+            }
+        }
 
         public static async Task RetrieveReplaysAsync()
         {

@@ -308,6 +308,8 @@ namespace xstrat
             BtnCalendar.Visibility = vis;
             BtnStratmaker.Visibility = vis;
             BtnAnalyst.Visibility = vis;
+            //Disable analyst for current release
+            BtnAnalyst.Visibility = Visibility.Collapsed;
         }
 
     }

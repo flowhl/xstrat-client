@@ -1341,7 +1341,8 @@ namespace xstrat.MVVM.View
                 {
                     var posItem = new MenuItem();
                     //posItem.Name = pos.name + "PositionItem";
-                    posItem.Header = pos.Name;
+                    int stratCount = DataCache.CurrentStrats.Where(x => x.PositionId == pos.Id).Count();
+                    posItem.Header = $"({stratCount}) {pos.Name}";
                     posItem.Template = Application.Current.Resources["Menu_SubMenu_Template"] as ControlTemplate;
                     foreach (var strat in DataCache.CurrentStrats.Where(x => x.PositionId == pos.Id))
                     {

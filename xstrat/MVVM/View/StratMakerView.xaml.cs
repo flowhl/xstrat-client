@@ -1119,7 +1119,7 @@ namespace xstrat.MVVM.View
                     newEntry.ArrowGeometryStart = (g as LineGeometry).StartPoint;
                     newEntry.ArrowGeometryEnd = (g as LineGeometry).EndPoint;
 
-                    newEntry.UserID = (item as Path).Tag.ToString();
+                    newEntry.UserID = (item as Path).Tag?.ToString();
                     newEntry.Type = DragNDropObjType.Arrow;
                 }
                 if (newEntry != null) result.Add(newEntry);

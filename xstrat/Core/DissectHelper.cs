@@ -35,6 +35,9 @@ namespace xstrat.Core
                 process.Start();
 
                 string output = process.StandardOutput.ReadToEnd();
+
+                if(output.IsNullOrEmpty()) throw new Exception("Error: no output from r6-dissect.exe");
+
                 process.WaitForExit();
 
                 MatchReplay matchReplay = JsonConvert.DeserializeObject<MatchReplay>(output);

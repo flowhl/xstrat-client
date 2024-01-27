@@ -189,7 +189,7 @@ namespace xstrat.Ui
                     CBox.Items.Add(item.Name);
                 }
             }
-            else if(Type == DataSelectorTypes.Replays)
+            else if(Type == DataSelectorTypes.Replays && DataCache.ReplayFolders != null)
             {
                 CBox.Items.Clear();
                 foreach (var item in DataCache.ReplayFolders)

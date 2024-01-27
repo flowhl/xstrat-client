@@ -57,7 +57,10 @@
                             <xstrat:DataGridIconColumn Width="60" x:Name="ExportExcelButtonColumn" ButtonToolTip="Export for Excel" Kind="FileExportOutline" Click="ExportExcelButtonColumn_Click"></xstrat:DataGridIconColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <StackPanel Orientation="Horizontal">
                     <Button x:Name="BtnSelectAll" VerticalAlignment="Center" Margin="5,0,5,5" Content="Select All" HorizontalAlignment="Left" Click="BtnSelectAll_Click" Style="{StaticResource DataGridSmall}"></Button>
+                        <Button x:Name="BtnSelectNone" VerticalAlignment="Center" Margin="5,0,5,5" Content="Deselect All" HorizontalAlignment="Left" Click="BtnSelectNone_Click" Style="{StaticResource DataGridSmall}"></Button>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 

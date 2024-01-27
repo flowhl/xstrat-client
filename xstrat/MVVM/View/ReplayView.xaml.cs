@@ -373,6 +373,10 @@ namespace xstrat.MVVM.View
         {
             DataCache.ReplayFolders.ToList().ForEach(x => x.Selected = true);
         }
+        private void BtnSelectNone_Click(object sender, RoutedEventArgs e)
+        {
+            DataCache.ReplayFolders.ToList().ForEach(x => x.Selected = false);
+        }
     }
     public class MatchReplayFolder : INotifyPropertyChanged
     {

@@ -55,6 +55,11 @@ namespace xstrat
                 SettingsHandler.Settings.EULAAccepted = true;
                 SettingsHandler.Save();
             }
+            SettingsHandler.Initialize();
+            RestHandler.Initialize();
+            ApiHandler.Initialize();
+
+            Globals.wnd = (MainWindow)Application.Current.MainWindow;
 
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
@@ -325,7 +330,7 @@ namespace xstrat
             BtnStratmaker.Visibility = vis;
             BtnAnalyst.Visibility = vis;
             //Disable analyst for current release
-            //BtnAnalyst.Visibility = Visibility.Collapsed;
+            BtnAnalyst.Visibility = Visibility.Collapsed;
         }
 
     }

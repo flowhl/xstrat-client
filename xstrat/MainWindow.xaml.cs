@@ -12,6 +12,7 @@ using XStrat;
 using System.Linq;
 using System.Windows.Controls;
 using xstrat.Models.API;
+using xstrat.Ui;
 
 namespace xstrat
 {
@@ -40,6 +41,21 @@ namespace xstrat
             RestHandler.Initialize();
             ApiHandler.Initialize();
             InitializeComponent();
+
+            if(SettingsHandler.Settings.EULAAccepted == false)
+            {
+                var eulaWindow = new EULAWindow();
+                eulaWindow.ShowDialog();
+                if(eulaWindow.EULAAccepted == false)
+                {
+                    MessageBox.Show("You must accept the EULA to use this application.", "EULA not accepted", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
+                    return;
+                }
+                SettingsHandler.Settings.EULAAccepted = true;
+                SettingsHandler.Save();
+            }
+
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
@@ -309,7 +325,7 @@ namespace xstrat
             BtnStratmaker.Visibility = vis;
             BtnAnalyst.Visibility = vis;
             //Disable analyst for current release
-            BtnAnalyst.Visibility = Visibility.Collapsed;
+            //BtnAnalyst.Visibility = Visibility.Collapsed;
         }
 
     }

@@ -73,6 +73,7 @@ namespace xstrat.Core
                 newSettings.LastLoginMail = lines[5];
                 newSettings.CurrentUserId = lines[6];
                 newSettings.GameReplayPath = lines[7];
+                newSettings.EULAAccepted = false;
             }
             catch (Exception ex)
             {
@@ -87,6 +88,7 @@ namespace xstrat.Core
     public class SettingsModel
     {
         //settings propeties:
+        public bool EULAAccepted { get; set;}
         public bool StayLoggedin { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }

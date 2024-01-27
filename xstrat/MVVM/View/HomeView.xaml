@@ -13,7 +13,7 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Name="Row1">
                     <ui:TeamMatesControl/>
-                    <ui:LicenseInfo HideEnterOption="True"/>
+                    <!--<ui:LicenseInfo HideEnterOption="True"/>-->
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

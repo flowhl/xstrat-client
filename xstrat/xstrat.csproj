@@ -392,6 +392,9 @@
       <DependentUpon>ColorDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ui\DataGridExtensions.cs" />
+    <Compile Include="Ui\EULAWindow.xaml.cs">
+      <DependentUpon>EULAWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\HatchControl.xaml.cs">
       <DependentUpon>HatchControl.xaml</DependentUpon>
     </Compile>
@@ -616,6 +619,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Ui\EULAWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Ui\HatchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -802,6 +809,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\128.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="license.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\slogan.png" />

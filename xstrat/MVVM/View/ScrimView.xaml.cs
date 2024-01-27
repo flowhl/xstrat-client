@@ -185,64 +185,62 @@ namespace xstrat.MVVM.View
         }
 
         #region Helper Methods
-        private void MakeCalendarEntry(CalendarBlock od)
+        private void MakeCalendarEntry(CalendarBlock cb)
         {
             try
             {
-                DateTime? from = null;
-                DateTime? to = null;
-                if (od.Typ == 0) // exact
+                if (cb.Typ == 0) // exact
                 {
-                    if (from != null && to != null)
+                    if (cb.Start != null && cb.End != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start, DateTo = od.End, Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start, DateTo = cb.End, Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.Typ == 1) //entire day
+                else if (cb.Typ == 1) //entire day
                 {
-                    if (from != null && to != null)
+                    if (cb.Start != null && cb.End != null)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start.GetValueOrDefault().SetTime(0, 0, 0), DateTo = od.End.GetValueOrDefault().SetTime(23, 59, 59), Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start.GetValueOrDefault().SetTime(0, 0, 0), DateTo = cb.End.GetValueOrDefault().SetTime(23, 59, 59), Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.Typ == 2) //weekly
+                else if (cb.Typ == 2) //weekly
                 {
-                    int offset = (int)(od.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 7;
+                    int offset = (int)(cb.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 7;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 24; i++)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start.GetValueOrDefault().AddDays(7 * i), DateTo = od.End.GetValueOrDefault().AddDays(7 * i), Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start.GetValueOrDefault().AddDays(7 * i), DateTo = cb.End.GetValueOrDefault().AddDays(7 * i), Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.Typ == 3) // every second week
+                else if (cb.Typ == 3) // every second week
                 {
-                    int offset = (int)(od.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 14;
+                    int offset = (int)(cb.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 14;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 12; i++)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start.GetValueOrDefault().AddDays(14 * i), DateTo = od.End.GetValueOrDefault().AddDays(14 * i), Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start.GetValueOrDefault().AddDays(14 * i), DateTo = cb.End.GetValueOrDefault().AddDays(14 * i), Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.Typ == 4) // monthly
+                else if (cb.Typ == 4) // monthly
                 {
-                    int offset = (int)(od.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 30;
+                    int offset = (int)(cb.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays / 30;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 6; i++)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start.GetValueOrDefault().AddMonths(i), DateTo = od.End.GetValueOrDefault().AddMonths(i), Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start.GetValueOrDefault().AddMonths(i), DateTo = cb.End.GetValueOrDefault().AddMonths(i), Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
-                else if (od.Typ == 5) // daily
+                else if (cb.Typ == 5) // daily
                 {
-                    int offset = (int)(od.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays;
+                    int offset = (int)(cb.Start.GetValueOrDefault() - DateTime.Now.Date).TotalDays;
                     if (offset < 0) offset = 0;
 
                     for (int i = 0; i < offset + 365; i++)
                     {
-                        Events.Add(new CalendarEntry() { DateFrom = od.Start.GetValueOrDefault().AddDays(i), DateTo = od.End.GetValueOrDefault().AddDays(i), Label = GetLabel(od), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == od.UserId).FirstOrDefault() });
+                        Events.Add(new CalendarEntry() { DateFrom = cb.Start.GetValueOrDefault().AddDays(i), DateTo = cb.End.GetValueOrDefault().AddDays(i), Label = GetLabel(cb), Typ = 1, User = DataCache.CurrentTeamMates.Where(x => x.Id == cb.UserId).FirstOrDefault() });
                     }
                 }
 
@@ -289,11 +287,11 @@ namespace xstrat.MVVM.View
 
             if (od.Start.GetValueOrDefault().Date == od.End.GetValueOrDefault().Date)
             {
-                outputTime = od.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + od.End.GetValueOrDefault().ToString("HH:mm");
+                outputTime = od.Start.GetValueOrDefault().ToString("HH:mm") + "-" + od.End.GetValueOrDefault().ToString("HH:mm");
             }
             else
             {
-                outputTime = od.Start.GetValueOrDefault().ToString("dd.MM. HH:mm") + "-" + od.End.GetValueOrDefault().ToString("dd.MM. HH:mm");
+                outputTime = od.Start.GetValueOrDefault().ToString("HH:mm") + "-" + od.End.GetValueOrDefault().ToString("HH:mm");
             }
 
             //return Globals.UserIdToName(od.user_id.GetValueOrDefault()) + " | " + stitle + ": " + sstart + "-" + send;
@@ -382,42 +380,32 @@ namespace xstrat.MVVM.View
             var windows = GetMeetingWindows(players, TimeSpan.FromMinutes(60));
             foreach (var window in windows)
             {
+                List<string> AvailablePlayerIDs = window.AvailablePlayers.Select(x => x.Id).Distinct().ToList();
                 if (calendarFilterType.id == 0) //min
                 {
-                    if (window.AvailablePlayers.Count() >= playeramount)
+                    if (AvailablePlayerIDs.Count() >= playeramount)
                     {
                         //results += String.Format("Start: {0:yyyy-MM-dd HH:mm}, End: {1:yyyy-MM-dd HH:mm}, Player count: {2}", window.StartDateTime, window.EndDateTime, window.AvailableAttendees.Count()) + "\n";
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + AvailablePlayerIDs.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
                 if (calendarFilterType.id == 1) //specific
-                {
-                    List<string> AvailablePlayerIDs = new List<string>();
-                    foreach (var player in window.AvailablePlayers)
-                    {
-                        AvailablePlayerIDs.Add(player.Id);
-                    }
+                {               
 
                     if (SelectedPlayerIDs.All(i => AvailablePlayerIDs.Contains(i)))
                     {
                         window.AvailablePlayers = window.AvailablePlayers.Where(x => SelectedPlayerIDs.Contains(x.Id));
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + AvailablePlayerIDs.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
                 if (calendarFilterType.id == 2) //specific min
                 {
-                    List<string> AvailablePlayerIDs = new List<string>();
-                    foreach (var player in window.AvailablePlayers)
-                    {
-                        AvailablePlayerIDs.Add(player.Id);
-                    }
-
                     bool hasMinPlayers = true;
 
                     if (SelectedPlayerIDs.Where(x => !AvailablePlayerIDs.Contains(x)).Any())
@@ -429,7 +417,7 @@ namespace xstrat.MVVM.View
                     {
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + AvailablePlayerIDs.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
@@ -439,7 +427,7 @@ namespace xstrat.MVVM.View
                     {
                         List<Object> newargs = new List<Object>();
                         newargs.Add(window);
-                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), Typ = 2, Args = newargs });
+                        Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + AvailablePlayerIDs.Count(), Typ = 2, Args = newargs });
                     }
                 }
 
@@ -447,7 +435,7 @@ namespace xstrat.MVVM.View
                 //{
                 //    List<Object> newargs = new List<Object>();
                 //    newargs.Add(window);
-                //    Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " + window.AvailablePlayers.Count(), typ = 2 , args = newargs });
+                //    Events.Add(new CalendarEntry() { DateFrom = window.StartDateTime, DateTo = window.EndDateTime, Label = window.StartDateTime.ToString("HH:mm") + "-" + window.EndDateTime.ToString("HH:mm") + " | " +  AvailablePlayerIDs.Count(), typ = 2 , args = newargs });
                 //}
             }
             CalendarMonthUI.DrawDays();
@@ -517,7 +505,7 @@ namespace xstrat.MVVM.View
             }
 
 
-            var events = _events.Where(x => x.Typ == 1 && x.Label.StartsWith(user_name)).Where(x => x.DateFrom.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd") && x.DateTo.GetValueOrDefault().ToString("yyyy/MM/dd") == date.ToString("yyyy/MM/dd")); //all events of given date
+            var events = _events.Where(x => x.Typ == 1 && x.Label.StartsWith(user_name)).Where(x => x.DateFrom.GetValueOrDefault().Date <= date.Date && x.DateTo.GetValueOrDefault().Date >= date.Date); //all events of given date
 
             List<DateTime> times = new List<DateTime>();
 
@@ -600,7 +588,7 @@ namespace xstrat.MVVM.View
                 {
                     StartDateTime = time,
                     EndDateTime = matches.SelectMany(x => x.MatchingAvailabilities).Min(x => x.EndDateTime),
-                    AvailablePlayers = matches.Where(y => y.MatchingAvailabilities.Any()).Select(x => x.Attendee)
+                    AvailablePlayers = matches.Where(y => y.MatchingAvailabilities.Any()).Select(x => x.Attendee).Distinct()
                 });
             }
 
@@ -616,7 +604,7 @@ namespace xstrat.MVVM.View
                 {
                     EndDateTime = time,
                     StartDateTime = matches.SelectMany(x => x.MatchingAvailabilities).Max(x => x.StartDateTime),
-                    AvailablePlayers = matches.Where(y => y.MatchingAvailabilities.Any()).Select(x => x.Attendee)
+                    AvailablePlayers = matches.Where(y => y.MatchingAvailabilities.Any()).Select(x => x.Attendee).Distinct()
                 });
             }
 

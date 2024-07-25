@@ -330,7 +330,13 @@ namespace xstrat.Dissect
                     List<double> KOSTValues = new List<double>();
                     foreach (var round in Root.Rounds)
                     {
-                        KOSTValues.Add(round.Stats.Where(x => x.Username == Username).Average(x => x.KOST));
+                        var stats = round.Stats.Where(x => x.Username == Username);
+                        if (stats.Count() == 0) continue;
+                        KOSTValues.Add(stats.Average(x => x.KOST));
+                    }
+                    if(KOSTValues.Count == 0)
+                    {
+                        return 0;
                     }
                     return KOSTValues.Average();
                 }

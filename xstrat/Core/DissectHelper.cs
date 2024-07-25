@@ -24,7 +24,7 @@ namespace xstrat.Core
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = exe,
-                    Arguments = $" -x stdout \"{path}\"",
+                    Arguments = $" \"{path}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     WorkingDirectory = Path.Combine(Globals.XStratInstallPath, "External"),

@@ -97,7 +97,11 @@ namespace xstrat
                     return (true, "");
                 }
                 EndWaiting();
-                var msg = ExtractMessage(response.Content);
+                string msg = string.Empty;
+                if(response.Content.IsNotNullOrEmpty())                
+                msg = ExtractMessage(response.Content);
+                else
+                    msg = response.ToString();
                 Notify.sendError(msg, true);
                 return (false, "db error");
             }
@@ -1348,6 +1352,10 @@ namespace xstrat
 
         public static string ExtractMessage(string jsonString)
         {
+            if(string.IsNullOrEmpty(jsonString))
+            {
+                return null;
+            }
             // Remove the outer escaped quotes
             string trimmedJsonString = jsonString.Trim('"');
 
